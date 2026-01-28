@@ -51,6 +51,7 @@ export interface ProcessedTicker {
   baseSymbol: string;
   priceNum: number;
   changeNum: number; // 24h change %
+  volCcy24h: string; // 24h volume in currency
   rawData: OKXTicker;
 }
 
@@ -95,6 +96,7 @@ export type ColumnKey =
   | 'change4h'
   | 'change'
   | 'change7d'
+  | 'volume24h'
   | 'marketCap'
   | 'rsi7'
   | 'rsi14'
@@ -112,6 +114,7 @@ export interface ColumnVisibility {
   change4h: boolean;
   change: boolean;
   change7d: boolean;
+  volume24h: boolean;
   marketCap: boolean;
   rsi7: boolean;
   rsi14: boolean;

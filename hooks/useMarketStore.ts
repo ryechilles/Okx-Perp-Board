@@ -33,6 +33,7 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   change4h: true,
   change: true,
   change7d: true,
+  volume24h: true,
   marketCap: true,
   rsi7: true,
   rsi14: true,
@@ -258,6 +259,7 @@ export function useMarketStore() {
         change4h: true,
         change: true,
         change7d: true,
+        volume24h: true,
         marketCap: true,
         rsi7: true,
         rsi14: true,
@@ -275,6 +277,7 @@ export function useMarketStore() {
         change4h: false,
         change: false,
         change7d: false,
+        volume24h: false,
         marketCap: false,
         rsi7: false,
         rsi14: false,
@@ -470,6 +473,10 @@ export function useMarketStore() {
         case 'marketCap':
           aVal = marketCapData.get(a.baseSymbol)?.marketCap ?? 0;
           bVal = marketCapData.get(b.baseSymbol)?.marketCap ?? 0;
+          break;
+        case 'volume24h':
+          aVal = parseFloat(a.volCcy24h) || 0;
+          bVal = parseFloat(b.volCcy24h) || 0;
           break;
         case 'rsi7':
           aVal = rsiData.get(a.instId)?.rsi7 ?? 0;

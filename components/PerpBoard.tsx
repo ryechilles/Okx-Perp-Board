@@ -5,7 +5,7 @@ import { useMarketStore } from '@/hooks/useMarketStore';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { ColumnKey } from '@/lib/types';
-import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
+import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
 
 export default function PerpBoard() {
   const store = useMarketStore();
@@ -249,6 +249,13 @@ export default function PerpBoard() {
                                 return (
                                   <td key={key} className={`${baseClass} text-gray-600 tabular-nums`}>
                                     {marketCap?.marketCap ? formatMarketCap(marketCap.marketCap) : <span className="text-gray-300">--</span>}
+                                  </td>
+                                );
+                              
+                              case 'volume24h':
+                                return (
+                                  <td key={key} className={`${baseClass} text-gray-600 tabular-nums`}>
+                                    {formatVolume(ticker.volCcy24h)}
                                   </td>
                                 );
                                 

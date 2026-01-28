@@ -11,6 +11,7 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'change4h',
   'change',
   'change7d',
+  'volume24h',
   'marketCap',
   'rsi7',
   'rsi14',
@@ -18,21 +19,22 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'hasSpot'
 ];
 
-// Column definitions
+// Column definitions - all columns centered except symbol (left-aligned)
 export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: string; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
   favorite: { label: '', width: '44px', align: 'center', fixed: true, sortable: false },
   rank: { label: '#', width: '50px', align: 'center', fixed: true, sortable: true },
   symbol: { label: 'Token', width: '100px', align: 'left', fixed: true, sortable: true },
-  price: { label: 'Price', width: '100px', align: 'right', sortable: true },
-  fundingRate: { label: 'Funding', width: '85px', align: 'right', sortable: true },
+  price: { label: 'Price', width: '95px', align: 'center', sortable: true },
+  fundingRate: { label: 'Funding', width: '85px', align: 'center', sortable: true },
   fundingInterval: { label: 'Interval', width: '65px', align: 'center', sortable: true },
-  change4h: { label: '4H', width: '75px', align: 'right', sortable: true },
-  change: { label: '24H', width: '75px', align: 'right', sortable: true },
-  change7d: { label: '7D', width: '75px', align: 'right', sortable: true },
-  marketCap: { label: 'Mkt Cap', width: '90px', align: 'right', sortable: true },
-  rsi7: { label: 'RSI7', width: '55px', align: 'right', sortable: true },
-  rsi14: { label: 'RSI14', width: '55px', align: 'right', sortable: true },
-  listDate: { label: 'Listed', width: '80px', align: 'right', sortable: true },
+  change4h: { label: '4H', width: '70px', align: 'center', sortable: true },
+  change: { label: '24H', width: '70px', align: 'center', sortable: true },
+  change7d: { label: '7D', width: '70px', align: 'center', sortable: true },
+  volume24h: { label: 'Vol 24H', width: '90px', align: 'center', sortable: true },
+  marketCap: { label: 'Mkt Cap', width: '85px', align: 'center', sortable: true },
+  rsi7: { label: 'RSI7', width: '55px', align: 'center', sortable: true },
+  rsi14: { label: 'RSI14', width: '55px', align: 'center', sortable: true },
+  listDate: { label: 'Listed', width: '80px', align: 'center', sortable: true },
   hasSpot: { label: 'Spot', width: '50px', align: 'center', sortable: true }
 };
 
@@ -135,6 +137,16 @@ export function formatMarketCap(cap: number): string {
   return '$' + cap.toFixed(2);
 }
 
+// Format 24h volume
+export function formatVolume(value: string | number): string {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(num) || num === 0) return '--';
+  if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
+  if (num >= 1e6) return '$' + (num / 1e6).toFixed(1) + 'M';
+  if (num >= 1e3) return '$' + (num / 1e3).toFixed(0) + 'K';
+  return '$' + num.toFixed(0);
+}
+
 // Get RSI class for styling
 export function getRsiClass(rsi: number | null | undefined): string {
   if (rsi === null || rsi === undefined) return 'text-gray-300';
@@ -162,6 +174,7 @@ export function processTicker(t: OKXTicker): ProcessedTicker {
     baseSymbol,
     priceNum,
     changeNum,
+    volCcy24h: t.volCcy24h || '0',
     rawData: t
   };
 }

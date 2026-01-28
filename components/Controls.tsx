@@ -70,6 +70,7 @@ export function Controls({
     { key: 'change4h', label: '4H Change' },
     { key: 'change', label: '24H Change' },
     { key: 'change7d', label: '7D Change' },
+    { key: 'volume24h', label: '24H Volume' },
     { key: 'marketCap', label: 'Market Cap' },
     { key: 'rsi7', label: 'RSI7' },
     { key: 'rsi14', label: 'RSI14' },
