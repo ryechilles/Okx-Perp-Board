@@ -181,11 +181,31 @@ export function useMarketStore() {
   
   const setColumnsPreset = useCallback((preset: 'all' | 'none' | 'default') => {
     if (preset === 'all') {
-      setColumns(Object.fromEntries(
-        Object.keys(DEFAULT_COLUMNS).map(k => [k, true])
-      ) as ColumnVisibility);
+      setColumns({
+        symbol: true,
+        price: true,
+        change4h: true,
+        change: true,
+        change7d: true,
+        rank: true,
+        marketCap: true,
+        rsi7: true,
+        rsi14: true,
+        hasSpot: true
+      });
     } else if (preset === 'none') {
-      setColumns({ ...DEFAULT_COLUMNS, symbol: true });
+      setColumns({
+        symbol: true,
+        price: false,
+        change4h: false,
+        change: false,
+        change7d: false,
+        rank: false,
+        marketCap: false,
+        rsi7: false,
+        rsi14: false,
+        hasSpot: false
+      });
     } else {
       setColumns(DEFAULT_COLUMNS);
     }
