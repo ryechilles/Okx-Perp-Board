@@ -5,7 +5,6 @@ import { useMarketStore } from '@/hooks/useMarketStore';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
-import RankingBoard from '@/components/RankingBoard';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
 
@@ -32,12 +31,16 @@ export default function PerpBoard() {
   // Get visible columns in order
   const visibleColumns = store.columnOrder.filter(key => store.columns[key]);
   
-  // Fixed column widths (must match COLUMN_DEFINITIONS exactly)
+  // Fixed column widths - includes column width only, padding handled by CSS
+  // Total sticky offset = sum of previous column widths
   const FIXED_WIDTHS: Record<string, number> = {
     favorite: 36,
     rank: 40,
     symbol: 75,
   };
+  
+  // Total width of all fixed columns for clipping
+  const totalFixedWidth = Object.values(FIXED_WIDTHS).reduce((a, b) => a + b, 0);
   
   // Calculate column widths and sticky positions
   const getColStyle = (key: ColumnKey) => {
@@ -68,7 +71,7 @@ export default function PerpBoard() {
   };
   
   return (
-    <div className="flex flex-col min-h-screen bg-[#fafafa]">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* Sticky Header */}
       <div className="bg-[#fafafa] z-50 px-6 pt-5 pb-0 flex-shrink-0">
         <div className="max-w-[1400px] mx-auto w-full">
@@ -215,7 +218,7 @@ export default function PerpBoard() {
                           position: 'sticky' as const,
                           left: getStickyLeft(key),
                           zIndex: 10,
-                          backgroundColor: 'white',
+                          backgroundColor: '#ffffff',
                           boxShadow: isLastFixed ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
                         };
                       };
@@ -229,7 +232,7 @@ export default function PerpBoard() {
                             if (def.align === 'right') alignClass = 'text-right';
                             if (def.align === 'center') alignClass = 'text-center';
                             
-                            const baseClass = `px-2 py-3 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'group-hover:bg-gray-50' : ''}`;
+                            const baseClass = `px-2 py-3 text-[13px] whitespace-nowrap ${alignClass}`;
                             const cellStyle = getCellStyle(key);
                             
                             switch (key) {
@@ -453,26 +456,18 @@ export default function PerpBoard() {
               </div>
             )}
           </div>
-          
-          {/* Ranking Board */}
-          <div className="mt-4">
-            <RankingBoard 
-              tickers={store.tickers} 
-              rsiData={store.rsiData}
-              onTokenClick={(instId) => {
-                const base = instId.split('-')[0];
-                store.setSearchTerm(base);
-              }}
-            />
-          </div>
         </div>
       </div>
       
       {/* Footer */}
-      <Footer 
-        language={store.language} 
-        onLanguageChange={store.setLanguage} 
-      />
+      <div className="px-6 flex-shrink-0">
+        <div className="max-w-[1400px] mx-auto w-full">
+          <Footer 
+            language={store.language} 
+            onLanguageChange={store.setLanguage} 
+          />
+        </div>
+      </div>
     </div>
   );
 }

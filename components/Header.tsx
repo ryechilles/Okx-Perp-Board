@@ -21,9 +21,9 @@ function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
 export function Header() {
   return (
     <div className="flex items-center gap-6 mb-4">
-      <div className="flex items-center gap-2">
-        <PerpLogo className="w-8 h-8 rounded-md" />
-        <div className="text-lg font-semibold text-gray-900">
+      <div className="flex items-end gap-0.5">
+        <PerpLogo className="w-7 h-7 rounded-md" />
+        <div className="text-lg font-semibold text-gray-900 leading-none pb-0.5">
           erp Board <span className="text-xs text-gray-400 font-normal">v2.2</span>
         </div>
       </div>
