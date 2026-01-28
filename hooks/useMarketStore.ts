@@ -62,7 +62,6 @@ export function useMarketStore() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 25;
-  const [language, setLanguage] = useState<'en' | 'zh'>('en');
   // Status - Always show 'live' as requested
   const [status, setStatus] = useState<'connecting' | 'live' | 'error'>('live');
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -661,7 +660,6 @@ export function useMarketStore() {
     rsiProgress,
     currentPage,
     pageSize,
-    language,
     
     // Actions
     initialize,
@@ -676,7 +674,6 @@ export function useMarketStore() {
     updateColumnOrder,
     moveColumn,
     setCurrentPage,
-    setLanguage,
     
     // Derived data
     getFilteredData,
