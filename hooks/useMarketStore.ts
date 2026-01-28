@@ -29,6 +29,7 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   symbol: true,
   price: true,
   fundingRate: true,
+  fundingInterval: true,
   change4h: true,
   change: true,
   change7d: true,
@@ -261,6 +262,7 @@ export function useMarketStore() {
         symbol: true,
         price: true,
         fundingRate: true,
+        fundingInterval: true,
         change4h: true,
         change: true,
         change7d: true,
@@ -277,6 +279,7 @@ export function useMarketStore() {
         symbol: true,
         price: false,
         fundingRate: false,
+        fundingInterval: false,
         change4h: false,
         change: false,
         change7d: false,
@@ -394,6 +397,45 @@ export function useMarketStore() {
       }
     }
     
+    // Market cap minimum filter
+    if (filters.marketCapMin) {
+      const minCap = parseFloat(filters.marketCapMin) * 1000000; // Convert to actual value (input is in millions)
+      filtered = filtered.filter(t => {
+        const cap = marketCapData.get(t.baseSymbol)?.marketCap;
+        return cap !== undefined && cap >= minCap;
+      });
+    }
+    
+    // Listing age filter
+    if (filters.listAge) {
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000;
+      const oneYear = 365 * oneDay;
+      const oneMonth = 30 * oneDay;
+      
+      if (filters.listAge === '>1y') {
+        filtered = filtered.filter(t => {
+          const listTime = listingData.get(t.instId)?.listTime;
+          return listTime && (now - listTime) > oneYear;
+        });
+      } else if (filters.listAge === '>6m') {
+        filtered = filtered.filter(t => {
+          const listTime = listingData.get(t.instId)?.listTime;
+          return listTime && (now - listTime) > (6 * oneMonth);
+        });
+      } else if (filters.listAge === '<30d') {
+        filtered = filtered.filter(t => {
+          const listTime = listingData.get(t.instId)?.listTime;
+          return listTime && (now - listTime) < (30 * oneDay);
+        });
+      } else if (filters.listAge === '<7d') {
+        filtered = filtered.filter(t => {
+          const listTime = listingData.get(t.instId)?.listTime;
+          return listTime && (now - listTime) < (7 * oneDay);
+        });
+      }
+    }
+    
     // Sort
     filtered.sort((a, b) => {
       let aVal: number | string;
@@ -445,6 +487,10 @@ export function useMarketStore() {
         case 'fundingRate':
           aVal = fundingRateData.get(a.instId)?.fundingRate ?? 0;
           bVal = fundingRateData.get(b.instId)?.fundingRate ?? 0;
+          break;
+        case 'fundingInterval':
+          aVal = fundingRateData.get(a.instId)?.settlementInterval ?? 8;
+          bVal = fundingRateData.get(b.instId)?.settlementInterval ?? 8;
           break;
         case 'listDate':
           aVal = listingData.get(a.instId)?.listTime ?? 0;

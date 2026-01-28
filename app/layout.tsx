@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Perp Board v2.0',
+  title: 'Perp Board v2.1',
   description: 'OKX Perpetual Futures Dashboard with RSI indicators',
 };
 

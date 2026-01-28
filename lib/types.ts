@@ -69,6 +69,7 @@ export interface FundingRateData {
   nextFundingRate: number;
   fundingTime: number;
   nextFundingTime: number;
+  settlementInterval: number; // in hours (1, 2, 4, 8)
   lastUpdated: number;
 }
 
@@ -90,6 +91,7 @@ export type ColumnKey =
   | 'symbol'
   | 'price'
   | 'fundingRate'
+  | 'fundingInterval'
   | 'change4h'
   | 'change'
   | 'change7d'
@@ -106,6 +108,7 @@ export interface ColumnVisibility {
   symbol: boolean;
   price: boolean;
   fundingRate: boolean;
+  fundingInterval: boolean;
   change4h: boolean;
   change: boolean;
   change7d: boolean;
@@ -129,10 +132,12 @@ export interface ColumnConfig {
 // Filter settings
 export interface Filters {
   rank?: string;
+  marketCapMin?: string;  // Minimum market cap filter
   rsi7?: string;
   rsi14?: string;
   hasSpot?: string;
   fundingRate?: string;
+  listAge?: string;  // Listing age filter (e.g., '>1y', '<30d')
 }
 
 // Sort configuration

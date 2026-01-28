@@ -226,13 +226,27 @@ export async function fetchFundingRates(): Promise<Map<string, FundingRateData>>
           
           if (data.code === '0' && data.data && data.data[0]) {
             const fr = data.data[0] as OKXFundingRate;
+            const fundingTime = parseInt(fr.fundingTime, 10) || 0;
+            const nextFundingTime = parseInt(fr.nextFundingTime, 10) || 0;
+            
+            // Calculate settlement interval in hours
+            let settlementInterval = 8; // default
+            if (fundingTime && nextFundingTime) {
+              const diffMs = nextFundingTime - fundingTime;
+              const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+              if (diffHours > 0 && diffHours <= 8) {
+                settlementInterval = diffHours;
+              }
+            }
+            
             return {
               instId,
               data: {
                 fundingRate: parseFloat(fr.fundingRate) || 0,
                 nextFundingRate: parseFloat(fr.nextFundingRate) || 0,
-                fundingTime: parseInt(fr.fundingTime, 10) || 0,
-                nextFundingTime: parseInt(fr.nextFundingTime, 10) || 0,
+                fundingTime,
+                nextFundingTime,
+                settlementInterval,
                 lastUpdated: Date.now()
               }
             };

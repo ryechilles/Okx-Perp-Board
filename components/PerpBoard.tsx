@@ -5,7 +5,7 @@ import { useMarketStore } from '@/hooks/useMarketStore';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { ColumnKey } from '@/lib/types';
-import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate } from '@/lib/utils';
+import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
 
 export default function PerpBoard() {
   const store = useMarketStore();
@@ -200,6 +200,13 @@ export default function PerpBoard() {
                                 return (
                                   <td key={key} className={`${baseClass} font-medium tabular-nums ${getFundingRateClass(fundingRate?.fundingRate)}`}>
                                     {formatFundingRate(fundingRate?.fundingRate)}
+                                  </td>
+                                );
+                              
+                              case 'fundingInterval':
+                                return (
+                                  <td key={key} className={`${baseClass} text-[12px] text-gray-500`}>
+                                    {formatSettlementInterval(fundingRate?.settlementInterval)}
                                   </td>
                                 );
                                 

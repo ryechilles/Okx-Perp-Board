@@ -7,6 +7,7 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'symbol',
   'price',
   'fundingRate',
+  'fundingInterval',
   'change4h',
   'change',
   'change7d',
@@ -23,15 +24,16 @@ export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: strin
   rank: { label: '#', width: '50px', align: 'center', fixed: true, sortable: true },
   symbol: { label: 'Token', width: '100px', align: 'left', fixed: true, sortable: true },
   price: { label: 'Price', width: '100px', align: 'right', sortable: true },
-  fundingRate: { label: 'Funding', width: '80px', align: 'right', sortable: true },
-  change4h: { label: '4H', width: '80px', align: 'right', sortable: true },
-  change: { label: '24H', width: '80px', align: 'right', sortable: true },
-  change7d: { label: '7D', width: '80px', align: 'right', sortable: true },
-  marketCap: { label: 'Mkt Cap', width: '95px', align: 'right', sortable: true },
-  rsi7: { label: 'RSI7', width: '60px', align: 'right', sortable: true },
-  rsi14: { label: 'RSI14', width: '60px', align: 'right', sortable: true },
-  listDate: { label: 'Listed', width: '85px', align: 'right', sortable: true },
-  hasSpot: { label: 'Spot', width: '55px', align: 'center', sortable: true }
+  fundingRate: { label: 'Funding', width: '85px', align: 'right', sortable: true },
+  fundingInterval: { label: 'Interval', width: '65px', align: 'center', sortable: true },
+  change4h: { label: '4H', width: '75px', align: 'right', sortable: true },
+  change: { label: '24H', width: '75px', align: 'right', sortable: true },
+  change7d: { label: '7D', width: '75px', align: 'right', sortable: true },
+  marketCap: { label: 'Mkt Cap', width: '90px', align: 'right', sortable: true },
+  rsi7: { label: 'RSI7', width: '55px', align: 'right', sortable: true },
+  rsi14: { label: 'RSI14', width: '55px', align: 'right', sortable: true },
+  listDate: { label: 'Listed', width: '80px', align: 'right', sortable: true },
+  hasSpot: { label: 'Spot', width: '50px', align: 'center', sortable: true }
 };
 
 // Format funding rate as percentage
@@ -40,6 +42,12 @@ export function formatFundingRate(rate: number | undefined | null): string {
   const percentage = rate * 100;
   const sign = percentage >= 0 ? '+' : '';
   return `${sign}${percentage.toFixed(4)}%`;
+}
+
+// Format settlement interval
+export function formatSettlementInterval(hours: number | undefined | null): string {
+  if (hours === undefined || hours === null || hours === 0) return '--';
+  return `${hours}h`;
 }
 
 // Get funding rate color class
