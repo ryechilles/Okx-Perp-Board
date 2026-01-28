@@ -23,10 +23,33 @@ export default function PerpBoard() {
   // Get visible columns in order
   const visibleColumns = store.columnOrder.filter(key => store.columns[key]);
   
-  // Calculate column widths
+  // Calculate column widths and sticky positions
   const getColStyle = (key: ColumnKey) => {
     const def = COLUMN_DEFINITIONS[key];
     return { width: def.width, minWidth: def.width };
+  };
+  
+  // Calculate left position for sticky columns
+  const getStickyLeft = (key: ColumnKey): number => {
+    if (!fixedColumns.includes(key)) return 0;
+    let left = 0;
+    for (const col of fixedColumns) {
+      if (col === key) break;
+      if (store.columns[col]) {
+        const width = parseInt(COLUMN_DEFINITIONS[col].width) || 0;
+        left += width;
+      }
+    }
+    return left;
+  };
+  
+  // Check if column is fixed
+  const isFixedColumn = (key: ColumnKey) => fixedColumns.includes(key);
+  
+  // Check if it's the last fixed column (for border)
+  const isLastFixedColumn = (key: ColumnKey) => {
+    const visibleFixed = fixedColumns.filter(col => store.columns[col]);
+    return visibleFixed[visibleFixed.length - 1] === key;
   };
   
   return (
@@ -93,12 +116,14 @@ export default function PerpBoard() {
                 </colgroup>
                 
                 {/* Table Header */}
-                <thead className="sticky top-0 z-10">
+                <thead className="sticky top-0 z-20">
                   <tr className="bg-[#fafafa]">
                     {visibleColumns.map(key => {
                       const def = COLUMN_DEFINITIONS[key];
                       const sortable = def.sortable !== false;
                       const isActive = store.sort.column === key;
+                      const isFixed = isFixedColumn(key);
+                      const stickyLeft = getStickyLeft(key);
                       
                       let alignClass = 'text-left';
                       if (def.align === 'right') alignClass = 'text-right';
@@ -108,6 +133,12 @@ export default function PerpBoard() {
                         <th
                           key={key}
                           className={`px-3 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                          style={isFixed ? {
+                            position: 'sticky',
+                            left: stickyLeft,
+                            zIndex: 30,
+                            backgroundColor: '#fafafa',
+                          } : undefined}
                           onClick={() => sortable && store.updateSort(key)}
                         >
                           <span className="inline-flex items-center gap-0.5">
@@ -155,20 +186,33 @@ export default function PerpBoard() {
                       const base = parts[0];
                       const quote = parts[1];
                       
+                      // Helper to get sticky style for cells
+                      const getCellStyle = (key: ColumnKey) => {
+                        if (!isFixedColumn(key)) return undefined;
+                        return {
+                          position: 'sticky' as const,
+                          left: getStickyLeft(key),
+                          zIndex: 10,
+                          backgroundColor: 'white',
+                        };
+                      };
+                      
                       return (
-                        <tr key={ticker.instId} className="hover:bg-gray-50 border-b border-gray-50">
+                        <tr key={ticker.instId} className="hover:bg-gray-50 border-b border-gray-50 group">
                           {visibleColumns.map(key => {
                             const def = COLUMN_DEFINITIONS[key];
+                            const isFixed = isFixedColumn(key);
                             let alignClass = 'text-left';
                             if (def.align === 'right') alignClass = 'text-right';
                             if (def.align === 'center') alignClass = 'text-center';
                             
-                            const baseClass = `px-3 py-3 text-[13px] whitespace-nowrap ${alignClass}`;
+                            const baseClass = `px-3 py-3 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'group-hover:bg-gray-50' : ''}`;
+                            const cellStyle = getCellStyle(key);
                             
                             switch (key) {
                               case 'favorite':
                                 return (
-                                  <td key={key} className={baseClass}>
+                                  <td key={key} className={baseClass} style={cellStyle}>
                                     <button
                                       className={`bg-transparent border-none cursor-pointer text-base transition-colors ${
                                         isFavorite ? 'text-yellow-400' : 'text-gray-200 hover:text-yellow-400'
@@ -182,14 +226,14 @@ export default function PerpBoard() {
                                 
                               case 'rank':
                                 return (
-                                  <td key={key} className={`${baseClass} text-[12px] text-gray-500`}>
+                                  <td key={key} className={`${baseClass} text-[12px] text-gray-500`} style={cellStyle}>
                                     {marketCap?.rank ? marketCap.rank : <span className="text-gray-300">--</span>}
                                   </td>
                                 );
                                 
                               case 'symbol':
                                 return (
-                                  <td key={key} className={`${baseClass} font-semibold`}>
+                                  <td key={key} className={`${baseClass} font-semibold`} style={cellStyle}>
                                     <span className="text-gray-900">{base}</span>
                                     <span className="text-gray-400 font-normal">/{quote}</span>
                                   </td>

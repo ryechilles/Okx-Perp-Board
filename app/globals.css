@@ -89,6 +89,18 @@ tr {
   transition: background-color 0.15s ease;
 }
 
+/* Fixed column border/shadow - last sticky column */
+.sticky-border::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: #e5e5e5;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+}
+
 /* Drag and drop styles */
 [draggable="true"] {
   cursor: grab;
