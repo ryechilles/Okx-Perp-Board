@@ -13,7 +13,7 @@ import {
   SortConfig 
 } from '@/lib/types';
 import {
-  OKXWebSocket,
+  OKXHybridDataManager,
   fetchSpotSymbols,
   fetchRSIBatch,
   fetchMarketCapData,
@@ -64,7 +64,7 @@ export function useMarketStore() {
   const [rsiProgress, setRsiProgress] = useState('');
   
   // Refs for WebSocket and intervals
-  const wsRef = useRef<OKXWebSocket | null>(null);
+  const dataManagerRef = useRef<OKXHybridDataManager | null>(null);
   const rsiIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isFetchingRsiRef = useRef(false);
   
@@ -175,9 +175,9 @@ export function useMarketStore() {
     }
   }, [marketCapData, rsiData, updateRsiData]);
   
-  // Initialize WebSocket and data fetching
+  // Initialize hybrid data manager (WebSocket for TOP 50 + REST for rest)
   const initialize = useCallback(async () => {
-    // Fetch initial data
+    // Fetch initial data in parallel
     const [spotData, marketCap, listings, fundingRates] = await Promise.all([
       fetchSpotSymbols(),
       fetchMarketCapData(),
@@ -190,7 +190,7 @@ export function useMarketStore() {
     setListingData(listings);
     setFundingRateData(fundingRates);
     
-    // Initialize WebSocket
+    // Initialize hybrid data manager
     const handleTickerUpdate = (newTickers: Map<string, ProcessedTicker>) => {
       setTickers(newTickers);
     };
@@ -200,24 +200,20 @@ export function useMarketStore() {
       if (time) setLastUpdate(time);
     };
     
-    wsRef.current = new OKXWebSocket(handleTickerUpdate, handleStatusUpdate);
-    wsRef.current.connect();
+    dataManagerRef.current = new OKXHybridDataManager(handleTickerUpdate, handleStatusUpdate);
+    await dataManagerRef.current.start();
     
-    // Fallback: fetch initial tickers via REST
-    const initialTickers = await fetchTickersREST();
-    if (initialTickers.length > 0) {
-      const tickerMap = new Map<string, ProcessedTicker>();
-      initialTickers.forEach(t => tickerMap.set(t.instId, t));
-      setTickers(tickerMap);
-      setLastUpdate(new Date());
-      
-      // Fetch RSI for initial data
-      setTimeout(() => fetchRsiForVisible(tickerMap), 1000);
-    }
+    // Fetch RSI for initial data after tickers are loaded
+    setTimeout(() => {
+      const currentTickers = dataManagerRef.current?.getTickers();
+      if (currentTickers && currentTickers.size > 0) {
+        fetchRsiForVisible(currentTickers);
+      }
+    }, 2000);
     
     // Setup RSI refresh interval (every 5 minutes)
     rsiIntervalRef.current = setInterval(() => {
-      const currentTickers = wsRef.current?.getTickers();
+      const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
         fetchRsiForVisible(currentTickers);
       }
@@ -239,7 +235,7 @@ export function useMarketStore() {
   
   // Cleanup
   const cleanup = useCallback(() => {
-    wsRef.current?.disconnect();
+    dataManagerRef.current?.stop();
     if (rsiIntervalRef.current) {
       clearInterval(rsiIntervalRef.current);
     }
