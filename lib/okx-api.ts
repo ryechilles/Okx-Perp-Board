@@ -11,13 +11,13 @@ const rateLimiter = new RateLimiter(8, 1000); // 8 requests per second max
 export type TickerUpdateCallback = (tickers: Map<string, ProcessedTicker>) => void;
 export type StatusCallback = (status: 'connecting' | 'live' | 'error', time?: Date) => void;
 
-// Hybrid data manager: WebSocket for TOP 50 + REST polling for the rest
+// Hybrid data manager: WebSocket for TOP 25 + REST polling for the rest
 export class OKXHybridDataManager {
   private ws: WebSocket | null = null;
   private tickers: Map<string, ProcessedTicker> = new Map();
   private onUpdate: TickerUpdateCallback;
   private onStatus: StatusCallback;
-  private top50InstIds: string[] = [];
+  private top25InstIds: string[] = [];
   private allInstIds: string[] = [];
   private restPollInterval: NodeJS.Timeout | null = null;
   private wsReconnectTimeout: NodeJS.Timeout | null = null;
@@ -35,13 +35,13 @@ export class OKXHybridDataManager {
     this.isRunning = true;
     this.onStatus('connecting');
 
-    // Step 1: Fetch all tickers via REST to get initial data and determine TOP 50
+    // Step 1: Fetch all tickers via REST to get initial data and determine TOP 25
     await this.fetchAllTickers();
 
-    // Step 2: Connect WebSocket for TOP 50
+    // Step 2: Connect WebSocket for TOP 25
     this.connectWebSocket();
 
-    // Step 3: Start REST polling for non-TOP 50 (every 5 seconds)
+    // Step 3: Start REST polling for non-TOP 25 (every 5 seconds)
     this.startRestPolling();
   }
 
@@ -68,8 +68,8 @@ export class OKXHybridDataManager {
           return volB - volA;
         });
 
-        // TOP 50 for WebSocket
-        this.top50InstIds = usdtSwaps.slice(0, 50).map(t => t.instId);
+        // TOP 25 for WebSocket
+        this.top25InstIds = usdtSwaps.slice(0, 25).map(t => t.instId);
         this.allInstIds = usdtSwaps.map(t => t.instId);
 
         this.onUpdate(new Map(this.tickers));
@@ -83,19 +83,19 @@ export class OKXHybridDataManager {
 
   private connectWebSocket(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
-    if (this.top50InstIds.length === 0) return;
+    if (this.top25InstIds.length === 0) return;
 
     try {
       this.ws = new WebSocket(OKX_WS_PUBLIC);
 
       this.ws.onopen = () => {
-        console.log('WebSocket connected, subscribing to TOP 50...');
+        console.log('WebSocket connected, subscribing to TOP 25...');
         this.wsConnected = true;
 
-        // Subscribe to TOP 50 in batches (max 20 per message to be safe)
+        // Subscribe to TOP 25 in batches (max 20 per message to be safe)
         const batchSize = 20;
-        for (let i = 0; i < this.top50InstIds.length; i += batchSize) {
-          const batch = this.top50InstIds.slice(i, i + batchSize);
+        for (let i = 0; i < this.top25InstIds.length; i += batchSize) {
+          const batch = this.top25InstIds.slice(i, i + batchSize);
           const subscribeMsg = {
             op: 'subscribe',
             args: batch.map(instId => ({
@@ -190,7 +190,7 @@ export class OKXHybridDataManager {
   }
 
   private startRestPolling(): void {
-    // Poll every 5 seconds for all tickers (updates non-TOP 50)
+    // Poll every 5 seconds for all tickers (updates non-TOP 25)
     this.restPollInterval = setInterval(async () => {
       try {
         const response = await fetch(`${OKX_REST_BASE}/market/tickers?instType=SWAP`);
@@ -201,8 +201,8 @@ export class OKXHybridDataManager {
 
           data.data.forEach((ticker: OKXTicker) => {
             if (ticker.instId.endsWith('-USDT-SWAP')) {
-              // Only update non-TOP 50 via REST (TOP 50 updated by WebSocket)
-              if (!this.wsConnected || !this.top50InstIds.includes(ticker.instId)) {
+              // Only update non-TOP 25 via REST (TOP 25 updated by WebSocket)
+              if (!this.wsConnected || !this.top25InstIds.includes(ticker.instId)) {
                 const processed = processTicker(ticker);
                 this.tickers.set(ticker.instId, processed);
                 updated = true;
@@ -250,7 +250,7 @@ export class OKXHybridDataManager {
   }
 
   getTop50InstIds(): string[] {
-    return [...this.top50InstIds];
+    return [...this.top25InstIds];
   }
 }
 
@@ -405,6 +405,8 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     
     let rsi7: number | null = null;
     let rsi14: number | null = null;
+    let rsiW7: number | null = null;
+    let rsiW14: number | null = null;
     let change7d: number | null = null;
     let change4h: number | null = null;
     
@@ -415,6 +417,26 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
       rsi7 = calculateRSI(closes, 7);
       rsi14 = calculateRSI(closes, 14);
       change7d = calculate7DChange(candles.map((c: string[]) => c.map(parseFloat)));
+    }
+    
+    // Small delay before weekly request
+    await new Promise(r => setTimeout(r, 100));
+    await rateLimiter.waitForSlot();
+    
+    // Fetch weekly candles for weekly RSI
+    try {
+      const responseW = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1W&limit=20`);
+      const dataW = await responseW.json();
+      
+      if (dataW.code === '0' && dataW.data && dataW.data.length >= 15) {
+        const candlesW = [...dataW.data].reverse();
+        const closesW = candlesW.map((c: string[]) => parseFloat(c[4]));
+        
+        rsiW7 = calculateRSI(closesW, 7);
+        rsiW14 = calculateRSI(closesW, 14);
+      }
+    } catch (e) {
+      console.warn(`Weekly RSI data failed for ${instId}`);
     }
     
     // Small delay before 4H request
@@ -440,6 +462,8 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     return {
       rsi7,
       rsi14,
+      rsiW7,
+      rsiW14,
       change7d,
       change4h,
       lastUpdated: Date.now()

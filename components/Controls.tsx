@@ -11,6 +11,8 @@ interface ControlsProps {
   searchTerm: string;
   avgRsi7: number | null;
   avgRsi14: number | null;
+  avgRsiW7: number | null;
+  avgRsiW14: number | null;
   onViewChange: (view: 'market' | 'favorites') => void;
   onColumnChange: (col: keyof ColumnVisibility, visible: boolean) => void;
   onColumnsPreset: (preset: 'all' | 'none' | 'default') => void;
@@ -27,6 +29,8 @@ export function Controls({
   searchTerm,
   avgRsi7,
   avgRsi14,
+  avgRsiW7,
+  avgRsiW14,
   onViewChange,
   onColumnChange,
   onColumnsPreset,
@@ -72,8 +76,10 @@ export function Controls({
     { key: 'change7d', label: '7D Change' },
     { key: 'volume24h', label: '24H Volume' },
     { key: 'marketCap', label: 'Market Cap' },
-    { key: 'rsi7', label: 'RSI7' },
-    { key: 'rsi14', label: 'RSI14' },
+    { key: 'rsi7', label: 'Daily RSI7' },
+    { key: 'rsi14', label: 'Daily RSI14' },
+    { key: 'rsiW7', label: 'Weekly RSI7' },
+    { key: 'rsiW14', label: 'Weekly RSI14' },
     { key: 'listDate', label: 'List Date' },
     { key: 'hasSpot', label: 'Has Spot' }
   ];
@@ -173,17 +179,30 @@ export function Controls({
           <span>⚙</span> Filters
         </button>
         
-        <div className="flex items-center gap-4 ml-auto px-3.5 h-9 bg-white border border-gray-200 rounded-lg">
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs text-gray-500">Avg RSI7</span>
-            <span className={`text-sm font-semibold tabular-nums ${getRsiAvgClass(avgRsi7)}`}>
+        <div className="flex items-center gap-3 ml-auto px-3 h-9 bg-white border border-gray-200 rounded-lg">
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-gray-400">D-RSI7</span>
+            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi7)}`}>
               {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs text-gray-500">Avg RSI14</span>
-            <span className={`text-sm font-semibold tabular-nums ${getRsiAvgClass(avgRsi14)}`}>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-gray-400">D-RSI14</span>
+            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi14)}`}>
               {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
+            </span>
+          </div>
+          <div className="w-px h-4 bg-gray-200" />
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-gray-400">W-RSI7</span>
+            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW7)}`}>
+              {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-gray-400">W-RSI14</span>
+            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW14)}`}>
+              {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
             </span>
           </div>
         </div>

@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
+import { Footer } from '@/components/Footer';
+import RankingBoard from '@/components/RankingBoard';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
 
@@ -16,7 +18,14 @@ export default function PerpBoard() {
   }, []);
   
   const filteredData = store.getFilteredData();
-  const { avgRsi7, avgRsi14 } = store.getRsiAverages();
+  const { avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 } = store.getRsiAverages();
+  
+  // Pagination
+  const totalPages = Math.ceil(filteredData.length / store.pageSize);
+  const paginatedData = filteredData.slice(
+    (store.currentPage - 1) * store.pageSize,
+    store.currentPage * store.pageSize
+  );
   
   const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'symbol'];
   
@@ -27,7 +36,7 @@ export default function PerpBoard() {
   const FIXED_WIDTHS: Record<string, number> = {
     favorite: 36,
     rank: 40,
-    symbol: 85,
+    symbol: 75,
   };
   
   // Calculate column widths and sticky positions
@@ -59,7 +68,7 @@ export default function PerpBoard() {
   };
   
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-[#fafafa]">
       {/* Sticky Header */}
       <div className="bg-[#fafafa] z-50 px-6 pt-5 pb-0 flex-shrink-0">
         <div className="max-w-[1400px] mx-auto w-full">
@@ -73,6 +82,8 @@ export default function PerpBoard() {
             searchTerm={store.searchTerm}
             avgRsi7={avgRsi7}
             avgRsi14={avgRsi14}
+            avgRsiW7={avgRsiW7}
+            avgRsiW14={avgRsiW14}
             onViewChange={store.setView}
             onColumnChange={store.updateColumn}
             onColumnsPreset={store.setColumnsPreset}
@@ -184,7 +195,7 @@ export default function PerpBoard() {
                       </td>
                     </tr>
                   ) : (
-                    filteredData.map(ticker => {
+                    paginatedData.map(ticker => {
                       const rsi = store.rsiData.get(ticker.instId);
                       const fundingRate = store.fundingRateData.get(ticker.instId);
                       const listingData = store.listingData.get(ticker.instId);
@@ -328,6 +339,20 @@ export default function PerpBoard() {
                                     {rsi?.rsi14 !== undefined && rsi.rsi14 !== null ? rsi.rsi14.toFixed(1) : '--'}
                                   </td>
                                 );
+                              
+                              case 'rsiW7':
+                                return (
+                                  <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsiW7)}`}>
+                                    {rsi?.rsiW7 !== undefined && rsi.rsiW7 !== null ? rsi.rsiW7.toFixed(1) : '--'}
+                                  </td>
+                                );
+                              
+                              case 'rsiW14':
+                                return (
+                                  <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsiW14)}`}>
+                                    {rsi?.rsiW14 !== undefined && rsi.rsiW14 !== null ? rsi.rsiW14.toFixed(1) : '--'}
+                                  </td>
+                                );
                                 
                               case 'listDate':
                                 return (
@@ -360,9 +385,94 @@ export default function PerpBoard() {
                 </tbody>
               </table>
             </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 flex-shrink-0">
+                <span className="text-xs text-gray-500">
+                  Showing {(store.currentPage - 1) * store.pageSize + 1}-{Math.min(store.currentPage * store.pageSize, filteredData.length)} of {filteredData.length}
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => store.setCurrentPage(1)}
+                    disabled={store.currentPage === 1}
+                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    ««
+                  </button>
+                  <button
+                    onClick={() => store.setCurrentPage(store.currentPage - 1)}
+                    disabled={store.currentPage === 1}
+                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    «
+                  </button>
+                  
+                  {/* Page numbers */}
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum: number;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (store.currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (store.currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = store.currentPage - 2 + i;
+                    }
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => store.setCurrentPage(pageNum)}
+                        className={`px-2.5 py-1 text-xs rounded transition-colors ${
+                          store.currentPage === pageNum
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                  
+                  <button
+                    onClick={() => store.setCurrentPage(store.currentPage + 1)}
+                    disabled={store.currentPage === totalPages}
+                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    »
+                  </button>
+                  <button
+                    onClick={() => store.setCurrentPage(totalPages)}
+                    disabled={store.currentPage === totalPages}
+                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    »»
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Ranking Board */}
+          <div className="mt-4">
+            <RankingBoard 
+              tickers={store.tickers} 
+              rsiData={store.rsiData}
+              onTokenClick={(instId) => {
+                const base = instId.split('-')[0];
+                store.setSearchTerm(base);
+              }}
+            />
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer 
+        language={store.language} 
+        onLanguageChange={store.setLanguage} 
+      />
     </div>
   );
 }

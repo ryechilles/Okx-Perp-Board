@@ -1,10 +1,31 @@
 'use client';
 
+// P Logo SVG Component
+function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="100" height="100" fill="#9EF4C8"/>
+      <rect x="100" y="0" width="100" height="100" fill="#22E27E"/>
+      <rect x="200" y="0" width="100" height="100" fill="#6CF0AE"/>
+      <rect x="0" y="100" width="100" height="100" fill="#12C76E"/>
+      <rect x="100" y="100" width="100" height="100" fill="#29E98D"/>
+      <rect x="200" y="100" width="100" height="100" fill="#A6F8D1"/>
+      <rect x="0" y="200" width="100" height="100" fill="#0A8A4B"/>
+      <rect x="100" y="200" width="100" height="100" fill="#22B96A"/>
+      <rect x="200" y="200" width="100" height="100" fill="#2EF29A"/>
+      <text x="150" y="210" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui" fontSize="200" fontWeight="800" fill="#FFFFFF">P</text>
+    </svg>
+  );
+}
+
 export function Header() {
   return (
     <div className="flex items-center gap-6 mb-4">
-      <div className="text-lg font-semibold text-gray-900">
-        Perp Board <span className="text-xs text-gray-400 font-normal">v2.0</span>
+      <div className="flex items-center gap-2">
+        <PerpLogo className="w-8 h-8 rounded-md" />
+        <div className="text-lg font-semibold text-gray-900">
+          erp Board <span className="text-xs text-gray-400 font-normal">v2.2</span>
+        </div>
       </div>
       
       <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">

@@ -57,8 +57,10 @@ export interface ProcessedTicker {
 
 // RSI data for a single instrument
 export interface RSIData {
-  rsi7: number | null;
-  rsi14: number | null;
+  rsi7: number | null;      // Daily RSI7
+  rsi14: number | null;     // Daily RSI14
+  rsiW7: number | null;     // Weekly RSI7
+  rsiW14: number | null;    // Weekly RSI14
   change7d: number | null;
   change4h: number | null;
   lastUpdated: number;
@@ -100,6 +102,8 @@ export type ColumnKey =
   | 'marketCap'
   | 'rsi7'
   | 'rsi14'
+  | 'rsiW7'
+  | 'rsiW14'
   | 'listDate'
   | 'hasSpot';
 
@@ -118,6 +122,8 @@ export interface ColumnVisibility {
   marketCap: boolean;
   rsi7: boolean;
   rsi14: boolean;
+  rsiW7: boolean;
+  rsiW14: boolean;
   listDate: boolean;
   hasSpot: boolean;
 }

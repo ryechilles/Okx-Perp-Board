@@ -37,6 +37,8 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   marketCap: true,
   rsi7: true,
   rsi14: true,
+  rsiW7: true,
+  rsiW14: true,
   listDate: true,
   hasSpot: true
 };
@@ -58,7 +60,9 @@ export function useMarketStore() {
   const [sort, setSort] = useState<SortConfig>({ column: 'rank', direction: 'asc' });
   const [view, setView] = useState<'market' | 'favorites'>('market');
   const [searchTerm, setSearchTerm] = useState('');
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 25;
+  const [language, setLanguage] = useState<'en' | 'zh'>('en');
   // Status - Always show 'live' as requested
   const [status, setStatus] = useState<'connecting' | 'live' | 'error'>('live');
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -263,6 +267,8 @@ export function useMarketStore() {
         marketCap: true,
         rsi7: true,
         rsi14: true,
+        rsiW7: true,
+        rsiW14: true,
         listDate: true,
         hasSpot: true
       });
@@ -281,6 +287,8 @@ export function useMarketStore() {
         marketCap: false,
         rsi7: false,
         rsi14: false,
+        rsiW7: false,
+        rsiW14: false,
         listDate: false,
         hasSpot: false
       });
@@ -486,6 +494,14 @@ export function useMarketStore() {
           aVal = rsiData.get(a.instId)?.rsi14 ?? 0;
           bVal = rsiData.get(b.instId)?.rsi14 ?? 0;
           break;
+        case 'rsiW7':
+          aVal = rsiData.get(a.instId)?.rsiW7 ?? 0;
+          bVal = rsiData.get(b.instId)?.rsiW7 ?? 0;
+          break;
+        case 'rsiW14':
+          aVal = rsiData.get(a.instId)?.rsiW14 ?? 0;
+          bVal = rsiData.get(b.instId)?.rsiW14 ?? 0;
+          break;
         case 'hasSpot':
           const aBase = `${a.baseSymbol}-USDT`;
           const bBase = `${b.baseSymbol}-USDT`;
@@ -523,6 +539,8 @@ export function useMarketStore() {
     const filtered = getFilteredData();
     let rsi7Sum = 0, rsi7Count = 0;
     let rsi14Sum = 0, rsi14Count = 0;
+    let rsiW7Sum = 0, rsiW7Count = 0;
+    let rsiW14Sum = 0, rsiW14Count = 0;
     
     filtered.forEach(t => {
       const rsi = rsiData.get(t.instId);
@@ -534,13 +552,64 @@ export function useMarketStore() {
         rsi14Sum += rsi.rsi14;
         rsi14Count++;
       }
+      if (rsi?.rsiW7 !== undefined && rsi.rsiW7 !== null) {
+        rsiW7Sum += rsi.rsiW7;
+        rsiW7Count++;
+      }
+      if (rsi?.rsiW14 !== undefined && rsi.rsiW14 !== null) {
+        rsiW14Sum += rsi.rsiW14;
+        rsiW14Count++;
+      }
     });
     
     return {
       avgRsi7: rsi7Count > 0 ? rsi7Sum / rsi7Count : null,
-      avgRsi14: rsi14Count > 0 ? rsi14Sum / rsi14Count : null
+      avgRsi14: rsi14Count > 0 ? rsi14Sum / rsi14Count : null,
+      avgRsiW7: rsiW7Count > 0 ? rsiW7Sum / rsiW7Count : null,
+      avgRsiW14: rsiW14Count > 0 ? rsiW14Sum / rsiW14Count : null
     };
   }, [getFilteredData, rsiData]);
+  
+  // Get top gainers/losers for leaderboard
+  const getTopMovers = useCallback((timeframe: '4h' | '24h' | '7d', limit: number = 5) => {
+    const allTickers = Array.from(tickers.values()).filter(t => t.instId.includes('-USDT-'));
+    
+    const tickersWithChange = allTickers.map(t => {
+      const rsi = rsiData.get(t.instId);
+      let change: number | null = null;
+      
+      if (timeframe === '4h') {
+        change = rsi?.change4h ?? null;
+      } else if (timeframe === '24h') {
+        change = t.changeNum;
+      } else if (timeframe === '7d') {
+        change = rsi?.change7d ?? null;
+      }
+      
+      return { ...t, change };
+    }).filter(t => t.change !== null);
+    
+    // Sort by change
+    const sorted = [...tickersWithChange].sort((a, b) => (b.change ?? 0) - (a.change ?? 0));
+    
+    return {
+      gainers: sorted.slice(0, limit),
+      losers: sorted.slice(-limit).reverse()
+    };
+  }, [tickers, rsiData]);
+  
+  // Get paginated data
+  const getPaginatedData = useCallback(() => {
+    const filtered = getFilteredData();
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    
+    return {
+      data: filtered.slice(startIndex, endIndex),
+      totalPages: Math.ceil(filtered.length / pageSize),
+      totalItems: filtered.length
+    };
+  }, [getFilteredData, currentPage, pageSize]);
   
   return {
     // Data
@@ -562,6 +631,9 @@ export function useMarketStore() {
     status,
     lastUpdate,
     rsiProgress,
+    currentPage,
+    pageSize,
+    language,
     
     // Actions
     initialize,
@@ -575,9 +647,13 @@ export function useMarketStore() {
     setSearchTerm,
     updateColumnOrder,
     moveColumn,
+    setCurrentPage,
+    setLanguage,
     
     // Derived data
     getFilteredData,
-    getRsiAverages
+    getRsiAverages,
+    getTopMovers,
+    getPaginatedData
   };
 }
