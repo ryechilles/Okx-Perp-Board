@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
-import { TableHeader } from '@/components/TableHeader';
-import { TableRow } from '@/components/TableRow';
+import { ColumnKey } from '@/lib/types';
+import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate } from '@/lib/utils';
 
 export default function PerpBoard() {
   const store = useMarketStore();
@@ -17,6 +17,17 @@ export default function PerpBoard() {
   
   const filteredData = store.getFilteredData();
   const { avgRsi7, avgRsi14 } = store.getRsiAverages();
+  
+  const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'symbol'];
+  
+  // Get visible columns in order
+  const visibleColumns = store.columnOrder.filter(key => store.columns[key]);
+  
+  // Calculate column widths
+  const getColStyle = (key: ColumnKey) => {
+    const def = COLUMN_DEFINITIONS[key];
+    return { width: def.width, minWidth: def.width };
+  };
   
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -44,11 +55,11 @@ export default function PerpBoard() {
       </div>
       
       {/* Table Area */}
-      <div className="flex-1 overflow-hidden flex flex-col px-6">
+      <div className="flex-1 overflow-hidden flex flex-col px-6 pb-4">
         <div className="max-w-[1400px] mx-auto w-full flex flex-col h-full">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
             {/* Status Bar */}
-            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100">
+            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 flex-shrink-0">
               <span className="text-xs text-gray-500">
                 {filteredData.length} Perp Contracts
               </span>
@@ -67,61 +78,211 @@ export default function PerpBoard() {
             </div>
             
             {/* Scrollable Table Container */}
-            <div className="flex-1 overflow-hidden relative">
-              {/* Fixed columns overlay */}
-              <div className="absolute left-0 top-0 bottom-0 z-20 pointer-events-none" style={{ width: '194px' }}>
-                <div className="h-full bg-gradient-to-r from-white via-white to-transparent" style={{ width: '100%' }} />
-              </div>
-              
-              {/* Horizontal scroll container with bounce effect */}
-              <div className="h-full overflow-x-auto overflow-y-auto scroll-smooth" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="flex-1 overflow-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <table className="w-full border-collapse" style={{ minWidth: '1100px' }}>
+                <colgroup>
+                  {visibleColumns.map(key => (
+                    <col key={key} style={getColStyle(key)} />
+                  ))}
+                </colgroup>
+                
                 {/* Table Header */}
-                <TableHeader
-                  columns={store.columns}
-                  columnOrder={store.columnOrder}
-                  sort={store.sort}
-                  onSort={store.updateSort}
-                  onMoveColumn={store.moveColumn}
-                />
+                <thead className="sticky top-0 z-10">
+                  <tr className="bg-[#fafafa]">
+                    {visibleColumns.map(key => {
+                      const def = COLUMN_DEFINITIONS[key];
+                      const sortable = def.sortable !== false;
+                      const isActive = store.sort.column === key;
+                      
+                      let alignClass = 'text-left';
+                      if (def.align === 'right') alignClass = 'text-right';
+                      if (def.align === 'center') alignClass = 'text-center';
+                      
+                      return (
+                        <th
+                          key={key}
+                          className={`px-3 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                          onClick={() => sortable && store.updateSort(key)}
+                        >
+                          <span className="inline-flex items-center gap-0.5">
+                            {def.label}
+                            {sortable && (
+                              <span className={`ml-0.5 inline-flex flex-col text-[8px] leading-[0.6] ${isActive ? 'opacity-100' : 'opacity-30'}`}>
+                                <span className={isActive && store.sort.direction === 'asc' ? 'text-gray-700' : 'text-gray-300'}>▲</span>
+                                <span className={isActive && store.sort.direction === 'desc' ? 'text-gray-700' : 'text-gray-300'}>▼</span>
+                              </span>
+                            )}
+                          </span>
+                        </th>
+                      );
+                    })}
+                  </tr>
+                </thead>
                 
                 {/* Table Body */}
-                <table className="w-full border-collapse" style={{ minWidth: '1200px' }}>
-                  <tbody>
-                    {filteredData.length === 0 ? (
-                      <tr>
-                        <td colSpan={13}>
-                          <div className="flex items-center justify-center py-16 text-gray-500">
-                            {store.tickers.size === 0 ? (
-                              <>
-                                <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin mr-3" />
-                                Loading market data...
-                              </>
-                            ) : (
-                              'No data found'
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredData.map(ticker => (
-                        <TableRow
-                          key={ticker.instId}
-                          ticker={ticker}
-                          rsi={store.rsiData.get(ticker.instId)}
-                          fundingRate={store.fundingRateData.get(ticker.instId)}
-                          listingData={store.listingData.get(ticker.instId)}
-                          marketCap={store.marketCapData.get(ticker.baseSymbol)}
-                          hasSpot={store.spotSymbols.has(`${ticker.baseSymbol}-USDT`)}
-                          isFavorite={store.favorites.includes(ticker.instId)}
-                          columns={store.columns}
-                          columnOrder={store.columnOrder}
-                          onToggleFavorite={store.toggleFavorite}
-                        />
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                <tbody>
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan={visibleColumns.length}>
+                        <div className="flex items-center justify-center py-16 text-gray-500">
+                          {store.tickers.size === 0 ? (
+                            <>
+                              <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin mr-3" />
+                              Loading market data...
+                            </>
+                          ) : (
+                            'No data found'
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map(ticker => {
+                      const rsi = store.rsiData.get(ticker.instId);
+                      const fundingRate = store.fundingRateData.get(ticker.instId);
+                      const listingData = store.listingData.get(ticker.instId);
+                      const marketCap = store.marketCapData.get(ticker.baseSymbol);
+                      const hasSpot = store.spotSymbols.has(`${ticker.baseSymbol}-USDT`);
+                      const isFavorite = store.favorites.includes(ticker.instId);
+                      
+                      const parts = ticker.instId.split('-');
+                      const base = parts[0];
+                      const quote = parts[1];
+                      
+                      return (
+                        <tr key={ticker.instId} className="hover:bg-gray-50 border-b border-gray-50">
+                          {visibleColumns.map(key => {
+                            const def = COLUMN_DEFINITIONS[key];
+                            let alignClass = 'text-left';
+                            if (def.align === 'right') alignClass = 'text-right';
+                            if (def.align === 'center') alignClass = 'text-center';
+                            
+                            const baseClass = `px-3 py-3 text-[13px] whitespace-nowrap ${alignClass}`;
+                            
+                            switch (key) {
+                              case 'favorite':
+                                return (
+                                  <td key={key} className={baseClass}>
+                                    <button
+                                      className={`bg-transparent border-none cursor-pointer text-base transition-colors ${
+                                        isFavorite ? 'text-yellow-400' : 'text-gray-200 hover:text-yellow-400'
+                                      }`}
+                                      onClick={() => store.toggleFavorite(ticker.instId)}
+                                    >
+                                      {isFavorite ? '★' : '☆'}
+                                    </button>
+                                  </td>
+                                );
+                                
+                              case 'rank':
+                                return (
+                                  <td key={key} className={`${baseClass} text-[12px] text-gray-500`}>
+                                    {marketCap?.rank ? marketCap.rank : <span className="text-gray-300">--</span>}
+                                  </td>
+                                );
+                                
+                              case 'symbol':
+                                return (
+                                  <td key={key} className={`${baseClass} font-semibold`}>
+                                    <span className="text-gray-900">{base}</span>
+                                    <span className="text-gray-400 font-normal">/{quote}</span>
+                                  </td>
+                                );
+                                
+                              case 'price':
+                                return (
+                                  <td key={key} className={`${baseClass} font-medium tabular-nums`}>
+                                    {formatPrice(ticker.priceNum)}
+                                  </td>
+                                );
+                                
+                              case 'fundingRate':
+                                return (
+                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getFundingRateClass(fundingRate?.fundingRate)}`}>
+                                    {formatFundingRate(fundingRate?.fundingRate)}
+                                  </td>
+                                );
+                                
+                              case 'change4h':
+                                const change4h = rsi?.change4h;
+                                return (
+                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(change4h)}`}>
+                                    {change4h !== undefined && change4h !== null 
+                                      ? `${change4h >= 0 ? '+' : ''}${change4h.toFixed(2)}%`
+                                      : <span className="text-gray-300">--</span>
+                                    }
+                                  </td>
+                                );
+                                
+                              case 'change':
+                                return (
+                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(ticker.changeNum)}`}>
+                                    {ticker.changeNum >= 0 ? '+' : ''}{ticker.changeNum.toFixed(2)}%
+                                  </td>
+                                );
+                                
+                              case 'change7d':
+                                const change7d = rsi?.change7d;
+                                return (
+                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(change7d)}`}>
+                                    {change7d !== undefined && change7d !== null 
+                                      ? `${change7d >= 0 ? '+' : ''}${change7d.toFixed(2)}%`
+                                      : <span className="text-gray-300">--</span>
+                                    }
+                                  </td>
+                                );
+                                
+                              case 'marketCap':
+                                return (
+                                  <td key={key} className={`${baseClass} text-gray-600 tabular-nums`}>
+                                    {marketCap?.marketCap ? formatMarketCap(marketCap.marketCap) : <span className="text-gray-300">--</span>}
+                                  </td>
+                                );
+                                
+                              case 'rsi7':
+                                return (
+                                  <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsi7)}`}>
+                                    {rsi?.rsi7 !== undefined && rsi.rsi7 !== null ? rsi.rsi7.toFixed(1) : '--'}
+                                  </td>
+                                );
+                                
+                              case 'rsi14':
+                                return (
+                                  <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsi14)}`}>
+                                    {rsi?.rsi14 !== undefined && rsi.rsi14 !== null ? rsi.rsi14.toFixed(1) : '--'}
+                                  </td>
+                                );
+                                
+                              case 'listDate':
+                                return (
+                                  <td key={key} className={`${baseClass} text-[12px] text-gray-500`}>
+                                    {formatListDate(listingData?.listTime)}
+                                  </td>
+                                );
+                                
+                              case 'hasSpot':
+                                return (
+                                  <td key={key} className={baseClass}>
+                                    <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                                      hasSpot 
+                                        ? 'bg-green-100 text-green-600' 
+                                        : 'bg-gray-100 text-gray-400'
+                                    }`}>
+                                      {hasSpot ? 'Yes' : 'No'}
+                                    </span>
+                                  </td>
+                                );
+                                
+                              default:
+                                return <td key={key} className={baseClass}>--</td>;
+                            }
+                          })}
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
