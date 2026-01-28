@@ -284,18 +284,17 @@ export function Controls({
             </div>
             
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Min Market Cap ($M)</label>
+              <label className="text-xs text-gray-600 font-medium">Market Cap</label>
               <select
                 value={tempFilters.marketCapMin || ''}
                 onChange={(e) => setTempFilters(prev => ({ ...prev, marketCapMin: e.target.value || undefined }))}
                 className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
               >
                 <option value="">All</option>
-                <option value="20">≥ $20M</option>
-                <option value="50">≥ $50M</option>
-                <option value="100">≥ $100M</option>
-                <option value="500">≥ $500M</option>
-                <option value="1000">≥ $1B</option>
+                <option value="0-20">≤ $20M</option>
+                <option value="20-100">$20M - $100M</option>
+                <option value="100-1000">$100M - $1B</option>
+                <option value="1000+">≥ $1B</option>
               </select>
             </div>
             
@@ -307,10 +306,9 @@ export function Controls({
                 className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
               >
                 <option value="">All</option>
-                <option value=">1y">Listed &gt; 1 year</option>
-                <option value=">6m">Listed &gt; 6 months</option>
-                <option value="<30d">New (&lt; 30 days)</option>
-                <option value="<7d">Very New (&lt; 7 days)</option>
+                <option value="<1y">≤ 1 year</option>
+                <option value="1-2y">1 - 2 years</option>
+                <option value=">2y">&gt; 2 years</option>
               </select>
             </div>
           </div>

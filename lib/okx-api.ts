@@ -17,9 +17,11 @@ export class OKXWebSocket {
   private onUpdate: TickerUpdateCallback;
   private onStatus: StatusCallback;
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
+  private maxReconnectAttempts = 10;
   private pingInterval: NodeJS.Timeout | null = null;
+  private heartbeatTimeout: NodeJS.Timeout | null = null;
   private isConnected = false;
+  private lastMessageTime = 0;
 
   constructor(onUpdate: TickerUpdateCallback, onStatus: StatusCallback) {
     this.onUpdate = onUpdate;
@@ -38,6 +40,7 @@ export class OKXWebSocket {
         console.log('WebSocket connected');
         this.isConnected = true;
         this.reconnectAttempts = 0;
+        this.lastMessageTime = Date.now();
         
         // Subscribe to SWAP tickers
         const subscribeMsg = {
@@ -49,11 +52,14 @@ export class OKXWebSocket {
         };
         this.ws?.send(JSON.stringify(subscribeMsg));
         
-        // Start ping interval
+        // Start ping interval and heartbeat check
         this.startPing();
+        this.startHeartbeatCheck();
       };
       
       this.ws.onmessage = (event) => {
+        this.lastMessageTime = Date.now();
+        
         try {
           const data = JSON.parse(event.data);
           
@@ -92,20 +98,19 @@ export class OKXWebSocket {
         console.log('WebSocket closed');
         this.isConnected = false;
         this.stopPing();
+        this.stopHeartbeatCheck();
         
-        // Attempt reconnect
-        if (this.reconnectAttempts < this.maxReconnectAttempts) {
-          this.reconnectAttempts++;
-          const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-          console.log(`Reconnecting in ${delay}ms...`);
-          setTimeout(() => this.connect(), delay);
-        } else {
-          this.onStatus('error');
-        }
+        // Always try to reconnect (reset attempts after successful connection)
+        this.reconnectAttempts++;
+        const delay = Math.min(1000 * Math.pow(1.5, this.reconnectAttempts), 10000);
+        console.log(`Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts})`);
+        setTimeout(() => this.connect(), delay);
       };
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
       this.onStatus('error');
+      // Try to reconnect even on creation error
+      setTimeout(() => this.connect(), 5000);
     }
   }
 
@@ -114,7 +119,7 @@ export class OKXWebSocket {
       if (this.ws?.readyState === WebSocket.OPEN) {
         this.ws.send('ping');
       }
-    }, 25000);
+    }, 20000); // Ping every 20 seconds
   }
 
   private stopPing(): void {
@@ -124,8 +129,27 @@ export class OKXWebSocket {
     }
   }
 
+  private startHeartbeatCheck(): void {
+    this.heartbeatTimeout = setInterval(() => {
+      const timeSinceLastMessage = Date.now() - this.lastMessageTime;
+      // If no message received for 45 seconds, reconnect
+      if (timeSinceLastMessage > 45000 && this.ws) {
+        console.log('Heartbeat timeout, reconnecting...');
+        this.ws.close();
+      }
+    }, 10000); // Check every 10 seconds
+  }
+
+  private stopHeartbeatCheck(): void {
+    if (this.heartbeatTimeout) {
+      clearInterval(this.heartbeatTimeout);
+      this.heartbeatTimeout = null;
+    }
+  }
+
   disconnect(): void {
     this.stopPing();
+    this.stopHeartbeatCheck();
     if (this.ws) {
       this.ws.close();
       this.ws = null;

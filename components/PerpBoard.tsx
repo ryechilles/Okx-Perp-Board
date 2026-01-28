@@ -68,8 +68,14 @@ export default function PerpBoard() {
                   <span className="text-gray-400">{store.rsiProgress}</span>
                 )}
                 <div className="flex items-center">
-                  <span className="w-1.5 h-1.5 rounded-full mr-1.5 bg-green-500" />
-                  <span>Live</span>
+                  <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                    store.status === 'live' ? 'bg-green-500' : 
+                    store.status === 'connecting' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+                  }`} />
+                  <span>
+                    {store.status === 'live' ? 'Live' : 
+                     store.status === 'connecting' ? 'Connecting...' : 'Reconnecting...'}
+                  </span>
                 </div>
                 <span>
                   {store.lastUpdate ? store.lastUpdate.toLocaleTimeString() : '--'}

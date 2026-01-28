@@ -177,9 +177,6 @@ export function useMarketStore() {
   
   // Initialize WebSocket and data fetching
   const initialize = useCallback(async () => {
-    // Always show live status
-    setStatus('live');
-    
     // Fetch initial data
     const [spotData, marketCap, listings, fundingRates] = await Promise.all([
       fetchSpotSymbols(),
@@ -198,9 +195,8 @@ export function useMarketStore() {
       setTickers(newTickers);
     };
     
-    const handleStatusUpdate = (_newStatus: 'connecting' | 'live' | 'error', time?: Date) => {
-      // Always show live status regardless of actual status
-      setStatus('live');
+    const handleStatusUpdate = (newStatus: 'connecting' | 'live' | 'error', time?: Date) => {
+      setStatus(newStatus);
       if (time) setLastUpdate(time);
     };
     
@@ -397,43 +393,52 @@ export function useMarketStore() {
       }
     }
     
-    // Market cap minimum filter
+    // Market cap filter (range-based)
     if (filters.marketCapMin) {
-      const minCap = parseFloat(filters.marketCapMin) * 1000000; // Convert to actual value (input is in millions)
       filtered = filtered.filter(t => {
         const cap = marketCapData.get(t.baseSymbol)?.marketCap;
-        return cap !== undefined && cap >= minCap;
+        if (cap === undefined) return false;
+        
+        const capInMillions = cap / 1000000;
+        
+        switch (filters.marketCapMin) {
+          case '0-20':
+            return capInMillions <= 20;
+          case '20-100':
+            return capInMillions > 20 && capInMillions <= 100;
+          case '100-1000':
+            return capInMillions > 100 && capInMillions <= 1000;
+          case '1000+':
+            return capInMillions > 1000;
+          default:
+            return true;
+        }
       });
     }
     
     // Listing age filter
     if (filters.listAge) {
       const now = Date.now();
-      const oneDay = 24 * 60 * 60 * 1000;
-      const oneYear = 365 * oneDay;
-      const oneMonth = 30 * oneDay;
+      const oneYear = 365 * 24 * 60 * 60 * 1000;
+      const twoYears = 2 * oneYear;
       
-      if (filters.listAge === '>1y') {
-        filtered = filtered.filter(t => {
-          const listTime = listingData.get(t.instId)?.listTime;
-          return listTime && (now - listTime) > oneYear;
-        });
-      } else if (filters.listAge === '>6m') {
-        filtered = filtered.filter(t => {
-          const listTime = listingData.get(t.instId)?.listTime;
-          return listTime && (now - listTime) > (6 * oneMonth);
-        });
-      } else if (filters.listAge === '<30d') {
-        filtered = filtered.filter(t => {
-          const listTime = listingData.get(t.instId)?.listTime;
-          return listTime && (now - listTime) < (30 * oneDay);
-        });
-      } else if (filters.listAge === '<7d') {
-        filtered = filtered.filter(t => {
-          const listTime = listingData.get(t.instId)?.listTime;
-          return listTime && (now - listTime) < (7 * oneDay);
-        });
-      }
+      filtered = filtered.filter(t => {
+        const listTime = listingData.get(t.instId)?.listTime;
+        if (!listTime) return false;
+        
+        const age = now - listTime;
+        
+        switch (filters.listAge) {
+          case '<1y':
+            return age <= oneYear;
+          case '1-2y':
+            return age > oneYear && age <= twoYears;
+          case '>2y':
+            return age > twoYears;
+          default:
+            return true;
+        }
+      });
     }
     
     // Sort
