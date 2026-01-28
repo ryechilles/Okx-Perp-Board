@@ -58,12 +58,6 @@ export default function PerpBoard() {
     return visibleFixed[visibleFixed.length - 1] === key;
   };
   
-  // Check if it's the last fixed column (for border)
-  const isLastFixedColumn = (key: ColumnKey) => {
-    const visibleFixed = fixedColumns.filter(col => store.columns[col]);
-    return visibleFixed[visibleFixed.length - 1] === key;
-  };
-  
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Sticky Header */}
