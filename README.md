@@ -4,4 +4,4 @@
 - 纯前端，无需后端服务
 
 ## Demo
-（稍后补 Vercel 地址）
+https://perp-board.vercel.app
