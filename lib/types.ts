@@ -11,6 +11,40 @@ export interface OKXTicker {
   ts: string;
 }
 
+// OKX Instrument data
+export interface OKXInstrument {
+  instId: string;
+  instType: string;
+  uly?: string;
+  instFamily?: string;
+  baseCcy?: string;
+  quoteCcy?: string;
+  settleCcy?: string;
+  ctVal?: string;
+  ctMult?: string;
+  ctValCcy?: string;
+  optType?: string;
+  stk?: string;
+  listTime: string; // Listing timestamp in milliseconds
+  expTime?: string;
+  lever?: string;
+  tickSz?: string;
+  lotSz?: string;
+  minSz?: string;
+  ctType?: string;
+  state: string;
+}
+
+// OKX Funding Rate data
+export interface OKXFundingRate {
+  instId: string;
+  instType: string;
+  fundingRate: string;
+  nextFundingRate: string;
+  fundingTime: string;
+  nextFundingTime: string;
+}
+
 // Processed ticker data
 export interface ProcessedTicker {
   instId: string;
@@ -29,24 +63,67 @@ export interface RSIData {
   lastUpdated: number;
 }
 
+// Funding rate data
+export interface FundingRateData {
+  fundingRate: number;
+  nextFundingRate: number;
+  fundingTime: number;
+  nextFundingTime: number;
+  lastUpdated: number;
+}
+
+// Listing date data
+export interface ListingData {
+  listTime: number; // Unix timestamp in milliseconds
+}
+
 // Market cap data from CoinGecko
 export interface MarketCapData {
   marketCap: number;
   rank: number;
 }
 
+// Column key type
+export type ColumnKey = 
+  | 'favorite'
+  | 'rank'
+  | 'symbol'
+  | 'price'
+  | 'fundingRate'
+  | 'change4h'
+  | 'change'
+  | 'change7d'
+  | 'marketCap'
+  | 'rsi7'
+  | 'rsi14'
+  | 'listDate'
+  | 'hasSpot';
+
 // Column visibility settings
 export interface ColumnVisibility {
+  favorite: boolean;
+  rank: boolean;
   symbol: boolean;
   price: boolean;
+  fundingRate: boolean;
   change4h: boolean;
   change: boolean;
   change7d: boolean;
-  rank: boolean;
   marketCap: boolean;
   rsi7: boolean;
   rsi14: boolean;
+  listDate: boolean;
   hasSpot: boolean;
+}
+
+// Column order configuration
+export interface ColumnConfig {
+  key: ColumnKey;
+  label: string;
+  width: string;
+  align: 'left' | 'right' | 'center';
+  fixed?: boolean; // Fixed columns cannot be reordered
+  sortable?: boolean;
 }
 
 // Filter settings
@@ -55,6 +132,7 @@ export interface Filters {
   rsi7?: string;
   rsi14?: string;
   hasSpot?: string;
+  fundingRate?: string;
 }
 
 // Sort configuration
@@ -75,10 +153,13 @@ export interface WSTickerUpdate {
 export interface AppState {
   tickers: Map<string, ProcessedTicker>;
   rsiData: Map<string, RSIData>;
+  fundingRateData: Map<string, FundingRateData>;
+  listingData: Map<string, ListingData>;
   marketCapData: Map<string, MarketCapData>;
   spotSymbols: Set<string>;
   favorites: string[];
   columns: ColumnVisibility;
+  columnOrder: ColumnKey[];
   filters: Filters;
   sort: SortConfig;
   view: 'market' | 'favorites';

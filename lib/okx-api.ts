@@ -1,4 +1,4 @@
-import { OKXTicker, RSIData, ProcessedTicker } from './types';
+import { OKXTicker, RSIData, ProcessedTicker, FundingRateData, ListingData, OKXInstrument, OKXFundingRate } from './types';
 import { calculateRSI, calculate7DChange, processTicker, Mutex, RateLimiter } from './utils';
 
 const OKX_WS_PUBLIC = 'wss://ws.okx.com:8443/ws/v5/public';
@@ -174,6 +174,93 @@ export async function fetchSpotSymbols(): Promise<Set<string>> {
   }
 }
 
+// Fetch listing dates for all SWAP instruments
+export async function fetchListingDates(): Promise<Map<string, ListingData>> {
+  try {
+    const response = await fetch(`${OKX_REST_BASE}/public/instruments?instType=SWAP`);
+    const data = await response.json();
+    
+    const result = new Map<string, ListingData>();
+    if (data.code === '0' && data.data) {
+      data.data.forEach((inst: OKXInstrument) => {
+        if (inst.listTime) {
+          result.set(inst.instId, {
+            listTime: parseInt(inst.listTime, 10)
+          });
+        }
+      });
+    }
+    return result;
+  } catch (error) {
+    console.error('Failed to fetch listing dates:', error);
+    return new Map();
+  }
+}
+
+// Fetch funding rates for all SWAP instruments
+export async function fetchFundingRates(): Promise<Map<string, FundingRateData>> {
+  try {
+    // First get the list of all SWAP instruments
+    const response = await fetch(`${OKX_REST_BASE}/public/instruments?instType=SWAP`);
+    const instData = await response.json();
+    
+    if (instData.code !== '0' || !instData.data) {
+      return new Map();
+    }
+    
+    const result = new Map<string, FundingRateData>();
+    const instIds = instData.data
+      .filter((inst: OKXInstrument) => inst.instId.includes('-USDT-'))
+      .map((inst: OKXInstrument) => inst.instId);
+    
+    // Fetch funding rates in batches
+    const batchSize = 20;
+    for (let i = 0; i < instIds.length; i += batchSize) {
+      const batch = instIds.slice(i, i + batchSize);
+      
+      // Fetch each instrument's funding rate
+      const promises = batch.map(async (instId: string) => {
+        try {
+          const res = await fetch(`${OKX_REST_BASE}/public/funding-rate?instId=${instId}`);
+          const data = await res.json();
+          
+          if (data.code === '0' && data.data && data.data[0]) {
+            const fr = data.data[0] as OKXFundingRate;
+            return {
+              instId,
+              data: {
+                fundingRate: parseFloat(fr.fundingRate) || 0,
+                nextFundingRate: parseFloat(fr.nextFundingRate) || 0,
+                fundingTime: parseInt(fr.fundingTime, 10) || 0,
+                nextFundingTime: parseInt(fr.nextFundingTime, 10) || 0,
+                lastUpdated: Date.now()
+              }
+            };
+          }
+          return null;
+        } catch {
+          return null;
+        }
+      });
+      
+      const results = await Promise.all(promises);
+      results.forEach(r => {
+        if (r) result.set(r.instId, r.data);
+      });
+      
+      // Small delay between batches
+      if (i + batchSize < instIds.length) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Failed to fetch funding rates:', error);
+    return new Map();
+  }
+}
+
 // Fetch RSI data for a single instrument with mutex protection
 export async function fetchRSIForInstrument(instId: string): Promise<RSIData | null> {
   await rsiMutex.acquire();
@@ -296,26 +383,52 @@ export async function fetchRSIBatch(
   onProgress('');
 }
 
-// Fetch CoinGecko market cap data
+// Fetch CoinGecko market cap data with pagination (up to 500 coins)
 export async function fetchMarketCapData(): Promise<Map<string, { marketCap: number; rank: number }>> {
+  const result = new Map<string, { marketCap: number; rank: number }>();
+  
   try {
-    const response = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false'
+    // Fetch page 1 (1-250)
+    const response1 = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false'
     );
-    const data = await response.json();
+    const data1 = await response1.json();
     
-    const result = new Map<string, { marketCap: number; rank: number }>();
-    data.forEach((coin: { symbol: string; market_cap: number }, index: number) => {
-      const symbol = coin.symbol.toUpperCase();
-      result.set(symbol, {
-        marketCap: coin.market_cap,
-        rank: index + 1
+    if (Array.isArray(data1)) {
+      data1.forEach((coin: { symbol: string; market_cap: number }, index: number) => {
+        const symbol = coin.symbol.toUpperCase();
+        result.set(symbol, {
+          marketCap: coin.market_cap,
+          rank: index + 1
+        });
       });
-    });
+    }
+    
+    // Small delay before page 2
+    await new Promise(r => setTimeout(r, 500));
+    
+    // Fetch page 2 (251-500)
+    const response2 = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=2&sparkline=false'
+    );
+    const data2 = await response2.json();
+    
+    if (Array.isArray(data2)) {
+      data2.forEach((coin: { symbol: string; market_cap: number }, index: number) => {
+        const symbol = coin.symbol.toUpperCase();
+        // Only add if not already present (avoid duplicates)
+        if (!result.has(symbol)) {
+          result.set(symbol, {
+            marketCap: coin.market_cap,
+            rank: 250 + index + 1
+          });
+        }
+      });
+    }
     
     return result;
   } catch (error) {
     console.error('Failed to fetch CoinGecko data:', error);
-    return new Map();
+    return result;
   }
 }

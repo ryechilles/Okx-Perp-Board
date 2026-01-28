@@ -29,6 +29,7 @@ body {
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -43,6 +44,20 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Horizontal scroll with bounce effect (iOS-like) */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+}
+
+/* Bounce effect for scroll containers */
+@supports (overscroll-behavior: auto) {
+  .overflow-x-auto {
+    overscroll-behavior-x: auto;
+  }
 }
 
 /* Tabular numbers for consistency */
@@ -62,4 +77,29 @@ body {
 /* Custom checkbox accent */
 input[type="checkbox"] {
   accent-color: #1a1a1a;
+}
+
+/* Sticky column shadow */
+.sticky-shadow {
+  box-shadow: 4px 0 8px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table row hover transition */
+tr {
+  transition: background-color 0.15s ease;
+}
+
+/* Drag and drop styles */
+[draggable="true"] {
+  cursor: grab;
+}
+
+[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Fixed columns background */
+td[style*="position: sticky"],
+th[style*="position: sticky"] {
+  background-color: inherit;
 }

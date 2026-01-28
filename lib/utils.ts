@@ -1,4 +1,71 @@
-import { RSIData, MarketCapData, ProcessedTicker, OKXTicker } from './types';
+import { RSIData, MarketCapData, ProcessedTicker, OKXTicker, ColumnKey } from './types';
+
+// Default column order
+export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
+  'favorite',
+  'rank', 
+  'symbol',
+  'price',
+  'fundingRate',
+  'change4h',
+  'change',
+  'change7d',
+  'marketCap',
+  'rsi7',
+  'rsi14',
+  'listDate',
+  'hasSpot'
+];
+
+// Column definitions
+export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: string; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
+  favorite: { label: '', width: '44px', align: 'center', fixed: true, sortable: false },
+  rank: { label: '#', width: '50px', align: 'center', fixed: true, sortable: true },
+  symbol: { label: 'Token', width: '100px', align: 'left', fixed: true, sortable: true },
+  price: { label: 'Price', width: '100px', align: 'right', sortable: true },
+  fundingRate: { label: 'Funding', width: '80px', align: 'right', sortable: true },
+  change4h: { label: '4H', width: '80px', align: 'right', sortable: true },
+  change: { label: '24H', width: '80px', align: 'right', sortable: true },
+  change7d: { label: '7D', width: '80px', align: 'right', sortable: true },
+  marketCap: { label: 'Mkt Cap', width: '95px', align: 'right', sortable: true },
+  rsi7: { label: 'RSI7', width: '60px', align: 'right', sortable: true },
+  rsi14: { label: 'RSI14', width: '60px', align: 'right', sortable: true },
+  listDate: { label: 'Listed', width: '85px', align: 'right', sortable: true },
+  hasSpot: { label: 'Spot', width: '55px', align: 'center', sortable: true }
+};
+
+// Format funding rate as percentage
+export function formatFundingRate(rate: number | undefined | null): string {
+  if (rate === undefined || rate === null) return '--';
+  const percentage = rate * 100;
+  const sign = percentage >= 0 ? '+' : '';
+  return `${sign}${percentage.toFixed(4)}%`;
+}
+
+// Get funding rate color class
+export function getFundingRateClass(rate: number | undefined | null): string {
+  if (rate === undefined || rate === null) return 'text-gray-300';
+  if (rate > 0.0001) return 'text-green-500'; // Positive = longs pay shorts
+  if (rate < -0.0001) return 'text-red-500';  // Negative = shorts pay longs
+  return 'text-gray-500';
+}
+
+// Format listing date
+export function formatListDate(timestamp: number | undefined | null): string {
+  if (!timestamp) return '--';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffDays = Math.floor((now.getTime() - timestamp) / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
+  
+  // For older dates, show the actual date
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+}
 
 // Calculate RSI using Wilder's smoothing method
 export function calculateRSI(closes: number[], period: number): number | null {
