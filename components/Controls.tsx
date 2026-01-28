@@ -151,8 +151,37 @@ export function Controls({
         >
           <span>⚙</span> Filters
         </button>
+      </div>
+      
+      {/* RSI Averages + Search Row */}
+      <div className="flex items-center gap-4 px-3 h-9 bg-white border border-gray-200 rounded-lg mb-4">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-gray-600">D-RSI7</span>
+          <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsi7)}`}>
+            {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-gray-600">D-RSI14</span>
+          <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsi14)}`}>
+            {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
+          </span>
+        </div>
+        <div className="w-px h-4 bg-gray-200" />
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-gray-600">W-RSI7</span>
+          <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsiW7)}`}>
+            {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-gray-600">W-RSI14</span>
+          <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsiW14)}`}>
+            {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
+          </span>
+        </div>
         
-        <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg ml-auto">
+        <div className="flex items-center gap-2 ml-auto">
           <svg 
             className="w-4 h-4 text-gray-400" 
             viewBox="0 0 24 24" 
@@ -170,37 +199,8 @@ export function Controls({
             placeholder="Search token..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="border-none outline-none text-sm w-[150px]"
+            className="border-none outline-none text-sm w-[120px]"
           />
-        </div>
-      </div>
-      
-      {/* RSI Averages Row */}
-      <div className="flex items-center gap-3 px-3 py-2 bg-white border border-gray-200 rounded-lg mb-4 w-fit">
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-gray-400">D-RSI7</span>
-          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi7)}`}>
-            {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-gray-400">D-RSI14</span>
-          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi14)}`}>
-            {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
-          </span>
-        </div>
-        <div className="w-px h-4 bg-gray-200" />
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-gray-400">W-RSI7</span>
-          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW7)}`}>
-            {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-gray-400">W-RSI14</span>
-          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW14)}`}>
-            {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
-          </span>
         </div>
       </div>
       

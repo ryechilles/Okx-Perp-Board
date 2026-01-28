@@ -107,10 +107,7 @@ export default function PerpBoard() {
         <div className="max-w-[1400px] mx-auto w-full flex flex-col h-full">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
             {/* Status Bar */}
-            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 flex-shrink-0">
-              <span className="text-xs text-gray-500">
-                {filteredData.length} Perp Contracts
-              </span>
+            <div className="flex justify-end items-center px-4 py-3 border-b border-gray-100 flex-shrink-0">
               <div className="flex items-center gap-4 text-xs text-gray-500">
                 {store.rsiProgress && (
                   <span className="text-gray-400">{store.rsiProgress}</span>
@@ -420,7 +417,7 @@ export default function PerpBoard() {
             {totalPages > 1 && (
               <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 flex-shrink-0">
                 <span className="text-xs text-gray-500">
-                  Showing {(store.currentPage - 1) * store.pageSize + 1}-{Math.min(store.currentPage * store.pageSize, filteredData.length)} of {filteredData.length}
+                  {(store.currentPage - 1) * store.pageSize + 1}-{Math.min(store.currentPage * store.pageSize, filteredData.length)} of {filteredData.length}
                 </span>
                 <div className="flex items-center gap-1">
                   <button
