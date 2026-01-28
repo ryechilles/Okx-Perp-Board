@@ -378,6 +378,34 @@ export function useMarketStore() {
       }
     }
     
+    // Weekly RSI7 filter
+    if (filters.rsiW7) {
+      if (filters.rsiW7 === '<30') {
+        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW7 ?? 50) < 30);
+      } else if (filters.rsiW7 === '30-70') {
+        filtered = filtered.filter(t => {
+          const rsi = rsiData.get(t.instId)?.rsiW7;
+          return rsi !== undefined && rsi !== null && rsi >= 30 && rsi <= 70;
+        });
+      } else if (filters.rsiW7 === '>70') {
+        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW7 ?? 50) > 70);
+      }
+    }
+    
+    // Weekly RSI14 filter
+    if (filters.rsiW14) {
+      if (filters.rsiW14 === '<30') {
+        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW14 ?? 50) < 30);
+      } else if (filters.rsiW14 === '30-70') {
+        filtered = filtered.filter(t => {
+          const rsi = rsiData.get(t.instId)?.rsiW14;
+          return rsi !== undefined && rsi !== null && rsi >= 30 && rsi <= 70;
+        });
+      } else if (filters.rsiW14 === '>70') {
+        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW14 ?? 50) > 70);
+      }
+    }
+    
     if (filters.hasSpot) {
       filtered = filtered.filter(t => {
         const baseQuote = `${t.baseSymbol}-USDT`;

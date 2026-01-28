@@ -263,7 +263,7 @@ export function Controls({
             </div>
             
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">RSI7</label>
+              <label className="text-xs text-gray-600 font-medium">Daily RSI7</label>
               <select
                 value={tempFilters.rsi7 || ''}
                 onChange={(e) => setTempFilters(prev => ({ ...prev, rsi7: e.target.value || undefined }))}
@@ -277,10 +277,38 @@ export function Controls({
             </div>
             
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">RSI14</label>
+              <label className="text-xs text-gray-600 font-medium">Daily RSI14</label>
               <select
                 value={tempFilters.rsi14 || ''}
                 onChange={(e) => setTempFilters(prev => ({ ...prev, rsi14: e.target.value || undefined }))}
+                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+              >
+                <option value="">All</option>
+                <option value="<30">&lt; 30 (Oversold)</option>
+                <option value="30-70">30 - 70</option>
+                <option value=">70">&gt; 70 (Overbought)</option>
+              </select>
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-600 font-medium">Weekly RSI7</label>
+              <select
+                value={tempFilters.rsiW7 || ''}
+                onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW7: e.target.value || undefined }))}
+                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+              >
+                <option value="">All</option>
+                <option value="<30">&lt; 30 (Oversold)</option>
+                <option value="30-70">30 - 70</option>
+                <option value=">70">&gt; 70 (Overbought)</option>
+              </select>
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-600 font-medium">Weekly RSI14</label>
+              <select
+                value={tempFilters.rsiW14 || ''}
+                onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW14: e.target.value || undefined }))}
                 className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
               >
                 <option value="">All</option>

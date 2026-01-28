@@ -31,25 +31,15 @@ export default function PerpBoard() {
   // Get visible columns in order
   const visibleColumns = store.columnOrder.filter(key => store.columns[key]);
   
-  // Fixed column widths - includes column width only, padding handled by CSS
-  // Total sticky offset = sum of previous column widths
+  // Fixed column widths - must match COLUMN_DEFINITIONS
   const FIXED_WIDTHS: Record<string, number> = {
-    favorite: 36,
-    rank: 40,
-    symbol: 75,
+    favorite: 40,
+    rank: 48,
+    symbol: 90,
   };
   
-  // Total width of all fixed columns for clipping
-  const totalFixedWidth = Object.values(FIXED_WIDTHS).reduce((a, b) => a + b, 0);
-  
-  // Calculate column widths and sticky positions
-  const getColStyle = (key: ColumnKey) => {
-    const def = COLUMN_DEFINITIONS[key];
-    return { width: def.width, minWidth: def.width };
-  };
-  
-  // Calculate left position for sticky columns
-  const getStickyLeft = (key: ColumnKey): number => {
+  // Calculate left position - add small buffer to ensure complete coverage
+  const getStickyLeftOffset = (key: ColumnKey): number => {
     if (!fixedColumns.includes(key)) return 0;
     let left = 0;
     for (const col of fixedColumns) {
@@ -59,6 +49,17 @@ export default function PerpBoard() {
       }
     }
     return left;
+  };
+  
+  // Calculate column widths and sticky positions
+  const getColStyle = (key: ColumnKey) => {
+    const def = COLUMN_DEFINITIONS[key];
+    return { width: def.width, minWidth: def.width };
+  };
+  
+  // Calculate left position for sticky columns
+  const getStickyLeft = (key: ColumnKey): number => {
+    return getStickyLeftOffset(key);
   };
   
   // Check if column is fixed
@@ -462,10 +463,7 @@ export default function PerpBoard() {
       {/* Footer */}
       <div className="px-6 flex-shrink-0">
         <div className="max-w-[1400px] mx-auto w-full">
-          <Footer 
-            language={store.language} 
-            onLanguageChange={store.setLanguage} 
-          />
+          <Footer />
         </div>
       </div>
     </div>

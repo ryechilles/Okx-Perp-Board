@@ -144,6 +144,8 @@ export interface Filters {
   marketCapMin?: string;  // Minimum market cap filter
   rsi7?: string;
   rsi14?: string;
+  rsiW7?: string;   // Weekly RSI7 filter
+  rsiW14?: string;  // Weekly RSI14 filter
   hasSpot?: string;
   fundingRate?: string;
   listAge?: string;  // Listing age filter (e.g., '>1y', '<30d')

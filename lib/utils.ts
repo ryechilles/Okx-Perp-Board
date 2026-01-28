@@ -23,9 +23,9 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
 
 // Column definitions - all columns centered except symbol (left-aligned)
 export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: string; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
-  favorite: { label: '', width: '36px', align: 'center', fixed: true, sortable: false },
-  rank: { label: '#', width: '40px', align: 'center', fixed: true, sortable: true },
-  symbol: { label: 'Token', width: '75px', align: 'left', fixed: true, sortable: true },
+  favorite: { label: '', width: '40px', align: 'center', fixed: true, sortable: false },
+  rank: { label: '#', width: '48px', align: 'center', fixed: true, sortable: true },
+  symbol: { label: 'Token', width: '90px', align: 'left', fixed: true, sortable: true },
   price: { label: 'Price', width: '90px', align: 'center', sortable: true },
   fundingRate: { label: 'Funding', width: '80px', align: 'center', sortable: true },
   fundingInterval: { label: 'Intv', width: '50px', align: 'center', sortable: true },
