@@ -255,7 +255,7 @@ export default function PerpBoard() {
                               case 'volume24h':
                                 return (
                                   <td key={key} className={`${baseClass} text-gray-600 tabular-nums`}>
-                                    {formatVolume(ticker.volCcy24h)}
+                                    {formatVolume(ticker.volCcy24h, ticker.priceNum)}
                                   </td>
                                 );
                                 

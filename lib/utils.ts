@@ -137,14 +137,17 @@ export function formatMarketCap(cap: number): string {
   return '$' + cap.toFixed(2);
 }
 
-// Format 24h volume
-export function formatVolume(value: string | number): string {
-  const num = typeof value === 'string' ? parseFloat(value) : value;
-  if (isNaN(num) || num === 0) return '--';
-  if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
-  if (num >= 1e6) return '$' + (num / 1e6).toFixed(1) + 'M';
-  if (num >= 1e3) return '$' + (num / 1e3).toFixed(0) + 'K';
-  return '$' + num.toFixed(0);
+// Format 24h volume (input is volume in base currency, needs to multiply by price)
+export function formatVolume(volCcy: string | number, price: number): string {
+  const vol = typeof volCcy === 'string' ? parseFloat(volCcy) : volCcy;
+  if (isNaN(vol) || vol === 0 || isNaN(price) || price === 0) return '--';
+  
+  const volumeUsd = vol * price;
+  
+  if (volumeUsd >= 1e9) return '$' + (volumeUsd / 1e9).toFixed(2) + 'B';
+  if (volumeUsd >= 1e6) return '$' + (volumeUsd / 1e6).toFixed(1) + 'M';
+  if (volumeUsd >= 1e3) return '$' + (volumeUsd / 1e3).toFixed(0) + 'K';
+  return '$' + volumeUsd.toFixed(0);
 }
 
 // Get RSI class for styling

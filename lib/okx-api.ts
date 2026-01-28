@@ -61,10 +61,10 @@ export class OKXHybridDataManager {
           }
         });
 
-        // Sort by 24h volume (volCcy24h) descending
+        // Sort by 24h volume in USD (volCcy24h * price) descending
         usdtSwaps.sort((a, b) => {
-          const volA = parseFloat(a.volCcy24h) || 0;
-          const volB = parseFloat(b.volCcy24h) || 0;
+          const volA = (parseFloat(a.volCcy24h) || 0) * a.priceNum;
+          const volB = (parseFloat(b.volCcy24h) || 0) * b.priceNum;
           return volB - volA;
         });
 

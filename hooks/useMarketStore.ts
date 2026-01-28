@@ -475,8 +475,8 @@ export function useMarketStore() {
           bVal = marketCapData.get(b.baseSymbol)?.marketCap ?? 0;
           break;
         case 'volume24h':
-          aVal = parseFloat(a.volCcy24h) || 0;
-          bVal = parseFloat(b.volCcy24h) || 0;
+          aVal = (parseFloat(a.volCcy24h) || 0) * a.priceNum;
+          bVal = (parseFloat(b.volCcy24h) || 0) * b.priceNum;
           break;
         case 'rsi7':
           aVal = rsiData.get(a.instId)?.rsi7 ?? 0;
