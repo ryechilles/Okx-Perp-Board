@@ -21,21 +21,21 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
 
 // Column definitions - all columns centered except symbol (left-aligned)
 export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: string; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
-  favorite: { label: '', width: '44px', align: 'center', fixed: true, sortable: false },
-  rank: { label: '#', width: '50px', align: 'center', fixed: true, sortable: true },
-  symbol: { label: 'Token', width: '100px', align: 'left', fixed: true, sortable: true },
-  price: { label: 'Price', width: '95px', align: 'center', sortable: true },
-  fundingRate: { label: 'Funding', width: '85px', align: 'center', sortable: true },
-  fundingInterval: { label: 'Interval', width: '65px', align: 'center', sortable: true },
-  change4h: { label: '4H', width: '70px', align: 'center', sortable: true },
-  change: { label: '24H', width: '70px', align: 'center', sortable: true },
-  change7d: { label: '7D', width: '70px', align: 'center', sortable: true },
-  volume24h: { label: 'Vol 24H', width: '90px', align: 'center', sortable: true },
-  marketCap: { label: 'Mkt Cap', width: '85px', align: 'center', sortable: true },
-  rsi7: { label: 'RSI7', width: '55px', align: 'center', sortable: true },
-  rsi14: { label: 'RSI14', width: '55px', align: 'center', sortable: true },
-  listDate: { label: 'Listed', width: '80px', align: 'center', sortable: true },
-  hasSpot: { label: 'Spot', width: '50px', align: 'center', sortable: true }
+  favorite: { label: '', width: '36px', align: 'center', fixed: true, sortable: false },
+  rank: { label: '#', width: '40px', align: 'center', fixed: true, sortable: true },
+  symbol: { label: 'Token', width: '85px', align: 'left', fixed: true, sortable: true },
+  price: { label: 'Price', width: '90px', align: 'center', sortable: true },
+  fundingRate: { label: 'Funding', width: '80px', align: 'center', sortable: true },
+  fundingInterval: { label: 'Interval', width: '60px', align: 'center', sortable: true },
+  change4h: { label: '4H', width: '68px', align: 'center', sortable: true },
+  change: { label: '24H', width: '68px', align: 'center', sortable: true },
+  change7d: { label: '7D', width: '68px', align: 'center', sortable: true },
+  volume24h: { label: 'Vol 24H', width: '85px', align: 'center', sortable: true },
+  marketCap: { label: 'Mkt Cap', width: '80px', align: 'center', sortable: true },
+  rsi7: { label: 'RSI7', width: '52px', align: 'center', sortable: true },
+  rsi14: { label: 'RSI14', width: '52px', align: 'center', sortable: true },
+  listDate: { label: 'Listed', width: '75px', align: 'center', sortable: true },
+  hasSpot: { label: 'Spot', width: '48px', align: 'center', sortable: true }
 };
 
 // Format funding rate as percentage

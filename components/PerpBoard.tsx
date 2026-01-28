@@ -23,6 +23,13 @@ export default function PerpBoard() {
   // Get visible columns in order
   const visibleColumns = store.columnOrder.filter(key => store.columns[key]);
   
+  // Fixed column widths (must match COLUMN_DEFINITIONS exactly)
+  const FIXED_WIDTHS: Record<string, number> = {
+    favorite: 36,
+    rank: 40,
+    symbol: 85,
+  };
+  
   // Calculate column widths and sticky positions
   const getColStyle = (key: ColumnKey) => {
     const def = COLUMN_DEFINITIONS[key];
@@ -36,8 +43,7 @@ export default function PerpBoard() {
     for (const col of fixedColumns) {
       if (col === key) break;
       if (store.columns[col]) {
-        const width = parseInt(COLUMN_DEFINITIONS[col].width) || 0;
-        left += width;
+        left += FIXED_WIDTHS[col] || 0;
       }
     }
     return left;
@@ -45,6 +51,12 @@ export default function PerpBoard() {
   
   // Check if column is fixed
   const isFixedColumn = (key: ColumnKey) => fixedColumns.includes(key);
+  
+  // Check if this is the last fixed column (for shadow)
+  const isLastFixedColumn = (key: ColumnKey) => {
+    const visibleFixed = fixedColumns.filter(col => store.columns[col]);
+    return visibleFixed[visibleFixed.length - 1] === key;
+  };
   
   // Check if it's the last fixed column (for border)
   const isLastFixedColumn = (key: ColumnKey) => {
@@ -123,22 +135,26 @@ export default function PerpBoard() {
                       const sortable = def.sortable !== false;
                       const isActive = store.sort.column === key;
                       const isFixed = isFixedColumn(key);
+                      const isLastFixed = isLastFixedColumn(key);
                       const stickyLeft = getStickyLeft(key);
                       
                       let alignClass = 'text-left';
                       if (def.align === 'right') alignClass = 'text-right';
                       if (def.align === 'center') alignClass = 'text-center';
                       
+                      const stickyStyle = isFixed ? {
+                        position: 'sticky' as const,
+                        left: stickyLeft,
+                        zIndex: 30,
+                        backgroundColor: '#fafafa',
+                        boxShadow: isLastFixed ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
+                      } : undefined;
+                      
                       return (
                         <th
                           key={key}
-                          className={`px-3 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
-                          style={isFixed ? {
-                            position: 'sticky',
-                            left: stickyLeft,
-                            zIndex: 30,
-                            backgroundColor: '#fafafa',
-                          } : undefined}
+                          className={`px-2 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                          style={stickyStyle}
                           onClick={() => sortable && store.updateSort(key)}
                         >
                           <span className="inline-flex items-center gap-0.5">
@@ -189,11 +205,13 @@ export default function PerpBoard() {
                       // Helper to get sticky style for cells
                       const getCellStyle = (key: ColumnKey) => {
                         if (!isFixedColumn(key)) return undefined;
+                        const isLastFixed = isLastFixedColumn(key);
                         return {
                           position: 'sticky' as const,
                           left: getStickyLeft(key),
                           zIndex: 10,
                           backgroundColor: 'white',
+                          boxShadow: isLastFixed ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
                         };
                       };
                       
@@ -206,7 +224,7 @@ export default function PerpBoard() {
                             if (def.align === 'right') alignClass = 'text-right';
                             if (def.align === 'center') alignClass = 'text-center';
                             
-                            const baseClass = `px-3 py-3 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'group-hover:bg-gray-50' : ''}`;
+                            const baseClass = `px-2 py-3 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'group-hover:bg-gray-50' : ''}`;
                             const cellStyle = getCellStyle(key);
                             
                             switch (key) {
