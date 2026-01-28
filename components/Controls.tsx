@@ -122,27 +122,6 @@ export function Controls({
           
           {showColumnsMenu && (
             <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[180px] z-50 py-2">
-              <div className="flex justify-between px-3 pb-2 mb-1 border-b border-gray-100">
-                <span 
-                  className="text-xs text-gray-600 cursor-pointer hover:text-gray-900"
-                  onClick={() => onColumnsPreset('all')}
-                >
-                  All
-                </span>
-                <span 
-                  className="text-xs text-gray-600 cursor-pointer hover:text-gray-900"
-                  onClick={() => onColumnsPreset('default')}
-                >
-                  Default
-                </span>
-                <span 
-                  className="text-xs text-gray-600 cursor-pointer hover:text-gray-900"
-                  onClick={() => onColumnsPreset('none')}
-                >
-                  None
-                </span>
-              </div>
-              
               {columnOptions.map(col => (
                 <label 
                   key={col.key}
@@ -158,12 +137,6 @@ export function Controls({
                   />
                 </label>
               ))}
-              
-              <div className="px-3 pt-2 mt-1 border-t border-gray-100">
-                <p className="text-[10px] text-gray-400">
-                  Drag column headers to reorder
-                </p>
-              </div>
             </div>
           )}
         </div>
@@ -179,35 +152,7 @@ export function Controls({
           <span>⚙</span> Filters
         </button>
         
-        <div className="flex items-center gap-3 ml-auto px-3 h-9 bg-white border border-gray-200 rounded-lg">
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-gray-400">D-RSI7</span>
-            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi7)}`}>
-              {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-gray-400">D-RSI14</span>
-            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi14)}`}>
-              {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
-            </span>
-          </div>
-          <div className="w-px h-4 bg-gray-200" />
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-gray-400">W-RSI7</span>
-            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW7)}`}>
-              {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-gray-400">W-RSI14</span>
-            <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW14)}`}>
-              {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
-            </span>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg">
+        <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg ml-auto">
           <svg 
             className="w-4 h-4 text-gray-400" 
             viewBox="0 0 24 24" 
@@ -227,6 +172,35 @@ export function Controls({
             onChange={(e) => onSearchChange(e.target.value)}
             className="border-none outline-none text-sm w-[150px]"
           />
+        </div>
+      </div>
+      
+      {/* RSI Averages Row */}
+      <div className="flex items-center gap-3 px-3 py-2 bg-white border border-gray-200 rounded-lg mb-4 w-fit">
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-gray-400">D-RSI7</span>
+          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi7)}`}>
+            {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-gray-400">D-RSI14</span>
+          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsi14)}`}>
+            {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
+          </span>
+        </div>
+        <div className="w-px h-4 bg-gray-200" />
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-gray-400">W-RSI7</span>
+          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW7)}`}>
+            {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-gray-400">W-RSI14</span>
+          <span className={`text-xs font-semibold tabular-nums ${getRsiAvgClass(avgRsiW14)}`}>
+            {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
+          </span>
         </div>
       </div>
       

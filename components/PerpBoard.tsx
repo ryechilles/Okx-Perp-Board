@@ -53,6 +53,10 @@ export default function PerpBoard() {
   
   // Calculate column widths and sticky positions
   const getColStyle = (key: ColumnKey) => {
+    // For fixed columns, use FIXED_WIDTHS
+    if (FIXED_WIDTHS[key]) {
+      return { width: FIXED_WIDTHS[key], minWidth: FIXED_WIDTHS[key], maxWidth: FIXED_WIDTHS[key] };
+    }
     const def = COLUMN_DEFINITIONS[key];
     return { width: def.width, minWidth: def.width };
   };
@@ -146,33 +150,50 @@ export default function PerpBoard() {
                       const isFixed = isFixedColumn(key);
                       const isLastFixed = isLastFixedColumn(key);
                       const stickyLeft = getStickyLeft(key);
+                      const fixedWidth = FIXED_WIDTHS[key];
                       
                       let alignClass = 'text-left';
                       if (def.align === 'right') alignClass = 'text-right';
                       if (def.align === 'center') alignClass = 'text-center';
                       
-                      const stickyStyle = isFixed ? {
-                        position: 'sticky' as const,
+                      const stickyStyle: React.CSSProperties | undefined = isFixed ? {
+                        position: 'sticky',
                         left: stickyLeft,
                         zIndex: 30,
                         backgroundColor: '#fafafa',
+                        width: fixedWidth,
+                        minWidth: fixedWidth,
+                        maxWidth: fixedWidth,
+                        boxSizing: 'border-box',
                         boxShadow: isLastFixed ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
                       } : undefined;
                       
                       return (
                         <th
                           key={key}
-                          className={`px-2 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                          className={`px-1 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
                           style={stickyStyle}
                           onClick={() => sortable && store.updateSort(key)}
                         >
                           <span className="inline-flex items-center gap-0.5">
                             {def.label}
                             {sortable && (
-                              <span className={`ml-0.5 inline-flex flex-col text-[8px] leading-[0.6] ${isActive ? 'opacity-100' : 'opacity-30'}`}>
-                                <span className={isActive && store.sort.direction === 'asc' ? 'text-gray-700' : 'text-gray-300'}>▲</span>
-                                <span className={isActive && store.sort.direction === 'desc' ? 'text-gray-700' : 'text-gray-300'}>▼</span>
-                              </span>
+                              <svg 
+                                className={`w-3 h-3 ml-0.5 ${isActive ? 'text-gray-600' : 'text-gray-300'}`}
+                                viewBox="0 0 12 12" 
+                                fill="currentColor"
+                              >
+                                <path 
+                                  d="M6 2L9 5H3L6 2Z" 
+                                  className={isActive && store.sort.direction === 'asc' ? 'text-gray-700' : 'text-gray-300'}
+                                  fill="currentColor"
+                                />
+                                <path 
+                                  d="M6 10L3 7H9L6 10Z" 
+                                  className={isActive && store.sort.direction === 'desc' ? 'text-gray-700' : 'text-gray-300'}
+                                  fill="currentColor"
+                                />
+                              </svg>
                             )}
                           </span>
                         </th>
@@ -212,14 +233,19 @@ export default function PerpBoard() {
                       const quote = parts[1];
                       
                       // Helper to get sticky style for cells
-                      const getCellStyle = (key: ColumnKey) => {
+                      const getCellStyle = (key: ColumnKey): React.CSSProperties | undefined => {
                         if (!isFixedColumn(key)) return undefined;
                         const isLastFixed = isLastFixedColumn(key);
+                        const fixedWidth = FIXED_WIDTHS[key];
                         return {
-                          position: 'sticky' as const,
+                          position: 'sticky',
                           left: getStickyLeft(key),
                           zIndex: 10,
                           backgroundColor: '#ffffff',
+                          width: fixedWidth,
+                          minWidth: fixedWidth,
+                          maxWidth: fixedWidth,
+                          boxSizing: 'border-box',
                           boxShadow: isLastFixed ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
                         };
                       };
@@ -233,7 +259,7 @@ export default function PerpBoard() {
                             if (def.align === 'right') alignClass = 'text-right';
                             if (def.align === 'center') alignClass = 'text-center';
                             
-                            const baseClass = `px-2 py-3 text-[13px] whitespace-nowrap ${alignClass}`;
+                            const baseClass = `px-1 py-3 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`;
                             const cellStyle = getCellStyle(key);
                             
                             switch (key) {

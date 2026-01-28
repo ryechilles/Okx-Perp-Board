@@ -20,19 +20,20 @@ function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
 
 export function Header() {
   return (
-    <div className="flex items-center gap-6 mb-4">
-      <div className="flex items-end gap-0.5">
-        <PerpLogo className="w-7 h-7 rounded-md" />
-        <div className="text-lg font-semibold text-gray-900 leading-none pb-0.5">
-          erp Board <span className="text-xs text-gray-400 font-normal">v2.2</span>
-        </div>
+    <div className="flex items-center gap-4 mb-4 flex-wrap">
+      <div className="flex items-center gap-1.5 flex-shrink-0">
+        <PerpLogo className="w-6 h-6 rounded" />
+        <span className="text-base font-semibold text-gray-900 whitespace-nowrap">
+          Perp Board
+        </span>
+        <span className="text-[10px] text-gray-400">v2.2</span>
       </div>
       
       <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
-        <button className="px-4 py-2 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm">
+        <button className="px-3 py-1.5 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm">
           OKX
         </button>
-        <button className="px-4 py-2 rounded-md text-sm font-medium text-gray-400 cursor-not-allowed">
+        <button className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-400 cursor-not-allowed">
           Coming soon
         </button>
       </div>
