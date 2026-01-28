@@ -1,2 +1,7 @@
-# Okx-Perp-Board
-基于 OKX 公开 API 的信息汇总综合看板
+## Features
+- 基于 OKX 公共 API
+- 永续合约关键数据聚合展示
+- 纯前端，无需后端服务
+
+## Demo
+（稍后补 Vercel 地址）
