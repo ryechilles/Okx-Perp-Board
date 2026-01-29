@@ -175,7 +175,6 @@ export default function PerpBoard() {
           <Header />
           
           <Controls
-            view={store.view}
             columns={store.columns}
             columnOrder={store.columnOrder}
             filters={store.filters}
@@ -184,7 +183,6 @@ export default function PerpBoard() {
             avgRsi14={avgRsi14}
             avgRsiW7={avgRsiW7}
             avgRsiW14={avgRsiW14}
-            onViewChange={store.setView}
             onColumnChange={store.updateColumn}
             onColumnsPreset={store.setColumnsPreset}
             onFiltersChange={store.setFilters}

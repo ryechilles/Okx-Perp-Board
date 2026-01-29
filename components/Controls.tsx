@@ -8,7 +8,6 @@ import { MarketMomentum } from './MarketMomentum';
 type QuickFilter = 'all' | 'top25' | 'overbought' | 'oversold';
 
 interface ControlsProps {
-  view: 'market' | 'favorites';
   columns: ColumnVisibility;
   columnOrder: ColumnKey[];
   filters: Filters;
@@ -17,7 +16,6 @@ interface ControlsProps {
   avgRsi14: number | null;
   avgRsiW7: number | null;
   avgRsiW14: number | null;
-  onViewChange: (view: 'market' | 'favorites') => void;
   onColumnChange: (col: keyof ColumnVisibility, visible: boolean) => void;
   onColumnsPreset: (preset: 'all' | 'none' | 'default') => void;
   onFiltersChange: (filters: Filters) => void;
@@ -26,7 +24,6 @@ interface ControlsProps {
 }
 
 export function Controls({
-  view,
   columns,
   columnOrder,
   filters,
@@ -35,7 +32,6 @@ export function Controls({
   avgRsi14,
   avgRsiW7,
   avgRsiW14,
-  onViewChange,
   onColumnChange,
   onColumnsPreset,
   onFiltersChange,
@@ -153,32 +149,8 @@ export function Controls({
         </div>
       </div>
 
-      {/* View Toggle + Quick Filters + Controls Row */}
+      {/* Quick Filters + Controls Row */}
       <div className="flex items-center gap-4 mb-4 flex-wrap">
-        {/* View Toggle: Market / Favorites */}
-        <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
-          <button
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              view === 'market'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => onViewChange('market')}
-          >
-            Market
-          </button>
-          <button
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              view === 'favorites'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => onViewChange('favorites')}
-          >
-            Favorites
-          </button>
-        </div>
-
         {/* Quick Filter Buttons */}
         <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
           <button

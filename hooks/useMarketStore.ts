@@ -58,7 +58,7 @@ export function useMarketStore() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [columns, setColumns] = useState<ColumnVisibility>(DEFAULT_COLUMNS);
   const [columnOrder, setColumnOrder] = useState<ColumnKey[]>(DEFAULT_COLUMN_ORDER);
-  const [filters, setFilters] = useState<Filters>({});
+  const [filters, setFiltersState] = useState<Filters>({});
   const [sort, setSort] = useState<SortConfig>({ column: 'rank', direction: 'asc' });
   const [view, setView] = useState<'market' | 'favorites'>('market');
   const [urlInitialized, setUrlInitialized] = useState(false);
@@ -75,7 +75,7 @@ export function useMarketStore() {
   const rsiIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isFetchingRsiRef = useRef(false);
   
-  // Load favorites and column order from localStorage
+  // Load favorites, column order, and filters from localStorage
   useEffect(() => {
     const savedFavorites = localStorage.getItem('okx-favorites');
     if (savedFavorites) {
@@ -85,7 +85,7 @@ export function useMarketStore() {
         console.error('Failed to parse favorites:', e);
       }
     }
-    
+
     const savedColumnOrder = localStorage.getItem('okx-column-order');
     if (savedColumnOrder) {
       try {
@@ -94,26 +94,46 @@ export function useMarketStore() {
           // Merge saved order with default order to handle new columns
           const savedSet = new Set(parsed);
           const defaultSet = new Set(DEFAULT_COLUMN_ORDER);
-          
+
           // Start with saved order, but only include columns that still exist
           const mergedOrder = parsed.filter((col: ColumnKey) => defaultSet.has(col));
-          
+
           // Add any new columns that weren't in saved order (after the fixed columns)
           const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
-          const newColumns = DEFAULT_COLUMN_ORDER.filter(col => 
+          const newColumns = DEFAULT_COLUMN_ORDER.filter(col =>
             !savedSet.has(col) && !fixedColumns.includes(col)
           );
-          
+
           // Insert new columns after fixed columns
           const fixedPart = fixedColumns.filter(col => mergedOrder.includes(col) || DEFAULT_COLUMN_ORDER.includes(col));
           const nonFixedPart = mergedOrder.filter((col: ColumnKey) => !fixedColumns.includes(col));
-          
+
           const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedPart, ...newColumns];
           setColumnOrder(finalOrder);
           localStorage.setItem('okx-column-order', JSON.stringify(finalOrder));
         }
       } catch (e) {
         console.error('Failed to parse column order:', e);
+      }
+    }
+
+    // Load saved filters
+    const savedFilters = localStorage.getItem('okx-filters');
+    if (savedFilters) {
+      try {
+        setFilters(JSON.parse(savedFilters));
+      } catch (e) {
+        console.error('Failed to parse filters:', e);
+      }
+    }
+
+    // Load saved columns visibility
+    const savedColumns = localStorage.getItem('okx-columns');
+    if (savedColumns) {
+      try {
+        setColumns(JSON.parse(savedColumns));
+      } catch (e) {
+        console.error('Failed to parse columns:', e);
       }
     }
   }, []);
@@ -126,6 +146,15 @@ export function useMarketStore() {
         : [...prev, instId];
       localStorage.setItem('okx-favorites', JSON.stringify(newFavorites));
       return newFavorites;
+    });
+  }, []);
+
+  // Save filters to localStorage
+  const setFilters = useCallback((newFilters: Filters | ((prev: Filters) => Filters)) => {
+    setFiltersState(prev => {
+      const resolved = typeof newFilters === 'function' ? newFilters(prev) : newFilters;
+      localStorage.setItem('okx-filters', JSON.stringify(resolved));
+      return resolved;
     });
   }, []);
   
@@ -615,15 +644,27 @@ export function useMarketStore() {
     return filtered;
   }, [tickers, searchTerm, view, favorites, filters, sort, marketCapData, rsiData, spotSymbols, fundingRateData, listingData]);
   
-  // Calculate RSI averages
+  // Calculate RSI averages for Top 100 market cap tokens (fixed, not affected by filters)
   const getRsiAverages = useCallback(() => {
-    const filtered = getFilteredData();
+    // Get all USDT swap tickers
+    let allTickers = Array.from(tickers.values()).filter(t => t.instId.includes('-USDT-'));
+
+    // Sort by market cap and take top 100
+    const top100 = allTickers
+      .filter(t => marketCapData.get(t.baseSymbol)?.rank)
+      .sort((a, b) => {
+        const rankA = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
+        const rankB = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
+        return rankA - rankB;
+      })
+      .slice(0, 100);
+
     let rsi7Sum = 0, rsi7Count = 0;
     let rsi14Sum = 0, rsi14Count = 0;
     let rsiW7Sum = 0, rsiW7Count = 0;
     let rsiW14Sum = 0, rsiW14Count = 0;
-    
-    filtered.forEach(t => {
+
+    top100.forEach(t => {
       const rsi = rsiData.get(t.instId);
       if (rsi?.rsi7 !== undefined && rsi.rsi7 !== null) {
         rsi7Sum += rsi.rsi7;
@@ -642,14 +683,14 @@ export function useMarketStore() {
         rsiW14Count++;
       }
     });
-    
+
     return {
       avgRsi7: rsi7Count > 0 ? rsi7Sum / rsi7Count : null,
       avgRsi14: rsi14Count > 0 ? rsi14Sum / rsi14Count : null,
       avgRsiW7: rsiW7Count > 0 ? rsiW7Sum / rsiW7Count : null,
       avgRsiW14: rsiW14Count > 0 ? rsiW14Sum / rsiW14Count : null
     };
-  }, [getFilteredData, rsiData]);
+  }, [tickers, marketCapData, rsiData]);
   
   // Get top gainers/losers for leaderboard
   const getTopMovers = useCallback((timeframe: '4h' | '24h' | '7d', limit: number = 5) => {
