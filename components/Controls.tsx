@@ -153,7 +153,7 @@ export function Controls({
       {/* Quick Filters + Controls Row */}
       <div className="flex items-center gap-4 mb-4 flex-wrap">
         {/* Quick Filter Buttons */}
-        <div className="relative inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
+        <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
           <button
             className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
               activeQuickFilter === 'all'
@@ -161,75 +161,89 @@ export function Controls({
                 : 'text-gray-600 hover:text-gray-900'
             }`}
             onClick={() => handleQuickFilter('all')}
-            onMouseEnter={() => setHoveredFilter('all')}
-            onMouseLeave={() => setHoveredFilter(null)}
           >
             All
           </button>
-          <button
-            className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-              activeQuickFilter === 'top25'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => handleQuickFilter('top25')}
+
+          {/* Top 25 with tooltip */}
+          <div
+            className="relative"
             onMouseEnter={() => setHoveredFilter('top25')}
             onMouseLeave={() => setHoveredFilter(null)}
           >
-            Top 25
-          </button>
-          <button
-            className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-              activeQuickFilter === 'overbought'
-                ? 'bg-white text-red-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => handleQuickFilter('overbought')}
+            <button
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                activeQuickFilter === 'top25'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => handleQuickFilter('top25')}
+            >
+              Top 25
+            </button>
+            {hoveredFilter === 'top25' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
+                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
+                <div className="text-[12px]">
+                  <span className="text-gray-700">Market Cap Rank ≤ 20</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Overbought with tooltip */}
+          <div
+            className="relative"
             onMouseEnter={() => setHoveredFilter('overbought')}
             onMouseLeave={() => setHoveredFilter(null)}
           >
-            🔥 Overbought
-          </button>
-          <button
-            className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-              activeQuickFilter === 'oversold'
-                ? 'bg-white text-green-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => handleQuickFilter('oversold')}
+            <button
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                activeQuickFilter === 'overbought'
+                  ? 'bg-white text-red-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => handleQuickFilter('overbought')}
+            >
+              🔥 Overbought
+            </button>
+            {hoveredFilter === 'overbought' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
+                <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Overbought</div>
+                <div className="text-[12px] flex flex-col gap-0.5">
+                  <span className="text-red-500">D-RSI7 &gt; 70</span>
+                  <span className="text-red-500">D-RSI14 &gt; 70</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Oversold with tooltip */}
+          <div
+            className="relative"
             onMouseEnter={() => setHoveredFilter('oversold')}
             onMouseLeave={() => setHoveredFilter(null)}
           >
-            🧊 Oversold
-          </button>
-
-          {/* Custom hover tooltip */}
-          {hoveredFilter && hoveredFilter !== 'all' && (
-            <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
-              <div className="text-[11px] font-medium text-gray-500 mb-1">
-                {hoveredFilter === 'top25' && 'Filter Criteria'}
-                {hoveredFilter === 'overbought' && 'Daily Overbought'}
-                {hoveredFilter === 'oversold' && 'Daily Oversold'}
+            <button
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                activeQuickFilter === 'oversold'
+                  ? 'bg-white text-green-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => handleQuickFilter('oversold')}
+            >
+              🧊 Oversold
+            </button>
+            {hoveredFilter === 'oversold' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
+                <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Oversold</div>
+                <div className="text-[12px] flex flex-col gap-0.5">
+                  <span className="text-green-500">D-RSI7 &lt; 30</span>
+                  <span className="text-green-500">D-RSI14 &lt; 30</span>
+                </div>
               </div>
-              <div className="text-[12px]">
-                {hoveredFilter === 'top25' && (
-                  <span className="text-gray-700">Market Cap Rank ≤ 20</span>
-                )}
-                {hoveredFilter === 'overbought' && (
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-red-500">D-RSI7 &gt; 70</span>
-                    <span className="text-red-500">D-RSI14 &gt; 70</span>
-                  </div>
-                )}
-                {hoveredFilter === 'oversold' && (
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-green-500">D-RSI7 &lt; 30</span>
-                    <span className="text-green-500">D-RSI14 &lt; 30</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Columns dropdown */}
