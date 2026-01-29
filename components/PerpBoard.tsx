@@ -159,23 +159,6 @@ export default function PerpBoard() {
       <div className="flex-1 overflow-hidden flex flex-col px-6 pb-4">
         <div className="max-w-[1400px] mx-auto w-full flex flex-col h-full">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
-            {/* Status Bar */}
-            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 flex-shrink-0">
-              <div className="flex items-center text-xs text-gray-500">
-                <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                  store.status === 'live' ? 'bg-green-500' : 
-                  store.status === 'connecting' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
-                }`} />
-                <span>
-                  {store.status === 'live' ? 'Live' : 
-                   store.status === 'connecting' ? 'Connecting...' : 'Reconnecting...'}
-                </span>
-              </div>
-              <div className="text-xs text-gray-400">
-                {filteredData.length} tokens
-              </div>
-            </div>
-            
             {/* Scrollable Table Container */}
             <div className="flex-1 overflow-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
               <table className="w-full border-collapse" style={{ minWidth: '1100px' }}>
@@ -230,6 +213,9 @@ export default function PerpBoard() {
                         >
                           <span className="inline-flex items-center gap-0.5">
                             {def.label}
+                            {key === 'symbol' && (
+                              <span className="text-[10px] text-gray-400 font-normal ml-0.5">({filteredData.length})</span>
+                            )}
                             {sortable && (
                               <svg 
                                 className={`w-3 h-3 ml-0.5 ${isActive ? 'text-gray-600' : 'text-gray-300'}`}
@@ -477,71 +463,75 @@ export default function PerpBoard() {
             </div>
             
             {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 flex-shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 flex-shrink-0">
+              <div className="flex items-center gap-3">
                 <span className="text-xs text-gray-500">
                   {(store.currentPage - 1) * store.pageSize + 1}-{Math.min(store.currentPage * store.pageSize, filteredData.length)} of {filteredData.length}
                 </span>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => store.setCurrentPage(1)}
-                    disabled={store.currentPage === 1}
-                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    ««
-                  </button>
-                  <button
-                    onClick={() => store.setCurrentPage(store.currentPage - 1)}
-                    disabled={store.currentPage === 1}
-                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    «
-                  </button>
-                  
-                  {/* Page numbers */}
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum: number;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (store.currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (store.currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = store.currentPage - 2 + i;
-                    }
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => store.setCurrentPage(pageNum)}
-                        className={`px-2.5 py-1 text-xs rounded transition-colors ${
-                          store.currentPage === pageNum
-                            ? 'bg-gray-900 text-white'
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-                  
-                  <button
-                    onClick={() => store.setCurrentPage(store.currentPage + 1)}
-                    disabled={store.currentPage === totalPages}
-                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    »
-                  </button>
-                  <button
-                    onClick={() => store.setCurrentPage(totalPages)}
-                    disabled={store.currentPage === totalPages}
-                    className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    »»
-                  </button>
-                </div>
+                <span className={`w-1.5 h-1.5 rounded-full ${
+                  store.status === 'live' ? 'bg-green-500' : 
+                  store.status === 'connecting' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+                }`} title={store.status === 'live' ? 'Live' : store.status === 'connecting' ? 'Connecting...' : 'Reconnecting...'} />
               </div>
-            )}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => store.setCurrentPage(1)}
+                  disabled={store.currentPage === 1}
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  ««
+                </button>
+                <button
+                  onClick={() => store.setCurrentPage(store.currentPage - 1)}
+                  disabled={store.currentPage === 1}
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  «
+                </button>
+                
+                {/* Page numbers */}
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum: number;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (store.currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (store.currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = store.currentPage - 2 + i;
+                  }
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => store.setCurrentPage(pageNum)}
+                      className={`px-2.5 py-1 text-xs rounded transition-colors ${
+                        store.currentPage === pageNum
+                          ? 'bg-gray-900 text-white'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                
+                <button
+                  onClick={() => store.setCurrentPage(store.currentPage + 1)}
+                  disabled={store.currentPage === totalPages}
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  »
+                </button>
+                <button
+                  onClick={() => store.setCurrentPage(totalPages)}
+                  disabled={store.currentPage === totalPages}
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  »»
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
