@@ -1,23 +1,47 @@
 'use client';
 
-// P Logo SVG Component - matches the new logo design
+// P Logo SVG Component - matches the new flat minimal logo design
 function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-      {/* Row 1 */}
-      <rect x="0" y="0" width="100" height="100" fill="#8FE8BD"/>
-      <rect x="100" y="0" width="100" height="100" fill="#5DD99A"/>
-      <rect x="200" y="0" width="100" height="100" fill="#7DE8B5"/>
-      {/* Row 2 */}
-      <rect x="0" y="100" width="100" height="100" fill="#4AC98A"/>
-      <rect x="100" y="100" width="100" height="100" fill="#5DDB9C"/>
-      <rect x="200" y="100" width="100" height="100" fill="#8EEDC0"/>
-      {/* Row 3 */}
-      <rect x="0" y="200" width="100" height="100" fill="#3AAF75"/>
-      <rect x="100" y="200" width="100" height="100" fill="#4EC98D"/>
-      <rect x="200" y="200" width="100" height="100" fill="#6DDBA8"/>
-      {/* P Letter */}
-      <text x="150" y="215" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" fontSize="210" fontWeight="700" fill="#FFFFFF">P</text>
+    <svg className={className} viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      {/* Background: 3x3 grid of green squares */}
+      <g id="background">
+        <rect x="0" y="0" width="341.333" height="341.333" fill="#a8f0cb"/>
+        <rect x="341.333" y="0" width="341.333" height="341.333" fill="#47da93"/>
+        <rect x="682.667" y="0" width="341.333" height="341.333" fill="#7beab5"/>
+        <rect x="0" y="341.333" width="341.333" height="341.333" fill="#38bd7b"/>
+        <rect x="341.333" y="341.333" width="341.333" height="341.333" fill="#4bcd8c"/>
+        <rect x="682.667" y="341.333" width="341.333" height="341.333" fill="#98edc3"/>
+        <rect x="0" y="682.667" width="341.333" height="341.333" fill="#22915c"/>
+        <rect x="341.333" y="682.667" width="341.333" height="341.333" fill="#32b775"/>
+        <rect x="682.667" y="682.667" width="341.333" height="341.333" fill="#4ada94"/>
+      </g>
+      {/* Letter P: Geometric flat design */}
+      <g id="letter" fill="#ffffff" fillRule="evenodd">
+        <path d="
+          M 295 175
+          L 540 175
+          C 590 175 635 185 670 210
+          C 705 235 730 270 745 315
+          C 760 360 760 410 745 455
+          C 730 500 705 535 670 560
+          C 635 585 590 595 540 595
+          L 455 595
+          L 455 849
+          L 295 849
+          L 295 175
+          Z
+          M 455 315
+          L 455 455
+          L 520 455
+          C 545 455 565 450 580 435
+          C 595 420 600 400 600 385
+          C 600 370 595 350 580 335
+          C 565 320 545 315 520 315
+          L 455 315
+          Z
+        "/>
+      </g>
     </svg>
   );
 }

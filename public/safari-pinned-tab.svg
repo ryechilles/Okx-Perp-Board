@@ -1,4 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
-  <rect x="0" y="0" width="300" height="300" fill="#000"/>
-  <text x="150" y="210" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui" font-size="200" font-weight="800" fill="#fff">P</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>P Logo - Safari Pinned Tab</title>
+  <!-- Solid background for pinned tab -->
+  <rect x="0" y="0" width="1024" height="1024" fill="#000000"/>
+  <!-- Letter P -->
+  <path fill="#ffffff" fill-rule="evenodd" d="
+    M 295 175
+    L 540 175
+    C 590 175 635 185 670 210
+    C 705 235 730 270 745 315
+    C 760 360 760 410 745 455
+    C 730 500 705 535 670 560
+    C 635 585 590 595 540 595
+    L 455 595
+    L 455 849
+    L 295 849
+    L 295 175
+    Z
+    M 455 315
+    L 455 455
+    L 520 455
+    C 545 455 565 450 580 435
+    C 595 420 600 400 600 385
+    C 600 370 595 350 580 335
+    C 565 320 545 315 520 315
+    L 455 315
+    Z
+  "/>
 </svg>
