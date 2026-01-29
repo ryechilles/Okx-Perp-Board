@@ -39,7 +39,7 @@ export default function PerpBoard() {
   const FIXED_WIDTHS: Record<string, number> = {
     favorite: 40,
     rank: 48,
-    symbol: 90,
+    symbol: 115,
   };
   
   // Calculate left position - add small buffer to ensure complete coverage
