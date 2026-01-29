@@ -103,38 +103,48 @@ export function formatListDate(timestamp: number | undefined | null): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
 }
 
-// Calculate RSI using Wilder's smoothing method
+// Calculate RSI using Wilder's smoothing method (RMA)
+// This matches TradingView's default RSI calculation
 export function calculateRSI(closes: number[], period: number): number | null {
   if (closes.length < period + 1) return null;
-  
-  let gains = 0;
-  let losses = 0;
-  
-  // Initial average
-  for (let i = 1; i <= period; i++) {
-    const change = closes[i] - closes[i - 1];
-    if (change > 0) gains += change;
-    else losses -= change;
+
+  // Calculate price changes
+  const changes: number[] = [];
+  for (let i = 1; i < closes.length; i++) {
+    changes.push(closes[i] - closes[i - 1]);
   }
-  
-  let avgGain = gains / period;
-  let avgLoss = losses / period;
-  
-  // Wilder's smoothing
-  for (let i = period + 1; i < closes.length; i++) {
-    const change = closes[i] - closes[i - 1];
-    if (change > 0) {
-      avgGain = (avgGain * (period - 1) + change) / period;
-      avgLoss = (avgLoss * (period - 1)) / period;
-    } else {
-      avgGain = (avgGain * (period - 1)) / period;
-      avgLoss = (avgLoss * (period - 1) - change) / period;
-    }
+
+  if (changes.length < period) return null;
+
+  // Separate gains and losses
+  const gains = changes.map(c => c > 0 ? c : 0);
+  const losses = changes.map(c => c < 0 ? Math.abs(c) : 0);
+
+  // First average (SMA for initial value)
+  let avgGain = 0;
+  let avgLoss = 0;
+  for (let i = 0; i < period; i++) {
+    avgGain += gains[i];
+    avgLoss += losses[i];
   }
-  
-  if (avgLoss === 0) return 100;
+  avgGain /= period;
+  avgLoss /= period;
+
+  // Apply Wilder's smoothing (RMA) for remaining values
+  // RMA formula: newAvg = (prevAvg * (period - 1) + currentValue) / period
+  for (let i = period; i < changes.length; i++) {
+    avgGain = (avgGain * (period - 1) + gains[i]) / period;
+    avgLoss = (avgLoss * (period - 1) + losses[i]) / period;
+  }
+
+  if (avgLoss === 0) {
+    return avgGain === 0 ? 50 : 100;
+  }
+
   const rs = avgGain / avgLoss;
-  return 100 - (100 / (1 + rs));
+  const rsi = 100 - (100 / (1 + rs));
+
+  return rsi;
 }
 
 // Calculate 7D change from candles
