@@ -152,7 +152,7 @@ export function Controls({
 
       {/* Quick Filters + Controls Row */}
       <div className="flex items-center gap-4 mb-4 flex-wrap">
-        {/* Quick Filter Buttons */}
+        {/* Quick Filter Buttons - Part 1: All & Top 25 */}
         <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
           <button
             className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
@@ -185,12 +185,15 @@ export function Controls({
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
                 <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
                 <div className="text-[12px]">
-                  <span className="text-gray-700">OKX Perp Market Cap Rank 1-25</span>
+                  <span className="text-gray-900">OKX Perp Market Cap Rank 1-25</span>
                 </div>
               </div>
             )}
           </div>
+        </div>
 
+        {/* Quick Filter Buttons - Part 2: RSI Filters */}
+        <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
           {/* Overbought with tooltip */}
           <div
             className="relative"
