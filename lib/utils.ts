@@ -197,6 +197,15 @@ export function getRsiClass(rsi: number | null | undefined): string {
   return 'text-red-600';                       // Overbought Zone
 }
 
+// Format RSI value with emoji for extreme zones
+export function formatRsi(rsi: number | null | undefined): string {
+  if (rsi === null || rsi === undefined) return '--';
+  const value = rsi.toFixed(1);
+  if (rsi <= 25) return `🔥${value}`;          // Oversold Zone
+  if (rsi > 75) return `🧊${value}`;           // Overbought Zone
+  return value;
+}
+
 // Get change class for styling
 export function getChangeClass(change: number | null | undefined): string {
   if (change === null || change === undefined) return '';

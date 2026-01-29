@@ -7,7 +7,7 @@ import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { ColumnKey } from '@/lib/types';
-import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
+import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval, formatRsi } from '@/lib/utils';
 
 export default function PerpBoard() {
   const store = useMarketStore();
@@ -475,28 +475,28 @@ export default function PerpBoard() {
                               case 'rsi7':
                                 return (
                                   <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsi7)}`}>
-                                    {rsi?.rsi7 !== undefined && rsi.rsi7 !== null ? rsi.rsi7.toFixed(1) : '--'}
+                                    {formatRsi(rsi?.rsi7)}
                                   </td>
                                 );
-                                
+
                               case 'rsi14':
                                 return (
                                   <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsi14)}`}>
-                                    {rsi?.rsi14 !== undefined && rsi.rsi14 !== null ? rsi.rsi14.toFixed(1) : '--'}
+                                    {formatRsi(rsi?.rsi14)}
                                   </td>
                                 );
                               
                               case 'rsiW7':
                                 return (
                                   <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsiW7)}`}>
-                                    {rsi?.rsiW7 !== undefined && rsi.rsiW7 !== null ? rsi.rsiW7.toFixed(1) : '--'}
+                                    {formatRsi(rsi?.rsiW7)}
                                   </td>
                                 );
-                              
+
                               case 'rsiW14':
                                 return (
                                   <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsiW14)}`}>
-                                    {rsi?.rsiW14 !== undefined && rsi.rsiW14 !== null ? rsi.rsiW14.toFixed(1) : '--'}
+                                    {formatRsi(rsi?.rsiW14)}
                                   </td>
                                 );
                                 

@@ -30,6 +30,15 @@ function getRsiColor(rsi: number | null): string {
   return 'text-red-600';                       // Overbought Zone
 }
 
+// Format RSI value with emoji for extreme zones
+function formatRsi(rsi: number | null): string {
+  if (rsi === null) return '--';
+  const value = rsi.toFixed(1);
+  if (rsi <= 25) return `🔥${value}`;          // Oversold Zone
+  if (rsi > 75) return `🧊${value}`;           // Overbought Zone
+  return value;
+}
+
 function getMomentumInfo(rsi: number | null): MomentumInfo {
   if (rsi === null) {
     return { level: 'neutral', label: '--', color: 'text-gray-400', bgColor: 'bg-gray-50' };
@@ -116,13 +125,13 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
               <div className="flex items-center gap-1">
                 <span className="text-gray-500">D-RSI7:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsi7)}`}>
-                  {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
+                  {formatRsi(avgRsi7)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-gray-500">D-RSI14:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsi14)}`}>
-                  {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
+                  {formatRsi(avgRsi14)}
                 </span>
               </div>
             </div>
@@ -135,13 +144,13 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
               <div className="flex items-center gap-1">
                 <span className="text-gray-500">W-RSI7:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW7)}`}>
-                  {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
+                  {formatRsi(avgRsiW7)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-gray-500">W-RSI14:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW14)}`}>
-                  {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
+                  {formatRsi(avgRsiW14)}
                 </span>
               </div>
             </div>
