@@ -104,32 +104,42 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
 
       {/* Hover tooltip with detailed RSI values */}
       {showDetails && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 min-w-[220px]">
+        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
           <div className="text-[11px] font-medium text-gray-500 mb-2">RSI Details</div>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-[12px]">
-            <div className="flex items-center gap-1">
-              <span className="text-gray-500">D-RSI7:</span>
-              <span className={`font-medium tabular-nums ${getRsiColor(avgRsi7)}`}>
-                {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
-              </span>
+          <div className="flex items-center gap-3 text-[12px]">
+            {/* Daily RSI - Left */}
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500">D-RSI7:</span>
+                <span className={`font-medium tabular-nums ${getRsiColor(avgRsi7)}`}>
+                  {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500">D-RSI14:</span>
+                <span className={`font-medium tabular-nums ${getRsiColor(avgRsi14)}`}>
+                  {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="text-gray-500">D-RSI14:</span>
-              <span className={`font-medium tabular-nums ${getRsiColor(avgRsi14)}`}>
-                {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-gray-500">W-RSI7:</span>
-              <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW7)}`}>
-                {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-gray-500">W-RSI14:</span>
-              <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW14)}`}>
-                {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
-              </span>
+
+            {/* Divider */}
+            <div className="text-gray-300">|</div>
+
+            {/* Weekly RSI - Right */}
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500">W-RSI7:</span>
+                <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW7)}`}>
+                  {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500">W-RSI14:</span>
+                <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW14)}`}>
+                  {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
