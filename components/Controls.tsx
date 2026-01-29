@@ -185,7 +185,7 @@ export function Controls({
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
                 <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
                 <div className="text-[12px]">
-                  <span className="text-gray-700">Market Cap Rank ≤ 20</span>
+                  <span className="text-gray-700">OKX Perp Market Cap Rank 1-25</span>
                 </div>
               </div>
             )}
@@ -211,8 +211,8 @@ export function Controls({
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
                 <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Overbought</div>
                 <div className="text-[12px] flex flex-col gap-0.5">
-                  <span className="text-red-500">D-RSI7 &gt; 70</span>
-                  <span className="text-red-500">D-RSI14 &gt; 70</span>
+                  <span className="text-gray-900">D-RSI7 &gt; 70</span>
+                  <span className="text-gray-900">D-RSI14 &gt; 70</span>
                 </div>
               </div>
             )}
@@ -238,8 +238,8 @@ export function Controls({
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
                 <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Oversold</div>
                 <div className="text-[12px] flex flex-col gap-0.5">
-                  <span className="text-green-500">D-RSI7 &lt; 30</span>
-                  <span className="text-green-500">D-RSI14 &lt; 30</span>
+                  <span className="text-gray-900">D-RSI7 &lt; 30</span>
+                  <span className="text-gray-900">D-RSI14 &lt; 30</span>
                 </div>
               </div>
             )}

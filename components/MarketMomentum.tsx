@@ -123,13 +123,13 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             {/* Daily RSI - Left */}
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
-                <span className="text-gray-500">D-RSI7:</span>
+                <span className="text-gray-900">D-RSI7:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsi7)}`}>
                   {formatRsi(avgRsi7)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-gray-500">D-RSI14:</span>
+                <span className="text-gray-900">D-RSI14:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsi14)}`}>
                   {formatRsi(avgRsi14)}
                 </span>
@@ -137,18 +137,18 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             </div>
 
             {/* Divider */}
-            <div className="text-gray-300">|</div>
+            <div className="text-gray-900">|</div>
 
             {/* Weekly RSI - Right */}
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
-                <span className="text-gray-500">W-RSI7:</span>
+                <span className="text-gray-900">W-RSI7:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW7)}`}>
                   {formatRsi(avgRsiW7)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-gray-500">W-RSI14:</span>
+                <span className="text-gray-900">W-RSI14:</span>
                 <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW14)}`}>
                   {formatRsi(avgRsiW14)}
                 </span>
