@@ -42,11 +42,12 @@ export function Controls({
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
   
-  const fixedColumnKeys = ['favorite', 'rank', 'logo', 'symbol'];
+  // Fixed columns that are always shown and not counted
+  const alwaysFixedColumns = ['favorite', 'rank', 'symbol'];
   const visibleCount = Object.entries(columns)
-    .filter(([key]) => !fixedColumnKeys.includes(key))
+    .filter(([key]) => !alwaysFixedColumns.includes(key))
     .filter(([, v]) => v).length;
-  const totalCount = Object.keys(columns).length - fixedColumnKeys.length;
+  const totalCount = Object.keys(columns).length - alwaysFixedColumns.length;
   const hasFilters = Object.keys(filters).length > 0;
   
   const handleApplyFilters = () => {
@@ -68,7 +69,7 @@ export function Controls({
   const columnOptions: { key: ColumnKey; label: string; disabled?: boolean }[] = [
     { key: 'favorite', label: '★ Favorite', disabled: true },
     { key: 'rank', label: '#Rank', disabled: true },
-    { key: 'logo', label: '🖼 Logo' },
+    { key: 'logo', label: 'Logo' },
     { key: 'symbol', label: 'Token', disabled: true },
     { key: 'price', label: 'Price' },
     { key: 'fundingRate', label: 'Funding Rate' },
