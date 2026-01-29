@@ -118,7 +118,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       {/* Hover tooltip with detailed RSI values */}
       {showDetails && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
-          <div className="text-[11px] font-medium text-gray-500 mb-2">RSI Details</div>
+          <div className="text-[11px] font-medium text-gray-500 mb-2">Top 100 OKX Perp Token AVG RSI</div>
           <div className="flex items-center gap-3 text-[12px]">
             {/* Daily RSI - Left */}
             <div className="flex flex-col gap-1">
