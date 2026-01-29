@@ -30,7 +30,7 @@ export function Header() {
         <span className="text-base font-semibold text-gray-900 whitespace-nowrap">
           Perp Board
         </span>
-        <span className="text-[10px] text-gray-400">v2.3.3</span>
+        <span className="text-[10px] text-gray-400">v2.3.4</span>
       </div>
       
       <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">

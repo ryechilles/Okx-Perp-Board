@@ -541,9 +541,15 @@ export function useMarketStore() {
           bVal = rsiData.get(b.instId)?.change7d ?? -9999;
           break;
         case 'rank':
-          aVal = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
-          bVal = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
-          break;
+          // Sort by market cap value (larger = better rank)
+          aVal = marketCapData.get(a.baseSymbol)?.marketCap ?? 0;
+          bVal = marketCapData.get(b.baseSymbol)?.marketCap ?? 0;
+          // Reverse for rank: higher market cap = lower rank number
+          if (sort.direction === 'asc') {
+            return (bVal as number) - (aVal as number); // desc by marketCap = asc by rank
+          } else {
+            return (aVal as number) - (bVal as number); // asc by marketCap = desc by rank
+          }
         case 'marketCap':
           aVal = marketCapData.get(a.baseSymbol)?.marketCap ?? 0;
           bVal = marketCapData.get(b.baseSymbol)?.marketCap ?? 0;

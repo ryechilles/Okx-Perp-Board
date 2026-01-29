@@ -283,13 +283,16 @@ export default function PerpBoard() {
                       </td>
                     </tr>
                   ) : (
-                    paginatedData.map(ticker => {
+                    paginatedData.map((ticker, index) => {
                       const rsi = store.rsiData.get(ticker.instId);
                       const fundingRate = store.fundingRateData.get(ticker.instId);
                       const listingData = store.listingData.get(ticker.instId);
                       const marketCap = store.marketCapData.get(ticker.baseSymbol);
                       const hasSpot = store.spotSymbols.has(`${ticker.baseSymbol}-USDT`);
                       const isFavorite = store.favorites.includes(ticker.instId);
+                      
+                      // Calculate actual rank in current list (considering pagination)
+                      const displayRank = (store.currentPage - 1) * store.pageSize + index + 1;
                       
                       const parts = ticker.instId.split('-');
                       const base = parts[0];
@@ -343,7 +346,7 @@ export default function PerpBoard() {
                               case 'rank':
                                 return (
                                   <td key={key} className={`${baseClass} text-[12px] text-gray-500`} style={cellStyle}>
-                                    {marketCap?.rank ? marketCap.rank : <span className="text-gray-300">--</span>}
+                                    {displayRank}
                                   </td>
                                 );
                                 
