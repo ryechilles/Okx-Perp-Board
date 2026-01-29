@@ -26,7 +26,7 @@ import { DEFAULT_COLUMN_ORDER } from '@/lib/utils';
 const DEFAULT_COLUMNS: ColumnVisibility = {
   favorite: true,
   rank: true,
-  logo: false,
+  logo: true,
   symbol: true,
   price: true,
   fundingRate: true,
