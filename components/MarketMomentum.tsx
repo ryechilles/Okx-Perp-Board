@@ -18,6 +18,14 @@ interface MomentumInfo {
   bgColor: string;
 }
 
+// Get RSI color based on value (same logic as table RSI colors)
+function getRsiColor(rsi: number | null): string {
+  if (rsi === null) return 'text-gray-400';
+  if (rsi <= 30) return 'text-green-500';
+  if (rsi >= 70) return 'text-red-500';
+  return 'text-gray-600';
+}
+
 function getMomentumInfo(rsi: number | null): MomentumInfo {
   if (rsi === null) {
     return { level: 'neutral', label: '--', color: 'text-gray-400', bgColor: 'bg-gray-50' };
@@ -96,30 +104,30 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
 
       {/* Hover tooltip with detailed RSI values */}
       {showDetails && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 min-w-[200px]">
+        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 min-w-[220px]">
           <div className="text-[11px] font-medium text-gray-500 mb-2">RSI Details</div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[12px]">
-            <div className="flex justify-between">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-[12px]">
+            <div className="flex items-center gap-1">
               <span className="text-gray-500">D-RSI7:</span>
-              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsi7).color}`}>
+              <span className={`font-medium tabular-nums ${getRsiColor(avgRsi7)}`}>
                 {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex items-center gap-1">
               <span className="text-gray-500">D-RSI14:</span>
-              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsi14).color}`}>
+              <span className={`font-medium tabular-nums ${getRsiColor(avgRsi14)}`}>
                 {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex items-center gap-1">
               <span className="text-gray-500">W-RSI7:</span>
-              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsiW7).color}`}>
+              <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW7)}`}>
                 {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex items-center gap-1">
               <span className="text-gray-500">W-RSI14:</span>
-              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsiW14).color}`}>
+              <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW14)}`}>
                 {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
               </span>
             </div>
