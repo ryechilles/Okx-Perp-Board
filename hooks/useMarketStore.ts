@@ -221,8 +221,7 @@ export function useMarketStore() {
         instIds,
         rsiData,
         setRsiProgress,
-        updateRsiData,
-        50 // Priority first 50
+        updateRsiData
       );
     } finally {
       isFetchingRsiRef.current = false;

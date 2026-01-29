@@ -481,64 +481,78 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
 }
 
 // Batch fetch RSI for multiple instruments with priority
+// Top 25 loaded first with faster speed, then rest
 export async function fetchRSIBatch(
   instIds: string[],
   existingData: Map<string, RSIData>,
   onProgress: (text: string) => void,
-  onUpdate: (instId: string, data: RSIData) => void,
-  priorityCount: number = 50 // Prioritize first 50 tokens
+  onUpdate: (instId: string, data: RSIData) => void
 ): Promise<void> {
   // Filter out instruments that already have recent RSI data (within 5 minutes)
   const staleThreshold = 5 * 60 * 1000; // 5 minutes
   const now = Date.now();
-  
+
   const toFetch = instIds.filter(id => {
     const existing = existingData.get(id);
     if (!existing) return true;
     return now - existing.lastUpdated > staleThreshold;
   });
-  
+
   if (toFetch.length === 0) {
     onProgress('');
     return;
   }
-  
-  // Prioritize first N tokens (based on rank/visibility)
-  const priorityBatch = toFetch.slice(0, priorityCount);
-  const remainingBatch = toFetch.slice(priorityCount);
-  
-  // Process priority batch first
-  for (let i = 0; i < priorityBatch.length; i++) {
-    const instId = priorityBatch[i];
-    onProgress(`RSI ${i + 1}/${priorityBatch.length} (Priority)`);
-    
+
+  // Split into 3 tiers: Top 25 (fastest), 26-100 (medium), 101+ (slower)
+  const top25 = toFetch.slice(0, 25);
+  const tier2 = toFetch.slice(25, 100);
+  const tier3 = toFetch.slice(100);
+
+  // Tier 1: Top 25 - fastest loading (150ms delay)
+  for (let i = 0; i < top25.length; i++) {
+    const instId = top25[i];
+    onProgress(`Loading Top 25: ${i + 1}/${top25.length}`);
+
     const rsiData = await fetchRSIForInstrument(instId);
     if (rsiData) {
       onUpdate(instId, rsiData);
     }
-    
-    // Delay between requests
-    if (i < priorityBatch.length - 1) {
+
+    if (i < top25.length - 1) {
+      await new Promise(r => setTimeout(r, 150));
+    }
+  }
+
+  // Tier 2: 26-100 - medium speed (300ms delay)
+  for (let i = 0; i < tier2.length; i++) {
+    const instId = tier2[i];
+    onProgress(`Loading 26-100: ${i + 1}/${tier2.length}`);
+
+    const rsiData = await fetchRSIForInstrument(instId);
+    if (rsiData) {
+      onUpdate(instId, rsiData);
+    }
+
+    if (i < tier2.length - 1) {
       await new Promise(r => setTimeout(r, 300));
     }
   }
-  
-  // Process remaining batch at lower frequency
-  for (let i = 0; i < remainingBatch.length; i++) {
-    const instId = remainingBatch[i];
-    onProgress(`RSI ${priorityBatch.length + i + 1}/${toFetch.length}`);
-    
+
+  // Tier 3: 101+ - slower (500ms delay)
+  for (let i = 0; i < tier3.length; i++) {
+    const instId = tier3[i];
+    onProgress(`Loading others: ${i + 1}/${tier3.length}`);
+
     const rsiData = await fetchRSIForInstrument(instId);
     if (rsiData) {
       onUpdate(instId, rsiData);
     }
-    
-    // Longer delay for non-priority items
-    if (i < remainingBatch.length - 1) {
+
+    if (i < tier3.length - 1) {
       await new Promise(r => setTimeout(r, 500));
     }
   }
-  
+
   onProgress('');
 }
 
