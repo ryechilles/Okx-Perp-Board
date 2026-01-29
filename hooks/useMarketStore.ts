@@ -72,7 +72,6 @@ export function useMarketStore() {
   
   // Refs for WebSocket and intervals
   const dataManagerRef = useRef<OKXHybridDataManager | null>(null);
-  const rsiIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isFetchingRsiRef = useRef(false);
   
   // Load favorites, column order, and filters from localStorage
@@ -201,22 +200,25 @@ export function useMarketStore() {
     });
   }, []);
   
-  // Fetch RSI for visible/filtered items
+  // Get sorted instrument IDs by market cap rank
+  const getSortedInstIds = useCallback((tickerMap: Map<string, ProcessedTicker>) => {
+    return Array.from(tickerMap.values())
+      .filter(t => t.instId.includes('-USDT-'))
+      .sort((a, b) => {
+        const rankA = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
+        const rankB = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
+        return rankA - rankB;
+      })
+      .map(t => t.instId);
+  }, [marketCapData]);
+
+  // Fetch RSI for all items (initial load)
   const fetchRsiForVisible = useCallback(async (tickerMap: Map<string, ProcessedTicker>) => {
     if (isFetchingRsiRef.current) return;
     isFetchingRsiRef.current = true;
-    
+
     try {
-      // Get filtered instrument IDs sorted by rank
-      const instIds = Array.from(tickerMap.values())
-        .filter(t => t.instId.includes('-USDT-'))
-        .sort((a, b) => {
-          const rankA = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
-          const rankB = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
-          return rankA - rankB;
-        })
-        .map(t => t.instId);
-      
+      const instIds = getSortedInstIds(tickerMap);
       await fetchRSIBatch(
         instIds,
         rsiData,
@@ -226,7 +228,29 @@ export function useMarketStore() {
     } finally {
       isFetchingRsiRef.current = false;
     }
-  }, [marketCapData, rsiData, updateRsiData]);
+  }, [getSortedInstIds, rsiData, updateRsiData]);
+
+  // Fetch RSI for specific tier only
+  const fetchRsiForTier = useCallback(async (
+    tickerMap: Map<string, ProcessedTicker>,
+    tier: 'top50' | 'tier2' | 'tier3'
+  ) => {
+    if (isFetchingRsiRef.current) return;
+    isFetchingRsiRef.current = true;
+
+    try {
+      const instIds = getSortedInstIds(tickerMap);
+      await fetchRSIBatch(
+        instIds,
+        rsiData,
+        setRsiProgress,
+        updateRsiData,
+        tier
+      );
+    } finally {
+      isFetchingRsiRef.current = false;
+    }
+  }, [getSortedInstIds, rsiData, updateRsiData]);
   
   // Initialize hybrid data manager (WebSocket for TOP 50 + REST for rest)
   const initialize = useCallback(async () => {
@@ -263,15 +287,36 @@ export function useMarketStore() {
         fetchRsiForVisible(currentTickers);
       }
     }, 2000);
-    
-    // Setup RSI refresh interval (every 5 minutes)
-    rsiIntervalRef.current = setInterval(() => {
+
+    // Setup tiered RSI refresh intervals:
+    // Top 50: every 2 minutes
+    // 51-100: every 5 minutes
+    // 101+: every 10 minutes
+
+    // Top 50 RSI refresh (every 2 minutes)
+    setInterval(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
-        fetchRsiForVisible(currentTickers);
+        fetchRsiForTier(currentTickers, 'top50');
+      }
+    }, 2 * 60 * 1000);
+
+    // Tier 2 (51-100) RSI refresh (every 5 minutes)
+    setInterval(() => {
+      const currentTickers = dataManagerRef.current?.getTickers();
+      if (currentTickers && currentTickers.size > 0) {
+        fetchRsiForTier(currentTickers, 'tier2');
       }
     }, 5 * 60 * 1000);
-    
+
+    // Tier 3 (101+) RSI refresh (every 10 minutes)
+    setInterval(() => {
+      const currentTickers = dataManagerRef.current?.getTickers();
+      if (currentTickers && currentTickers.size > 0) {
+        fetchRsiForTier(currentTickers, 'tier3');
+      }
+    }, 10 * 60 * 1000);
+
     // Refresh market cap every 5 minutes
     setInterval(async () => {
       const newMarketCap = await fetchMarketCapData();
@@ -284,14 +329,11 @@ export function useMarketStore() {
       setFundingRateData(newFundingRates);
     }, 5 * 60 * 1000);
     
-  }, [fetchRsiForVisible]);
+  }, [fetchRsiForVisible, fetchRsiForTier]);
   
   // Cleanup
   const cleanup = useCallback(() => {
     dataManagerRef.current?.stop();
-    if (rsiIntervalRef.current) {
-      clearInterval(rsiIntervalRef.current);
-    }
   }, []);
   
   // Column management

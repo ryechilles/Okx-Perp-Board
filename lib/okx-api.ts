@@ -11,13 +11,13 @@ const rateLimiter = new RateLimiter(8, 1000); // 8 requests per second max
 export type TickerUpdateCallback = (tickers: Map<string, ProcessedTicker>) => void;
 export type StatusCallback = (status: 'connecting' | 'live' | 'error', time?: Date) => void;
 
-// Hybrid data manager: WebSocket for TOP 25 + REST polling for the rest
+// Hybrid data manager: WebSocket for TOP 50 + REST polling for the rest
 export class OKXHybridDataManager {
   private ws: WebSocket | null = null;
   private tickers: Map<string, ProcessedTicker> = new Map();
   private onUpdate: TickerUpdateCallback;
   private onStatus: StatusCallback;
-  private top25InstIds: string[] = [];
+  private top50InstIds: string[] = [];
   private allInstIds: string[] = [];
   private restPollInterval: NodeJS.Timeout | null = null;
   private wsReconnectTimeout: NodeJS.Timeout | null = null;
@@ -68,8 +68,8 @@ export class OKXHybridDataManager {
           return volB - volA;
         });
 
-        // TOP 25 for WebSocket
-        this.top25InstIds = usdtSwaps.slice(0, 25).map(t => t.instId);
+        // TOP 50 for WebSocket
+        this.top50InstIds = usdtSwaps.slice(0, 50).map(t => t.instId);
         this.allInstIds = usdtSwaps.map(t => t.instId);
 
         this.onUpdate(new Map(this.tickers));
@@ -83,19 +83,19 @@ export class OKXHybridDataManager {
 
   private connectWebSocket(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
-    if (this.top25InstIds.length === 0) return;
+    if (this.top50InstIds.length === 0) return;
 
     try {
       this.ws = new WebSocket(OKX_WS_PUBLIC);
 
       this.ws.onopen = () => {
-        console.log('WebSocket connected, subscribing to TOP 25...');
+        console.log('WebSocket connected, subscribing to TOP 50...');
         this.wsConnected = true;
 
-        // Subscribe to TOP 25 in batches (max 20 per message to be safe)
+        // Subscribe to TOP 50 in batches (max 20 per message to be safe)
         const batchSize = 20;
-        for (let i = 0; i < this.top25InstIds.length; i += batchSize) {
-          const batch = this.top25InstIds.slice(i, i + batchSize);
+        for (let i = 0; i < this.top50InstIds.length; i += batchSize) {
+          const batch = this.top50InstIds.slice(i, i + batchSize);
           const subscribeMsg = {
             op: 'subscribe',
             args: batch.map(instId => ({
@@ -202,7 +202,7 @@ export class OKXHybridDataManager {
           data.data.forEach((ticker: OKXTicker) => {
             if (ticker.instId.endsWith('-USDT-SWAP')) {
               // Only update non-TOP 25 via REST (TOP 25 updated by WebSocket)
-              if (!this.wsConnected || !this.top25InstIds.includes(ticker.instId)) {
+              if (!this.wsConnected || !this.top50InstIds.includes(ticker.instId)) {
                 const processed = processTicker(ticker);
                 this.tickers.set(ticker.instId, processed);
                 updated = true;
@@ -250,7 +250,11 @@ export class OKXHybridDataManager {
   }
 
   getTop50InstIds(): string[] {
-    return [...this.top25InstIds];
+    return [...this.top50InstIds];
+  }
+
+  getAllInstIds(): string[] {
+    return [...this.allInstIds];
   }
 }
 
@@ -481,21 +485,28 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
 }
 
 // Batch fetch RSI for multiple instruments with priority
-// Top 25 loaded first with faster speed, then rest
+// Top 50 loaded first with faster speed, then rest
 export async function fetchRSIBatch(
   instIds: string[],
   existingData: Map<string, RSIData>,
   onProgress: (text: string) => void,
-  onUpdate: (instId: string, data: RSIData) => void
+  onUpdate: (instId: string, data: RSIData) => void,
+  tier?: 'top50' | 'tier2' | 'tier3' | 'all' // Optional: fetch specific tier only
 ): Promise<void> {
-  // Filter out instruments that already have recent RSI data (within 5 minutes)
-  const staleThreshold = 5 * 60 * 1000; // 5 minutes
   const now = Date.now();
 
-  const toFetch = instIds.filter(id => {
+  // Different stale thresholds for different tiers
+  const getStaleThreshold = (index: number): number => {
+    if (index < 50) return 2 * 60 * 1000;   // Top 50: 2 minutes
+    if (index < 100) return 5 * 60 * 1000;  // 51-100: 5 minutes
+    return 10 * 60 * 1000;                   // 101+: 10 minutes
+  };
+
+  // Filter based on tier-specific stale thresholds
+  const toFetch = instIds.filter((id, index) => {
     const existing = existingData.get(id);
     if (!existing) return true;
-    return now - existing.lastUpdated > staleThreshold;
+    return now - existing.lastUpdated > getStaleThreshold(index);
   });
 
   if (toFetch.length === 0) {
@@ -503,52 +514,52 @@ export async function fetchRSIBatch(
     return;
   }
 
-  // Split into 3 tiers: Top 25 (fastest), 26-100 (medium), 101+ (slower)
-  const top25 = toFetch.slice(0, 25);
-  const tier2 = toFetch.slice(25, 100);
-  const tier3 = toFetch.slice(100);
+  // Split into 3 tiers: Top 50 (fastest), 51-100 (medium), 101+ (slower)
+  const top50 = tier === 'all' || tier === 'top50' || !tier ? toFetch.slice(0, 50) : [];
+  const tier2List = tier === 'all' || tier === 'tier2' || !tier ? toFetch.slice(50, 100) : [];
+  const tier3List = tier === 'all' || tier === 'tier3' || !tier ? toFetch.slice(100) : [];
 
-  // Tier 1: Top 25 - fastest loading (150ms delay)
-  for (let i = 0; i < top25.length; i++) {
-    const instId = top25[i];
-    onProgress(`Loading Top 25: ${i + 1}/${top25.length}`);
+  // Tier 1: Top 50 - fastest loading (150ms delay)
+  for (let i = 0; i < top50.length; i++) {
+    const instId = top50[i];
+    onProgress(`Loading Top 50: ${i + 1}/${top50.length}`);
 
     const rsiData = await fetchRSIForInstrument(instId);
     if (rsiData) {
       onUpdate(instId, rsiData);
     }
 
-    if (i < top25.length - 1) {
+    if (i < top50.length - 1) {
       await new Promise(r => setTimeout(r, 150));
     }
   }
 
-  // Tier 2: 26-100 - medium speed (300ms delay)
-  for (let i = 0; i < tier2.length; i++) {
-    const instId = tier2[i];
-    onProgress(`Loading 26-100: ${i + 1}/${tier2.length}`);
+  // Tier 2: 51-100 - medium speed (300ms delay)
+  for (let i = 0; i < tier2List.length; i++) {
+    const instId = tier2List[i];
+    onProgress(`Loading 51-100: ${i + 1}/${tier2List.length}`);
 
     const rsiData = await fetchRSIForInstrument(instId);
     if (rsiData) {
       onUpdate(instId, rsiData);
     }
 
-    if (i < tier2.length - 1) {
+    if (i < tier2List.length - 1) {
       await new Promise(r => setTimeout(r, 300));
     }
   }
 
   // Tier 3: 101+ - slower (500ms delay)
-  for (let i = 0; i < tier3.length; i++) {
-    const instId = tier3[i];
-    onProgress(`Loading others: ${i + 1}/${tier3.length}`);
+  for (let i = 0; i < tier3List.length; i++) {
+    const instId = tier3List[i];
+    onProgress(`Loading others: ${i + 1}/${tier3List.length}`);
 
     const rsiData = await fetchRSIForInstrument(instId);
     if (rsiData) {
       onUpdate(instId, rsiData);
     }
 
-    if (i < tier3.length - 1) {
+    if (i < tier3List.length - 1) {
       await new Promise(r => setTimeout(r, 500));
     }
   }
