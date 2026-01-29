@@ -412,10 +412,8 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     let change4h: number | null = null;
     
     if (data.code === '0' && data.data && data.data.length >= 15) {
-      // OKX returns newest first, data[0] is the current unclosed candle
-      // Remove it to match TradingView's "closed bar" RSI
-      const closedCandles = data.data.slice(1);
-      const candles = [...closedCandles].reverse();
+      // OKX returns newest first, include current candle to match OKX's own RSI display
+      const candles = [...data.data].reverse();
       const closes = candles.map((c: string[]) => parseFloat(c[4]));
 
       rsi7 = calculateRSI(closes, 7);
@@ -434,9 +432,8 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
       const dataW = await responseW.json();
 
       if (dataW.code === '0' && dataW.data && dataW.data.length >= 15) {
-        // Remove current unclosed weekly candle
-        const closedCandlesW = dataW.data.slice(1);
-        const candlesW = [...closedCandlesW].reverse();
+        // Include current candle to match OKX's own RSI display
+        const candlesW = [...dataW.data].reverse();
         const closesW = candlesW.map((c: string[]) => parseFloat(c[4]));
 
         rsiW7 = calculateRSI(closesW, 7);
