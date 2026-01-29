@@ -268,6 +268,21 @@ export function useMarketStore() {
   // Column management
   const updateColumn = useCallback((col: keyof ColumnVisibility, visible: boolean) => {
     setColumns(prev => ({ ...prev, [col]: visible }));
+    
+    // If enabling logo and it's not in columnOrder, add it in the correct position
+    if (col === 'logo' && visible) {
+      setColumnOrder(prev => {
+        if (!prev.includes('logo')) {
+          // Insert logo between rank and symbol
+          const rankIndex = prev.indexOf('rank');
+          const newOrder = [...prev];
+          newOrder.splice(rankIndex + 1, 0, 'logo');
+          localStorage.setItem('okx-column-order', JSON.stringify(newOrder));
+          return newOrder;
+        }
+        return prev;
+      });
+    }
   }, []);
   
   const setColumnsPreset = useCallback((preset: 'all' | 'none' | 'default') => {

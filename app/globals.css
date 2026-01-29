@@ -27,68 +27,66 @@ body {
   color: var(--foreground);
 }
 
-/* Scrollbar Styling - macOS style: overlay scrollbar */
-/* Default: hide scrollbar completely */
+/* Global: hide all scrollbars by default */
 * {
-  scrollbar-width: none; /* Firefox - completely hide */
+  scrollbar-width: none;
 }
 
 *::-webkit-scrollbar {
-  width: 0;
-  height: 0;
   display: none;
-  background: transparent;
 }
 
-/* Table container - overlay scrollbar only when scrolling */
+/* Table container - use overlay scrollbar that floats on top of content */
 .scrollbar-auto-hide {
+  /* Key: use overlay so scrollbar doesn't take space */
+  overflow: auto;
+  overflow: overlay; /* For browsers that support it */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 .scrollbar-auto-hide::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   display: none;
 }
 
 .scrollbar-auto-hide::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent !important;
 }
 
 .scrollbar-auto-hide::-webkit-scrollbar-thumb {
   background: transparent;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
-/* When actively scrolling, show the scrollbar as overlay */
-/* The scrollbar itself is fully transparent track with semi-opaque thumb */
+.scrollbar-auto-hide::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+/* When scrolling, show thin overlay scrollbar */
 .scrollbar-auto-hide.is-scrolling {
   scrollbar-width: thin;
-  /* scrollbar-color: thumb track - use header bg color for track */
-  scrollbar-color: rgba(156, 163, 175, 0.6) transparent;
+  scrollbar-color: rgba(120, 120, 128, 0.5) transparent;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   display: block;
-  background: transparent;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent !important;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-thumb {
-  /* Use gray-400 color to match the header style */
-  background: rgba(156, 163, 175, 0.6);
-  border-radius: 4px;
+  background: rgba(120, 120, 128, 0.5);
+  border-radius: 3px;
 }
 
-/* Corner piece (where horizontal and vertical scrollbars meet) */
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-corner {
-  background: transparent;
+  background: transparent !important;
 }
 
 /* Horizontal scroll with bounce effect (iOS-like) */

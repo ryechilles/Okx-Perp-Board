@@ -42,10 +42,11 @@ export function Controls({
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
   
+  const fixedColumnKeys = ['favorite', 'rank', 'logo', 'symbol'];
   const visibleCount = Object.entries(columns)
-    .filter(([key]) => !['favorite', 'rank', 'symbol'].includes(key))
+    .filter(([key]) => !fixedColumnKeys.includes(key))
     .filter(([, v]) => v).length;
-  const totalCount = Object.keys(columns).length - 3;
+  const totalCount = Object.keys(columns).length - fixedColumnKeys.length;
   const hasFilters = Object.keys(filters).length > 0;
   
   const handleApplyFilters = () => {
