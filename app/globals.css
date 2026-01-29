@@ -63,18 +63,30 @@ body {
 /* When actively scrolling, show the scrollbar as overlay */
 .scrollbar-auto-hide.is-scrolling {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   display: block;
+  background: transparent;
+}
+
+.scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-track {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  border: none;
+}
+
+.scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* Horizontal scroll with bounce effect (iOS-like) */
