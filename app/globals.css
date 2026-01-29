@@ -26,24 +26,55 @@ body {
   color: var(--foreground);
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Scrollbar Styling - macOS style: only visible when scrolling */
+* {
+  scrollbar-width: none; /* Firefox */
 }
 
-::-webkit-scrollbar-track {
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  transition: background 0.2s;
+*::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+}
+
+/* Show scrollbar only when scrolling - using a wrapper class */
+.scrollbar-auto-hide {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: transparent transparent;
+}
+
+.scrollbar-auto-hide::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* When actively scrolling, show the scrollbar */
+.scrollbar-auto-hide:hover::-webkit-scrollbar-thumb,
+.scrollbar-auto-hide:focus::-webkit-scrollbar-thumb,
+.scrollbar-auto-hide:active::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Use CSS animation to show/hide scrollbar during scroll */
+@keyframes fadeScrollbar {
+  0%, 100% { background: rgba(0, 0, 0, 0.3); }
+}
+
+.scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.scrollbar-auto-hide.is-scrolling {
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
 
 /* Horizontal scroll with bounce effect (iOS-like) */

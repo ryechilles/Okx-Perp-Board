@@ -17,7 +17,9 @@ export default function PerpBoard() {
   
   // Scroll state - only show shadow when scrolled horizontally
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     store.initialize();
@@ -31,10 +33,26 @@ export default function PerpBoard() {
     
     const handleScroll = () => {
       setIsScrolled(container.scrollLeft > 0);
+      setIsScrolling(true);
+      
+      // Clear existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // Hide scrollbar after 1 second of no scrolling
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 1000);
     };
     
     container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, []);
   
   const filteredData = store.getFilteredData();
@@ -179,7 +197,7 @@ export default function PerpBoard() {
             {/* Scrollable Table Container */}
             <div 
               ref={tableContainerRef}
-              className="flex-1 overflow-auto" 
+              className={`flex-1 overflow-auto scrollbar-auto-hide ${isScrolling ? 'is-scrolling' : ''}`}
               style={{ WebkitOverflowScrolling: 'touch' }}
             >
               <table className="w-full border-collapse" style={{ minWidth: '1100px' }}>
