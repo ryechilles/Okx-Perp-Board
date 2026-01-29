@@ -15,43 +15,27 @@ export default function PerpBoard() {
   const [draggedColumn, setDraggedColumn] = useState<ColumnKey | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<ColumnKey | null>(null);
   
-  // Scroll state - only show shadow when scrolled horizontally
+  // Scroll state - only track horizontal scroll for sticky column shadow
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     store.initialize();
     return () => store.cleanup();
   }, []);
   
-  // Monitor horizontal scroll
+  // Monitor horizontal scroll for sticky column shadow
   useEffect(() => {
     const container = tableContainerRef.current;
     if (!container) return;
     
     const handleScroll = () => {
       setIsScrolled(container.scrollLeft > 0);
-      setIsScrolling(true);
-      
-      // Clear existing timeout
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-      
-      // Hide scrollbar after 1 second of no scrolling
-      scrollTimeoutRef.current = setTimeout(() => {
-        setIsScrolling(false);
-      }, 1000);
     };
     
     container.addEventListener('scroll', handleScroll);
     return () => {
       container.removeEventListener('scroll', handleScroll);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
     };
   }, []);
   
@@ -198,7 +182,7 @@ export default function PerpBoard() {
             {/* Scrollable Table Container */}
             <div 
               ref={tableContainerRef}
-              className={`flex-1 overflow-auto scrollbar-auto-hide ${isScrolling ? 'is-scrolling' : ''}`}
+              className="flex-1 overflow-auto"
               style={{ WebkitOverflowScrolling: 'touch' }}
             >
               <table className="w-full border-collapse" style={{ minWidth: '1100px' }}>
