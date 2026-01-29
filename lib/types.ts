@@ -85,12 +85,14 @@ export interface ListingData {
 export interface MarketCapData {
   marketCap: number;
   rank: number;
+  logo?: string;
 }
 
 // Column key type
 export type ColumnKey = 
   | 'favorite'
   | 'rank'
+  | 'logo'
   | 'symbol'
   | 'price'
   | 'fundingRate'
@@ -112,6 +114,7 @@ export type ColumnKey =
 export interface ColumnVisibility {
   favorite: boolean;
   rank: boolean;
+  logo: boolean;
   symbol: boolean;
   price: boolean;
   fundingRate: boolean;

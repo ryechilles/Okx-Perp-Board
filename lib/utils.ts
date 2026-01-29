@@ -3,7 +3,8 @@ import { RSIData, MarketCapData, ProcessedTicker, OKXTicker, ColumnKey } from '.
 // Default column order
 export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'favorite',
-  'rank', 
+  'rank',
+  'logo',
   'symbol',
   'price',
   'fundingRate',
@@ -26,7 +27,8 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
 export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: number; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
   favorite: { label: '', width: 40, align: 'center', fixed: true, sortable: false },
   rank: { label: '#', width: 48, align: 'center', fixed: true, sortable: true },
-  symbol: { label: 'Token', width: 115, align: 'left', fixed: true, sortable: true },
+  logo: { label: '', width: 32, align: 'center', fixed: true, sortable: false },
+  symbol: { label: 'Token', width: 95, align: 'left', fixed: true, sortable: true },
   price: { label: 'Price', width: 90, align: 'center', sortable: true },
   fundingRate: { label: 'Funding Rate', width: 95, align: 'center', sortable: true },
   fundingApr: { label: 'Funding APR', width: 95, align: 'center', sortable: true },

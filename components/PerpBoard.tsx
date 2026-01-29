@@ -65,7 +65,7 @@ export default function PerpBoard() {
     store.currentPage * store.pageSize
   );
   
-  const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'symbol'];
+  const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
   
   // Get visible columns in order
   const visibleColumns = store.columnOrder.filter(key => store.columns[key]);
@@ -74,7 +74,8 @@ export default function PerpBoard() {
   const FIXED_WIDTHS: Record<string, number> = {
     favorite: 40,
     rank: 48,
-    symbol: 115,
+    logo: 32,
+    symbol: 95,
   };
   
   // Calculate left position - add small buffer to ensure complete coverage
@@ -367,6 +368,30 @@ export default function PerpBoard() {
                                   <td key={key} className={`${baseClass} font-semibold`} style={cellStyle}>
                                     <span className="text-gray-900">{base}</span>
                                     <span className="text-gray-400 font-normal">/{quote}</span>
+                                  </td>
+                                );
+                              
+                              case 'logo':
+                                const logoUrl = marketCap?.logo;
+                                return (
+                                  <td key={key} className={`${baseClass}`} style={cellStyle}>
+                                    {logoUrl ? (
+                                      <img 
+                                        src={logoUrl}
+                                        alt={base}
+                                        className="w-5 h-5 rounded-full bg-gray-100"
+                                        loading="lazy"
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.onerror = null;
+                                          target.src = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23e5e7eb' width='32' height='32' rx='16'/><text x='16' y='21' text-anchor='middle' fill='%236b7280' font-size='14' font-family='sans-serif'>${base.charAt(0)}</text></svg>`;
+                                        }}
+                                      />
+                                    ) : (
+                                      <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-[10px] text-gray-500 font-medium">
+                                        {base.charAt(0)}
+                                      </div>
+                                    )}
                                   </td>
                                 );
                                 

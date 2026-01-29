@@ -67,6 +67,7 @@ export function Controls({
   const columnOptions: { key: ColumnKey; label: string; disabled?: boolean }[] = [
     { key: 'favorite', label: '★ Favorite', disabled: true },
     { key: 'rank', label: '#Rank', disabled: true },
+    { key: 'logo', label: '🖼 Logo' },
     { key: 'symbol', label: 'Token', disabled: true },
     { key: 'price', label: 'Price' },
     { key: 'fundingRate', label: 'Funding Rate' },

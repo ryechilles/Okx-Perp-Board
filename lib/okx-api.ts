@@ -539,8 +539,8 @@ export async function fetchRSIBatch(
 }
 
 // Fetch CoinGecko market cap data with pagination (up to 500 coins)
-export async function fetchMarketCapData(): Promise<Map<string, { marketCap: number; rank: number }>> {
-  const result = new Map<string, { marketCap: number; rank: number }>();
+export async function fetchMarketCapData(): Promise<Map<string, { marketCap: number; rank: number; logo?: string }>> {
+  const result = new Map<string, { marketCap: number; rank: number; logo?: string }>();
   
   try {
     // Fetch page 1 (1-250)
@@ -550,11 +550,12 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
     const data1 = await response1.json();
     
     if (Array.isArray(data1)) {
-      data1.forEach((coin: { symbol: string; market_cap: number }, index: number) => {
+      data1.forEach((coin: { symbol: string; market_cap: number; image: string }, index: number) => {
         const symbol = coin.symbol.toUpperCase();
         result.set(symbol, {
           marketCap: coin.market_cap,
-          rank: index + 1
+          rank: index + 1,
+          logo: coin.image
         });
       });
     }
@@ -569,13 +570,14 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
     const data2 = await response2.json();
     
     if (Array.isArray(data2)) {
-      data2.forEach((coin: { symbol: string; market_cap: number }, index: number) => {
+      data2.forEach((coin: { symbol: string; market_cap: number; image: string }, index: number) => {
         const symbol = coin.symbol.toUpperCase();
         // Only add if not already present (avoid duplicates)
         if (!result.has(symbol)) {
           result.set(symbol, {
             marketCap: coin.market_cap,
-            rank: 250 + index + 1
+            rank: 250 + index + 1,
+            logo: coin.image
           });
         }
       });

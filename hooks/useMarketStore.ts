@@ -26,6 +26,7 @@ import { DEFAULT_COLUMN_ORDER } from '@/lib/utils';
 const DEFAULT_COLUMNS: ColumnVisibility = {
   favorite: true,
   rank: true,
+  logo: false,
   symbol: true,
   price: true,
   fundingRate: true,
@@ -88,9 +89,27 @@ export function useMarketStore() {
     if (savedColumnOrder) {
       try {
         const parsed = JSON.parse(savedColumnOrder);
-        // Validate that all required columns are present
-        if (Array.isArray(parsed) && parsed.length === DEFAULT_COLUMN_ORDER.length) {
-          setColumnOrder(parsed);
+        if (Array.isArray(parsed)) {
+          // Merge saved order with default order to handle new columns
+          const savedSet = new Set(parsed);
+          const defaultSet = new Set(DEFAULT_COLUMN_ORDER);
+          
+          // Start with saved order, but only include columns that still exist
+          const mergedOrder = parsed.filter((col: ColumnKey) => defaultSet.has(col));
+          
+          // Add any new columns that weren't in saved order (after the fixed columns)
+          const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
+          const newColumns = DEFAULT_COLUMN_ORDER.filter(col => 
+            !savedSet.has(col) && !fixedColumns.includes(col)
+          );
+          
+          // Insert new columns after fixed columns
+          const fixedPart = fixedColumns.filter(col => mergedOrder.includes(col) || DEFAULT_COLUMN_ORDER.includes(col));
+          const nonFixedPart = mergedOrder.filter((col: ColumnKey) => !fixedColumns.includes(col));
+          
+          const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedPart, ...newColumns];
+          setColumnOrder(finalOrder);
+          localStorage.setItem('okx-column-order', JSON.stringify(finalOrder));
         }
       } catch (e) {
         console.error('Failed to parse column order:', e);
@@ -112,7 +131,7 @@ export function useMarketStore() {
   // Update column order (for drag and drop)
   const updateColumnOrder = useCallback((newOrder: ColumnKey[]) => {
     // Ensure fixed columns stay in place
-    const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'symbol'];
+    const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
     const nonFixedOrder = newOrder.filter(col => !fixedColumns.includes(col));
     const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedOrder];
     
@@ -123,7 +142,7 @@ export function useMarketStore() {
   // Move a column to a new position
   const moveColumn = useCallback((dragKey: ColumnKey, hoverKey: ColumnKey) => {
     // Fixed columns cannot be moved
-    const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'symbol'];
+    const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
     if (fixedColumns.includes(dragKey) || fixedColumns.includes(hoverKey)) {
       return;
     }
@@ -256,6 +275,7 @@ export function useMarketStore() {
       setColumns({
         favorite: true,
         rank: true,
+        logo: true,
         symbol: true,
         price: true,
         fundingRate: true,
@@ -277,6 +297,7 @@ export function useMarketStore() {
       setColumns({
         favorite: true,
         rank: true,
+        logo: false,
         symbol: true,
         price: false,
         fundingRate: false,

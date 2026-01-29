@@ -8,6 +8,7 @@
   --border: #e5e5e5;
   --muted: #666;
   --muted-foreground: #999;
+  --header-bg: #fafafa;
 }
 
 * {
@@ -26,7 +27,8 @@ body {
   color: var(--foreground);
 }
 
-/* Scrollbar Styling - macOS style: only visible when scrolling */
+/* Scrollbar Styling - macOS style: overlay scrollbar */
+/* Default: hide scrollbar completely */
 * {
   scrollbar-width: none; /* Firefox - completely hide */
 }
@@ -48,7 +50,6 @@ body {
   width: 8px;
   height: 8px;
   display: none;
-  background: transparent;
 }
 
 .scrollbar-auto-hide::-webkit-scrollbar-track {
@@ -61,30 +62,31 @@ body {
 }
 
 /* When actively scrolling, show the scrollbar as overlay */
+/* The scrollbar itself is fully transparent track with semi-opaque thumb */
 .scrollbar-auto-hide.is-scrolling {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  /* scrollbar-color: thumb track - use header bg color for track */
+  scrollbar-color: rgba(156, 163, 175, 0.6) transparent;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   display: block;
   background: transparent;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-track {
   background: transparent;
-  border: none;
-  box-shadow: none;
 }
 
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 3px;
-  border: none;
+  /* Use gray-400 color to match the header style */
+  background: rgba(156, 163, 175, 0.6);
+  border-radius: 4px;
 }
 
+/* Corner piece (where horizontal and vertical scrollbars meet) */
 .scrollbar-auto-hide.is-scrolling::-webkit-scrollbar-corner {
   background: transparent;
 }
