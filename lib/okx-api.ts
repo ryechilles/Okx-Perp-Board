@@ -550,13 +550,17 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
     const data1 = await response1.json();
     
     if (Array.isArray(data1)) {
-      data1.forEach((coin: { symbol: string; market_cap: number; image: string }, index: number) => {
+      data1.forEach((coin: { symbol: string; market_cap: number; market_cap_rank: number; image: string }) => {
         const symbol = coin.symbol.toUpperCase();
-        result.set(symbol, {
-          marketCap: coin.market_cap,
-          rank: index + 1,
-          logo: coin.image
-        });
+        const existing = result.get(symbol);
+        // Only set if not exists OR if this coin has higher rank (lower number = better)
+        if (!existing || (coin.market_cap_rank && coin.market_cap_rank < existing.rank)) {
+          result.set(symbol, {
+            marketCap: coin.market_cap,
+            rank: coin.market_cap_rank || 9999,
+            logo: coin.image
+          });
+        }
       });
     }
     
@@ -570,13 +574,14 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
     const data2 = await response2.json();
     
     if (Array.isArray(data2)) {
-      data2.forEach((coin: { symbol: string; market_cap: number; image: string }, index: number) => {
+      data2.forEach((coin: { symbol: string; market_cap: number; market_cap_rank: number; image: string }) => {
         const symbol = coin.symbol.toUpperCase();
-        // Only add if not already present (avoid duplicates)
-        if (!result.has(symbol)) {
+        const existing = result.get(symbol);
+        // Only set if not exists OR if this coin has higher rank (lower number = better)
+        if (!existing || (coin.market_cap_rank && coin.market_cap_rank < existing.rank)) {
           result.set(symbol, {
             marketCap: coin.market_cap,
-            rank: 250 + index + 1,
+            rank: coin.market_cap_rank || 9999,
             logo: coin.image
           });
         }
