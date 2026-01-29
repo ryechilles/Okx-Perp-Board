@@ -94,6 +94,7 @@ export type ColumnKey =
   | 'symbol'
   | 'price'
   | 'fundingRate'
+  | 'fundingApr'
   | 'fundingInterval'
   | 'change4h'
   | 'change'
@@ -114,6 +115,7 @@ export interface ColumnVisibility {
   symbol: boolean;
   price: boolean;
   fundingRate: boolean;
+  fundingApr: boolean;
   fundingInterval: boolean;
   change4h: boolean;
   change: boolean;

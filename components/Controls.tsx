@@ -70,6 +70,7 @@ export function Controls({
     { key: 'symbol', label: 'Token', disabled: true },
     { key: 'price', label: 'Price' },
     { key: 'fundingRate', label: 'Funding Rate' },
+    { key: 'fundingApr', label: 'Funding APR' },
     { key: 'fundingInterval', label: 'Funding Interval' },
     { key: 'change4h', label: '4H Change' },
     { key: 'change', label: '24H Change' },

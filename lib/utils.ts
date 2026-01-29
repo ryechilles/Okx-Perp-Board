@@ -7,6 +7,7 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'symbol',
   'price',
   'fundingRate',
+  'fundingApr',
   'fundingInterval',
   'change4h',
   'change',
@@ -22,25 +23,44 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
 ];
 
 // Column definitions - all columns centered except symbol (left-aligned)
-export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: string; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
-  favorite: { label: '', width: '40px', align: 'center', fixed: true, sortable: false },
-  rank: { label: '#', width: '48px', align: 'center', fixed: true, sortable: true },
-  symbol: { label: 'Token', width: '90px', align: 'left', fixed: true, sortable: true },
-  price: { label: 'Price', width: '90px', align: 'center', sortable: true },
-  fundingRate: { label: 'Funding', width: '80px', align: 'center', sortable: true },
-  fundingInterval: { label: 'Intv', width: '50px', align: 'center', sortable: true },
-  change4h: { label: '4H', width: '68px', align: 'center', sortable: true },
-  change: { label: '24H', width: '68px', align: 'center', sortable: true },
-  change7d: { label: '7D', width: '68px', align: 'center', sortable: true },
-  volume24h: { label: 'Vol 24H', width: '85px', align: 'center', sortable: true },
-  marketCap: { label: 'Mkt Cap', width: '80px', align: 'center', sortable: true },
-  rsi7: { label: 'D-RSI7', width: '58px', align: 'center', sortable: true },
-  rsi14: { label: 'D-RSI14', width: '62px', align: 'center', sortable: true },
-  rsiW7: { label: 'W-RSI7', width: '58px', align: 'center', sortable: true },
-  rsiW14: { label: 'W-RSI14', width: '62px', align: 'center', sortable: true },
-  listDate: { label: 'Listed', width: '75px', align: 'center', sortable: true },
-  hasSpot: { label: 'Spot', width: '48px', align: 'center', sortable: true }
+export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: number; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
+  favorite: { label: '', width: 40, align: 'center', fixed: true, sortable: false },
+  rank: { label: '#', width: 48, align: 'center', fixed: true, sortable: true },
+  symbol: { label: 'Token', width: 90, align: 'left', fixed: true, sortable: true },
+  price: { label: 'Price', width: 90, align: 'center', sortable: true },
+  fundingRate: { label: 'Funding Rate', width: 95, align: 'center', sortable: true },
+  fundingApr: { label: 'Funding APR', width: 95, align: 'center', sortable: true },
+  fundingInterval: { label: 'Funding Interval', width: 110, align: 'center', sortable: true },
+  change4h: { label: '4H', width: 68, align: 'center', sortable: true },
+  change: { label: '24H', width: 68, align: 'center', sortable: true },
+  change7d: { label: '7D', width: 68, align: 'center', sortable: true },
+  volume24h: { label: 'Vol 24H', width: 85, align: 'center', sortable: true },
+  marketCap: { label: 'Mkt Cap', width: 80, align: 'center', sortable: true },
+  rsi7: { label: 'D-RSI7', width: 58, align: 'center', sortable: true },
+  rsi14: { label: 'D-RSI14', width: 62, align: 'center', sortable: true },
+  rsiW7: { label: 'W-RSI7', width: 58, align: 'center', sortable: true },
+  rsiW14: { label: 'W-RSI14', width: 62, align: 'center', sortable: true },
+  listDate: { label: 'Listed', width: 75, align: 'center', sortable: true },
+  hasSpot: { label: 'Spot', width: 48, align: 'center', sortable: true }
 };
+
+// Format funding APR (annualized)
+export function formatFundingApr(rate: number | undefined | null, intervalHours: number | undefined | null): string {
+  if (rate === undefined || rate === null) return '--';
+  const interval = intervalHours || 8; // default 8 hours
+  const periodsPerYear = (365 * 24) / interval;
+  const apr = rate * periodsPerYear * 100;
+  const sign = apr >= 0 ? '+' : '';
+  return `${sign}${apr.toFixed(2)}%`;
+}
+
+// Get funding APR color class
+export function getFundingAprClass(rate: number | undefined | null): string {
+  if (rate === undefined || rate === null) return 'text-gray-300';
+  if (rate > 0) return 'text-green-500';
+  if (rate < 0) return 'text-red-500';
+  return 'text-gray-500';
+}
 
 // Format funding rate as percentage
 export function formatFundingRate(rate: number | undefined | null): string {
@@ -124,12 +144,21 @@ export function calculate7DChange(candles: number[][]): number | null {
   return ((currentClose - close7dAgo) / close7dAgo) * 100;
 }
 
-// Format price with appropriate decimals
+// Format price with appropriate decimals, removing trailing zeros
 export function formatPrice(price: number): string {
-  if (price >= 1000) return price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  if (price >= 1) return price.toFixed(4);
-  if (price >= 0.0001) return price.toFixed(6);
-  return price.toFixed(8);
+  let formatted: string;
+  if (price >= 1000) {
+    formatted = price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  } else if (price >= 100) {
+    formatted = parseFloat(price.toFixed(2)).toString();
+  } else if (price >= 1) {
+    formatted = parseFloat(price.toFixed(4)).toString();
+  } else if (price >= 0.0001) {
+    formatted = parseFloat(price.toFixed(6)).toString();
+  } else {
+    formatted = parseFloat(price.toFixed(8)).toString();
+  }
+  return formatted;
 }
 
 // Format market cap

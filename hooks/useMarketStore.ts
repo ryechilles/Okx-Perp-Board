@@ -29,6 +29,7 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   symbol: true,
   price: true,
   fundingRate: true,
+  fundingApr: true,
   fundingInterval: true,
   change4h: true,
   change: true,
@@ -258,6 +259,7 @@ export function useMarketStore() {
         symbol: true,
         price: true,
         fundingRate: true,
+        fundingApr: true,
         fundingInterval: true,
         change4h: true,
         change: true,
@@ -278,6 +280,7 @@ export function useMarketStore() {
         symbol: true,
         price: false,
         fundingRate: false,
+        fundingApr: false,
         fundingInterval: false,
         change4h: false,
         change: false,
@@ -538,6 +541,14 @@ export function useMarketStore() {
         case 'fundingRate':
           aVal = fundingRateData.get(a.instId)?.fundingRate ?? 0;
           bVal = fundingRateData.get(b.instId)?.fundingRate ?? 0;
+          break;
+        case 'fundingApr':
+          const frA = fundingRateData.get(a.instId);
+          const frB = fundingRateData.get(b.instId);
+          const aprA = frA ? frA.fundingRate * ((365 * 24) / (frA.settlementInterval || 8)) : 0;
+          const aprB = frB ? frB.fundingRate * ((365 * 24) / (frB.settlementInterval || 8)) : 0;
+          aVal = aprA;
+          bVal = aprB;
           break;
         case 'fundingInterval':
           aVal = fundingRateData.get(a.instId)?.settlementInterval ?? 8;

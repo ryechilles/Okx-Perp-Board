@@ -1,15 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { ColumnKey } from '@/lib/types';
-import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
+import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval } from '@/lib/utils';
 
 export default function PerpBoard() {
   const store = useMarketStore();
+  
+  // Drag state
+  const [draggedColumn, setDraggedColumn] = useState<ColumnKey | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<ColumnKey | null>(null);
   
   useEffect(() => {
     store.initialize();
@@ -75,6 +79,55 @@ export default function PerpBoard() {
     return visibleFixed[visibleFixed.length - 1] === key;
   };
   
+  // Drag handlers
+  const handleDragStart = (e: React.DragEvent, key: ColumnKey) => {
+    if (isFixedColumn(key)) {
+      e.preventDefault();
+      return;
+    }
+    setDraggedColumn(key);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', key);
+  };
+  
+  const handleDragOver = (e: React.DragEvent, key: ColumnKey) => {
+    e.preventDefault();
+    if (isFixedColumn(key) || !draggedColumn || draggedColumn === key) return;
+    setDragOverColumn(key);
+  };
+  
+  const handleDragLeave = () => {
+    setDragOverColumn(null);
+  };
+  
+  const handleDrop = (e: React.DragEvent, targetKey: ColumnKey) => {
+    e.preventDefault();
+    if (!draggedColumn || isFixedColumn(targetKey) || draggedColumn === targetKey) {
+      setDraggedColumn(null);
+      setDragOverColumn(null);
+      return;
+    }
+    
+    // Reorder columns
+    const newOrder = [...store.columnOrder];
+    const dragIndex = newOrder.indexOf(draggedColumn);
+    const dropIndex = newOrder.indexOf(targetKey);
+    
+    if (dragIndex !== -1 && dropIndex !== -1) {
+      newOrder.splice(dragIndex, 1);
+      newOrder.splice(dropIndex, 0, draggedColumn);
+      store.updateColumnOrder(newOrder);
+    }
+    
+    setDraggedColumn(null);
+    setDragOverColumn(null);
+  };
+  
+  const handleDragEnd = () => {
+    setDraggedColumn(null);
+    setDragOverColumn(null);
+  };
+  
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* Sticky Header */}
@@ -107,24 +160,19 @@ export default function PerpBoard() {
         <div className="max-w-[1400px] mx-auto w-full flex flex-col h-full">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
             {/* Status Bar */}
-            <div className="flex justify-end items-center px-4 py-3 border-b border-gray-100 flex-shrink-0">
-              <div className="flex items-center gap-4 text-xs text-gray-500">
-                {store.rsiProgress && (
-                  <span className="text-gray-400">{store.rsiProgress}</span>
-                )}
-                <div className="flex items-center">
-                  <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                    store.status === 'live' ? 'bg-green-500' : 
-                    store.status === 'connecting' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
-                  }`} />
-                  <span>
-                    {store.status === 'live' ? 'Live' : 
-                     store.status === 'connecting' ? 'Connecting...' : 'Reconnecting...'}
-                  </span>
-                </div>
+            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 flex-shrink-0">
+              <div className="flex items-center text-xs text-gray-500">
+                <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                  store.status === 'live' ? 'bg-green-500' : 
+                  store.status === 'connecting' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+                }`} />
                 <span>
-                  {store.lastUpdate ? store.lastUpdate.toLocaleTimeString() : '--'}
+                  {store.status === 'live' ? 'Live' : 
+                   store.status === 'connecting' ? 'Connecting...' : 'Reconnecting...'}
                 </span>
+              </div>
+              <div className="text-xs text-gray-400">
+                {filteredData.length} tokens
               </div>
             </div>
             
@@ -148,6 +196,8 @@ export default function PerpBoard() {
                       const isLastFixed = isLastFixedColumn(key);
                       const stickyLeft = getStickyLeft(key);
                       const fixedWidth = FIXED_WIDTHS[key];
+                      const isDragging = draggedColumn === key;
+                      const isDragOver = dragOverColumn === key;
                       
                       let alignClass = 'text-left';
                       if (def.align === 'right') alignClass = 'text-right';
@@ -168,7 +218,13 @@ export default function PerpBoard() {
                       return (
                         <th
                           key={key}
-                          className={`px-1 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                          draggable={!isFixed}
+                          onDragStart={(e) => handleDragStart(e, key)}
+                          onDragOver={(e) => handleDragOver(e, key)}
+                          onDragLeave={handleDragLeave}
+                          onDrop={(e) => handleDrop(e, key)}
+                          onDragEnd={handleDragEnd}
+                          className={`px-1 py-3 text-[11px] font-medium text-gray-500 uppercase tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
                           style={stickyStyle}
                           onClick={() => sortable && store.updateSort(key)}
                         >
@@ -300,6 +356,13 @@ export default function PerpBoard() {
                                 return (
                                   <td key={key} className={`${baseClass} font-medium tabular-nums ${getFundingRateClass(fundingRate?.fundingRate)}`}>
                                     {formatFundingRate(fundingRate?.fundingRate)}
+                                  </td>
+                                );
+                              
+                              case 'fundingApr':
+                                return (
+                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getFundingAprClass(fundingRate?.fundingRate)}`}>
+                                    {formatFundingApr(fundingRate?.fundingRate, fundingRate?.settlementInterval)}
                                   </td>
                                 );
                               
