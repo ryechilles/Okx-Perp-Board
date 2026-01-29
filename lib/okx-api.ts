@@ -400,7 +400,8 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     await rateLimiter.waitForSlot();
     
     // Fetch daily candles for RSI and 7D change
-    const response = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1D&limit=30`);
+    // Need more candles for RSI to converge properly (TradingView uses ~100+ bars)
+    const response = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1D&limit=100`);
     const data = await response.json();
     
     let rsi7: number | null = null;
@@ -424,10 +425,11 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     await rateLimiter.waitForSlot();
     
     // Fetch weekly candles for weekly RSI
+    // Need more candles for RSI to converge properly
     try {
-      const responseW = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1W&limit=20`);
+      const responseW = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1W&limit=100`);
       const dataW = await responseW.json();
-      
+
       if (dataW.code === '0' && dataW.data && dataW.data.length >= 15) {
         const candlesW = [...dataW.data].reverse();
         const closesW = candlesW.map((c: string[]) => parseFloat(c[4]));
