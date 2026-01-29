@@ -185,12 +185,16 @@ export function formatVolume(volCcy: string | number, price: number): string {
   return '$' + volumeUsd.toFixed(0);
 }
 
-// Get RSI class for styling
+// Get RSI class for styling (7-level color scale)
 export function getRsiClass(rsi: number | null | undefined): string {
   if (rsi === null || rsi === undefined) return 'text-gray-300';
-  if (rsi <= 30) return 'text-green-500';
-  if (rsi >= 70) return 'text-red-500';
-  return 'text-gray-600';
+  if (rsi <= 25) return 'text-green-600';      // Oversold Zone
+  if (rsi <= 35) return 'text-green-500';      // Weak
+  if (rsi <= 45) return 'text-emerald-500';    // Neutral → Weak
+  if (rsi <= 55) return 'text-gray-600';       // Neutral
+  if (rsi <= 65) return 'text-orange-500';     // Neutral → Strong
+  if (rsi <= 75) return 'text-red-500';        // Strong
+  return 'text-red-600';                       // Overbought Zone
 }
 
 // Get change class for styling

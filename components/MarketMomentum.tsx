@@ -18,12 +18,16 @@ interface MomentumInfo {
   bgColor: string;
 }
 
-// Get RSI color based on value (same logic as table RSI colors)
+// Get RSI color based on value (7-level color scale, same as table)
 function getRsiColor(rsi: number | null): string {
   if (rsi === null) return 'text-gray-400';
-  if (rsi <= 30) return 'text-green-500';
-  if (rsi >= 70) return 'text-red-500';
-  return 'text-gray-600';
+  if (rsi <= 25) return 'text-green-600';      // Oversold Zone
+  if (rsi <= 35) return 'text-green-500';      // Weak
+  if (rsi <= 45) return 'text-emerald-500';    // Neutral → Weak
+  if (rsi <= 55) return 'text-gray-600';       // Neutral
+  if (rsi <= 65) return 'text-orange-500';     // Neutral → Strong
+  if (rsi <= 75) return 'text-red-500';        // Strong
+  return 'text-red-600';                       // Overbought Zone
 }
 
 function getMomentumInfo(rsi: number | null): MomentumInfo {
