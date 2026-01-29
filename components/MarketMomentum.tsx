@@ -34,8 +34,8 @@ function getRsiColor(rsi: number | null): string {
 function formatRsi(rsi: number | null): string {
   if (rsi === null) return '--';
   const value = rsi.toFixed(1);
-  if (rsi <= 25) return `🔥${value}`;          // Oversold Zone
-  if (rsi > 75) return `🧊${value}`;           // Overbought Zone
+  if (rsi <= 25) return `🧊${value}`;          // Oversold Zone (cold)
+  if (rsi > 75) return `🔥${value}`;           // Overbought Zone (hot)
   return value;
 }
 

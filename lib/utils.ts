@@ -211,8 +211,8 @@ export function getRsiClass(rsi: number | null | undefined): string {
 export function formatRsi(rsi: number | null | undefined): string {
   if (rsi === null || rsi === undefined) return '--';
   const value = rsi.toFixed(1);
-  if (rsi <= 25) return `🔥${value}`;          // Oversold Zone
-  if (rsi > 75) return `🧊${value}`;           // Overbought Zone
+  if (rsi <= 25) return `🧊${value}`;          // Oversold Zone (cold)
+  if (rsi > 75) return `🔥${value}`;           // Overbought Zone (hot)
   return value;
 }
 
