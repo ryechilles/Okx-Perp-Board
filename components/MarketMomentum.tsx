@@ -1,0 +1,131 @@
+'use client';
+
+import { useState } from 'react';
+
+interface MarketMomentumProps {
+  avgRsi7: number | null;
+  avgRsi14: number | null;
+  avgRsiW7: number | null;
+  avgRsiW14: number | null;
+}
+
+type MomentumLevel = 'oversold' | 'weak' | 'neutral' | 'strong' | 'overbought';
+
+interface MomentumInfo {
+  level: MomentumLevel;
+  label: string;
+  color: string;
+  bgColor: string;
+}
+
+function getMomentumInfo(rsi: number | null): MomentumInfo {
+  if (rsi === null) {
+    return { level: 'neutral', label: '--', color: 'text-gray-400', bgColor: 'bg-gray-50' };
+  }
+
+  if (rsi <= 25) {
+    return { level: 'oversold', label: 'Oversold Zone', color: 'text-green-600', bgColor: 'bg-green-50' };
+  }
+  if (rsi <= 35) {
+    return { level: 'weak', label: 'Weak', color: 'text-green-500', bgColor: 'bg-green-50' };
+  }
+  if (rsi <= 45) {
+    return { level: 'neutral', label: 'Neutral → Weak', color: 'text-emerald-500', bgColor: 'bg-emerald-50' };
+  }
+  if (rsi <= 55) {
+    return { level: 'neutral', label: 'Neutral', color: 'text-gray-600', bgColor: 'bg-gray-50' };
+  }
+  if (rsi <= 65) {
+    return { level: 'neutral', label: 'Neutral → Strong', color: 'text-orange-500', bgColor: 'bg-orange-50' };
+  }
+  if (rsi <= 75) {
+    return { level: 'strong', label: 'Strong', color: 'text-red-500', bgColor: 'bg-red-50' };
+  }
+  return { level: 'overbought', label: 'Overbought Zone', color: 'text-red-600', bgColor: 'bg-red-50' };
+}
+
+function getCombinedMomentum(rsi7: number | null, rsi14: number | null): MomentumInfo {
+  if (rsi7 === null && rsi14 === null) {
+    return { level: 'neutral', label: '--', color: 'text-gray-400', bgColor: 'bg-gray-50' };
+  }
+
+  // Use average of both, or whichever is available
+  const avg = rsi7 !== null && rsi14 !== null
+    ? (rsi7 + rsi14) / 2
+    : rsi7 ?? rsi14;
+
+  return getMomentumInfo(avg);
+}
+
+export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: MarketMomentumProps) {
+  const [showDetails, setShowDetails] = useState(false);
+
+  const dailyMomentum = getCombinedMomentum(avgRsi7, avgRsi14);
+  const weeklyMomentum = getCombinedMomentum(avgRsiW7, avgRsiW14);
+
+  return (
+    <div
+      className="relative flex items-center gap-3 px-3 h-9 bg-white border border-gray-200 rounded-lg cursor-default"
+      onMouseEnter={() => setShowDetails(true)}
+      onMouseLeave={() => setShowDetails(false)}
+    >
+      {/* Icon */}
+      <svg
+        className="w-4 h-4 text-gray-400 flex-shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+      </svg>
+
+      {/* Main content */}
+      <div className="flex flex-col gap-0.5">
+        <span className="text-[11px] font-medium text-gray-500 leading-none">Market Momentum</span>
+        <div className="flex items-center gap-2 text-[12px] leading-none">
+          <span className="text-gray-400">Daily:</span>
+          <span className={`font-medium ${dailyMomentum.color}`}>{dailyMomentum.label}</span>
+          <span className="text-gray-300">|</span>
+          <span className="text-gray-400">Weekly:</span>
+          <span className={`font-medium ${weeklyMomentum.color}`}>{weeklyMomentum.label}</span>
+        </div>
+      </div>
+
+      {/* Hover tooltip with detailed RSI values */}
+      {showDetails && (
+        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 min-w-[200px]">
+          <div className="text-[11px] font-medium text-gray-500 mb-2">RSI Details</div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[12px]">
+            <div className="flex justify-between">
+              <span className="text-gray-500">D-RSI7:</span>
+              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsi7).color}`}>
+                {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">D-RSI14:</span>
+              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsi14).color}`}>
+                {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">W-RSI7:</span>
+              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsiW7).color}`}>
+                {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">W-RSI14:</span>
+              <span className={`font-medium tabular-nums ${getMomentumInfo(avgRsiW14).color}`}>
+                {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

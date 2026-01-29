@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
+import { useUrlState } from '@/hooks/useUrlState';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
@@ -10,15 +11,33 @@ import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiC
 
 export default function PerpBoard() {
   const store = useMarketStore();
-  
+
+  // URL state sync
+  useUrlState(
+    {
+      favorites: store.favorites,
+      filters: store.filters,
+      columns: store.columns,
+      columnOrder: store.columnOrder,
+      view: store.view,
+    },
+    {
+      setFavorites: store.setFavoritesDirectly,
+      setFilters: store.setFilters,
+      setColumns: store.setColumnsDirectly,
+      setColumnOrder: store.setColumnOrderDirectly,
+      setView: store.setView,
+    }
+  );
+
   // Drag state
   const [draggedColumn, setDraggedColumn] = useState<ColumnKey | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<ColumnKey | null>(null);
-  
+
   // Scroll state - only track horizontal scroll for sticky column shadow
   const [isScrolled, setIsScrolled] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     store.initialize();
     return () => store.cleanup();

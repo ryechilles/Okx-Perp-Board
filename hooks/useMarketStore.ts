@@ -61,6 +61,7 @@ export function useMarketStore() {
   const [filters, setFilters] = useState<Filters>({});
   const [sort, setSort] = useState<SortConfig>({ column: 'rank', direction: 'asc' });
   const [view, setView] = useState<'market' | 'favorites'>('market');
+  const [urlInitialized, setUrlInitialized] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 25;
@@ -691,6 +692,21 @@ export function useMarketStore() {
     };
   }, [getFilteredData, currentPage, pageSize]);
   
+  // Direct setters for URL state sync
+  const setFavoritesDirectly = useCallback((newFavorites: string[]) => {
+    setFavorites(newFavorites);
+    localStorage.setItem('okx-favorites', JSON.stringify(newFavorites));
+  }, []);
+
+  const setColumnsDirectly = useCallback((newColumns: ColumnVisibility) => {
+    setColumns(newColumns);
+  }, []);
+
+  const setColumnOrderDirectly = useCallback((newOrder: ColumnKey[]) => {
+    setColumnOrder(newOrder);
+    localStorage.setItem('okx-column-order', JSON.stringify(newOrder));
+  }, []);
+
   return {
     // Data
     tickers,
@@ -700,7 +716,7 @@ export function useMarketStore() {
     marketCapData,
     spotSymbols,
     favorites,
-    
+
     // UI state
     columns,
     columnOrder,
@@ -713,7 +729,8 @@ export function useMarketStore() {
     rsiProgress,
     currentPage,
     pageSize,
-    
+    urlInitialized,
+
     // Actions
     initialize,
     cleanup,
@@ -727,7 +744,13 @@ export function useMarketStore() {
     updateColumnOrder,
     moveColumn,
     setCurrentPage,
-    
+    setUrlInitialized,
+
+    // Direct setters for URL state sync
+    setFavoritesDirectly,
+    setColumnsDirectly,
+    setColumnOrderDirectly,
+
     // Derived data
     getFilteredData,
     getRsiAverages,

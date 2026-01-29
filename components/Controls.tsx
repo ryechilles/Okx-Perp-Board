@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
+import { MarketMomentum } from './MarketMomentum';
 
 interface ControlsProps {
   view: 'market' | 'favorites';
@@ -58,14 +59,7 @@ export function Controls({
     setTempFilters({});
     onFiltersChange({});
   };
-  
-  const getRsiAvgClass = (rsi: number | null) => {
-    if (rsi === null) return '';
-    if (rsi <= 30) return 'text-green-500';
-    if (rsi >= 70) return 'text-red-500';
-    return 'text-gray-900';
-  };
-  
+
   const columnOptions: { key: ColumnKey; label: string; disabled?: boolean }[] = [
     { key: 'favorite', label: '★ Favorite', disabled: true },
     { key: 'rank', label: '#Rank', disabled: true },
@@ -157,44 +151,23 @@ export function Controls({
         </button>
       </div>
       
-      {/* RSI Averages + Search Row */}
+      {/* Market Momentum + Search Row */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-4 px-3 h-9 bg-white border border-gray-200 rounded-lg">
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-500">D-RSI7</span>
-            <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsi7)}`}>
-              {avgRsi7 !== null ? avgRsi7.toFixed(1) : '--'}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-500">D-RSI14</span>
-            <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsi14)}`}>
-              {avgRsi14 !== null ? avgRsi14.toFixed(1) : '--'}
-            </span>
-          </div>
-          <div className="w-px h-4 bg-gray-200" />
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-500">W-RSI7</span>
-            <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsiW7)}`}>
-              {avgRsiW7 !== null ? avgRsiW7.toFixed(1) : '--'}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-500">W-RSI14</span>
-            <span className={`text-sm font-medium tabular-nums ${getRsiAvgClass(avgRsiW14)}`}>
-              {avgRsiW14 !== null ? avgRsiW14.toFixed(1) : '--'}
-            </span>
-          </div>
-        </div>
-        
+        <MarketMomentum
+          avgRsi7={avgRsi7}
+          avgRsi14={avgRsi14}
+          avgRsiW7={avgRsiW7}
+          avgRsiW14={avgRsiW14}
+        />
+
         <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg">
-          <svg 
-            className="w-4 h-4 text-gray-400" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            className="w-4 h-4 text-gray-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
             <circle cx="11" cy="11" r="8" />
