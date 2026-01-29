@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
@@ -15,9 +15,26 @@ export default function PerpBoard() {
   const [draggedColumn, setDraggedColumn] = useState<ColumnKey | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<ColumnKey | null>(null);
   
+  // Scroll state - only show shadow when scrolled horizontally
+  const [isScrolled, setIsScrolled] = useState(false);
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
     store.initialize();
     return () => store.cleanup();
+  }, []);
+  
+  // Monitor horizontal scroll
+  useEffect(() => {
+    const container = tableContainerRef.current;
+    if (!container) return;
+    
+    const handleScroll = () => {
+      setIsScrolled(container.scrollLeft > 0);
+    };
+    
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
   }, []);
   
   const filteredData = store.getFilteredData();
@@ -160,7 +177,11 @@ export default function PerpBoard() {
         <div className="max-w-[1400px] mx-auto w-full flex flex-col h-full">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
             {/* Scrollable Table Container */}
-            <div className="flex-1 overflow-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div 
+              ref={tableContainerRef}
+              className="flex-1 overflow-auto" 
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
               <table className="w-full border-collapse" style={{ minWidth: '1100px' }}>
                 <colgroup>
                   {visibleColumns.map(key => (
@@ -195,7 +216,7 @@ export default function PerpBoard() {
                         minWidth: fixedWidth,
                         maxWidth: fixedWidth,
                         boxSizing: 'border-box',
-                        boxShadow: isLastFixed ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
+                        boxShadow: isLastFixed && isScrolled ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
                       } : undefined;
                       
                       return (
@@ -285,7 +306,7 @@ export default function PerpBoard() {
                           minWidth: fixedWidth,
                           maxWidth: fixedWidth,
                           boxSizing: 'border-box',
-                          boxShadow: isLastFixed ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
+                          boxShadow: isLastFixed && isScrolled ? '4px 0 6px -2px rgba(0,0,0,0.1)' : undefined,
                         };
                       };
                       
