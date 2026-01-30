@@ -187,12 +187,12 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
     <div className="flex items-start gap-4 mb-4">
       {/* Top Gainers Card */}
       <div
-        className="relative bg-white border border-gray-200 rounded-lg p-4 min-w-[280px]"
+        className="relative bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[260px]"
         onMouseEnter={() => setShowGainersTooltip(true)}
         onMouseLeave={() => setShowGainersTooltip(false)}
       >
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">Altcoin Top Gainers</span>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[13px] font-medium text-gray-700">Altcoin Top Gainers</span>
           <TimeFrameSelector value={gainersTimeFrame} onChange={setGainersTimeFrame} />
         </div>
 
@@ -205,19 +205,19 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
         )}
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {isLoading ? (
             // Loading skeleton
             [1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center justify-between py-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-400 w-4">{i}</span>
-                  <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse" />
-                  <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
+              <div key={i} className="flex items-center justify-between py-0.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[12px] text-gray-400 w-3">{i}</span>
+                  <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse" />
+                  <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-4 bg-gray-200 rounded animate-pulse" />
-                  <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-3 bg-gray-200 rounded animate-pulse" />
+                  <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
                 </div>
               </div>
             ))
@@ -227,16 +227,16 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
               return (
                 <div
                   key={token.instId}
-                  className="flex items-center justify-between py-1 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
+                  className="flex items-center justify-between py-0.5 cursor-pointer hover:bg-gray-50 rounded -mx-1.5 px-1.5"
                   onClick={() => onTokenClick?.(token.symbol)}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400 w-4">{i + 1}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[12px] text-gray-400 w-3">{i + 1}</span>
                     {token.logo ? (
                       <img
                         src={token.logo}
                         alt={token.symbol}
-                        className="w-6 h-6 rounded-full"
+                        className="w-5 h-5 rounded-full"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.onerror = null;
@@ -244,15 +244,15 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
                         }}
                       />
                     ) : (
-                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                      <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
                         {token.symbol.charAt(0)}
                       </div>
                     )}
-                    <span className="text-sm font-medium text-gray-900">{token.symbol}</span>
+                    <span className="text-[13px] font-medium text-gray-900">{token.symbol}</span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-500">{formatPrice(token.price)}</span>
-                    <span className={`text-sm font-medium ${formatChange(change).color}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[13px] text-gray-500">{formatPrice(token.price)}</span>
+                    <span className={`text-[13px] font-medium ${formatChange(change).color}`}>
                       {formatChange(change).text}
                     </span>
                   </div>
