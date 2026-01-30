@@ -89,7 +89,7 @@ export interface MarketCapData {
 }
 
 // Column key type
-export type ColumnKey = 
+export type ColumnKey =
   | 'favorite'
   | 'rank'
   | 'logo'
@@ -103,6 +103,8 @@ export type ColumnKey =
   | 'change7d'
   | 'volume24h'
   | 'marketCap'
+  | 'dRsiSignal'
+  | 'wRsiSignal'
   | 'rsi7'
   | 'rsi14'
   | 'rsiW7'
@@ -125,6 +127,8 @@ export interface ColumnVisibility {
   change7d: boolean;
   volume24h: boolean;
   marketCap: boolean;
+  dRsiSignal: boolean;
+  wRsiSignal: boolean;
   rsi7: boolean;
   rsi14: boolean;
   rsiW7: boolean;

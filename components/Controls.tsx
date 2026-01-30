@@ -43,11 +43,11 @@ export function Controls({
   onSearchChange,
   onColumnOrderChange,
 }: ControlsProps) {
-  const [showColumnsMenu, setShowColumnsMenu] = useState(false);
-  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [showCustomizePanel, setShowCustomizePanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('all');
   const [hoveredFilter, setHoveredFilter] = useState<QuickFilter | null>(null);
+  const [customizeTab, setCustomizeTab] = useState<'columns' | 'filters'>('columns');
 
   // Determine active quick filter based on current filters
   const getActiveQuickFilter = (): QuickFilter => {
@@ -92,7 +92,7 @@ export function Controls({
 
   const activeQuickFilter = getActiveQuickFilter();
   
-  // Fixed columns that are always shown and not counted, plus hidden columns
+  // Fixed columns that are always shown and not counted
   const excludedColumns = ['favorite', 'rank', 'logo', 'symbol', 'hasSpot'];
   const visibleCount = Object.entries(columns)
     .filter(([key]) => !excludedColumns.includes(key))
@@ -123,6 +123,8 @@ export function Controls({
     { key: 'change7d', label: '7D Change' },
     { key: 'volume24h', label: '24H Volume' },
     { key: 'marketCap', label: 'Market Cap' },
+    { key: 'dRsiSignal', label: 'Daily RSI Signal' },
+    { key: 'wRsiSignal', label: 'Weekly RSI Signal' },
     { key: 'rsi7', label: 'Daily RSI7' },
     { key: 'rsi14', label: 'Daily RSI14' },
     { key: 'rsiW7', label: 'Weekly RSI7' },
@@ -319,25 +321,68 @@ export function Controls({
           </div>
         </div>
 
-        {/* Columns dropdown */}
-        <div className="relative">
-          <button
-            className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 cursor-pointer transition-all hover:border-gray-300"
-            onClick={() => setShowColumnsMenu(!showColumnsMenu)}
-          >
-            <span className="text-gray-600">Columns:</span>
-            <span>{visibleCount}/{totalCount}</span>
-            <span className="text-[10px] text-gray-400">▼</span>
-          </button>
+        {/* Customize button */}
+        <button
+          className={`flex items-center gap-1.5 px-3 h-9 bg-white border rounded-lg text-sm cursor-pointer transition-all ${
+            showCustomizePanel
+              ? 'border-gray-900 text-gray-900'
+              : hasFilters
+              ? 'border-blue-500 text-blue-500 bg-blue-50'
+              : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900'
+          }`}
+          onClick={() => setShowCustomizePanel(!showCustomizePanel)}
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          Customize
+          {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+        </button>
+      </div>
+      
+      {showCustomizePanel && (
+        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm">
+          {/* Tab buttons */}
+          <div className="flex gap-1 mb-4 border-b border-gray-200 pb-3">
+            <button
+              onClick={() => setCustomizeTab('columns')}
+              className={`px-4 py-2 rounded-md text-[13px] font-medium transition-all ${
+                customizeTab === 'columns'
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              Columns ({visibleCount}/{totalCount})
+            </button>
+            <button
+              onClick={() => setCustomizeTab('filters')}
+              className={`px-4 py-2 rounded-md text-[13px] font-medium transition-all ${
+                customizeTab === 'filters'
+                  ? 'bg-gray-900 text-white'
+                  : hasFilters
+                  ? 'text-blue-500 hover:bg-gray-100'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              Filters {hasFilters && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 ml-1" />}
+            </button>
+          </div>
 
-          {showColumnsMenu && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[180px] z-50 py-2">
+          {/* Columns tab content */}
+          {customizeTab === 'columns' && (
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2">
               {columnOptions.map(col => (
                 <label
                   key={col.key}
-                  className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-gray-50 text-[13px]"
+                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-[13px] cursor-pointer transition-all ${
+                    col.disabled
+                      ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                      : columns[col.key]
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                  }`}
                 >
-                  <span className={col.disabled ? 'text-gray-400' : ''}>{col.label}</span>
                   <input
                     type="checkbox"
                     checked={columns[col.key]}
@@ -345,177 +390,167 @@ export function Controls({
                     onChange={(e) => onColumnChange(col.key, e.target.checked)}
                     className="w-4 h-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   />
+                  <span>{col.label}</span>
                 </label>
               ))}
             </div>
           )}
-        </div>
 
-        {/* Filters button */}
-        <button
-          className={`flex items-center gap-1.5 px-3 h-9 bg-white border rounded-lg text-sm cursor-pointer transition-all ${
-            hasFilters
-              ? 'border-blue-500 text-blue-500 bg-blue-50'
-              : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900'
-          }`}
-          onClick={() => setShowFilterPanel(!showFilterPanel)}
-        >
-          <span>⚙</span> Filters
-        </button>
-      </div>
-      
-      {showFilterPanel && (
-        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm">
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Market Cap Rank</label>
-              <select
-                value={tempFilters.rank || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, rank: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="1-20">Top 20</option>
-                <option value="21-50">21 - 50</option>
-                <option value="51-100">51 - 100</option>
-                <option value="101-500">101 - 500</option>
-                <option value=">500">&gt; 500 / N/A</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Funding Rate</label>
-              <select
-                value={tempFilters.fundingRate || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, fundingRate: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="positive">Positive (Longs Pay)</option>
-                <option value="negative">Negative (Shorts Pay)</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Daily RSI7</label>
-              <select
-                value={tempFilters.rsi7 || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, rsi7: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="<30">&lt; 30 (Oversold)</option>
-                <option value="30-70">30 - 70</option>
-                <option value=">70">&gt; 70 (Overbought)</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Daily RSI14</label>
-              <select
-                value={tempFilters.rsi14 || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, rsi14: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="<30">&lt; 30 (Oversold)</option>
-                <option value="30-70">30 - 70</option>
-                <option value=">70">&gt; 70 (Overbought)</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Weekly RSI7</label>
-              <select
-                value={tempFilters.rsiW7 || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW7: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="<30">&lt; 30 (Oversold)</option>
-                <option value="30-70">30 - 70</option>
-                <option value=">70">&gt; 70 (Overbought)</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Weekly RSI14</label>
-              <select
-                value={tempFilters.rsiW14 || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW14: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="<30">&lt; 30 (Oversold)</option>
-                <option value="30-70">30 - 70</option>
-                <option value=">70">&gt; 70 (Overbought)</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Has Spot</label>
-              <select
-                value={tempFilters.hasSpot || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, hasSpot: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Market Cap</label>
-              <select
-                value={tempFilters.marketCapMin || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, marketCapMin: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="0-20">≤ $20M</option>
-                <option value="20-100">$20M - $100M</option>
-                <option value="100-1000">$100M - $1B</option>
-                <option value="1000+">≥ $1B</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-600 font-medium">Listing Age</label>
-              <select
-                value={tempFilters.listAge || ''}
-                onChange={(e) => setTempFilters(prev => ({ ...prev, listAge: e.target.value || undefined }))}
-                className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-              >
-                <option value="">All</option>
-                <option value="<1y">≤ 1 year</option>
-                <option value="1-2y">1 - 2 years</option>
-                <option value=">2y">&gt; 2 years</option>
-              </select>
-            </div>
-          </div>
-          
-          <div className="flex gap-2 mt-3">
-            <button
-              onClick={handleApplyFilters}
-              className="px-4 py-2 rounded-md text-[13px] cursor-pointer transition-all bg-gray-900 text-white border-none hover:bg-gray-700"
-            >
-              Apply Filters
-            </button>
-            <button
-              onClick={handleClearFilters}
-              className="px-4 py-2 rounded-md text-[13px] cursor-pointer transition-all bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
-            >
-              Clear All
-            </button>
-          </div>
+          {/* Filters tab content */}
+          {customizeTab === 'filters' && (
+            <>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Market Cap Rank</label>
+                  <select
+                    value={tempFilters.rank || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, rank: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="1-20">Top 20</option>
+                    <option value="21-50">21 - 50</option>
+                    <option value="51-100">51 - 100</option>
+                    <option value="101-500">101 - 500</option>
+                    <option value=">500">&gt; 500 / N/A</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Funding Rate</label>
+                  <select
+                    value={tempFilters.fundingRate || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, fundingRate: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="positive">Positive (Longs Pay)</option>
+                    <option value="negative">Negative (Shorts Pay)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Daily RSI7</label>
+                  <select
+                    value={tempFilters.rsi7 || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsi7: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="<30">&lt; 30 (Oversold)</option>
+                    <option value="30-70">30 - 70</option>
+                    <option value=">70">&gt; 70 (Overbought)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Daily RSI14</label>
+                  <select
+                    value={tempFilters.rsi14 || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsi14: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="<30">&lt; 30 (Oversold)</option>
+                    <option value="30-70">30 - 70</option>
+                    <option value=">70">&gt; 70 (Overbought)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Weekly RSI7</label>
+                  <select
+                    value={tempFilters.rsiW7 || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW7: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="<30">&lt; 30 (Oversold)</option>
+                    <option value="30-70">30 - 70</option>
+                    <option value=">70">&gt; 70 (Overbought)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Weekly RSI14</label>
+                  <select
+                    value={tempFilters.rsiW14 || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW14: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="<30">&lt; 30 (Oversold)</option>
+                    <option value="30-70">30 - 70</option>
+                    <option value=">70">&gt; 70 (Overbought)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Has Spot</label>
+                  <select
+                    value={tempFilters.hasSpot || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, hasSpot: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Market Cap</label>
+                  <select
+                    value={tempFilters.marketCapMin || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, marketCapMin: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="0-20">≤ $20M</option>
+                    <option value="20-100">$20M - $100M</option>
+                    <option value="100-1000">$100M - $1B</option>
+                    <option value="1000+">≥ $1B</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-gray-600 font-medium">Listing Age</label>
+                  <select
+                    value={tempFilters.listAge || ''}
+                    onChange={(e) => setTempFilters(prev => ({ ...prev, listAge: e.target.value || undefined }))}
+                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
+                  >
+                    <option value="">All</option>
+                    <option value="<1y">≤ 1 year</option>
+                    <option value="1-2y">1 - 2 years</option>
+                    <option value=">2y">&gt; 2 years</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={handleApplyFilters}
+                  className="px-4 py-2 rounded-md text-[13px] cursor-pointer transition-all bg-gray-900 text-white border-none hover:bg-gray-700"
+                >
+                  Apply Filters
+                </button>
+                <button
+                  onClick={handleClearFilters}
+                  className="px-4 py-2 rounded-md text-[13px] cursor-pointer transition-all bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+                >
+                  Clear All
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
-      
-      {showColumnsMenu && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => setShowColumnsMenu(false)}
+
+      {showCustomizePanel && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowCustomizePanel(false)}
         />
       )}
     </>

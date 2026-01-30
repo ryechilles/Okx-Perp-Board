@@ -41,6 +41,8 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'change7d',
   'volume24h',
   'marketCap',
+  'dRsiSignal',
+  'wRsiSignal',
   'rsi7',
   'rsi14',
   'rsiW7',
@@ -63,6 +65,8 @@ export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: numbe
   change7d: { label: '7D', width: 68, align: 'center', sortable: true },
   volume24h: { label: 'Vol 24H', width: 85, align: 'center', sortable: true },
   marketCap: { label: 'Mkt Cap', width: 80, align: 'center', sortable: true },
+  dRsiSignal: { label: 'D-Signal', width: 75, align: 'center', sortable: true },
+  wRsiSignal: { label: 'W-Signal', width: 75, align: 'center', sortable: true },
   rsi7: { label: 'D-RSI7', width: 58, align: 'center', sortable: true },
   rsi14: { label: 'D-RSI14', width: 62, align: 'center', sortable: true },
   rsiW7: { label: 'W-RSI7', width: 58, align: 'center', sortable: true },
@@ -170,6 +174,47 @@ export function calculateRSI(closes: number[], period: number): number | null {
   const rsi = 100 - (100 / (1 + rs));
 
   return rsi;
+}
+
+// RSI Signal types and helper functions
+export type RsiSignal = 'overbought' | 'strong' | 'neutral-strong' | 'neutral' | 'neutral-weak' | 'weak' | 'oversold';
+
+export interface RsiSignalInfo {
+  signal: RsiSignal;
+  label: string;
+  color: string;
+}
+
+// Get RSI signal based on combined RSI7 and RSI14 values
+export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSignalInfo {
+  if (rsi7 === null && rsi14 === null) {
+    return { signal: 'neutral', label: '--', color: 'text-gray-400' };
+  }
+
+  // Use average of both, or whichever is available
+  const avg = rsi7 !== null && rsi14 !== null
+    ? (rsi7 + rsi14) / 2
+    : rsi7 ?? rsi14 ?? 50;
+
+  if (avg <= 25) {
+    return { signal: 'oversold', label: 'Oversold', color: 'text-green-600' };
+  }
+  if (avg <= 35) {
+    return { signal: 'weak', label: 'Weak', color: 'text-green-500' };
+  }
+  if (avg <= 45) {
+    return { signal: 'neutral-weak', label: 'Neutral→Weak', color: 'text-emerald-500' };
+  }
+  if (avg <= 55) {
+    return { signal: 'neutral', label: 'Neutral', color: 'text-gray-600' };
+  }
+  if (avg <= 65) {
+    return { signal: 'neutral-strong', label: 'Neutral→Strong', color: 'text-orange-500' };
+  }
+  if (avg <= 75) {
+    return { signal: 'strong', label: 'Strong', color: 'text-red-500' };
+  }
+  return { signal: 'overbought', label: 'Overbought', color: 'text-red-600' };
 }
 
 // Calculate 7D change from candles

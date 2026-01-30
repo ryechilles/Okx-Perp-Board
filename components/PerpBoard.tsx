@@ -7,7 +7,7 @@ import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { ColumnKey } from '@/lib/types';
-import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval, formatRsi } from '@/lib/utils';
+import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval, formatRsi, getRsiSignal } from '@/lib/utils';
 
 export default function PerpBoard() {
   const store = useMarketStore();
@@ -483,6 +483,42 @@ export default function PerpBoard() {
                                   </td>
                                 );
                                 
+                              case 'dRsiSignal': {
+                                const dSignal = getRsiSignal(rsi?.rsi7 ?? null, rsi?.rsi14 ?? null);
+                                return (
+                                  <td key={key} className={`${baseClass} group/signal`}>
+                                    <div className="relative inline-flex flex-col items-center">
+                                      <span className={`font-medium text-[12px] ${dSignal.color}`}>
+                                        {dSignal.label}
+                                      </span>
+                                      {(rsi?.rsi7 !== undefined || rsi?.rsi14 !== undefined) && dSignal.label !== '--' && (
+                                        <span className="text-[10px] text-gray-400 leading-none opacity-0 group-hover/signal:opacity-100 transition-opacity">
+                                          {rsi?.rsi7 !== undefined ? rsi.rsi7.toFixed(1) : '--'}/{rsi?.rsi14 !== undefined ? rsi.rsi14.toFixed(1) : '--'}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </td>
+                                );
+                              }
+
+                              case 'wRsiSignal': {
+                                const wSignal = getRsiSignal(rsi?.rsiW7 ?? null, rsi?.rsiW14 ?? null);
+                                return (
+                                  <td key={key} className={`${baseClass} group/wsignal`}>
+                                    <div className="relative inline-flex flex-col items-center">
+                                      <span className={`font-medium text-[12px] ${wSignal.color}`}>
+                                        {wSignal.label}
+                                      </span>
+                                      {(rsi?.rsiW7 !== undefined || rsi?.rsiW14 !== undefined) && wSignal.label !== '--' && (
+                                        <span className="text-[10px] text-gray-400 leading-none opacity-0 group-hover/wsignal:opacity-100 transition-opacity">
+                                          {rsi?.rsiW7 !== undefined ? rsi.rsiW7.toFixed(1) : '--'}/{rsi?.rsiW14 !== undefined ? rsi.rsiW14.toFixed(1) : '--'}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </td>
+                                );
+                              }
+
                               case 'rsi7':
                                 return (
                                   <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsi7)}`}>

@@ -37,11 +37,13 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   change7d: false,
   volume24h: false,
   marketCap: true,
-  rsi7: true,
-  rsi14: true,
-  rsiW7: true,
-  rsiW14: true,
-  listDate: true,
+  dRsiSignal: true,
+  wRsiSignal: true,
+  rsi7: false,
+  rsi14: false,
+  rsiW7: false,
+  rsiW14: false,
+  listDate: false,
   hasSpot: false  // Hidden, use No Spot quick filter instead
 };
 
