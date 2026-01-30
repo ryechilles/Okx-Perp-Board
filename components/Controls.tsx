@@ -85,6 +85,8 @@ export function Controls({
 
   const handleQuickFilter = (filter: QuickFilter) => {
     setQuickFilter(filter);
+    // Clear search term when using quick filters
+    onSearchChange('');
     switch (filter) {
       case 'all':
         onFiltersChange({});
