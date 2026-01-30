@@ -15,40 +15,54 @@ export function Sparkline({ change, width = 50, height = 20, className = '' }: S
   const isPositive = change >= 0;
   const color = isPositive ? '#22c55e' : '#ef4444'; // green-500 / red-500
 
-  // Generate simple trend points based on change
-  // This creates a believable visual pattern
+  // Generate jagged trend points based on change
+  // This creates a volatile price-like pattern similar to CoinMarketCap
   const generatePoints = (): string => {
     const points: [number, number][] = [];
-    const numPoints = 12;
-    const absChange = Math.min(Math.abs(change), 20); // Cap at 20% for visual
+    const numPoints = 20; // More points for more detail
+
+    // Use change value as seed for deterministic randomness
+    const seed = Math.abs(change * 1000) % 1000;
+
+    // Simple seeded random function
+    const seededRandom = (i: number): number => {
+      const x = Math.sin(seed + i * 127.1) * 43758.5453;
+      return x - Math.floor(x);
+    };
 
     // Start from middle, end based on change direction
     const startY = height / 2;
     const endY = isPositive
-      ? height * 0.2 // End near top for positive
-      : height * 0.8; // End near bottom for negative
+      ? height * 0.15 // End near top for positive
+      : height * 0.85; // End near bottom for negative
 
-    // Generate a natural looking curve with some randomness
-    const seed = Math.abs(change * 1000) % 100; // Deterministic "randomness" based on change
+    // Generate volatile price-like movements
+    let prevY = startY;
 
     for (let i = 0; i < numPoints; i++) {
       const x = (i / (numPoints - 1)) * width;
       const progress = i / (numPoints - 1);
 
-      // Ease function for smooth curve
-      const easeProgress = progress * progress * (3 - 2 * progress);
+      // Linear trend from start to end
+      const trendY = startY + (endY - startY) * progress;
 
-      // Base y position interpolated from start to end
-      let y = startY + (endY - startY) * easeProgress;
+      // Add significant random variation (jagged effect)
+      const randomJump = (seededRandom(i) - 0.5) * height * 0.5;
 
-      // Add some variation (but keep it deterministic)
-      const variation = Math.sin((seed + i * 37) * 0.1) * (height * 0.15);
-      y += variation * (1 - Math.abs(progress - 0.5) * 2); // Less variation at ends
+      // Secondary smaller variation
+      const microNoise = (seededRandom(i + 100) - 0.5) * height * 0.15;
 
-      // Clamp y to bounds
+      // Combine trend with random movements
+      let y = trendY + randomJump + microNoise;
+
+      // Slight momentum (influenced by previous point)
+      y = y * 0.7 + prevY * 0.3;
+
+      // Clamp y to bounds with padding
       y = Math.max(2, Math.min(height - 2, y));
 
       points.push([x, y]);
+      prevY = y;
     }
 
     return points.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
@@ -93,7 +107,7 @@ export function ChangeWithSparkline({ change, showSparkline = true }: ChangeWith
   const arrow = isPositive ? '▲' : '▼';
 
   return (
-    <div className="flex flex-col items-end gap-0.5">
+    <div className="flex flex-col items-center gap-0.5">
       {showSparkline && (
         <Sparkline change={change} width={45} height={16} />
       )}
