@@ -204,6 +204,7 @@ export default function PerpBoard() {
             tickers={store.tickers}
             rsiData={store.rsiData}
             marketCapData={store.marketCapData}
+            onTokenClick={(symbol) => store.setSearchTerm(symbol)}
           />
         </div>
       </div>

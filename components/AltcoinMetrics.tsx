@@ -7,6 +7,7 @@ interface AltcoinMetricsProps {
   tickers: Map<string, ProcessedTicker>;
   rsiData: Map<string, RSIData>;
   marketCapData: Map<string, MarketCapData>;
+  onTokenClick?: (symbol: string) => void;
 }
 
 interface TokenWithChange {
@@ -61,7 +62,7 @@ function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (t
   );
 }
 
-export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetricsProps) {
+export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick }: AltcoinMetricsProps) {
   const [gainersTimeFrame, setGainersTimeFrame] = useState<TimeFrame>('4h');
   const [avgTimeFrame, setAvgTimeFrame] = useState<TimeFrame>('4h');
   const [showGainersTooltip, setShowGainersTooltip] = useState(false);
@@ -176,7 +177,11 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
           {topGainers.map((token, i) => {
             const change = getChangeByTimeFrame(token, gainersTimeFrame);
             return (
-              <div key={token.instId} className="flex items-center justify-between py-1">
+              <div
+                key={token.instId}
+                className="flex items-center justify-between py-1 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
+                onClick={() => onTokenClick?.(token.symbol)}
+              >
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-400 w-4">{i + 1}</span>
                   {token.logo ? (
