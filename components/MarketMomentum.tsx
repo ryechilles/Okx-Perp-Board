@@ -86,7 +86,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
 
   return (
     <div
-      className="relative flex items-center gap-3 px-3 h-9 bg-white border border-gray-200 rounded-lg cursor-default"
+      className="relative flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg cursor-default"
       onMouseEnter={() => setShowDetails(true)}
       onMouseLeave={() => setShowDetails(false)}
     >
@@ -103,16 +103,14 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
       </svg>
 
-      {/* Main content */}
-      <div className="flex flex-col gap-0.5">
-        <span className="text-[11px] font-medium text-gray-500 leading-none">Market Momentum</span>
-        <div className="flex items-center gap-2 text-[12px] leading-none">
-          <span className="text-gray-400">Daily:</span>
-          <span className={`font-medium ${dailyMomentum.color}`}>{dailyMomentum.label}</span>
-          <span className="text-gray-300">|</span>
-          <span className="text-gray-400">Weekly:</span>
-          <span className={`font-medium ${weeklyMomentum.color}`}>{weeklyMomentum.label}</span>
-        </div>
+      {/* Main content - single line */}
+      <div className="flex items-center gap-2 text-[13px]">
+        <span className="font-medium text-gray-700">Market Momentum</span>
+        <span className="text-gray-400">Daily:</span>
+        <span className={`font-medium ${dailyMomentum.color}`}>{dailyMomentum.label}</span>
+        <span className="text-gray-300">|</span>
+        <span className="text-gray-400">Weekly:</span>
+        <span className={`font-medium ${weeklyMomentum.color}`}>{weeklyMomentum.label}</span>
       </div>
 
       {/* Hover tooltip with detailed RSI values */}
