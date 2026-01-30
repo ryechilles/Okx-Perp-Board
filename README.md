@@ -3,5 +3,5 @@
 - 永续合约关键数据聚合展示
 - 纯前端，无需后端服务
 
-## Demo
+## V2.5
 https://perp-board.vercel.app
