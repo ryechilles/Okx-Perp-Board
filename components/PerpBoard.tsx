@@ -205,7 +205,7 @@ export default function PerpBoard() {
               className="flex-1 overflow-auto"
               style={{ WebkitOverflowScrolling: 'touch' }}
             >
-              <table className="border-collapse" style={{ minWidth: '1100px', tableLayout: 'fixed' }}>
+              <table className="border-collapse" style={{ width: 'max-content', minWidth: '100%' }}>
                 <colgroup>
                   {visibleColumns.map(key => (
                     <col key={key} style={getColStyle(key)} />
@@ -371,6 +371,8 @@ export default function PerpBoard() {
                                 
                               case 'symbol':
                                 const isSymbolHovered = hoveredSymbol === ticker.instId;
+                                // Show tooltip above for last 2 rows to avoid overflow
+                                const isNearBottom = index >= paginatedData.length - 2;
                                 return (
                                   <td
                                     key={key}
@@ -383,7 +385,10 @@ export default function PerpBoard() {
                                       <span className="text-gray-900">{base}</span>
                                       <span className="text-gray-400 font-normal">/{quote}</span>
                                       {!hasSpot && isSymbolHovered && (
-                                        <div className="absolute top-full left-0 mt-2" style={{ zIndex: 9999 }}>
+                                        <div
+                                          className={`absolute left-0 ${isNearBottom ? 'bottom-full mb-2' : 'top-full mt-2'}`}
+                                          style={{ zIndex: 9999 }}
+                                        >
                                           <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
                                             <span className="text-[12px] text-gray-700 font-normal">This token spot not listed yet on OKX</span>
                                           </div>
