@@ -399,22 +399,24 @@ export async function fetchFundingRates(): Promise<Map<string, FundingRateData>>
 // Fetch RSI data for a single instrument with mutex protection
 export async function fetchRSIForInstrument(instId: string): Promise<RSIData | null> {
   await rsiMutex.acquire();
-  
+
   try {
     await rateLimiter.waitForSlot();
-    
+
     // Fetch daily candles for RSI and 7D change
     // Need more candles for RSI to converge properly (TradingView uses ~100+ bars)
     const response = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1D&limit=100`);
     const data = await response.json();
-    
+
     let rsi7: number | null = null;
     let rsi14: number | null = null;
     let rsiW7: number | null = null;
     let rsiW14: number | null = null;
     let change7d: number | null = null;
     let change4h: number | null = null;
-    
+    let sparkline7d: number[] | undefined;
+    let sparkline24h: number[] | undefined;
+
     if (data.code === '0' && data.data && data.data.length >= 15) {
       // OKX returns newest first, include current candle to match OKX's own RSI display
       const candles = [...data.data].reverse();
@@ -423,12 +425,15 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
       rsi7 = calculateRSI(closes, 7);
       rsi14 = calculateRSI(closes, 14);
       change7d = calculate7DChange(candles.map((c: string[]) => c.map(parseFloat)));
+
+      // Save last 7 days of closes for sparkline (from daily candles)
+      sparkline7d = closes.slice(-7);
     }
-    
+
     // Small delay before weekly request
     await new Promise(r => setTimeout(r, 100));
     await rateLimiter.waitForSlot();
-    
+
     // Fetch weekly candles for weekly RSI
     // Need more candles for RSI to converge properly
     try {
@@ -446,27 +451,51 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     } catch (e) {
       console.warn(`Weekly RSI data failed for ${instId}`);
     }
-    
-    // Small delay before 4H request
+
+    // Small delay before 1H request
     await new Promise(r => setTimeout(r, 100));
     await rateLimiter.waitForSlot();
-    
-    // Fetch 4H candles for 4H change
+
+    // Fetch 1H candles for 24h sparkline (24 data points)
     try {
-      const response4h = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=4H&limit=2`);
-      const data4h = await response4h.json();
-      
-      if (data4h.code === '0' && data4h.data && data4h.data.length >= 2) {
-        const currentClose = parseFloat(data4h.data[0][4]);
-        const prevClose = parseFloat(data4h.data[1][4]);
-        if (prevClose > 0) {
-          change4h = ((currentClose - prevClose) / prevClose) * 100;
+      const response1h = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1H&limit=24`);
+      const data1h = await response1h.json();
+
+      if (data1h.code === '0' && data1h.data && data1h.data.length >= 2) {
+        // Reverse to chronological order and extract closes
+        const candles1h = [...data1h.data].reverse();
+        sparkline24h = candles1h.map((c: string[]) => parseFloat(c[4]));
+
+        // Calculate 4h change from the last 4 hours
+        if (candles1h.length >= 5) {
+          const currentClose = parseFloat(candles1h[candles1h.length - 1][4]);
+          const prev4hClose = parseFloat(candles1h[candles1h.length - 5][4]);
+          if (prev4hClose > 0) {
+            change4h = ((currentClose - prev4hClose) / prev4hClose) * 100;
+          }
         }
       }
     } catch (e) {
-      console.warn(`4H data failed for ${instId}`);
+      console.warn(`1H data failed for ${instId}`);
+
+      // Fallback: fetch 4H candles for change4h only
+      try {
+        await rateLimiter.waitForSlot();
+        const response4h = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=4H&limit=2`);
+        const data4h = await response4h.json();
+
+        if (data4h.code === '0' && data4h.data && data4h.data.length >= 2) {
+          const currentClose = parseFloat(data4h.data[0][4]);
+          const prevClose = parseFloat(data4h.data[1][4]);
+          if (prevClose > 0) {
+            change4h = ((currentClose - prevClose) / prevClose) * 100;
+          }
+        }
+      } catch (e2) {
+        console.warn(`4H fallback failed for ${instId}`);
+      }
     }
-    
+
     return {
       rsi7,
       rsi14,
@@ -474,6 +503,8 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
       rsiW14,
       change7d,
       change4h,
+      sparkline7d,
+      sparkline24h,
       lastUpdated: Date.now()
     };
   } catch (error) {

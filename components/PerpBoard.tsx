@@ -450,8 +450,8 @@ export default function PerpBoard() {
                                 );
 
                               case 'change':
-                                // For 24h, use last ~24 data points from 7-day sparkline (168 hours total)
-                                const sparkline24h = marketCap?.sparkline?.slice(-24);
+                                // Priority: OKX 1H candles > CoinGecko sparkline
+                                const sparkline24h = rsi?.sparkline24h || marketCap?.sparkline?.slice(-24);
                                 return (
                                   <td key={key} className={baseClass}>
                                     <ChangeWithSparkline change={ticker.changeNum} sparklineData={sparkline24h} />
@@ -460,9 +460,11 @@ export default function PerpBoard() {
 
                               case 'change7d':
                                 const change7d = rsi?.change7d;
+                                // Priority: OKX daily candles > CoinGecko sparkline
+                                const sparkline7d = rsi?.sparkline7d || marketCap?.sparkline;
                                 return (
                                   <td key={key} className={baseClass}>
-                                    <ChangeWithSparkline change={change7d} sparklineData={marketCap?.sparkline} />
+                                    <ChangeWithSparkline change={change7d} sparklineData={sparkline7d} />
                                   </td>
                                 );
                                 

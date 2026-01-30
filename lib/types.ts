@@ -63,6 +63,8 @@ export interface RSIData {
   rsiW14: number | null;    // Weekly RSI14
   change7d: number | null;
   change4h: number | null;
+  sparkline7d?: number[];   // 7-day price data from daily candles (OKX)
+  sparkline24h?: number[];  // 24h price data from hourly candles (OKX)
   lastUpdated: number;
 }
 
