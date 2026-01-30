@@ -6,6 +6,7 @@ import { useUrlState } from '@/hooks/useUrlState';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
+import { ChangeWithSparkline } from '@/components/Sparkline';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval, formatRsi, getRsiSignal } from '@/lib/utils';
 
@@ -443,29 +444,23 @@ export default function PerpBoard() {
                               case 'change4h':
                                 const change4h = rsi?.change4h;
                                 return (
-                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(change4h)}`}>
-                                    {change4h !== undefined && change4h !== null 
-                                      ? `${change4h >= 0 ? '+' : ''}${change4h.toFixed(2)}%`
-                                      : <span className="text-gray-500">--</span>
-                                    }
+                                  <td key={key} className={baseClass}>
+                                    <ChangeWithSparkline change={change4h} showSparkline={false} />
                                   </td>
                                 );
-                                
+
                               case 'change':
                                 return (
-                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(ticker.changeNum)}`}>
-                                    {ticker.changeNum >= 0 ? '+' : ''}{ticker.changeNum.toFixed(2)}%
+                                  <td key={key} className={baseClass}>
+                                    <ChangeWithSparkline change={ticker.changeNum} />
                                   </td>
                                 );
-                                
+
                               case 'change7d':
                                 const change7d = rsi?.change7d;
                                 return (
-                                  <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(change7d)}`}>
-                                    {change7d !== undefined && change7d !== null 
-                                      ? `${change7d >= 0 ? '+' : ''}${change7d.toFixed(2)}%`
-                                      : <span className="text-gray-500">--</span>
-                                    }
+                                  <td key={key} className={baseClass}>
+                                    <ChangeWithSparkline change={change7d} />
                                   </td>
                                 );
                                 
