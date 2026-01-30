@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
   try {
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=${page}&sparkline=true`,
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=true`,
       {
         headers: {
           'Accept': 'application/json',
