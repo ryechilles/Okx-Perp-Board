@@ -197,7 +197,7 @@ export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSign
     : rsi7 ?? rsi14 ?? 50;
 
   if (avg <= 25) {
-    return { signal: 'oversold', label: 'Oversold', color: 'text-green-600' };
+    return { signal: 'oversold', label: '🧊 Oversold', color: 'text-green-600' };
   }
   if (avg <= 35) {
     return { signal: 'weak', label: 'Weak', color: 'text-green-500' };
@@ -214,7 +214,7 @@ export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSign
   if (avg <= 75) {
     return { signal: 'strong', label: 'Strong', color: 'text-red-500' };
   }
-  return { signal: 'overbought', label: 'Overbought', color: 'text-red-600' };
+  return { signal: 'overbought', label: '🔥 Overbought', color: 'text-red-600' };
 }
 
 // Calculate 7D change from candles
