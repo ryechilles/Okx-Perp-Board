@@ -209,7 +209,7 @@ export function Controls({
       </div>
 
       {/* Quick Filters + Controls Row */}
-      <div className="flex items-center gap-4 mb-4 flex-wrap">
+      <div className="flex items-center gap-4 mb-4 flex-wrap relative z-[60]">
         {/* Quick Filter Buttons - Part 1: All & Top 25 */}
         <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
           <button
