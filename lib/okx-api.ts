@@ -633,23 +633,24 @@ function saveLogoCache(logos: Record<string, string>): void {
   }
 }
 
-// Fetch CoinGecko market cap data with pagination
-// Logos are cached locally for 7 days to reduce API calls
+// CoinGecko coin type
+type CoinGeckoCoin = {
+  symbol: string;
+  market_cap: number;
+  market_cap_rank: number;
+  image: string;
+  sparkline_in_7d?: { price: number[] };
+};
+
+// Fetch CoinGecko market cap data
+// Priority: Top 250 first (covers most important coins), then load more in background
+// Logos are cached locally for 7 days
 export async function fetchMarketCapData(): Promise<Map<string, { marketCap: number; rank: number; logo?: string; sparkline?: number[] }>> {
   const result = new Map<string, { marketCap: number; rank: number; logo?: string; sparkline?: number[] }>();
 
-  // Load cached logos first for instant display
+  // Load cached logos for instant display
   const cachedLogos = getLogoCache();
   const newLogos: Record<string, string> = { ...cachedLogos };
-
-  // CoinGecko coin type
-  type CoinGeckoCoin = {
-    symbol: string;
-    market_cap: number;
-    market_cap_rank: number;
-    image: string;
-    sparkline_in_7d?: { price: number[] };
-  };
 
   // Helper to process CoinGecko response
   const processCoinGeckoData = (data: CoinGeckoCoin[]) => {
@@ -657,7 +658,6 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
       const symbol = coin.symbol.toUpperCase();
       const existing = result.get(symbol);
       if (!existing || (coin.market_cap_rank && coin.market_cap_rank < existing.rank)) {
-        // Use cached logo if available, otherwise use API response
         const logo = cachedLogos[symbol] || coin.image;
         if (coin.image) {
           newLogos[symbol] = coin.image;
@@ -673,28 +673,55 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
   };
 
   try {
-    // Fetch 4 pages from CoinGecko (1000 coins) - covers most OKX listed tokens
-    // Rate limit: 30 calls/min = 2 sec between calls
-    for (let page = 1; page <= 4; page++) {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=true`
-      );
-      const data = await response.json();
-
-      if (Array.isArray(data)) {
-        processCoinGeckoData(data);
-      }
-
-      // 2 sec delay between pages (respects 30 calls/min limit)
-      if (page < 4) {
-        await new Promise(r => setTimeout(r, 2000));
-      }
+    // Priority 1: Fetch Top 250 coins first (rank 1-250, covers BTC, ETH, major alts)
+    const response1 = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true'
+    );
+    const data1 = await response1.json();
+    if (Array.isArray(data1)) {
+      processCoinGeckoData(data1);
     }
 
-    // Save updated logos to cache
+    // Save logos immediately after first batch
     saveLogoCache(newLogos);
+
+    // Priority 2: Fetch rank 251-500 (2 sec delay for rate limit)
+    await new Promise(r => setTimeout(r, 2000));
+    const response2 = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=2&sparkline=true'
+    );
+    const data2 = await response2.json();
+    if (Array.isArray(data2)) {
+      processCoinGeckoData(data2);
+      saveLogoCache(newLogos);
+    }
+
+    // Priority 3: Fetch rank 501-750
+    await new Promise(r => setTimeout(r, 2000));
+    const response3 = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=3&sparkline=true'
+    );
+    const data3 = await response3.json();
+    if (Array.isArray(data3)) {
+      processCoinGeckoData(data3);
+      saveLogoCache(newLogos);
+    }
+
+    // Priority 4: Fetch rank 751-1000
+    await new Promise(r => setTimeout(r, 2000));
+    const response4 = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=4&sparkline=true'
+    );
+    const data4 = await response4.json();
+    if (Array.isArray(data4)) {
+      processCoinGeckoData(data4);
+      saveLogoCache(newLogos);
+    }
+
   } catch (error) {
     console.error('Failed to fetch CoinGecko data:', error);
+    // Still save whatever logos we got
+    saveLogoCache(newLogos);
   }
 
   return result;

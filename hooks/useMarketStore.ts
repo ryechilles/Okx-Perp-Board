@@ -372,19 +372,23 @@ export function useMarketStore() {
       setMarketCapData(cachedMarketCap);
     }
 
-    // Fetch initial data in parallel
-    const [spotData, marketCap, listings, fundingRates] = await Promise.all([
+    // Fetch OKX data first (fast, doesn't block)
+    const [spotData, listings, fundingRates] = await Promise.all([
       fetchSpotSymbols(),
-      fetchMarketCapData(),
       fetchListingDates(),
       fetchFundingRates()
     ]);
 
     setSpotSymbols(spotData);
-    setMarketCapData(marketCap);
-    saveMarketCapCache(marketCap);
     setListingData(listings);
     setFundingRateData(fundingRates);
+
+    // Fetch CoinGecko data separately (slower, shouldn't block OKX data)
+    // This runs in background and updates UI as data arrives
+    fetchMarketCapData().then((marketCap) => {
+      setMarketCapData(marketCap);
+      saveMarketCapCache(marketCap);
+    });
     
     // Initialize hybrid data manager
     const handleTickerUpdate = (newTickers: Map<string, ProcessedTicker>) => {
