@@ -174,8 +174,8 @@ export function Controls({
   
   return (
     <>
-      {/* Indicators + Search Row */}
-      <div className="flex items-center justify-between mb-4 relative z-[70]">
+      {/* Indicators Row */}
+      <div className="flex items-center mb-4 relative z-[70]">
         <div className="flex items-center gap-3">
           <MarketMomentum
             avgRsi7={avgRsi7}
@@ -185,32 +185,11 @@ export function Controls({
           />
           <AHR999Indicator />
         </div>
-
-        <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg">
-          <svg
-            className="w-4 h-4 text-gray-400"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search token..."
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="border-none outline-none text-sm w-[120px]"
-          />
-        </div>
       </div>
 
       {/* Quick Filters + Controls Row */}
-      <div className="flex items-center gap-4 mb-4 flex-wrap relative z-[60]">
+      <div className="flex items-center justify-between gap-4 mb-4 flex-wrap relative z-[60]">
+        <div className="flex items-center gap-4 flex-wrap">
         {/* Quick Filter Buttons - Part 1: All & Top 25 */}
         <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
           <button
@@ -376,6 +355,30 @@ export function Controls({
             </svg>
             Customize
           </button>
+        </div>
+        </div>
+
+        {/* Search box - right side */}
+        <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg">
+          <svg
+            className="w-4 h-4 text-gray-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search token..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="border-none outline-none text-sm w-[120px]"
+          />
         </div>
       </div>
       
