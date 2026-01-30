@@ -105,7 +105,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
 
       {/* Main content */}
       <div className="flex flex-col gap-0.5">
-        <span className="text-[13px] font-medium text-gray-700 leading-none">Market Momentum</span>
+        <span className="text-[13px] font-medium text-gray-700 leading-none">Market Avg RSI</span>
         <div className="flex items-center gap-2 text-[13px] leading-none">
           <span className="text-gray-400">Daily:</span>
           <span className={`font-medium ${dailyMomentum.color}`}>{dailyMomentum.label}</span>

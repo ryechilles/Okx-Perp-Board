@@ -52,7 +52,7 @@ export function AHR999Indicator() {
       {/* Main content */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2 text-[13px] leading-none">
-          <span className="font-medium text-gray-700">AHR999</span>
+          <span className="font-medium text-gray-700">Ahr999</span>
           {loading ? (
             <span className="text-gray-400">Loading...</span>
           ) : (
@@ -94,7 +94,7 @@ export function AHR999Indicator() {
       {/* Hover tooltip with zone legend */}
       {showDetails && !loading && data && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
-          <div className="text-[11px] font-medium text-gray-500 mb-2">AHR999 Zone</div>
+          <div className="text-[11px] font-medium text-gray-500 mb-2">Ahr999 Zone</div>
           <div className="text-[11px] text-gray-900 space-y-1">
             <div><span className="text-green-600">●</span> &lt;0.45 Bottom</div>
             <div><span className="text-emerald-500">●</span> 0.45-1.2 DCA</div>
