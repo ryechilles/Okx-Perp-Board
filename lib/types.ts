@@ -154,6 +154,7 @@ export interface Filters {
   hasSpot?: string;
   fundingRate?: string;
   listAge?: string;  // Listing age filter (e.g., '>1y', '<30d')
+  isMeme?: string;   // Meme token filter
 }
 
 // Sort configuration

@@ -370,8 +370,17 @@ export default function PerpBoard() {
                               case 'symbol':
                                 return (
                                   <td key={key} className={`${baseClass} font-semibold`} style={cellStyle}>
-                                    <span className="text-gray-900">{base}</span>
-                                    <span className="text-gray-400 font-normal">/{quote}</span>
+                                    <div className="relative group/symbol inline-block">
+                                      <span className="text-gray-900">{base}</span>
+                                      <span className="text-gray-400 font-normal">/{quote}</span>
+                                      {!hasSpot && (
+                                        <div className="absolute bottom-full left-0 mb-2 hidden group-hover/symbol:block z-50">
+                                          <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
+                                            <span className="text-[12px] text-gray-700">This token spot not listed yet on OKX</span>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
                                   </td>
                                 );
                               

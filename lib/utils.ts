@@ -1,5 +1,31 @@
 import { RSIData, MarketCapData, ProcessedTicker, OKXTicker, ColumnKey } from './types';
 
+// Known Meme tokens list
+export const MEME_TOKENS = new Set([
+  'DOGE', 'SHIB', 'PEPE', 'FLOKI', 'BONK', 'WIF', 'MEME', 'ELON',
+  'BABYDOGE', 'SAITAMA', 'AKITA', 'KISHU', 'HOGE', 'SAMO', 'CHEEMS',
+  'TURBO', 'LADYS', 'AIDOGE', 'BOB', 'WOJAK', 'CHAD', 'MUMU', 'BOME',
+  'SLERF', 'MEW', 'POPCAT', 'GOAT', 'PNUT', 'ACT', 'NEIRO', 'HIPPO',
+  'CHILLGUY', 'BAN', 'LUCE', 'MOODENG', 'SUNDOG', 'MYRO', 'WEN',
+  'PONKE', 'BODEN', 'TREMP', 'MOTHER', 'GIGA', 'SPX', 'MOG', 'BRETT',
+  'TOSHI', 'MANEKI', 'KEYCAT', 'DOG', 'PIZZA', 'PEOPLE', 'COW',
+  'SATS', 'RATS', 'ORDI', 'TRUMP', 'MELANIA', 'VINE', 'ANIME', 'PENGU',
+  '1000PEPE', '1000SHIB', '1000BONK', '1000FLOKI', '1000SATS', '1000RATS',
+]);
+
+// Check if a token is a meme token
+export function isMemeToken(symbol: string): boolean {
+  // Handle symbols like "1000PEPE" or just "PEPE"
+  const upperSymbol = symbol.toUpperCase();
+  if (MEME_TOKENS.has(upperSymbol)) return true;
+  // Check if it starts with a number multiplier
+  const match = upperSymbol.match(/^(\d+)(.+)$/);
+  if (match) {
+    return MEME_TOKENS.has(match[2]) || MEME_TOKENS.has(upperSymbol);
+  }
+  return false;
+}
+
 // Default column order
 export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'favorite',

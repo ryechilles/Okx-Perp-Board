@@ -5,7 +5,7 @@ import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
 import { MarketMomentum } from './MarketMomentum';
 
 // Quick filter types
-type QuickFilter = 'all' | 'top25' | 'overbought' | 'oversold';
+type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'overbought' | 'oversold';
 
 interface ControlsProps {
   columns: ColumnVisibility;
@@ -46,7 +46,9 @@ export function Controls({
 
   // Determine active quick filter based on current filters
   const getActiveQuickFilter = (): QuickFilter => {
-    if (filters.rank === '1-20' && !filters.rsi7 && !filters.rsi14) return 'top25';
+    if (filters.rank === '1-20' && !filters.rsi7 && !filters.rsi14 && !filters.isMeme && !filters.hasSpot) return 'top25';
+    if (filters.isMeme === 'yes' && !filters.rsi7 && !filters.rsi14) return 'meme';
+    if (filters.hasSpot === 'no' && !filters.rsi7 && !filters.rsi14) return 'noSpot';
     if (filters.rsi7 === '>70' && filters.rsi14 === '>70') return 'overbought';
     if (filters.rsi7 === '<30' && filters.rsi14 === '<30') return 'oversold';
     if (Object.keys(filters).length === 0) return 'all';
@@ -63,6 +65,14 @@ export function Controls({
       case 'top25':
         onFiltersChange({ rank: '1-20' });
         setTempFilters({ rank: '1-20' });
+        break;
+      case 'meme':
+        onFiltersChange({ isMeme: 'yes' });
+        setTempFilters({ isMeme: 'yes' });
+        break;
+      case 'noSpot':
+        onFiltersChange({ hasSpot: 'no' });
+        setTempFilters({ hasSpot: 'no' });
         break;
       case 'overbought':
         onFiltersChange({ rsi7: '>70', rsi14: '>70' });
@@ -112,8 +122,8 @@ export function Controls({
     { key: 'rsi14', label: 'Daily RSI14' },
     { key: 'rsiW7', label: 'Weekly RSI7' },
     { key: 'rsiW14', label: 'Weekly RSI14' },
-    { key: 'listDate', label: 'List Date' },
-    { key: 'hasSpot', label: 'Has Spot' }
+    { key: 'listDate', label: 'List Date' }
+    // hasSpot column removed - use No Spot quick filter instead
   ];
   
   return (
@@ -186,6 +196,58 @@ export function Controls({
                 <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
                 <div className="text-[12px]">
                   <span className="text-gray-900">OKX Perp Market Cap Rank 1-25</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Meme with tooltip */}
+          <div
+            className="relative"
+            onMouseEnter={() => setHoveredFilter('meme')}
+            onMouseLeave={() => setHoveredFilter(null)}
+          >
+            <button
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                activeQuickFilter === 'meme'
+                  ? 'bg-white text-orange-500 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => handleQuickFilter('meme')}
+            >
+              🐸 Meme
+            </button>
+            {hoveredFilter === 'meme' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
+                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
+                <div className="text-[12px]">
+                  <span className="text-gray-900">Meme Tokens Only</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* No Spot with tooltip */}
+          <div
+            className="relative"
+            onMouseEnter={() => setHoveredFilter('noSpot')}
+            onMouseLeave={() => setHoveredFilter(null)}
+          >
+            <button
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                activeQuickFilter === 'noSpot'
+                  ? 'bg-white text-purple-500 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => handleQuickFilter('noSpot')}
+            >
+              No Spot
+            </button>
+            {hoveredFilter === 'noSpot' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
+                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
+                <div className="text-[12px]">
+                  <span className="text-gray-900">Tokens without Spot listing on OKX</span>
                 </div>
               </div>
             )}

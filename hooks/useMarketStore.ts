@@ -21,7 +21,7 @@ import {
   fetchFundingRates,
   fetchListingDates
 } from '@/lib/okx-api';
-import { DEFAULT_COLUMN_ORDER } from '@/lib/utils';
+import { DEFAULT_COLUMN_ORDER, isMemeToken } from '@/lib/utils';
 
 const DEFAULT_COLUMNS: ColumnVisibility = {
   favorite: true,
@@ -42,7 +42,7 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   rsiW7: true,
   rsiW14: true,
   listDate: true,
-  hasSpot: true
+  hasSpot: false  // Hidden by default, use No Spot quick filter instead
 };
 
 export function useMarketStore() {
@@ -377,7 +377,7 @@ export function useMarketStore() {
         rsiW7: true,
         rsiW14: true,
         listDate: true,
-        hasSpot: true
+        hasSpot: false  // Keep hidden - use No Spot quick filter instead
       });
     } else if (preset === 'none') {
       setColumns({
@@ -565,13 +565,13 @@ export function useMarketStore() {
       const now = Date.now();
       const oneYear = 365 * 24 * 60 * 60 * 1000;
       const twoYears = 2 * oneYear;
-      
+
       filtered = filtered.filter(t => {
         const listTime = listingData.get(t.instId)?.listTime;
         if (!listTime) return false;
-        
+
         const age = now - listTime;
-        
+
         switch (filters.listAge) {
           case '<1y':
             return age <= oneYear;
@@ -584,7 +584,15 @@ export function useMarketStore() {
         }
       });
     }
-    
+
+    // Meme token filter
+    if (filters.isMeme) {
+      filtered = filtered.filter(t => {
+        const isMeme = isMemeToken(t.baseSymbol);
+        return filters.isMeme === 'yes' ? isMeme : !isMeme;
+      });
+    }
+
     // Sort
     filtered.sort((a, b) => {
       let aVal: number | string;
