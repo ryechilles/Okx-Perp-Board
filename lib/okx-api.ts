@@ -598,62 +598,86 @@ export async function fetchRSIBatch(
   onProgress('');
 }
 
-// Fetch CoinGecko market cap data with pagination (up to 500 coins)
+// Fetch CoinGecko market cap data with pagination (up to 1000 coins)
 // Now includes 7-day sparkline data for price charts
 export async function fetchMarketCapData(): Promise<Map<string, { marketCap: number; rank: number; logo?: string; sparkline?: number[] }>> {
   const result = new Map<string, { marketCap: number; rank: number; logo?: string; sparkline?: number[] }>();
 
+  // CoinGecko coin type
+  type CoinGeckoCoin = {
+    symbol: string;
+    market_cap: number;
+    market_cap_rank: number;
+    image: string;
+    sparkline_in_7d?: { price: number[] };
+  };
+
+  // Helper to process CoinGecko response
+  const processCoinGeckoData = (data: CoinGeckoCoin[]) => {
+    data.forEach((coin) => {
+      const symbol = coin.symbol.toUpperCase();
+      const existing = result.get(symbol);
+      if (!existing || (coin.market_cap_rank && coin.market_cap_rank < existing.rank)) {
+        result.set(symbol, {
+          marketCap: coin.market_cap,
+          rank: coin.market_cap_rank || 9999,
+          logo: coin.image,
+          sparkline: coin.sparkline_in_7d?.price
+        });
+      }
+    });
+  };
+
   try {
-    // Fetch page 1 (1-250) with sparkline=true for 7-day price data
-    const response1 = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true'
-    );
-    const data1 = await response1.json();
+    // Fetch 4 pages from CoinGecko (1000 coins total)
+    for (let page = 1; page <= 4; page++) {
+      const response = await fetch(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=true`
+      );
+      const data = await response.json();
 
-    if (Array.isArray(data1)) {
-      data1.forEach((coin: { symbol: string; market_cap: number; market_cap_rank: number; image: string; sparkline_in_7d?: { price: number[] } }) => {
-        const symbol = coin.symbol.toUpperCase();
-        const existing = result.get(symbol);
-        // Only set if not exists OR if this coin has higher rank (lower number = better)
-        if (!existing || (coin.market_cap_rank && coin.market_cap_rank < existing.rank)) {
-          result.set(symbol, {
-            marketCap: coin.market_cap,
-            rank: coin.market_cap_rank || 9999,
-            logo: coin.image,
-            sparkline: coin.sparkline_in_7d?.price
-          });
-        }
-      });
+      if (Array.isArray(data)) {
+        processCoinGeckoData(data);
+      }
+
+      // Delay between pages to respect rate limits
+      if (page < 4) {
+        await new Promise(r => setTimeout(r, 500));
+      }
     }
-
-    // Small delay before page 2
-    await new Promise(r => setTimeout(r, 500));
-
-    // Fetch page 2 (251-500) with sparkline=true
-    const response2 = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=2&sparkline=true'
-    );
-    const data2 = await response2.json();
-
-    if (Array.isArray(data2)) {
-      data2.forEach((coin: { symbol: string; market_cap: number; market_cap_rank: number; image: string; sparkline_in_7d?: { price: number[] } }) => {
-        const symbol = coin.symbol.toUpperCase();
-        const existing = result.get(symbol);
-        // Only set if not exists OR if this coin has higher rank (lower number = better)
-        if (!existing || (coin.market_cap_rank && coin.market_cap_rank < existing.rank)) {
-          result.set(symbol, {
-            marketCap: coin.market_cap,
-            rank: coin.market_cap_rank || 9999,
-            logo: coin.image,
-            sparkline: coin.sparkline_in_7d?.price
-          });
-        }
-      });
-    }
-
-    return result;
   } catch (error) {
     console.error('Failed to fetch CoinGecko data:', error);
-    return result;
   }
+
+  // Fallback: Fetch from CoinCap for missing logos/market caps
+  try {
+    await new Promise(r => setTimeout(r, 300));
+
+    const coincapResponse = await fetch('https://api.coincap.io/v2/assets?limit=500');
+    const coincapData = await coincapResponse.json();
+
+    if (coincapData.data && Array.isArray(coincapData.data)) {
+      coincapData.data.forEach((asset: { symbol: string; marketCapUsd: string; rank: string }) => {
+        const symbol = asset.symbol.toUpperCase();
+        const existing = result.get(symbol);
+
+        // Only add if missing from CoinGecko
+        if (!existing) {
+          const marketCap = parseFloat(asset.marketCapUsd) || 0;
+          const rank = parseInt(asset.rank, 10) || 9999;
+
+          result.set(symbol, {
+            marketCap,
+            rank,
+            // CoinCap doesn't provide logo URLs directly, but we can construct them
+            logo: `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`
+          });
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Failed to fetch CoinCap fallback data:', error);
+  }
+
+  return result;
 }
