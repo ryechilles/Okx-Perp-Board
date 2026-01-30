@@ -137,7 +137,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             </div>
 
             {/* Divider */}
-            <div className="text-gray-900">|</div>
+            <div className="text-gray-400">|</div>
 
             {/* Weekly RSI - Right */}
             <div className="flex flex-col gap-1">
