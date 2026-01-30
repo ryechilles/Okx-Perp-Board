@@ -2,17 +2,19 @@ import { NextResponse } from 'next/server';
 
 // CoinGecko API proxy to avoid CORS and rate limit issues
 // Cache the response for 5 minutes to reduce API calls
-let cachedData: { data: unknown; timestamp: number } | null = null;
+const cache: Record<string, { data: unknown; timestamp: number }> = {};
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const page = searchParams.get('page') || '1';
 
-  // Check cache first
+  // Check cache first (per page)
   const cacheKey = `page_${page}`;
-  if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
-    return NextResponse.json(cachedData.data);
+  const cached = cache[cacheKey];
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log(`[CoinGecko Proxy] Returning cached page ${page}`);
+    return NextResponse.json(cached.data);
   }
 
   try {
@@ -37,8 +39,9 @@ export async function GET(request: Request) {
 
     const data = await response.json();
 
-    // Update cache
-    cachedData = { data, timestamp: Date.now() };
+    // Update cache for this page
+    cache[cacheKey] = { data, timestamp: Date.now() };
+    console.log(`[CoinGecko Proxy] Cached page ${page}, ${Array.isArray(data) ? data.length : 0} coins`);
 
     return NextResponse.json(data);
   } catch (error) {
