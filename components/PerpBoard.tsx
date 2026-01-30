@@ -374,25 +374,25 @@ export default function PerpBoard() {
                                 return (
                                   <td
                                     key={key}
-                                    className={`${baseClass} font-semibold overflow-hidden`}
+                                    className={`${baseClass} font-semibold relative`}
                                     style={getCellStyle(key, isSymbolHovered && !hasSpot)}
                                     onMouseEnter={() => !hasSpot && setHoveredSymbol(ticker.instId)}
                                     onMouseLeave={() => setHoveredSymbol(null)}
                                   >
-                                    <div className="relative inline-block truncate max-w-full">
+                                    <div className="truncate">
                                       <span className="text-gray-900">{base}</span>
                                       <span className="text-gray-400 font-normal">/{quote}</span>
-                                      {!hasSpot && isSymbolHovered && (
-                                        <div
-                                          className="absolute left-full top-1/2 -translate-y-1/2 ml-2"
-                                          style={{ zIndex: 9999 }}
-                                        >
-                                          <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
-                                            <span className="text-[12px] text-gray-700 font-normal">This token spot not listed yet on OKX</span>
-                                          </div>
-                                        </div>
-                                      )}
                                     </div>
+                                    {!hasSpot && isSymbolHovered && (
+                                      <div
+                                        className="absolute left-full top-1/2 -translate-y-1/2 ml-2"
+                                        style={{ zIndex: 9999 }}
+                                      >
+                                        <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
+                                          <span className="text-[12px] text-gray-700 font-normal">This token spot not listed yet on OKX</span>
+                                        </div>
+                                      </div>
+                                    )}
                                   </td>
                                 );
                               
