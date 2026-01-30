@@ -412,24 +412,19 @@ export function Controls({
               {columnGroups.map(group => (
                 <div key={group.label}>
                   <div className="text-[11px] text-gray-400 font-medium mb-2">{group.label}</div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 flex-wrap">
                     {group.columns.map(col => (
-                      <label
+                      <button
                         key={col.key}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-md text-[13px] cursor-pointer transition-all ${
+                        onClick={() => onColumnChange(col.key, !columns[col.key])}
+                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                           columns[col.key]
-                            ? 'bg-gray-100 text-gray-900'
-                            : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            ? 'bg-white text-gray-900 shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
                         }`}
                       >
-                        <input
-                          type="checkbox"
-                          checked={columns[col.key]}
-                          onChange={(e) => onColumnChange(col.key, e.target.checked)}
-                          className="w-4 h-4 cursor-pointer"
-                        />
-                        <span>{col.label}</span>
-                      </label>
+                        {col.label}
+                      </button>
                     ))}
                   </div>
                 </div>
