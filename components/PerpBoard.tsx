@@ -205,7 +205,7 @@ export default function PerpBoard() {
               className="flex-1 overflow-auto"
               style={{ WebkitOverflowScrolling: 'touch' }}
             >
-              <table className="w-full border-collapse" style={{ minWidth: '1100px' }}>
+              <table className="border-collapse" style={{ minWidth: '1100px', tableLayout: 'fixed' }}>
                 <colgroup>
                   {visibleColumns.map(key => (
                     <col key={key} style={getColStyle(key)} />
