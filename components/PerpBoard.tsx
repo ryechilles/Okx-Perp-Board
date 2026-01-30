@@ -38,6 +38,9 @@ export default function PerpBoard() {
   const [isScrolled, setIsScrolled] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
+  // Track which symbol is being hovered for z-index elevation
+  const [hoveredSymbol, setHoveredSymbol] = useState<string | null>(null);
+
   useEffect(() => {
     store.initialize();
     return () => store.cleanup();
@@ -316,14 +319,14 @@ export default function PerpBoard() {
                       const quote = parts[1];
                       
                       // Helper to get sticky style for cells
-                      const getCellStyle = (key: ColumnKey): React.CSSProperties | undefined => {
+                      const getCellStyle = (key: ColumnKey, isHovered?: boolean): React.CSSProperties | undefined => {
                         if (!isFixedColumn(key)) return undefined;
                         const isLastFixed = isLastFixedColumn(key);
                         const fixedWidth = FIXED_WIDTHS[key];
                         return {
                           position: 'sticky',
                           left: getStickyLeft(key),
-                          zIndex: 10,
+                          zIndex: isHovered ? 100 : 10,  // Elevate z-index when hovered
                           backgroundColor: '#ffffff',
                           width: fixedWidth,
                           minWidth: fixedWidth,
@@ -343,12 +346,11 @@ export default function PerpBoard() {
                             if (def.align === 'center') alignClass = 'text-center';
                             
                             const baseClass = `px-1 py-3 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`;
-                            const cellStyle = getCellStyle(key);
                             
                             switch (key) {
                               case 'favorite':
                                 return (
-                                  <td key={key} className={baseClass} style={cellStyle}>
+                                  <td key={key} className={baseClass} style={getCellStyle(key)}>
                                     <button
                                       className={`bg-transparent border-none cursor-pointer text-base transition-colors ${
                                         isFavorite ? 'text-yellow-400' : 'text-gray-200 hover:text-yellow-400'
@@ -362,19 +364,26 @@ export default function PerpBoard() {
                                 
                               case 'rank':
                                 return (
-                                  <td key={key} className={`${baseClass} text-[12px] text-gray-500`} style={cellStyle}>
+                                  <td key={key} className={`${baseClass} text-[12px] text-gray-500`} style={getCellStyle(key)}>
                                     {displayRank}
                                   </td>
                                 );
                                 
                               case 'symbol':
+                                const isSymbolHovered = hoveredSymbol === ticker.instId;
                                 return (
-                                  <td key={key} className={`${baseClass} font-semibold`} style={cellStyle}>
-                                    <div className="relative group/symbol inline-block">
+                                  <td
+                                    key={key}
+                                    className={`${baseClass} font-semibold`}
+                                    style={getCellStyle(key, isSymbolHovered && !hasSpot)}
+                                    onMouseEnter={() => !hasSpot && setHoveredSymbol(ticker.instId)}
+                                    onMouseLeave={() => setHoveredSymbol(null)}
+                                  >
+                                    <div className="relative inline-block">
                                       <span className="text-gray-900">{base}</span>
                                       <span className="text-gray-400 font-normal">/{quote}</span>
-                                      {!hasSpot && (
-                                        <div className="absolute top-full left-0 mt-2 hidden group-hover/symbol:block" style={{ zIndex: 9999 }}>
+                                      {!hasSpot && isSymbolHovered && (
+                                        <div className="absolute top-full left-0 mt-2" style={{ zIndex: 9999 }}>
                                           <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
                                             <span className="text-[12px] text-gray-700 font-normal">This token spot not listed yet on OKX</span>
                                           </div>
@@ -387,7 +396,7 @@ export default function PerpBoard() {
                               case 'logo':
                                 const logoUrl = marketCap?.logo;
                                 return (
-                                  <td key={key} className={`${baseClass}`} style={cellStyle}>
+                                  <td key={key} className={`${baseClass}`} style={getCellStyle(key)}>
                                     {logoUrl ? (
                                       <img 
                                         src={logoUrl}
