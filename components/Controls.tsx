@@ -109,11 +109,7 @@ export function Controls({
     onFiltersChange({});
   };
 
-  const columnOptions: { key: ColumnKey; label: string; disabled?: boolean }[] = [
-    { key: 'favorite', label: '★ Favorite', disabled: true },
-    { key: 'rank', label: '#Rank', disabled: true },
-    { key: 'logo', label: 'Logo', disabled: true },
-    { key: 'symbol', label: 'Token', disabled: true },
+  const columnOptions: { key: ColumnKey; label: string }[] = [
     { key: 'price', label: 'Price' },
     { key: 'fundingRate', label: 'Funding Rate' },
     { key: 'fundingApr', label: 'Funding APR' },
@@ -130,7 +126,6 @@ export function Controls({
     { key: 'rsiW7', label: 'Weekly RSI7' },
     { key: 'rsiW14', label: 'Weekly RSI14' },
     { key: 'listDate', label: 'List Date' }
-    // hasSpot column removed - use No Spot quick filter instead
   ];
   
   return (
@@ -384,9 +379,7 @@ export function Controls({
                 <label
                   key={col.key}
                   className={`flex items-center gap-2 px-3 py-2 rounded-md text-[13px] cursor-pointer transition-all ${
-                    col.disabled
-                      ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                      : columns[col.key]
+                    columns[col.key]
                       ? 'bg-gray-100 text-gray-900'
                       : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
                   }`}
@@ -394,9 +387,8 @@ export function Controls({
                   <input
                     type="checkbox"
                     checked={columns[col.key]}
-                    disabled={col.disabled}
                     onChange={(e) => onColumnChange(col.key, e.target.checked)}
-                    className="w-4 h-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-4 h-4 cursor-pointer"
                   />
                   <span>{col.label}</span>
                 </label>
