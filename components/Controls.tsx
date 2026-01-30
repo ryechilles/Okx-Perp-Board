@@ -516,111 +516,187 @@ export function Controls({
                 <div className="text-[11px] text-gray-400 font-medium mb-2">RSI Indicators</div>
                 <div className="flex flex-wrap gap-x-4 gap-y-3">
                   {/* Daily RSI7 */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'D-RSI7' },
-                      { value: '<10', label: '<10', color: 'text-green-700' },
-                      { value: '<20', label: '<20', color: 'text-green-600' },
-                      { value: '<30', label: '<30', color: 'text-green-500' },
-                      { value: '<40', label: '<40', color: 'text-green-400' },
-                      { value: '>60', label: '>60', color: 'text-red-400' },
-                      { value: '>70', label: '>70', color: 'text-red-500' },
-                      { value: '>80', label: '>80', color: 'text-red-600' },
-                      { value: '>90', label: '>90', color: 'text-red-700' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsi7: opt.value || undefined })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.rsi7 || '') === opt.value
-                            ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
+                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi7: undefined })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        !filters.rsi7 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      D-RSI7
+                    </button>
+                    <span className="text-gray-400 text-[12px] px-1">
+                      <select
+                        value={filters.rsi7?.startsWith('<') ? '<' : filters.rsi7?.startsWith('>') ? '>' : '<'}
+                        onChange={(e) => {
+                          const currentVal = filters.rsi7?.replace(/[<>]/g, '') || '';
+                          if (currentVal) {
+                            onFiltersChange({ ...filters, rsi7: `${e.target.value}${currentVal}` });
+                          }
+                        }}
+                        className="bg-transparent border-none outline-none text-[12px] text-gray-500 cursor-pointer"
                       >
-                        {opt.label}
-                      </button>
-                    ))}
+                        <option value="<">&lt;</option>
+                        <option value=">">&gt;</option>
+                      </select>
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      placeholder="--"
+                      value={filters.rsi7?.replace(/[<>]/g, '') || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          onFiltersChange({ ...filters, rsi7: undefined });
+                        } else {
+                          const prefix = filters.rsi7?.startsWith('>') ? '>' : '<';
+                          onFiltersChange({ ...filters, rsi7: `${prefix}${val}` });
+                        }
+                      }}
+                      className={`w-10 bg-white rounded-md px-1.5 py-1 text-[12px] font-medium text-center outline-none border-none shadow-sm ${
+                        filters.rsi7 ? (filters.rsi7.startsWith('<') ? 'text-green-600' : 'text-red-500') : 'text-gray-500'
+                      }`}
+                    />
                   </div>
 
                   {/* Daily RSI14 */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'D-RSI14' },
-                      { value: '<10', label: '<10', color: 'text-green-700' },
-                      { value: '<20', label: '<20', color: 'text-green-600' },
-                      { value: '<30', label: '<30', color: 'text-green-500' },
-                      { value: '<40', label: '<40', color: 'text-green-400' },
-                      { value: '>60', label: '>60', color: 'text-red-400' },
-                      { value: '>70', label: '>70', color: 'text-red-500' },
-                      { value: '>80', label: '>80', color: 'text-red-600' },
-                      { value: '>90', label: '>90', color: 'text-red-700' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsi14: opt.value || undefined })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.rsi14 || '') === opt.value
-                            ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
+                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi14: undefined })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        !filters.rsi14 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      D-RSI14
+                    </button>
+                    <span className="text-gray-400 text-[12px] px-1">
+                      <select
+                        value={filters.rsi14?.startsWith('<') ? '<' : filters.rsi14?.startsWith('>') ? '>' : '<'}
+                        onChange={(e) => {
+                          const currentVal = filters.rsi14?.replace(/[<>]/g, '') || '';
+                          if (currentVal) {
+                            onFiltersChange({ ...filters, rsi14: `${e.target.value}${currentVal}` });
+                          }
+                        }}
+                        className="bg-transparent border-none outline-none text-[12px] text-gray-500 cursor-pointer"
                       >
-                        {opt.label}
-                      </button>
-                    ))}
+                        <option value="<">&lt;</option>
+                        <option value=">">&gt;</option>
+                      </select>
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      placeholder="--"
+                      value={filters.rsi14?.replace(/[<>]/g, '') || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          onFiltersChange({ ...filters, rsi14: undefined });
+                        } else {
+                          const prefix = filters.rsi14?.startsWith('>') ? '>' : '<';
+                          onFiltersChange({ ...filters, rsi14: `${prefix}${val}` });
+                        }
+                      }}
+                      className={`w-10 bg-white rounded-md px-1.5 py-1 text-[12px] font-medium text-center outline-none border-none shadow-sm ${
+                        filters.rsi14 ? (filters.rsi14.startsWith('<') ? 'text-green-600' : 'text-red-500') : 'text-gray-500'
+                      }`}
+                    />
                   </div>
 
                   {/* Weekly RSI7 */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'W-RSI7' },
-                      { value: '<10', label: '<10', color: 'text-green-700' },
-                      { value: '<20', label: '<20', color: 'text-green-600' },
-                      { value: '<30', label: '<30', color: 'text-green-500' },
-                      { value: '<40', label: '<40', color: 'text-green-400' },
-                      { value: '>60', label: '>60', color: 'text-red-400' },
-                      { value: '>70', label: '>70', color: 'text-red-500' },
-                      { value: '>80', label: '>80', color: 'text-red-600' },
-                      { value: '>90', label: '>90', color: 'text-red-700' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsiW7: opt.value || undefined })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.rsiW7 || '') === opt.value
-                            ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
+                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW7: undefined })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        !filters.rsiW7 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      W-RSI7
+                    </button>
+                    <span className="text-gray-400 text-[12px] px-1">
+                      <select
+                        value={filters.rsiW7?.startsWith('<') ? '<' : filters.rsiW7?.startsWith('>') ? '>' : '<'}
+                        onChange={(e) => {
+                          const currentVal = filters.rsiW7?.replace(/[<>]/g, '') || '';
+                          if (currentVal) {
+                            onFiltersChange({ ...filters, rsiW7: `${e.target.value}${currentVal}` });
+                          }
+                        }}
+                        className="bg-transparent border-none outline-none text-[12px] text-gray-500 cursor-pointer"
                       >
-                        {opt.label}
-                      </button>
-                    ))}
+                        <option value="<">&lt;</option>
+                        <option value=">">&gt;</option>
+                      </select>
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      placeholder="--"
+                      value={filters.rsiW7?.replace(/[<>]/g, '') || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          onFiltersChange({ ...filters, rsiW7: undefined });
+                        } else {
+                          const prefix = filters.rsiW7?.startsWith('>') ? '>' : '<';
+                          onFiltersChange({ ...filters, rsiW7: `${prefix}${val}` });
+                        }
+                      }}
+                      className={`w-10 bg-white rounded-md px-1.5 py-1 text-[12px] font-medium text-center outline-none border-none shadow-sm ${
+                        filters.rsiW7 ? (filters.rsiW7.startsWith('<') ? 'text-green-600' : 'text-red-500') : 'text-gray-500'
+                      }`}
+                    />
                   </div>
 
                   {/* Weekly RSI14 */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'W-RSI14' },
-                      { value: '<10', label: '<10', color: 'text-green-700' },
-                      { value: '<20', label: '<20', color: 'text-green-600' },
-                      { value: '<30', label: '<30', color: 'text-green-500' },
-                      { value: '<40', label: '<40', color: 'text-green-400' },
-                      { value: '>60', label: '>60', color: 'text-red-400' },
-                      { value: '>70', label: '>70', color: 'text-red-500' },
-                      { value: '>80', label: '>80', color: 'text-red-600' },
-                      { value: '>90', label: '>90', color: 'text-red-700' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsiW14: opt.value || undefined })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.rsiW14 || '') === opt.value
-                            ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
+                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW14: undefined })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        !filters.rsiW14 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      W-RSI14
+                    </button>
+                    <span className="text-gray-400 text-[12px] px-1">
+                      <select
+                        value={filters.rsiW14?.startsWith('<') ? '<' : filters.rsiW14?.startsWith('>') ? '>' : '<'}
+                        onChange={(e) => {
+                          const currentVal = filters.rsiW14?.replace(/[<>]/g, '') || '';
+                          if (currentVal) {
+                            onFiltersChange({ ...filters, rsiW14: `${e.target.value}${currentVal}` });
+                          }
+                        }}
+                        className="bg-transparent border-none outline-none text-[12px] text-gray-500 cursor-pointer"
                       >
-                        {opt.label}
-                      </button>
-                    ))}
+                        <option value="<">&lt;</option>
+                        <option value=">">&gt;</option>
+                      </select>
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      placeholder="--"
+                      value={filters.rsiW14?.replace(/[<>]/g, '') || ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          onFiltersChange({ ...filters, rsiW14: undefined });
+                        } else {
+                          const prefix = filters.rsiW14?.startsWith('>') ? '>' : '<';
+                          onFiltersChange({ ...filters, rsiW14: `${prefix}${val}` });
+                        }
+                      }}
+                      className={`w-10 bg-white rounded-md px-1.5 py-1 text-[12px] font-medium text-center outline-none border-none shadow-sm ${
+                        filters.rsiW14 ? (filters.rsiW14.startsWith('<') ? 'text-green-600' : 'text-red-500') : 'text-gray-500'
+                      }`}
+                    />
                   </div>
                 </div>
               </div>
