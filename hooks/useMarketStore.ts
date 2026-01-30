@@ -554,10 +554,15 @@ export function useMarketStore() {
       }
     }
     
-    // RSI filter helper function
+    // RSI filter helper function - supports <N, >N, and N~M (range)
     const applyRsiFilter = (rsiValue: number | null | undefined, filterValue: string): boolean => {
       if (rsiValue === null || rsiValue === undefined) return false;
-      if (filterValue.startsWith('<')) {
+      if (filterValue.includes('~')) {
+        const [minStr, maxStr] = filterValue.split('~');
+        const min = minStr ? parseInt(minStr) : 0;
+        const max = maxStr ? parseInt(maxStr) : 100;
+        return rsiValue >= min && rsiValue <= max;
+      } else if (filterValue.startsWith('<')) {
         const threshold = parseInt(filterValue.slice(1));
         return rsiValue < threshold;
       } else if (filterValue.startsWith('>')) {
