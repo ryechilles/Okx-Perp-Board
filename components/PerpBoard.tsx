@@ -204,8 +204,14 @@ export default function PerpBoard() {
             tickers={store.tickers}
             rsiData={store.rsiData}
             marketCapData={store.marketCapData}
-            onTokenClick={(symbol) => store.setSearchTerm(symbol)}
-            onTopNClick={(symbols) => store.setSearchTerm(symbols.join('|'))}
+            onTokenClick={(symbol) => {
+              store.setFilters({}); // Clear all filters
+              store.setSearchTerm(symbol);
+            }}
+            onTopNClick={(symbols) => {
+              store.setFilters({}); // Clear all filters
+              store.setSearchTerm(symbols.join('|'));
+            }}
           />
         </div>
       </div>
