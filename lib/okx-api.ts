@@ -674,39 +674,24 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
 
   try {
     // Use our API proxy to avoid CORS and rate limit issues
-    // Fetch Top 250 coins (rank 1-250)
-    console.log('[CoinGecko] Fetching page 1 via proxy...');
-    const response1 = await fetch('/api/coingecko?page=1');
+    // Fetch Top 200 coins by market cap (covers most OKX perpetual pairs)
+    console.log('[CoinGecko] Fetching top 200 via proxy...');
+    const response = await fetch('/api/coingecko?page=1');
 
-    if (!response1.ok) {
-      console.error('[CoinGecko] Page 1 failed:', response1.status);
+    if (!response.ok) {
+      console.error('[CoinGecko] Failed:', response.status);
     } else {
-      const data1 = await response1.json();
-      if (Array.isArray(data1)) {
-        console.log(`[CoinGecko] Page 1 loaded: ${data1.length} coins`);
-        processCoinGeckoData(data1);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        console.log(`[CoinGecko] Loaded ${data.length} coins`);
+        processCoinGeckoData(data);
         saveLogoCache(newLogos);
-      } else if (data1.error) {
-        console.error('[CoinGecko] Page 1 error:', data1.error);
+      } else if (data.error) {
+        console.error('[CoinGecko] Error:', data.error);
       }
     }
 
-    // Fetch rank 251-500
-    console.log('[CoinGecko] Fetching page 2 via proxy...');
-    const response2 = await fetch('/api/coingecko?page=2');
-
-    if (!response2.ok) {
-      console.error('[CoinGecko] Page 2 failed:', response2.status);
-    } else {
-      const data2 = await response2.json();
-      if (Array.isArray(data2)) {
-        console.log(`[CoinGecko] Page 2 loaded: ${data2.length} coins`);
-        processCoinGeckoData(data2);
-        saveLogoCache(newLogos);
-      }
-    }
-
-    console.log(`[CoinGecko] Total coins loaded: ${result.size}`);
+    console.log(`[CoinGecko] Matched ${result.size} coins with OKX pairs`);
   } catch (error) {
     console.error('[CoinGecko] Failed to fetch data:', error);
     saveLogoCache(newLogos);
