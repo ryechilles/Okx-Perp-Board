@@ -45,24 +45,24 @@ function getMomentumInfo(rsi: number | null): MomentumInfo {
   }
 
   if (rsi <= 25) {
-    return { level: 'oversold', label: 'Oversold Zone', color: 'text-green-600', bgColor: 'bg-green-50' };
+    return { level: 'oversold', label: '🧊 Oversold', color: 'text-green-600', bgColor: 'bg-green-50' };
   }
   if (rsi <= 35) {
     return { level: 'weak', label: 'Weak', color: 'text-green-500', bgColor: 'bg-green-50' };
   }
   if (rsi <= 45) {
-    return { level: 'neutral', label: 'Neutral → Weak', color: 'text-emerald-500', bgColor: 'bg-emerald-50' };
+    return { level: 'neutral', label: 'Neutral→Weak', color: 'text-emerald-500', bgColor: 'bg-emerald-50' };
   }
   if (rsi <= 55) {
     return { level: 'neutral', label: 'Neutral', color: 'text-gray-600', bgColor: 'bg-gray-50' };
   }
   if (rsi <= 65) {
-    return { level: 'neutral', label: 'Neutral → Strong', color: 'text-orange-500', bgColor: 'bg-orange-50' };
+    return { level: 'neutral', label: 'Neutral→Strong', color: 'text-orange-500', bgColor: 'bg-orange-50' };
   }
   if (rsi <= 75) {
     return { level: 'strong', label: 'Strong', color: 'text-red-500', bgColor: 'bg-red-50' };
   }
-  return { level: 'overbought', label: 'Overbought Zone', color: 'text-red-600', bgColor: 'bg-red-50' };
+  return { level: 'overbought', label: '🔥 Overbought', color: 'text-red-600', bgColor: 'bg-red-50' };
 }
 
 function getCombinedMomentum(rsi7: number | null, rsi14: number | null): MomentumInfo {
