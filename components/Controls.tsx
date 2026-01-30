@@ -419,151 +419,161 @@ export function Controls({
 
           {/* Filters tab content */}
           {customizeTab === 'filters' && (
-            <>
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Market Cap Rank</label>
-                  <select
-                    value={tempFilters.rank || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, rank: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="1-20">Top 20</option>
-                    <option value="21-50">21 - 50</option>
-                    <option value="51-100">51 - 100</option>
-                    <option value="101-500">101 - 500</option>
-                    <option value=">500">&gt; 500 / N/A</option>
-                  </select>
-                </div>
+            <div className="space-y-4">
+              {/* Market & Funding */}
+              <div>
+                <div className="text-[11px] text-gray-400 font-medium mb-2">Market & Funding</div>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Market Cap Rank</label>
+                    <select
+                      value={filters.rank || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, rank: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[140px]"
+                    >
+                      <option value="">All</option>
+                      <option value="1-20">Top 20</option>
+                      <option value="21-50">21 - 50</option>
+                      <option value="51-100">51 - 100</option>
+                      <option value="101-500">101 - 500</option>
+                      <option value=">500">&gt; 500 / N/A</option>
+                    </select>
+                  </div>
 
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Funding Rate</label>
-                  <select
-                    value={tempFilters.fundingRate || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, fundingRate: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="positive">Positive (Longs Pay)</option>
-                    <option value="negative">Negative (Shorts Pay)</option>
-                  </select>
-                </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Market Cap</label>
+                    <select
+                      value={filters.marketCapMin || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, marketCapMin: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[140px]"
+                    >
+                      <option value="">All</option>
+                      <option value="0-20">≤ $20M</option>
+                      <option value="20-100">$20M - $100M</option>
+                      <option value="100-1000">$100M - $1B</option>
+                      <option value="1000+">≥ $1B</option>
+                    </select>
+                  </div>
 
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Daily RSI7</label>
-                  <select
-                    value={tempFilters.rsi7 || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsi7: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="<30">&lt; 30 (Oversold)</option>
-                    <option value="30-70">30 - 70</option>
-                    <option value=">70">&gt; 70 (Overbought)</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Daily RSI14</label>
-                  <select
-                    value={tempFilters.rsi14 || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsi14: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="<30">&lt; 30 (Oversold)</option>
-                    <option value="30-70">30 - 70</option>
-                    <option value=">70">&gt; 70 (Overbought)</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Weekly RSI7</label>
-                  <select
-                    value={tempFilters.rsiW7 || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW7: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="<30">&lt; 30 (Oversold)</option>
-                    <option value="30-70">30 - 70</option>
-                    <option value=">70">&gt; 70 (Overbought)</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Weekly RSI14</label>
-                  <select
-                    value={tempFilters.rsiW14 || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, rsiW14: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="<30">&lt; 30 (Oversold)</option>
-                    <option value="30-70">30 - 70</option>
-                    <option value=">70">&gt; 70 (Overbought)</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Has Spot</label>
-                  <select
-                    value={tempFilters.hasSpot || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, hasSpot: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Market Cap</label>
-                  <select
-                    value={tempFilters.marketCapMin || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, marketCapMin: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="0-20">≤ $20M</option>
-                    <option value="20-100">$20M - $100M</option>
-                    <option value="100-1000">$100M - $1B</option>
-                    <option value="1000+">≥ $1B</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-gray-600 font-medium">Listing Age</label>
-                  <select
-                    value={tempFilters.listAge || ''}
-                    onChange={(e) => setTempFilters(prev => ({ ...prev, listAge: e.target.value || undefined }))}
-                    className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500"
-                  >
-                    <option value="">All</option>
-                    <option value="<1y">≤ 1 year</option>
-                    <option value="1-2y">1 - 2 years</option>
-                    <option value=">2y">&gt; 2 years</option>
-                  </select>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Funding Rate</label>
+                    <select
+                      value={filters.fundingRate || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, fundingRate: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[160px]"
+                    >
+                      <option value="">All</option>
+                      <option value="positive">Positive (Longs Pay)</option>
+                      <option value="negative">Negative (Shorts Pay)</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={handleApplyFilters}
-                  className="px-4 py-2 rounded-md text-[13px] cursor-pointer transition-all bg-gray-900 text-white border-none hover:bg-gray-700"
-                >
-                  Apply Filters
-                </button>
-                <button
-                  onClick={handleClearFilters}
-                  className="px-4 py-2 rounded-md text-[13px] cursor-pointer transition-all bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
-                >
-                  Clear All
-                </button>
+              {/* RSI */}
+              <div>
+                <div className="text-[11px] text-gray-400 font-medium mb-2">RSI Indicators</div>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Daily RSI7</label>
+                    <select
+                      value={filters.rsi7 || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, rsi7: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
+                    >
+                      <option value="">All</option>
+                      <option value="<30">&lt; 30 (Oversold)</option>
+                      <option value="30-70">30 - 70</option>
+                      <option value=">70">&gt; 70 (Overbought)</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Daily RSI14</label>
+                    <select
+                      value={filters.rsi14 || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, rsi14: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
+                    >
+                      <option value="">All</option>
+                      <option value="<30">&lt; 30 (Oversold)</option>
+                      <option value="30-70">30 - 70</option>
+                      <option value=">70">&gt; 70 (Overbought)</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Weekly RSI7</label>
+                    <select
+                      value={filters.rsiW7 || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, rsiW7: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
+                    >
+                      <option value="">All</option>
+                      <option value="<30">&lt; 30 (Oversold)</option>
+                      <option value="30-70">30 - 70</option>
+                      <option value=">70">&gt; 70 (Overbought)</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Weekly RSI14</label>
+                    <select
+                      value={filters.rsiW14 || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, rsiW14: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
+                    >
+                      <option value="">All</option>
+                      <option value="<30">&lt; 30 (Oversold)</option>
+                      <option value="30-70">30 - 70</option>
+                      <option value=">70">&gt; 70 (Overbought)</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-            </>
+
+              {/* Other */}
+              <div>
+                <div className="text-[11px] text-gray-400 font-medium mb-2">Other</div>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Has Spot</label>
+                    <select
+                      value={filters.hasSpot || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, hasSpot: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[100px]"
+                    >
+                      <option value="">All</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-gray-600 font-medium">Listing Age</label>
+                    <select
+                      value={filters.listAge || ''}
+                      onChange={(e) => onFiltersChange({ ...filters, listAge: e.target.value || undefined })}
+                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[120px]"
+                    >
+                      <option value="">All</option>
+                      <option value="<1y">≤ 1 year</option>
+                      <option value="1-2y">1 - 2 years</option>
+                      <option value=">2y">&gt; 2 years</option>
+                    </select>
+                  </div>
+
+                  {hasFilters && (
+                    <button
+                      onClick={handleClearFilters}
+                      className="self-end px-3 py-2 rounded-md text-[13px] cursor-pointer transition-all text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
         </div>
       )}
