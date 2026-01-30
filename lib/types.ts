@@ -86,6 +86,7 @@ export interface MarketCapData {
   marketCap: number;
   rank: number;
   logo?: string;
+  sparkline?: number[]; // 7-day price data for sparkline chart
 }
 
 // Column key type

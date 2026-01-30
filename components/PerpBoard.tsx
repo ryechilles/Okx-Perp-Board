@@ -450,9 +450,11 @@ export default function PerpBoard() {
                                 );
 
                               case 'change':
+                                // For 24h, use last ~24 data points from 7-day sparkline (168 hours total)
+                                const sparkline24h = marketCap?.sparkline?.slice(-24);
                                 return (
                                   <td key={key} className={baseClass}>
-                                    <ChangeWithSparkline change={ticker.changeNum} />
+                                    <ChangeWithSparkline change={ticker.changeNum} sparklineData={sparkline24h} />
                                   </td>
                                 );
 
@@ -460,7 +462,7 @@ export default function PerpBoard() {
                                 const change7d = rsi?.change7d;
                                 return (
                                   <td key={key} className={baseClass}>
-                                    <ChangeWithSparkline change={change7d} />
+                                    <ChangeWithSparkline change={change7d} sparklineData={marketCap?.sparkline} />
                                   </td>
                                 );
                                 
