@@ -46,7 +46,7 @@ export function Controls({
 
   // Determine active quick filter based on current filters
   const getActiveQuickFilter = (): QuickFilter => {
-    if (filters.rank === '1-20' && !filters.rsi7 && !filters.rsi14 && !filters.isMeme && !filters.hasSpot) return 'top25';
+    if (filters.rank === '1-25' && !filters.rsi7 && !filters.rsi14 && !filters.isMeme && !filters.hasSpot) return 'top25';
     if (filters.isMeme === 'yes' && !filters.rsi7 && !filters.rsi14) return 'meme';
     if (filters.hasSpot === 'no' && !filters.rsi7 && !filters.rsi14) return 'noSpot';
     if (filters.rsi7 === '>70' && filters.rsi14 === '>70') return 'overbought';

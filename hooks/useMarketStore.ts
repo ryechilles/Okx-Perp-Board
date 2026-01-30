@@ -436,31 +436,33 @@ export function useMarketStore() {
     
     // Apply filters
     if (filters.rank) {
+      // For Top N filters, we need to get the top N by market cap among OKX perps
+      // First sort all filtered tokens by market cap rank
+      const sortedByMarketCap = [...filtered].sort((a, b) => {
+        const rankA = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
+        const rankB = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
+        return rankA - rankB;
+      });
+
+      // Create a set of top N instIds
+      const getTopN = (n: number) => new Set(sortedByMarketCap.slice(0, n).map(t => t.instId));
+      const getRangeSet = (start: number, end: number) => new Set(sortedByMarketCap.slice(start - 1, end).map(t => t.instId));
+
       if (filters.rank === '1-25') {
-        filtered = filtered.filter(t => {
-          const rank = marketCapData.get(t.baseSymbol)?.rank;
-          return rank && rank <= 25;
-        });
+        const top25Set = getTopN(25);
+        filtered = filtered.filter(t => top25Set.has(t.instId));
       } else if (filters.rank === '1-20') {
-        filtered = filtered.filter(t => {
-          const rank = marketCapData.get(t.baseSymbol)?.rank;
-          return rank && rank <= 20;
-        });
+        const top20Set = getTopN(20);
+        filtered = filtered.filter(t => top20Set.has(t.instId));
       } else if (filters.rank === '21-50') {
-        filtered = filtered.filter(t => {
-          const rank = marketCapData.get(t.baseSymbol)?.rank;
-          return rank && rank >= 21 && rank <= 50;
-        });
+        const rangeSet = getRangeSet(21, 50);
+        filtered = filtered.filter(t => rangeSet.has(t.instId));
       } else if (filters.rank === '51-100') {
-        filtered = filtered.filter(t => {
-          const rank = marketCapData.get(t.baseSymbol)?.rank;
-          return rank && rank >= 51 && rank <= 100;
-        });
+        const rangeSet = getRangeSet(51, 100);
+        filtered = filtered.filter(t => rangeSet.has(t.instId));
       } else if (filters.rank === '101-500') {
-        filtered = filtered.filter(t => {
-          const rank = marketCapData.get(t.baseSymbol)?.rank;
-          return rank && rank >= 101 && rank <= 500;
-        });
+        const rangeSet = getRangeSet(101, 500);
+        filtered = filtered.filter(t => rangeSet.has(t.instId));
       } else if (filters.rank === '>500') {
         filtered = filtered.filter(t => !marketCapData.get(t.baseSymbol)?.rank);
       }
