@@ -18,6 +18,9 @@ const debouncedSelect = (input: HTMLInputElement, delay: number = 400) => {
   }, delay);
 };
 
+// Debounce timer for range parsing
+let rangeParseTimer: ReturnType<typeof setTimeout> | null = null;
+
 // Parse a multi-digit number as a range (e.g., "2050" → {min: "20", max: "50"})
 const parseAsRange = (value: string): { min: string; max: string } | null => {
   const num = parseInt(value, 10);
@@ -51,6 +54,26 @@ const parseAsRange = (value: string): { min: string; max: string } | null => {
   }
 
   return null;
+};
+
+// Debounced range parsing - waits for user to stop typing before parsing
+const debouncedRangeParse = (
+  input: HTMLInputElement,
+  value: string,
+  onRangeParsed: (min: string, max: string) => void,
+  delay: number = 400
+) => {
+  if (rangeParseTimer) clearTimeout(rangeParseTimer);
+  rangeParseTimer = setTimeout(() => {
+    const range = parseAsRange(value);
+    if (range && document.activeElement === input) {
+      onRangeParsed(range.min, range.max);
+      // Move focus to second input
+      const container = input.parentElement;
+      const secondInput = container?.querySelectorAll('input')[1] as HTMLInputElement;
+      if (secondInput) setTimeout(() => secondInput.select(), 0);
+    }
+  }, delay);
 };
 
 // Helper for scroll wheel number input
@@ -686,24 +709,17 @@ export function Controls({
                         placeholder=""
                         value={filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : ''}
                         onChange={(e) => {
-                          let min = e.target.value;
+                          const val = e.target.value;
                           const max = filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : '';
-                          if (min === '' && max === '') {
+                          if (val === '' && max === '') {
                             onFiltersChange({ ...filters, rsi7: undefined });
                           } else {
-                            // Try to parse as range (e.g., "2050" → "20~50")
-                            const range = parseAsRange(min);
-                            if (range) {
-                              onFiltersChange({ ...filters, rsi7: `${range.min}~${range.max}` });
-                              // Move focus to second input
-                              const container = e.target.parentElement;
-                              const secondInput = container?.querySelectorAll('input')[1] as HTMLInputElement;
-                              if (secondInput) setTimeout(() => secondInput.select(), 0);
-                            } else {
-                              if (min === '30' || min === '70') min = min === '30' ? '31' : '69'; // Skip preset
+                            // Update immediately with raw value
+                            onFiltersChange({ ...filters, rsi7: `${val}~${max}` });
+                            // Schedule debounced range parsing (e.g., "2050" → "20~50")
+                            debouncedRangeParse(e.target, val, (min, max) => {
                               onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
-                              debouncedSelect(e.target);
-                            }
+                            });
                           }
                         }}
                         onWheel={(e) => {
@@ -894,23 +910,15 @@ export function Controls({
                         placeholder=""
                         value={filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : ''}
                         onChange={(e) => {
-                          let min = e.target.value;
+                          const val = e.target.value;
                           const max = filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : '';
-                          if (min === '' && max === '') {
+                          if (val === '' && max === '') {
                             onFiltersChange({ ...filters, rsi14: undefined });
                           } else {
-                            // Try to parse as range (e.g., "2050" → "20~50")
-                            const range = parseAsRange(min);
-                            if (range) {
-                              onFiltersChange({ ...filters, rsi14: `${range.min}~${range.max}` });
-                              const container = e.target.parentElement;
-                              const secondInput = container?.querySelectorAll('input')[1] as HTMLInputElement;
-                              if (secondInput) setTimeout(() => secondInput.select(), 0);
-                            } else {
-                              if (min === '30' || min === '70') min = min === '30' ? '31' : '69'; // Skip preset
+                            onFiltersChange({ ...filters, rsi14: `${val}~${max}` });
+                            debouncedRangeParse(e.target, val, (min, max) => {
                               onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
-                              debouncedSelect(e.target);
-                            }
+                            });
                           }
                         }}
                         onWheel={(e) => {
@@ -1104,23 +1112,15 @@ export function Controls({
                         placeholder=""
                         value={filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : ''}
                         onChange={(e) => {
-                          let min = e.target.value;
+                          const val = e.target.value;
                           const max = filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : '';
-                          if (min === '' && max === '') {
+                          if (val === '' && max === '') {
                             onFiltersChange({ ...filters, rsiW7: undefined });
                           } else {
-                            // Try to parse as range (e.g., "2050" → "20~50")
-                            const range = parseAsRange(min);
-                            if (range) {
-                              onFiltersChange({ ...filters, rsiW7: `${range.min}~${range.max}` });
-                              const container = e.target.parentElement;
-                              const secondInput = container?.querySelectorAll('input')[1] as HTMLInputElement;
-                              if (secondInput) setTimeout(() => secondInput.select(), 0);
-                            } else {
-                              if (min === '30' || min === '70') min = min === '30' ? '31' : '69'; // Skip preset
+                            onFiltersChange({ ...filters, rsiW7: `${val}~${max}` });
+                            debouncedRangeParse(e.target, val, (min, max) => {
                               onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
-                              debouncedSelect(e.target);
-                            }
+                            });
                           }
                         }}
                         onWheel={(e) => {
@@ -1311,23 +1311,15 @@ export function Controls({
                         placeholder=""
                         value={filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : ''}
                         onChange={(e) => {
-                          let min = e.target.value;
+                          const val = e.target.value;
                           const max = filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : '';
-                          if (min === '' && max === '') {
+                          if (val === '' && max === '') {
                             onFiltersChange({ ...filters, rsiW14: undefined });
                           } else {
-                            // Try to parse as range (e.g., "2050" → "20~50")
-                            const range = parseAsRange(min);
-                            if (range) {
-                              onFiltersChange({ ...filters, rsiW14: `${range.min}~${range.max}` });
-                              const container = e.target.parentElement;
-                              const secondInput = container?.querySelectorAll('input')[1] as HTMLInputElement;
-                              if (secondInput) setTimeout(() => secondInput.select(), 0);
-                            } else {
-                              if (min === '30' || min === '70') min = min === '30' ? '31' : '69'; // Skip preset
+                            onFiltersChange({ ...filters, rsiW14: `${val}~${max}` });
+                            debouncedRangeParse(e.target, val, (min, max) => {
                               onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
-                              debouncedSelect(e.target);
-                            }
+                            });
                           }
                         }}
                         onWheel={(e) => {
