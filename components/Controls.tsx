@@ -368,25 +368,25 @@ export function Controls({
       {showCustomizePanel && (
         <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm relative z-50">
           {/* Tab buttons */}
-          <div className="flex gap-1 mb-4 border-b border-gray-200 pb-3">
+          <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5 mb-4">
             <button
               onClick={() => setCustomizeTab('columns')}
-              className={`px-4 py-2 rounded-md text-[13px] font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
                 customizeTab === 'columns'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               Columns ({visibleCount}/{totalCount})
             </button>
             <button
               onClick={() => setCustomizeTab('filters')}
-              className={`px-4 py-2 rounded-md text-[13px] font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
                 customizeTab === 'filters'
-                  ? 'bg-gray-900 text-white'
+                  ? 'bg-white text-gray-900 shadow-sm'
                   : hasFilters
-                  ? 'text-blue-500 hover:bg-gray-100'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'text-blue-500 hover:text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               Filters {hasFilters && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 ml-1" />}
