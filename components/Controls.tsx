@@ -341,6 +341,14 @@ export function Controls({
         </button>
       </div>
       
+      {/* Overlay to close panel when clicking outside */}
+      {showCustomizePanel && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowCustomizePanel(false)}
+        />
+      )}
+
       {showCustomizePanel && (
         <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm relative z-50">
           {/* Tab buttons */}
@@ -547,12 +555,6 @@ export function Controls({
         </div>
       )}
 
-      {showCustomizePanel && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowCustomizePanel(false)}
-        />
-      )}
     </>
   );
 }
