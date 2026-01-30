@@ -1,9 +1,25 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, WheelEvent } from 'react';
 import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
 import { MarketMomentum } from './MarketMomentum';
 import { AHR999Indicator } from './AHR999Indicator';
+
+// Helper for scroll wheel number input
+const handleNumberWheel = (
+  e: WheelEvent<HTMLInputElement>,
+  currentValue: string,
+  min: number,
+  max: number,
+  step: number,
+  onChange: (newValue: string) => void
+) => {
+  e.preventDefault();
+  const current = currentValue === '' ? (e.deltaY > 0 ? max + step : min - step) : parseFloat(currentValue);
+  const delta = e.deltaY > 0 ? -step : step;
+  const newValue = Math.min(max, Math.max(min, current + delta));
+  onChange(newValue.toString());
+};
 
 // Quick filter types
 type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'overbought' | 'oversold';
@@ -551,7 +567,7 @@ export function Controls({
                       &gt;70
                     </button>
                     {/* Custom < input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
@@ -560,7 +576,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? filters.rsi7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -570,11 +586,17 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi7: `<${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? filters.rsi7.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsi7: `<${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <input
@@ -582,7 +604,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : ''}
                         onChange={(e) => {
                           const min = e.target.value;
@@ -593,7 +615,16 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const max = filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsi7: `${val}~${max}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                       <span className="text-gray-400">~</span>
                       <input
@@ -601,7 +632,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : ''}
                         onChange={(e) => {
                           const max = e.target.value;
@@ -612,11 +643,20 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const min = filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsi7: `${min}~${val}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
@@ -625,7 +665,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? filters.rsi7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -635,7 +675,13 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi7: `>${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? filters.rsi7.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsi7: `>${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 cursor-pointer"
                       />
                     </div>
                   </div>
@@ -676,7 +722,7 @@ export function Controls({
                       &gt;70
                     </button>
                     {/* Custom < input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
@@ -685,7 +731,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? filters.rsi14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -695,11 +741,17 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi14: `<${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? filters.rsi14.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsi14: `<${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <input
@@ -707,7 +759,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : ''}
                         onChange={(e) => {
                           const min = e.target.value;
@@ -718,7 +770,16 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const max = filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsi14: `${val}~${max}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                       <span className="text-gray-400">~</span>
                       <input
@@ -726,7 +787,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : ''}
                         onChange={(e) => {
                           const max = e.target.value;
@@ -737,11 +798,20 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const min = filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsi14: `${min}~${val}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
@@ -750,7 +820,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? filters.rsi14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -760,7 +830,13 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi14: `>${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? filters.rsi14.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsi14: `>${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 cursor-pointer"
                       />
                     </div>
                   </div>
@@ -801,7 +877,7 @@ export function Controls({
                       &gt;70
                     </button>
                     {/* Custom < input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
@@ -810,7 +886,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? filters.rsiW7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -820,11 +896,17 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW7: `<${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? filters.rsiW7.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsiW7: `<${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <input
@@ -832,7 +914,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : ''}
                         onChange={(e) => {
                           const min = e.target.value;
@@ -843,7 +925,16 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const max = filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsiW7: `${val}~${max}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                       <span className="text-gray-400">~</span>
                       <input
@@ -851,7 +942,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : ''}
                         onChange={(e) => {
                           const max = e.target.value;
@@ -862,11 +953,20 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const min = filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsiW7: `${min}~${val}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
@@ -875,7 +975,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? filters.rsiW7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -885,7 +985,13 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW7: `>${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? filters.rsiW7.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsiW7: `>${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 cursor-pointer"
                       />
                     </div>
                   </div>
@@ -926,7 +1032,7 @@ export function Controls({
                       &gt;70
                     </button>
                     {/* Custom < input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
@@ -935,7 +1041,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? filters.rsiW14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -945,11 +1051,17 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW14: `<${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? filters.rsiW14.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsiW14: `<${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <input
@@ -957,7 +1069,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : ''}
                         onChange={(e) => {
                           const min = e.target.value;
@@ -968,7 +1080,16 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const max = filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsiW14: `${val}~${max}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                       <span className="text-gray-400">~</span>
                       <input
@@ -976,7 +1097,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : ''}
                         onChange={(e) => {
                           const max = e.target.value;
@@ -987,11 +1108,20 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        onWheel={(e) => {
+                          const min = filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : '';
+                          handleNumberWheel(
+                            e,
+                            filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : '',
+                            0, 100, 1,
+                            (val) => onFiltersChange({ ...filters, rsiW14: `${min}~${val}` })
+                          );
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                       filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
@@ -1000,7 +1130,7 @@ export function Controls({
                         min="0"
                         max="100"
                         step="1"
-                        placeholder="?"
+                        placeholder=""
                         value={filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? filters.rsiW14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -1010,7 +1140,13 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW14: `>${val}` });
                           }
                         }}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
+                        onWheel={(e) => handleNumberWheel(
+                          e,
+                          filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? filters.rsiW14.slice(1) : '',
+                          0, 100, 1,
+                          (val) => onFiltersChange({ ...filters, rsiW14: `>${val}` })
+                        )}
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 cursor-pointer"
                       />
                     </div>
                   </div>
