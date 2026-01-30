@@ -64,6 +64,8 @@ function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (t
 export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetricsProps) {
   const [gainersTimeFrame, setGainersTimeFrame] = useState<TimeFrame>('4h');
   const [avgTimeFrame, setAvgTimeFrame] = useState<TimeFrame>('4h');
+  const [showGainersTooltip, setShowGainersTooltip] = useState(false);
+  const [showAvgTooltip, setShowAvgTooltip] = useState(false);
 
   // Get altcoins sorted by market cap (excluding BTC)
   const altcoins = useMemo(() => {
@@ -151,16 +153,24 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
   return (
     <div className="flex gap-4 mb-4">
       {/* Top Gainers Card */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 min-w-[280px]">
+      <div
+        className="relative bg-white border border-gray-200 rounded-lg p-4 min-w-[280px]"
+        onMouseEnter={() => setShowGainersTooltip(true)}
+        onMouseLeave={() => setShowGainersTooltip(false)}
+      >
         <div className="flex items-center justify-between mb-3">
-          <span
-            className="text-sm font-medium text-gray-700 cursor-help"
-            title="Top 5 gainers from top 100 altcoins by market cap (excluding BTC)"
-          >
-            Altcoin Top Gainers
-          </span>
+          <span className="text-sm font-medium text-gray-700">Altcoin Top Gainers</span>
           <TimeFrameSelector value={gainersTimeFrame} onChange={setGainersTimeFrame} />
         </div>
+
+        {/* Hover tooltip */}
+        {showGainersTooltip && (
+          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
+            <div className="text-[11px] text-gray-600 whitespace-nowrap">
+              Top 5 gainers from top 100 altcoins by market cap (excluding BTC)
+            </div>
+          </div>
+        )}
 
         <div className="space-y-2">
           {topGainers.map((token, i) => {
@@ -200,16 +210,24 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
       </div>
 
       {/* Average Changes Card */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 min-w-[200px]">
+      <div
+        className="relative bg-white border border-gray-200 rounded-lg p-4 min-w-[200px]"
+        onMouseEnter={() => setShowAvgTooltip(true)}
+        onMouseLeave={() => setShowAvgTooltip(false)}
+      >
         <div className="flex items-center justify-between mb-3">
-          <span
-            className="text-sm font-medium text-gray-700 cursor-help"
-            title="Average price change of top N altcoins by market cap (excluding BTC)"
-          >
-            Altcoin Avg Change
-          </span>
+          <span className="text-sm font-medium text-gray-700">Altcoin Avg Change</span>
           <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
         </div>
+
+        {/* Hover tooltip */}
+        {showAvgTooltip && (
+          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
+            <div className="text-[11px] text-gray-600 whitespace-nowrap">
+              Average price change of top N altcoins by market cap (excluding BTC)
+            </div>
+          </div>
+        )}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs text-gray-500">Top 10</span>
