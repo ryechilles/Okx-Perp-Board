@@ -12,12 +12,17 @@ const handleNumberWheel = (
   min: number,
   max: number,
   step: number,
-  onChange: (newValue: string) => void
+  onChange: (newValue: string) => void,
+  skipValues?: number[] // Skip these values (preset values like 30, 70)
 ) => {
   e.preventDefault();
   const current = currentValue === '' ? (e.deltaY > 0 ? max + step : min - step) : parseFloat(currentValue);
   const delta = e.deltaY > 0 ? -step : step;
-  const newValue = Math.min(max, Math.max(min, current + delta));
+  let newValue = Math.min(max, Math.max(min, current + delta));
+  // Skip preset values to avoid jumping to preset buttons
+  if (skipValues && skipValues.includes(newValue)) {
+    newValue = Math.min(max, Math.max(min, newValue + delta));
+  }
   onChange(newValue.toString());
 };
 
@@ -597,7 +602,8 @@ export function Controls({
                           e,
                           filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? filters.rsi7.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsi7: `<${val}` })
+                          (val) => onFiltersChange({ ...filters, rsi7: `<${val}` }),
+                          [30]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
@@ -705,7 +711,8 @@ export function Controls({
                           e,
                           filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? filters.rsi7.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsi7: `>${val}` })
+                          (val) => onFiltersChange({ ...filters, rsi7: `>${val}` }),
+                          [70]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
@@ -779,7 +786,8 @@ export function Controls({
                           e,
                           filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? filters.rsi14.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsi14: `<${val}` })
+                          (val) => onFiltersChange({ ...filters, rsi14: `<${val}` }),
+                          [30]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
@@ -887,7 +895,8 @@ export function Controls({
                           e,
                           filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? filters.rsi14.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsi14: `>${val}` })
+                          (val) => onFiltersChange({ ...filters, rsi14: `>${val}` }),
+                          [70]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
@@ -961,7 +970,8 @@ export function Controls({
                           e,
                           filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? filters.rsiW7.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsiW7: `<${val}` })
+                          (val) => onFiltersChange({ ...filters, rsiW7: `<${val}` }),
+                          [30]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
@@ -1069,7 +1079,8 @@ export function Controls({
                           e,
                           filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? filters.rsiW7.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsiW7: `>${val}` })
+                          (val) => onFiltersChange({ ...filters, rsiW7: `>${val}` }),
+                          [70]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
@@ -1143,7 +1154,8 @@ export function Controls({
                           e,
                           filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? filters.rsiW14.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsiW14: `<${val}` })
+                          (val) => onFiltersChange({ ...filters, rsiW14: `<${val}` }),
+                          [30]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
@@ -1251,7 +1263,8 @@ export function Controls({
                           e,
                           filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? filters.rsiW14.slice(1) : '',
                           1, 100, 1,
-                          (val) => onFiltersChange({ ...filters, rsiW14: `>${val}` })
+                          (val) => onFiltersChange({ ...filters, rsiW14: `>${val}` }),
+                          [70]
                         )}
                         onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
