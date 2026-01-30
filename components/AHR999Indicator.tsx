@@ -54,7 +54,7 @@ export function AHR999Indicator() {
         <div className="flex items-center gap-2 text-[13px] leading-none">
           <span className="font-medium text-gray-700">Ahr999</span>
           {loading ? (
-            <span className="text-gray-400">Loading...</span>
+            <span className="text-gray-500">Loading...</span>
           ) : (
             <>
               <span className={`font-medium tabular-nums ${zoneInfo.color}`}>
@@ -94,20 +94,20 @@ export function AHR999Indicator() {
       {/* Hover tooltip with zone legend */}
       {showDetails && !loading && data && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
-          <div className="text-[11px] font-medium text-gray-400 mb-2">Ahr999 Zone</div>
+          <div className="text-[11px] font-medium text-gray-500 mb-2">Ahr999 Zone</div>
           <div className="flex items-start gap-3 text-[11px] text-gray-900">
             {/* Current zone - left side */}
             <div>
-              <div className="text-[10px] text-gray-400 mb-1">Current</div>
+              <div className="text-[10px] text-gray-500 mb-1">Current</div>
               <div className={`font-medium ${zoneInfo.color}`}>
                 <span>{zoneInfo.dot}</span> {zoneInfo.range} {zoneInfo.label}
               </div>
             </div>
             {/* Divider */}
-            <div className="text-gray-400 self-center">|</div>
+            <div className="text-gray-500 self-center">|</div>
             {/* Other zones - right side */}
             <div className="space-y-1">
-              <div className="text-[10px] text-gray-400 mb-1">All Zones</div>
+              <div className="text-[10px] text-gray-500 mb-1">All Zones</div>
               {zoneInfo.label !== 'Bottom' && <div><span className="text-green-600">●</span> &lt;0.45 Bottom</div>}
               {zoneInfo.label !== 'DCA' && <div><span className="text-emerald-500">●</span> 0.45-1.2 DCA</div>}
               {zoneInfo.label !== 'Wait' && <div><span className="text-orange-500">●</span> 1.2-2.0 Wait</div>}

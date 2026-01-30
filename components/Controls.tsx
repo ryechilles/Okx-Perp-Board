@@ -393,7 +393,7 @@ export function Controls({
               }`}
               onClick={() => handleQuickFilter('overbought')}
             >
-              🔥 Overbought {overboughtCount > 0 && <span className="text-gray-400 font-normal">{overboughtCount}</span>}
+              🔥 Overbought {overboughtCount > 0 && <span className="text-gray-500 font-normal">{overboughtCount}</span>}
             </button>
             {hoveredFilter === 'overbought' && (
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
@@ -420,7 +420,7 @@ export function Controls({
               }`}
               onClick={() => handleQuickFilter('oversold')}
             >
-              🧊 Oversold {oversoldCount > 0 && <span className="text-gray-400 font-normal">{oversoldCount}</span>}
+              🧊 Oversold {oversoldCount > 0 && <span className="text-gray-500 font-normal">{oversoldCount}</span>}
             </button>
             {hoveredFilter === 'oversold' && (
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
@@ -444,7 +444,7 @@ export function Controls({
             }`}
             onClick={() => setShowCustomizePanel(!showCustomizePanel)}
           >
-            <svg className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
               <circle cx="12" cy="12" r="3"/>
             </svg>
@@ -455,7 +455,7 @@ export function Controls({
         {/* Search box - right side */}
         <div className="inline-flex items-center bg-gray-100 rounded-lg p-1 gap-1">
           <svg
-            className="w-4 h-4 text-gray-400 ml-2"
+            className="w-4 h-4 text-gray-500 ml-2"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -509,7 +509,7 @@ export function Controls({
             <div className="space-y-4">
               {columnGroups.map(group => (
                 <div key={group.label}>
-                  <div className="text-[11px] text-gray-400 font-medium mb-2">{group.label}</div>
+                  <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 flex-wrap">
                     {group.columns.map(col => (
                       <button
@@ -535,7 +535,7 @@ export function Controls({
             <div className="space-y-4">
               {/* Market & Funding */}
               <div>
-                <div className="text-[11px] text-gray-400 font-medium mb-2">Market & Funding</div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">Market & Funding</div>
                 <div className="flex flex-wrap gap-x-4 gap-y-3">
                   {/* Market Cap Rank */}
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
@@ -608,7 +608,7 @@ export function Controls({
 
               {/* RSI */}
               <div>
-                <div className="text-[11px] text-gray-400 font-medium mb-2">RSI Indicators</div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">RSI Indicators</div>
                 <div className="flex flex-col gap-3">
                   {/* Daily RSI Row */}
                   <div className="flex flex-wrap gap-x-4 gap-y-3">
@@ -1423,7 +1423,7 @@ export function Controls({
 
               {/* Other */}
               <div>
-                <div className="text-[11px] text-gray-400 font-medium mb-2">Other</div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">Other</div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
                   {/* Has Spot */}
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
@@ -1471,7 +1471,7 @@ export function Controls({
                   {hasFilters && (
                     <button
                       onClick={handleClearFilters}
-                      className="p-1.5 rounded-md cursor-pointer transition-all text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                      className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-100"
                       title="Reset filters"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -5,7 +5,7 @@ export function Footer() {
   
   return (
     <div className="border-t border-gray-200 py-4 flex items-center justify-between">
-      <span className="text-xs text-gray-400">
+      <span className="text-xs text-gray-500">
         Copyright © {currentYear}
       </span>
       <div className="flex items-center gap-4">
@@ -13,7 +13,7 @@ export function Footer() {
           href="https://okx.com/join/95869751"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+          className="flex items-center justify-center text-gray-500 hover:text-gray-600 transition-colors"
           title="OKX"
         >
           <svg viewBox="0 0 32 32" fill="currentColor" className="w-4 h-4">
@@ -28,7 +28,7 @@ export function Footer() {
           href="https://t.me/perp_board"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+          className="flex items-center justify-center text-gray-500 hover:text-gray-600 transition-colors"
           title="Telegram"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -39,7 +39,7 @@ export function Footer() {
           href="https://x.com/ryechilles" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+          className="flex items-center justify-center text-gray-500 hover:text-gray-600 transition-colors"
           title="X (Twitter)"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -50,7 +50,7 @@ export function Footer() {
           href="https://github.com/ryechilles/Perp-Board" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+          className="flex items-center justify-center text-gray-500 hover:text-gray-600 transition-colors"
           title="GitHub"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">

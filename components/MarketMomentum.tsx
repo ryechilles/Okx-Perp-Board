@@ -20,7 +20,7 @@ interface MomentumInfo {
 
 // Get RSI color based on value (7-level color scale, same as table)
 function getRsiColor(rsi: number | null): string {
-  if (rsi === null) return 'text-gray-400';
+  if (rsi === null) return 'text-gray-500';
   if (rsi <= 25) return 'text-green-600';      // Oversold Zone
   if (rsi <= 35) return 'text-green-500';      // Weak
   if (rsi <= 45) return 'text-emerald-500';    // Neutral → Weak
@@ -41,7 +41,7 @@ function formatRsi(rsi: number | null): string {
 
 function getMomentumInfo(rsi: number | null): MomentumInfo {
   if (rsi === null) {
-    return { level: 'neutral', label: '--', color: 'text-gray-400', bgColor: 'bg-gray-50' };
+    return { level: 'neutral', label: '--', color: 'text-gray-500', bgColor: 'bg-gray-50' };
   }
 
   if (rsi <= 25) {
@@ -67,7 +67,7 @@ function getMomentumInfo(rsi: number | null): MomentumInfo {
 
 function getCombinedMomentum(rsi7: number | null, rsi14: number | null): MomentumInfo {
   if (rsi7 === null && rsi14 === null) {
-    return { level: 'neutral', label: '--', color: 'text-gray-400', bgColor: 'bg-gray-50' };
+    return { level: 'neutral', label: '--', color: 'text-gray-500', bgColor: 'bg-gray-50' };
   }
 
   // Use average of both, or whichever is available
@@ -92,7 +92,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
     >
       {/* Icon */}
       <svg
-        className="w-4 h-4 text-gray-400 flex-shrink-0"
+        className="w-4 h-4 text-gray-500 flex-shrink-0"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -107,10 +107,10 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       <div className="flex flex-col gap-0.5">
         <span className="text-[13px] font-medium text-gray-700 leading-none">Market Avg RSI</span>
         <div className="flex items-center gap-2 text-[13px] leading-none">
-          <span className="text-gray-400">Daily:</span>
+          <span className="text-gray-500">Daily:</span>
           <span className={`font-medium ${dailyMomentum.color}`}>{dailyMomentum.label}</span>
-          <span className="text-gray-400">|</span>
-          <span className="text-gray-400">Weekly:</span>
+          <span className="text-gray-500">|</span>
+          <span className="text-gray-500">Weekly:</span>
           <span className={`font-medium ${weeklyMomentum.color}`}>{weeklyMomentum.label}</span>
         </div>
       </div>
@@ -118,7 +118,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       {/* Hover tooltip with detailed RSI values */}
       {showDetails && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
-          <div className="text-[11px] font-medium text-gray-400 mb-2">Top 100 OKX Perp Token AVG RSI</div>
+          <div className="text-[11px] font-medium text-gray-500 mb-2">Top 100 OKX Perp Token AVG RSI</div>
           <div className="flex items-center gap-3 text-[12px]">
             {/* Daily RSI - Left */}
             <div className="flex flex-col gap-1">
@@ -137,7 +137,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             </div>
 
             {/* Divider */}
-            <div className="text-gray-400">|</div>
+            <div className="text-gray-500">|</div>
 
             {/* Weekly RSI - Right */}
             <div className="flex flex-col gap-1">

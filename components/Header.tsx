@@ -54,14 +54,14 @@ export function Header() {
         <span className="text-base font-semibold text-gray-900 whitespace-nowrap">
           Perp Board
         </span>
-        <span className="text-[10px] text-gray-400">v2.4.0</span>
+        <span className="text-[10px] text-gray-500">v2.4.0</span>
       </div>
       
       <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
         <button className="px-3 py-1.5 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm">
           OKX
         </button>
-        <button className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-400 cursor-not-allowed">
+        <button className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-500 cursor-not-allowed">
           Coming soon
         </button>
       </div>

@@ -262,18 +262,18 @@ export default function PerpBoard() {
                             )}
                             {sortable && (
                               <svg 
-                                className={`w-3 h-3 ml-0.5 ${isActive ? 'text-gray-600' : 'text-gray-300'}`}
+                                className={`w-3 h-3 ml-0.5 ${isActive ? 'text-gray-600' : 'text-gray-500'}`}
                                 viewBox="0 0 12 12" 
                                 fill="currentColor"
                               >
                                 <path 
                                   d="M6 2L9 5H3L6 2Z" 
-                                  className={isActive && store.sort.direction === 'asc' ? 'text-gray-700' : 'text-gray-300'}
+                                  className={isActive && store.sort.direction === 'asc' ? 'text-gray-700' : 'text-gray-500'}
                                   fill="currentColor"
                                 />
                                 <path 
                                   d="M6 10L3 7H9L6 10Z" 
-                                  className={isActive && store.sort.direction === 'desc' ? 'text-gray-700' : 'text-gray-300'}
+                                  className={isActive && store.sort.direction === 'desc' ? 'text-gray-700' : 'text-gray-500'}
                                   fill="currentColor"
                                 />
                               </svg>
@@ -379,10 +379,10 @@ export default function PerpBoard() {
                                     <div className="flex flex-col leading-tight">
                                       <div className="truncate">
                                         <span className="text-gray-900">{base}</span>
-                                        <span className="text-gray-400 font-normal">/{quote}</span>
+                                        <span className="text-gray-500 font-normal">/{quote}</span>
                                       </div>
                                       {!hasSpot && (
-                                        <span className="text-[9px] text-gray-400 font-normal">No Spot on OKX</span>
+                                        <span className="text-[9px] text-gray-500 font-normal">No Spot on OKX</span>
                                       )}
                                     </div>
                                   </td>
@@ -446,7 +446,7 @@ export default function PerpBoard() {
                                   <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(change4h)}`}>
                                     {change4h !== undefined && change4h !== null 
                                       ? `${change4h >= 0 ? '+' : ''}${change4h.toFixed(2)}%`
-                                      : <span className="text-gray-300">--</span>
+                                      : <span className="text-gray-500">--</span>
                                     }
                                   </td>
                                 );
@@ -464,7 +464,7 @@ export default function PerpBoard() {
                                   <td key={key} className={`${baseClass} font-medium tabular-nums ${getChangeClass(change7d)}`}>
                                     {change7d !== undefined && change7d !== null 
                                       ? `${change7d >= 0 ? '+' : ''}${change7d.toFixed(2)}%`
-                                      : <span className="text-gray-300">--</span>
+                                      : <span className="text-gray-500">--</span>
                                     }
                                   </td>
                                 );
@@ -472,7 +472,7 @@ export default function PerpBoard() {
                               case 'marketCap':
                                 return (
                                   <td key={key} className={`${baseClass} text-gray-600 tabular-nums`}>
-                                    {marketCap?.marketCap ? formatMarketCap(marketCap.marketCap) : <span className="text-gray-300">--</span>}
+                                    {marketCap?.marketCap ? formatMarketCap(marketCap.marketCap) : <span className="text-gray-500">--</span>}
                                   </td>
                                 );
                               
@@ -492,7 +492,7 @@ export default function PerpBoard() {
                                         {dSignal.label}
                                       </span>
                                       {(rsi?.rsi7 != null || rsi?.rsi14 != null) && dSignal.label !== '--' && (
-                                        <span className="text-[10px] text-gray-400 leading-none opacity-0 group-hover/signal:opacity-100 transition-opacity">
+                                        <span className="text-[10px] text-gray-500 leading-none opacity-0 group-hover/signal:opacity-100 transition-opacity">
                                           {rsi?.rsi7 != null ? rsi.rsi7.toFixed(1) : '--'}/{rsi?.rsi14 != null ? rsi.rsi14.toFixed(1) : '--'}
                                         </span>
                                       )}
@@ -510,7 +510,7 @@ export default function PerpBoard() {
                                         {wSignal.label}
                                       </span>
                                       {(rsi?.rsiW7 != null || rsi?.rsiW14 != null) && wSignal.label !== '--' && (
-                                        <span className="text-[10px] text-gray-400 leading-none opacity-0 group-hover/wsignal:opacity-100 transition-opacity">
+                                        <span className="text-[10px] text-gray-500 leading-none opacity-0 group-hover/wsignal:opacity-100 transition-opacity">
                                           {rsi?.rsiW7 != null ? rsi.rsiW7.toFixed(1) : '--'}/{rsi?.rsiW14 != null ? rsi.rsiW14.toFixed(1) : '--'}
                                         </span>
                                       )}
@@ -560,7 +560,7 @@ export default function PerpBoard() {
                                     <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${
                                       hasSpot 
                                         ? 'bg-green-100 text-green-600' 
-                                        : 'bg-gray-100 text-gray-400'
+                                        : 'bg-gray-100 text-gray-500'
                                     }`}>
                                       {hasSpot ? 'Yes' : 'No'}
                                     </span>
