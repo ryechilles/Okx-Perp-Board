@@ -95,14 +95,16 @@ export function AHR999Indicator() {
       {showDetails && !loading && data && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
           <div className="text-[11px] font-medium text-gray-500 mb-2">Ahr999 Zone</div>
-          <div className="flex gap-4 text-[11px] text-gray-900">
+          <div className="flex text-[11px] text-gray-900">
             {/* Current zone - left side */}
-            <div className="pr-4 border-r border-gray-200">
+            <div className="pr-4">
               <div className="text-[10px] text-gray-400 mb-1">Current</div>
               <div className={`font-medium ${zoneInfo.color}`}>
                 <span>{zoneInfo.dot}</span> {zoneInfo.range} {zoneInfo.label}
               </div>
             </div>
+            {/* Vertical separator */}
+            <div className="w-px bg-gray-200 mx-3" />
             {/* Other zones - right side */}
             <div className="space-y-1">
               <div className="text-[10px] text-gray-400 mb-1">All Zones</div>
