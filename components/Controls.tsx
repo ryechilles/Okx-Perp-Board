@@ -425,7 +425,7 @@ export function Controls({
                 <div className="text-[11px] text-gray-400 font-medium mb-2">Market & Funding</div>
                 <div className="flex flex-wrap gap-3">
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Market Cap Rank</label>
+                    <label className="text-xs text-gray-400 font-medium">Market Cap Rank</label>
                     <select
                       value={filters.rank || ''}
                       onChange={(e) => onFiltersChange({ ...filters, rank: e.target.value || undefined })}
@@ -441,7 +441,7 @@ export function Controls({
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Market Cap</label>
+                    <label className="text-xs text-gray-400 font-medium">Market Cap</label>
                     <select
                       value={filters.marketCapMin || ''}
                       onChange={(e) => onFiltersChange({ ...filters, marketCapMin: e.target.value || undefined })}
@@ -456,7 +456,7 @@ export function Controls({
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Funding Rate</label>
+                    <label className="text-xs text-gray-400 font-medium">Funding Rate</label>
                     <select
                       value={filters.fundingRate || ''}
                       onChange={(e) => onFiltersChange({ ...filters, fundingRate: e.target.value || undefined })}
@@ -475,7 +475,7 @@ export function Controls({
                 <div className="text-[11px] text-gray-400 font-medium mb-2">RSI Indicators</div>
                 <div className="flex flex-wrap gap-3">
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Daily RSI7</label>
+                    <label className="text-xs text-gray-400 font-medium">Daily RSI7</label>
                     <select
                       value={filters.rsi7 || ''}
                       onChange={(e) => onFiltersChange({ ...filters, rsi7: e.target.value || undefined })}
@@ -489,7 +489,7 @@ export function Controls({
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Daily RSI14</label>
+                    <label className="text-xs text-gray-400 font-medium">Daily RSI14</label>
                     <select
                       value={filters.rsi14 || ''}
                       onChange={(e) => onFiltersChange({ ...filters, rsi14: e.target.value || undefined })}
@@ -503,7 +503,7 @@ export function Controls({
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Weekly RSI7</label>
+                    <label className="text-xs text-gray-400 font-medium">Weekly RSI7</label>
                     <select
                       value={filters.rsiW7 || ''}
                       onChange={(e) => onFiltersChange({ ...filters, rsiW7: e.target.value || undefined })}
@@ -517,7 +517,7 @@ export function Controls({
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Weekly RSI14</label>
+                    <label className="text-xs text-gray-400 font-medium">Weekly RSI14</label>
                     <select
                       value={filters.rsiW14 || ''}
                       onChange={(e) => onFiltersChange({ ...filters, rsiW14: e.target.value || undefined })}
@@ -537,7 +537,7 @@ export function Controls({
                 <div className="text-[11px] text-gray-400 font-medium mb-2">Other</div>
                 <div className="flex flex-wrap gap-3">
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Has Spot</label>
+                    <label className="text-xs text-gray-400 font-medium">Has Spot</label>
                     <select
                       value={filters.hasSpot || ''}
                       onChange={(e) => onFiltersChange({ ...filters, hasSpot: e.target.value || undefined })}
@@ -550,7 +550,7 @@ export function Controls({
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-600 font-medium">Listing Age</label>
+                    <label className="text-xs text-gray-400 font-medium">Listing Age</label>
                     <select
                       value={filters.listAge || ''}
                       onChange={(e) => onFiltersChange({ ...filters, listAge: e.target.value || undefined })}

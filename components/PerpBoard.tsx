@@ -251,7 +251,7 @@ export default function PerpBoard() {
                           onDragLeave={handleDragLeave}
                           onDrop={(e) => handleDrop(e, key)}
                           onDragEnd={handleDragEnd}
-                          className={`px-1 py-3 text-[11px] font-medium text-gray-500 tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
+                          className={`px-1 py-3 text-[11px] font-medium text-gray-400 tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
                           style={stickyStyle}
                           onClick={() => sortable && store.updateSort(key)}
                         >

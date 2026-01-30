@@ -107,10 +107,10 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       <div className="flex flex-col gap-0.5">
         <span className="text-[13px] font-medium text-gray-700 leading-none">Market Avg RSI</span>
         <div className="flex items-center gap-2 text-[13px] leading-none">
-          <span className="text-gray-500">Daily:</span>
+          <span className="text-gray-400">Daily:</span>
           <span className={`font-medium ${dailyMomentum.color}`}>{dailyMomentum.label}</span>
-          <span className="text-gray-500">|</span>
-          <span className="text-gray-500">Weekly:</span>
+          <span className="text-gray-400">|</span>
+          <span className="text-gray-400">Weekly:</span>
           <span className={`font-medium ${weeklyMomentum.color}`}>{weeklyMomentum.label}</span>
         </div>
       </div>
@@ -118,7 +118,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       {/* Hover tooltip with detailed RSI values */}
       {showDetails && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
-          <div className="text-[11px] font-medium text-gray-500 mb-2">Top 100 OKX Perp Token AVG RSI</div>
+          <div className="text-[11px] font-medium text-gray-400 mb-2">Top 100 OKX Perp Token AVG RSI</div>
           <div className="flex items-center gap-3 text-[12px]">
             {/* Daily RSI - Left */}
             <div className="flex flex-col gap-1">
