@@ -674,24 +674,33 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
 
   try {
     // Use our API proxy to avoid CORS and rate limit issues
-    // Fetch Top 200 coins by market cap (covers most OKX perpetual pairs)
-    console.log('[CoinGecko] Fetching top 200 via proxy...');
-    const response = await fetch('/api/coingecko?page=1');
+    // Fetch Top 500 coins by market cap (2 pages x 250)
 
-    if (!response.ok) {
-      console.error('[CoinGecko] Failed:', response.status);
-    } else {
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        console.log(`[CoinGecko] Loaded ${data.length} coins`);
-        processCoinGeckoData(data);
+    // Page 1: rank 1-250
+    console.log('[CoinGecko] Fetching page 1 (rank 1-250)...');
+    const response1 = await fetch('/api/coingecko?page=1');
+    if (response1.ok) {
+      const data1 = await response1.json();
+      if (Array.isArray(data1)) {
+        console.log(`[CoinGecko] Page 1: ${data1.length} coins`);
+        processCoinGeckoData(data1);
         saveLogoCache(newLogos);
-      } else if (data.error) {
-        console.error('[CoinGecko] Error:', data.error);
       }
     }
 
-    console.log(`[CoinGecko] Matched ${result.size} coins with OKX pairs`);
+    // Page 2: rank 251-500
+    console.log('[CoinGecko] Fetching page 2 (rank 251-500)...');
+    const response2 = await fetch('/api/coingecko?page=2');
+    if (response2.ok) {
+      const data2 = await response2.json();
+      if (Array.isArray(data2)) {
+        console.log(`[CoinGecko] Page 2: ${data2.length} coins`);
+        processCoinGeckoData(data2);
+        saveLogoCache(newLogos);
+      }
+    }
+
+    console.log(`[CoinGecko] Total matched: ${result.size} coins`);
   } catch (error) {
     console.error('[CoinGecko] Failed to fetch data:', error);
     saveLogoCache(newLogos);
