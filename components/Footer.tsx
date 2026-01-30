@@ -9,9 +9,24 @@ export function Footer() {
         Copyright © {currentYear}
       </span>
       <div className="flex items-center gap-4">
-        <a 
-          href="https://t.me/perp_board" 
-          target="_blank" 
+        <a
+          href="https://okx.com/join/95869751"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+          title="OKX"
+        >
+          <svg viewBox="0 0 32 32" fill="currentColor" className="w-4 h-4">
+            <path d="M19.67 12.33h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33v-7.34c0-.18-.15-.33-.33-.33z"/>
+            <path d="M11.67 4h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33V4.33c0-.18-.15-.33-.33-.33z"/>
+            <path d="M27.67 4h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33V4.33c0-.18-.15-.33-.33-.33z"/>
+            <path d="M11.67 20h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33v-7.34c0-.18-.15-.33-.33-.33z"/>
+            <path d="M27.67 20h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33v-7.34c0-.18-.15-.33-.33-.33z"/>
+          </svg>
+        </a>
+        <a
+          href="https://t.me/perp_board"
+          target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
           title="Telegram"
