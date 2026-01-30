@@ -16,6 +16,7 @@ const handleNumberWheel = (
   skipValues?: number[] // Skip these values (preset values like 30, 70)
 ) => {
   e.preventDefault();
+  const input = e.currentTarget; // Save reference before async
   const current = currentValue === '' ? (e.deltaY > 0 ? max + step : min - step) : parseFloat(currentValue);
   const delta = e.deltaY > 0 ? -step : step;
   let newValue = Math.min(max, Math.max(min, current + delta));
@@ -25,7 +26,7 @@ const handleNumberWheel = (
   }
   onChange(newValue.toString());
   // Auto-select after wheel so keyboard input replaces the value
-  setTimeout(() => e.currentTarget.select(), 0);
+  setTimeout(() => input.select(), 10);
 };
 
 // Quick filter types
