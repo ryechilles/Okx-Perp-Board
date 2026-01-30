@@ -423,49 +423,81 @@ export function Controls({
               {/* Market & Funding */}
               <div>
                 <div className="text-[11px] text-gray-400 font-medium mb-2">Market & Funding</div>
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Market Cap Rank</label>
-                    <select
-                      value={filters.rank || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, rank: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[140px]"
-                    >
-                      <option value="">All</option>
-                      <option value="1-20">Top 20</option>
-                      <option value="21-50">21 - 50</option>
-                      <option value="51-100">51 - 100</option>
-                      <option value="101-500">101 - 500</option>
-                      <option value=">500">&gt; 500 / N/A</option>
-                    </select>
+                <div className="flex flex-wrap gap-x-6 gap-y-3">
+                  {/* Market Cap Rank */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Market Cap Rank</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: '1-20', label: 'Top 20' },
+                        { value: '21-50', label: '21-50' },
+                        { value: '51-100', label: '51-100' },
+                        { value: '>500', label: '>500' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, rank: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.rank || '') === opt.value
+                              ? 'bg-white text-gray-900 shadow-sm'
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Market Cap</label>
-                    <select
-                      value={filters.marketCapMin || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, marketCapMin: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[140px]"
-                    >
-                      <option value="">All</option>
-                      <option value="0-20">≤ $20M</option>
-                      <option value="20-100">$20M - $100M</option>
-                      <option value="100-1000">$100M - $1B</option>
-                      <option value="1000+">≥ $1B</option>
-                    </select>
+                  {/* Market Cap */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Market Cap</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: '0-20', label: '≤$20M' },
+                        { value: '20-100', label: '$20M-$100M' },
+                        { value: '100-1000', label: '$100M-$1B' },
+                        { value: '1000+', label: '≥$1B' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, marketCapMin: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.marketCapMin || '') === opt.value
+                              ? 'bg-white text-gray-900 shadow-sm'
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Funding Rate</label>
-                    <select
-                      value={filters.fundingRate || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, fundingRate: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[160px]"
-                    >
-                      <option value="">All</option>
-                      <option value="positive">Positive (Longs Pay)</option>
-                      <option value="negative">Negative (Shorts Pay)</option>
-                    </select>
+                  {/* Funding Rate */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Funding Rate</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: 'positive', label: 'Positive' },
+                        { value: 'negative', label: 'Negative' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, fundingRate: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.fundingRate || '') === opt.value
+                              ? 'bg-white text-gray-900 shadow-sm'
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -473,61 +505,105 @@ export function Controls({
               {/* RSI */}
               <div>
                 <div className="text-[11px] text-gray-400 font-medium mb-2">RSI Indicators</div>
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Daily RSI7</label>
-                    <select
-                      value={filters.rsi7 || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, rsi7: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
-                    >
-                      <option value="">All</option>
-                      <option value="<30">&lt; 30 (Oversold)</option>
-                      <option value="30-70">30 - 70</option>
-                      <option value=">70">&gt; 70 (Overbought)</option>
-                    </select>
+                <div className="flex flex-wrap gap-x-6 gap-y-3">
+                  {/* Daily RSI7 */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Daily RSI7</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: '<30', label: '<30', color: 'text-green-600' },
+                        { value: '30-70', label: '30-70' },
+                        { value: '>70', label: '>70', color: 'text-red-500' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, rsi7: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.rsi7 || '') === opt.value
+                              ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Daily RSI14</label>
-                    <select
-                      value={filters.rsi14 || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, rsi14: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
-                    >
-                      <option value="">All</option>
-                      <option value="<30">&lt; 30 (Oversold)</option>
-                      <option value="30-70">30 - 70</option>
-                      <option value=">70">&gt; 70 (Overbought)</option>
-                    </select>
+                  {/* Daily RSI14 */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Daily RSI14</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: '<30', label: '<30', color: 'text-green-600' },
+                        { value: '30-70', label: '30-70' },
+                        { value: '>70', label: '>70', color: 'text-red-500' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, rsi14: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.rsi14 || '') === opt.value
+                              ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Weekly RSI7</label>
-                    <select
-                      value={filters.rsiW7 || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, rsiW7: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
-                    >
-                      <option value="">All</option>
-                      <option value="<30">&lt; 30 (Oversold)</option>
-                      <option value="30-70">30 - 70</option>
-                      <option value=">70">&gt; 70 (Overbought)</option>
-                    </select>
+                  {/* Weekly RSI7 */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Weekly RSI7</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: '<30', label: '<30', color: 'text-green-600' },
+                        { value: '30-70', label: '30-70' },
+                        { value: '>70', label: '>70', color: 'text-red-500' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, rsiW7: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.rsiW7 || '') === opt.value
+                              ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Weekly RSI14</label>
-                    <select
-                      value={filters.rsiW14 || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, rsiW14: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[150px]"
-                    >
-                      <option value="">All</option>
-                      <option value="<30">&lt; 30 (Oversold)</option>
-                      <option value="30-70">30 - 70</option>
-                      <option value=">70">&gt; 70 (Overbought)</option>
-                    </select>
+                  {/* Weekly RSI14 */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Weekly RSI14</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: '<30', label: '<30', color: 'text-green-600' },
+                        { value: '30-70', label: '30-70' },
+                        { value: '>70', label: '>70', color: 'text-red-500' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, rsiW14: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.rsiW14 || '') === opt.value
+                              ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -535,38 +611,60 @@ export function Controls({
               {/* Other */}
               <div>
                 <div className="text-[11px] text-gray-400 font-medium mb-2">Other</div>
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Has Spot</label>
-                    <select
-                      value={filters.hasSpot || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, hasSpot: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[100px]"
-                    >
-                      <option value="">All</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
+                <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
+                  {/* Has Spot */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Has Spot</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: 'yes', label: 'Yes' },
+                        { value: 'no', label: 'No' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, hasSpot: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.hasSpot || '') === opt.value
+                              ? 'bg-white text-gray-900 shadow-sm'
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs text-gray-400 font-medium">Listing Age</label>
-                    <select
-                      value={filters.listAge || ''}
-                      onChange={(e) => onFiltersChange({ ...filters, listAge: e.target.value || undefined })}
-                      className="px-2.5 py-2 border border-gray-200 rounded-md text-[13px] outline-none bg-white cursor-pointer focus:border-blue-500 min-w-[120px]"
-                    >
-                      <option value="">All</option>
-                      <option value="<1y">≤ 1 year</option>
-                      <option value="1-2y">1 - 2 years</option>
-                      <option value=">2y">&gt; 2 years</option>
-                    </select>
+                  {/* Listing Age */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] text-gray-400 font-medium">Listing Age</span>
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                      {[
+                        { value: '', label: 'All' },
+                        { value: '<1y', label: '≤1y' },
+                        { value: '1-2y', label: '1-2y' },
+                        { value: '>2y', label: '>2y' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => onFiltersChange({ ...filters, listAge: opt.value || undefined })}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            (filters.listAge || '') === opt.value
+                              ? 'bg-white text-gray-900 shadow-sm'
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   {hasFilters && (
                     <button
                       onClick={handleClearFilters}
-                      className="self-end px-3 py-2 rounded-md text-[13px] cursor-pointer transition-all text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                      className="px-3 py-1 rounded-md text-[12px] font-medium cursor-pointer transition-all text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                     >
                       Clear All
                     </button>
