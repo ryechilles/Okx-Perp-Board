@@ -352,7 +352,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {showAvgTooltip && (
           <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
             <div className="text-[11px] text-gray-600 whitespace-nowrap">
-              Average price change of top N altcoins by market cap. Click to filter table.
+              Average price change of top N altcoins by market cap (excluding BTC)
             </div>
           </div>
         )}
