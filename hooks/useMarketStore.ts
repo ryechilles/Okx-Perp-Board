@@ -191,11 +191,51 @@ export function useMarketStore() {
     });
   }, []);
   
+  // Save RSI data to localStorage (debounced)
+  const saveRsiCacheTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveRsiCache = useCallback((rsiMap: Map<string, RSIData>) => {
+    // Debounce: only save after 2 seconds of no updates
+    if (saveRsiCacheTimeoutRef.current) {
+      clearTimeout(saveRsiCacheTimeoutRef.current);
+    }
+    saveRsiCacheTimeoutRef.current = setTimeout(() => {
+      try {
+        const cacheData = {
+          timestamp: Date.now(),
+          data: Object.fromEntries(rsiMap)
+        };
+        localStorage.setItem('okx-rsi-cache', JSON.stringify(cacheData));
+      } catch (e) {
+        console.error('Failed to save RSI cache:', e);
+      }
+    }, 2000);
+  }, []);
+
+  // Load RSI cache from localStorage on mount
+  useEffect(() => {
+    const savedRsiCache = localStorage.getItem('okx-rsi-cache');
+    if (savedRsiCache) {
+      try {
+        const { timestamp, data } = JSON.parse(savedRsiCache);
+        const cacheAge = Date.now() - timestamp;
+        // Use cache if less than 30 minutes old
+        if (cacheAge < 30 * 60 * 1000 && data) {
+          const rsiMap = new Map<string, RSIData>(Object.entries(data));
+          setRsiData(rsiMap);
+          console.log(`Loaded ${rsiMap.size} RSI entries from cache (${Math.round(cacheAge / 1000 / 60)}min old)`);
+        }
+      } catch (e) {
+        console.error('Failed to load RSI cache:', e);
+      }
+    }
+  }, []);
+
   // Update RSI data for single instrument
   const updateRsiData = useCallback((instId: string, data: RSIData) => {
     setRsiData(prev => {
       const newMap = new Map(prev);
       newMap.set(instId, data);
+      saveRsiCache(newMap);
       return newMap;
     });
   }, []);
@@ -252,8 +292,46 @@ export function useMarketStore() {
     }
   }, [getSortedInstIds, rsiData, updateRsiData]);
   
+  // Save market cap cache
+  const saveMarketCapCache = useCallback((data: Map<string, MarketCapData>) => {
+    try {
+      const cacheData = {
+        timestamp: Date.now(),
+        data: Object.fromEntries(data)
+      };
+      localStorage.setItem('okx-marketcap-cache', JSON.stringify(cacheData));
+    } catch (e) {
+      console.error('Failed to save market cap cache:', e);
+    }
+  }, []);
+
+  // Load market cap cache
+  const loadMarketCapCache = useCallback((): Map<string, MarketCapData> | null => {
+    try {
+      const saved = localStorage.getItem('okx-marketcap-cache');
+      if (saved) {
+        const { timestamp, data } = JSON.parse(saved);
+        const cacheAge = Date.now() - timestamp;
+        // Use cache if less than 30 minutes old
+        if (cacheAge < 30 * 60 * 1000 && data) {
+          console.log(`Loaded market cap from cache (${Math.round(cacheAge / 1000 / 60)}min old)`);
+          return new Map(Object.entries(data)) as Map<string, MarketCapData>;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load market cap cache:', e);
+    }
+    return null;
+  }, []);
+
   // Initialize hybrid data manager (WebSocket for TOP 50 + REST for rest)
   const initialize = useCallback(async () => {
+    // Try to load cached market cap first for instant display
+    const cachedMarketCap = loadMarketCapCache();
+    if (cachedMarketCap) {
+      setMarketCapData(cachedMarketCap);
+    }
+
     // Fetch initial data in parallel
     const [spotData, marketCap, listings, fundingRates] = await Promise.all([
       fetchSpotSymbols(),
@@ -261,9 +339,10 @@ export function useMarketStore() {
       fetchListingDates(),
       fetchFundingRates()
     ]);
-    
+
     setSpotSymbols(spotData);
     setMarketCapData(marketCap);
+    saveMarketCapCache(marketCap);
     setListingData(listings);
     setFundingRateData(fundingRates);
     
@@ -321,6 +400,7 @@ export function useMarketStore() {
     setInterval(async () => {
       const newMarketCap = await fetchMarketCapData();
       setMarketCapData(newMarketCap);
+      saveMarketCapCache(newMarketCap);
     }, 5 * 60 * 1000);
     
     // Refresh funding rates every 5 minutes
