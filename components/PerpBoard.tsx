@@ -38,9 +38,6 @@ export default function PerpBoard() {
   const [isScrolled, setIsScrolled] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  // Track which symbol is being hovered for z-index elevation
-  const [hoveredSymbol, setHoveredSymbol] = useState<string | null>(null);
-
   useEffect(() => {
     store.initialize();
     return () => store.cleanup();
@@ -319,14 +316,14 @@ export default function PerpBoard() {
                       const quote = parts[1];
                       
                       // Helper to get sticky style for cells
-                      const getCellStyle = (key: ColumnKey, isHovered?: boolean): React.CSSProperties | undefined => {
+                      const getCellStyle = (key: ColumnKey): React.CSSProperties | undefined => {
                         if (!isFixedColumn(key)) return undefined;
                         const isLastFixed = isLastFixedColumn(key);
                         const fixedWidth = FIXED_WIDTHS[key];
                         return {
                           position: 'sticky',
                           left: getStickyLeft(key),
-                          zIndex: isHovered ? 100 : 10,  // Elevate z-index when hovered
+                          zIndex: 10,
                           backgroundColor: '#ffffff',
                           width: fixedWidth,
                           minWidth: fixedWidth,
@@ -370,29 +367,21 @@ export default function PerpBoard() {
                                 );
                                 
                               case 'symbol':
-                                const isSymbolHovered = hoveredSymbol === ticker.instId;
                                 return (
                                   <td
                                     key={key}
-                                    className={`${baseClass} font-semibold relative`}
-                                    style={getCellStyle(key, isSymbolHovered && !hasSpot)}
-                                    onMouseEnter={() => !hasSpot && setHoveredSymbol(ticker.instId)}
-                                    onMouseLeave={() => setHoveredSymbol(null)}
+                                    className={`${baseClass} font-semibold`}
+                                    style={getCellStyle(key)}
                                   >
-                                    <div className="truncate">
-                                      <span className="text-gray-900">{base}</span>
-                                      <span className="text-gray-400 font-normal">/{quote}</span>
-                                    </div>
-                                    {!hasSpot && isSymbolHovered && (
-                                      <div
-                                        className="absolute left-full top-1/2 -translate-y-1/2 ml-2"
-                                        style={{ zIndex: 9999 }}
-                                      >
-                                        <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
-                                          <span className="text-[12px] text-gray-700 font-normal">This token spot not listed yet on OKX</span>
-                                        </div>
+                                    <div className="flex flex-col leading-tight">
+                                      <div className="truncate">
+                                        <span className="text-gray-900">{base}</span>
+                                        <span className="text-gray-400 font-normal">/{quote}</span>
                                       </div>
-                                    )}
+                                      {!hasSpot && (
+                                        <span className="text-[9px] text-gray-400 font-normal">No Spot on OKX</span>
+                                      )}
+                                    </div>
                                   </td>
                                 );
                               
