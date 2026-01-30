@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
 import { MarketMomentum } from './MarketMomentum';
+import { AHR999Indicator } from './AHR999Indicator';
 
 // Quick filter types
 type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'overbought' | 'oversold';
@@ -128,14 +129,17 @@ export function Controls({
   
   return (
     <>
-      {/* Market Momentum + Search Row */}
+      {/* Indicators + Search Row */}
       <div className="flex items-center justify-between mb-4">
-        <MarketMomentum
-          avgRsi7={avgRsi7}
-          avgRsi14={avgRsi14}
-          avgRsiW7={avgRsiW7}
-          avgRsiW14={avgRsiW14}
-        />
+        <div className="flex items-center gap-3">
+          <MarketMomentum
+            avgRsi7={avgRsi7}
+            avgRsi14={avgRsi14}
+            avgRsiW7={avgRsiW7}
+            avgRsiW14={avgRsiW14}
+          />
+          <AHR999Indicator />
+        </div>
 
         <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg">
           <svg
