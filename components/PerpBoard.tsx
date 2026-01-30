@@ -491,9 +491,9 @@ export default function PerpBoard() {
                                       <span className={`font-medium text-[12px] ${dSignal.color}`}>
                                         {dSignal.label}
                                       </span>
-                                      {(rsi?.rsi7 !== undefined || rsi?.rsi14 !== undefined) && dSignal.label !== '--' && (
+                                      {(rsi?.rsi7 != null || rsi?.rsi14 != null) && dSignal.label !== '--' && (
                                         <span className="text-[10px] text-gray-400 leading-none opacity-0 group-hover/signal:opacity-100 transition-opacity">
-                                          {rsi?.rsi7 !== undefined ? rsi.rsi7.toFixed(1) : '--'}/{rsi?.rsi14 !== undefined ? rsi.rsi14.toFixed(1) : '--'}
+                                          {rsi?.rsi7 != null ? rsi.rsi7.toFixed(1) : '--'}/{rsi?.rsi14 != null ? rsi.rsi14.toFixed(1) : '--'}
                                         </span>
                                       )}
                                     </div>
@@ -509,9 +509,9 @@ export default function PerpBoard() {
                                       <span className={`font-medium text-[12px] ${wSignal.color}`}>
                                         {wSignal.label}
                                       </span>
-                                      {(rsi?.rsiW7 !== undefined || rsi?.rsiW14 !== undefined) && wSignal.label !== '--' && (
+                                      {(rsi?.rsiW7 != null || rsi?.rsiW14 != null) && wSignal.label !== '--' && (
                                         <span className="text-[10px] text-gray-400 leading-none opacity-0 group-hover/wsignal:opacity-100 transition-opacity">
-                                          {rsi?.rsiW7 !== undefined ? rsi.rsiW7.toFixed(1) : '--'}/{rsi?.rsiW14 !== undefined ? rsi.rsiW14.toFixed(1) : '--'}
+                                          {rsi?.rsiW7 != null ? rsi.rsiW7.toFixed(1) : '--'}/{rsi?.rsiW14 != null ? rsi.rsiW14.toFixed(1) : '--'}
                                         </span>
                                       )}
                                     </div>
