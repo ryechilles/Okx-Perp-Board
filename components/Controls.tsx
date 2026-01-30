@@ -580,7 +580,7 @@ export function Controls({
                       <span>&lt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -596,9 +596,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? filters.rsi7.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsi7: `<${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -608,14 +609,16 @@ export function Controls({
                         if (!(filters.rsi7?.includes('~') && filters.rsi7 !== '30~70')) {
                           onFiltersChange({ ...filters, rsi7: undefined });
                         }
-                        e.currentTarget.querySelector('input')?.focus();
+                        if (!(e.target instanceof HTMLInputElement)) {
+                          e.currentTarget.querySelector('input')?.focus();
+                        }
                       }}
                       className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                         filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700 focus-within:bg-white focus-within:shadow-sm focus-within:text-gray-700'
                       }`}>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -634,16 +637,17 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsi7: `${val}~${max}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -662,10 +666,11 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsi7: `${min}~${val}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -683,7 +688,7 @@ export function Controls({
                       <span>&gt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -699,9 +704,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? filters.rsi7.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsi7: `>${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -756,7 +762,7 @@ export function Controls({
                       <span>&lt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -772,9 +778,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? filters.rsi14.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsi14: `<${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -784,14 +791,16 @@ export function Controls({
                         if (!(filters.rsi14?.includes('~') && filters.rsi14 !== '30~70')) {
                           onFiltersChange({ ...filters, rsi14: undefined });
                         }
-                        e.currentTarget.querySelector('input')?.focus();
+                        if (!(e.target instanceof HTMLInputElement)) {
+                          e.currentTarget.querySelector('input')?.focus();
+                        }
                       }}
                       className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                         filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700 focus-within:bg-white focus-within:shadow-sm focus-within:text-gray-700'
                       }`}>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -810,16 +819,17 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsi14: `${val}~${max}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -838,10 +848,11 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsi14: `${min}~${val}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -859,7 +870,7 @@ export function Controls({
                       <span>&gt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -875,9 +886,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? filters.rsi14.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsi14: `>${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -932,7 +944,7 @@ export function Controls({
                       <span>&lt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -948,9 +960,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? filters.rsiW7.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsiW7: `<${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -960,14 +973,16 @@ export function Controls({
                         if (!(filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70')) {
                           onFiltersChange({ ...filters, rsiW7: undefined });
                         }
-                        e.currentTarget.querySelector('input')?.focus();
+                        if (!(e.target instanceof HTMLInputElement)) {
+                          e.currentTarget.querySelector('input')?.focus();
+                        }
                       }}
                       className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                         filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700 focus-within:bg-white focus-within:shadow-sm focus-within:text-gray-700'
                       }`}>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -986,16 +1001,17 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsiW7: `${val}~${max}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -1014,10 +1030,11 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsiW7: `${min}~${val}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1035,7 +1052,7 @@ export function Controls({
                       <span>&gt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -1051,9 +1068,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? filters.rsiW7.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsiW7: `>${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1108,7 +1126,7 @@ export function Controls({
                       <span>&lt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -1124,9 +1142,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? filters.rsiW14.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsiW14: `<${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1136,14 +1155,16 @@ export function Controls({
                         if (!(filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70')) {
                           onFiltersChange({ ...filters, rsiW14: undefined });
                         }
-                        e.currentTarget.querySelector('input')?.focus();
+                        if (!(e.target instanceof HTMLInputElement)) {
+                          e.currentTarget.querySelector('input')?.focus();
+                        }
                       }}
                       className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
                         filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700 focus-within:bg-white focus-within:shadow-sm focus-within:text-gray-700'
                       }`}>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -1162,16 +1183,17 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsiW14: `${val}~${max}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -1190,10 +1212,11 @@ export function Controls({
                           handleNumberWheel(
                             e,
                             filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : '',
-                            0, 100, 1,
+                            1, 100, 1,
                             (val) => onFiltersChange({ ...filters, rsiW14: `${min}~${val}` })
                           );
                         }}
+                        onFocus={(e) => e.target.select()}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1211,7 +1234,7 @@ export function Controls({
                       <span>&gt;</span>
                       <input
                         type="number"
-                        min="0"
+                        min="1"
                         max="100"
                         step="1"
                         placeholder=""
@@ -1227,9 +1250,10 @@ export function Controls({
                         onWheel={(e) => handleNumberWheel(
                           e,
                           filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? filters.rsiW14.slice(1) : '',
-                          0, 100, 1,
+                          1, 100, 1,
                           (val) => onFiltersChange({ ...filters, rsiW14: `>${val}` })
                         )}
+                        onFocus={(e) => e.target.select()}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
