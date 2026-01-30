@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
 import { MarketMomentum } from './MarketMomentum';
 import { AHR999Indicator } from './AHR999Indicator';
@@ -48,6 +48,28 @@ export function Controls({
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('all');
   const [hoveredFilter, setHoveredFilter] = useState<QuickFilter | null>(null);
   const [customizeTab, setCustomizeTab] = useState<'columns' | 'filters'>('columns');
+  const customizePanelRef = useRef<HTMLDivElement>(null);
+  const customizeButtonRef = useRef<HTMLDivElement>(null);
+
+  // Close panel when clicking outside
+  useEffect(() => {
+    if (!showCustomizePanel) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        customizePanelRef.current &&
+        !customizePanelRef.current.contains(target) &&
+        customizeButtonRef.current &&
+        !customizeButtonRef.current.contains(target)
+      ) {
+        setShowCustomizePanel(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showCustomizePanel]);
 
   // Determine active quick filter based on current filters
   const getActiveQuickFilter = (): QuickFilter => {
@@ -338,7 +360,7 @@ export function Controls({
         </div>
 
         {/* Customize button - same style as quick filters */}
-        <div className="inline-flex bg-gray-100 rounded-lg p-1">
+        <div ref={customizeButtonRef} className="inline-flex bg-gray-100 rounded-lg p-1">
           <button
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
               showCustomizePanel || hasFilters
@@ -356,16 +378,8 @@ export function Controls({
         </div>
       </div>
       
-      {/* Overlay to close panel when clicking outside */}
       {showCustomizePanel && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowCustomizePanel(false)}
-        />
-      )}
-
-      {showCustomizePanel && (
-        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm relative z-50">
+        <div ref={customizePanelRef} className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm relative z-50">
           {/* Tab buttons */}
           <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5 mb-4">
             <button
