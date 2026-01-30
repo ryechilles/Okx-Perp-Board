@@ -98,16 +98,16 @@ export function AHR999Indicator() {
           <div className="flex items-start gap-3 text-[11px] text-gray-900">
             {/* Current zone - left side */}
             <div>
-              <div className="text-[10px] text-gray-400 mb-1">Current</div>
+              <div className="text-[10px] text-gray-500 mb-1">Current</div>
               <div className={`font-medium ${zoneInfo.color}`}>
                 <span>{zoneInfo.dot}</span> {zoneInfo.range} {zoneInfo.label}
               </div>
             </div>
             {/* Divider */}
-            <div className="text-gray-300 self-center">|</div>
+            <div className="text-gray-500 self-center">|</div>
             {/* Other zones - right side */}
             <div className="space-y-1">
-              <div className="text-[10px] text-gray-400 mb-1">All Zones</div>
+              <div className="text-[10px] text-gray-500 mb-1">All Zones</div>
               {zoneInfo.label !== 'Bottom' && <div><span className="text-green-600">●</span> &lt;0.45 Bottom</div>}
               {zoneInfo.label !== 'DCA' && <div><span className="text-emerald-500">●</span> 0.45-1.2 DCA</div>}
               {zoneInfo.label !== 'Wait' && <div><span className="text-orange-500">●</span> 1.2-2.0 Wait</div>}
