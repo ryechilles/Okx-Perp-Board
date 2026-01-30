@@ -63,8 +63,8 @@ export function Controls({
         setTempFilters({});
         break;
       case 'top25':
-        onFiltersChange({ rank: '1-20' });
-        setTempFilters({ rank: '1-20' });
+        onFiltersChange({ rank: '1-25' });
+        setTempFilters({ rank: '1-25' });
         break;
       case 'meme':
         onFiltersChange({ isMeme: 'yes' });

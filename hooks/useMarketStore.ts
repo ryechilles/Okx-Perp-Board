@@ -436,7 +436,12 @@ export function useMarketStore() {
     
     // Apply filters
     if (filters.rank) {
-      if (filters.rank === '1-20') {
+      if (filters.rank === '1-25') {
+        filtered = filtered.filter(t => {
+          const rank = marketCapData.get(t.baseSymbol)?.rank;
+          return rank && rank <= 25;
+        });
+      } else if (filters.rank === '1-20') {
         filtered = filtered.filter(t => {
           const rank = marketCapData.get(t.baseSymbol)?.rank;
           return rank && rank <= 20;
