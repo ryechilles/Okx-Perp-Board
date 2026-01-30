@@ -745,14 +745,16 @@ export function Controls({
                         placeholder=""
                         value={filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : ''}
                         onChange={(e) => {
-                          let max = e.target.value;
+                          const val = e.target.value;
                           const min = filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : '';
-                          if (min === '' && max === '') {
+                          if (min === '' && val === '') {
                             onFiltersChange({ ...filters, rsi7: undefined });
                           } else {
-                            if (max === '30' || max === '70') max = max === '30' ? '31' : '69'; // Skip preset
-                            onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
-                            debouncedSelect(e.target);
+                            onFiltersChange({ ...filters, rsi7: `${min}~${val}` });
+                            // Also support range parsing in second input (e.g., "2345" → "23~45")
+                            debouncedRangeParse(e.target, val, (newMin, newMax) => {
+                              onFiltersChange({ ...filters, rsi7: `${newMin}~${newMax}` });
+                            });
                           }
                         }}
                         onWheel={(e) => {
@@ -944,14 +946,15 @@ export function Controls({
                         placeholder=""
                         value={filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : ''}
                         onChange={(e) => {
-                          let max = e.target.value;
+                          const val = e.target.value;
                           const min = filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : '';
-                          if (min === '' && max === '') {
+                          if (min === '' && val === '') {
                             onFiltersChange({ ...filters, rsi14: undefined });
                           } else {
-                            if (max === '30' || max === '70') max = max === '30' ? '31' : '69'; // Skip preset
-                            onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
-                            debouncedSelect(e.target);
+                            onFiltersChange({ ...filters, rsi14: `${min}~${val}` });
+                            debouncedRangeParse(e.target, val, (newMin, newMax) => {
+                              onFiltersChange({ ...filters, rsi14: `${newMin}~${newMax}` });
+                            });
                           }
                         }}
                         onWheel={(e) => {
@@ -1146,14 +1149,15 @@ export function Controls({
                         placeholder=""
                         value={filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : ''}
                         onChange={(e) => {
-                          let max = e.target.value;
+                          const val = e.target.value;
                           const min = filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : '';
-                          if (min === '' && max === '') {
+                          if (min === '' && val === '') {
                             onFiltersChange({ ...filters, rsiW7: undefined });
                           } else {
-                            if (max === '30' || max === '70') max = max === '30' ? '31' : '69'; // Skip preset
-                            onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
-                            debouncedSelect(e.target);
+                            onFiltersChange({ ...filters, rsiW7: `${min}~${val}` });
+                            debouncedRangeParse(e.target, val, (newMin, newMax) => {
+                              onFiltersChange({ ...filters, rsiW7: `${newMin}~${newMax}` });
+                            });
                           }
                         }}
                         onWheel={(e) => {
@@ -1345,14 +1349,15 @@ export function Controls({
                         placeholder=""
                         value={filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : ''}
                         onChange={(e) => {
-                          let max = e.target.value;
+                          const val = e.target.value;
                           const min = filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : '';
-                          if (min === '' && max === '') {
+                          if (min === '' && val === '') {
                             onFiltersChange({ ...filters, rsiW14: undefined });
                           } else {
-                            if (max === '30' || max === '70') max = max === '30' ? '31' : '69'; // Skip preset
-                            onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
-                            debouncedSelect(e.target);
+                            onFiltersChange({ ...filters, rsiW14: `${min}~${val}` });
+                            debouncedRangeParse(e.target, val, (newMin, newMax) => {
+                              onFiltersChange({ ...filters, rsiW14: `${newMin}~${newMax}` });
+                            });
                           }
                         }}
                         onWheel={(e) => {
