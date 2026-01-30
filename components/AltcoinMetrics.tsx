@@ -153,7 +153,12 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
       {/* Top Gainers Card */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 min-w-[280px]">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">Top Gainers</span>
+          <span
+            className="text-sm font-medium text-gray-700 cursor-help"
+            title="Top 5 gainers from top 100 altcoins by market cap (excluding BTC)"
+          >
+            Altcoin Top Gainers
+          </span>
           <TimeFrameSelector value={gainersTimeFrame} onChange={setGainersTimeFrame} />
         </div>
 
@@ -197,7 +202,12 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
       {/* Average Changes Card */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 min-w-[200px]">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">Altcoin Avg</span>
+          <span
+            className="text-sm font-medium text-gray-700 cursor-help"
+            title="Average price change of top N altcoins by market cap (excluding BTC)"
+          >
+            Altcoin Avg Change
+          </span>
           <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
         </div>
         <div className="space-y-3">
