@@ -371,22 +371,20 @@ export default function PerpBoard() {
                                 
                               case 'symbol':
                                 const isSymbolHovered = hoveredSymbol === ticker.instId;
-                                // Show tooltip above for last 2 rows to avoid overflow
-                                const isNearBottom = index >= paginatedData.length - 2;
                                 return (
                                   <td
                                     key={key}
-                                    className={`${baseClass} font-semibold`}
+                                    className={`${baseClass} font-semibold overflow-hidden`}
                                     style={getCellStyle(key, isSymbolHovered && !hasSpot)}
                                     onMouseEnter={() => !hasSpot && setHoveredSymbol(ticker.instId)}
                                     onMouseLeave={() => setHoveredSymbol(null)}
                                   >
-                                    <div className="relative inline-block">
+                                    <div className="relative inline-block truncate max-w-full">
                                       <span className="text-gray-900">{base}</span>
                                       <span className="text-gray-400 font-normal">/{quote}</span>
                                       {!hasSpot && isSymbolHovered && (
                                         <div
-                                          className={`absolute left-0 ${isNearBottom ? 'bottom-full mb-2' : 'top-full mt-2'}`}
+                                          className="absolute left-full top-1/2 -translate-y-1/2 ml-2"
                                           style={{ zIndex: 9999 }}
                                         >
                                           <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
