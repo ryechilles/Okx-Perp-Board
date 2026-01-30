@@ -95,12 +95,23 @@ export function AHR999Indicator() {
       {showDetails && !loading && data && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
           <div className="text-[11px] font-medium text-gray-500 mb-2">Ahr999 Zone</div>
-          <div className="text-[11px] text-gray-900 space-y-1">
-            <div><span className="text-green-600">●</span> &lt;0.45 Bottom</div>
-            <div><span className="text-emerald-500">●</span> 0.45-1.2 DCA</div>
-            <div><span className="text-orange-500">●</span> 1.2-2.0 Wait</div>
-            <div><span className="text-red-500">●</span> 2.0-4.0 Take Profit</div>
-            <div><span className="text-red-600">●</span> &gt;4 Top</div>
+          <div className="flex gap-3 text-[11px] text-gray-900">
+            {/* Current zone - left side */}
+            <div className="pr-3 border-r border-gray-200">
+              <div className="text-[10px] text-gray-400 mb-1">Current</div>
+              <div className={`font-medium ${zoneInfo.color}`}>
+                <span>{zoneInfo.dot}</span> {zoneInfo.range} {zoneInfo.label}
+              </div>
+            </div>
+            {/* Other zones - right side */}
+            <div className="space-y-1">
+              <div className="text-[10px] text-gray-400 mb-1">All Zones</div>
+              {zoneInfo.label !== 'Bottom' && <div><span className="text-green-600">●</span> &lt;0.45 Bottom</div>}
+              {zoneInfo.label !== 'DCA' && <div><span className="text-emerald-500">●</span> 0.45-1.2 DCA</div>}
+              {zoneInfo.label !== 'Wait' && <div><span className="text-orange-500">●</span> 1.2-2.0 Wait</div>}
+              {zoneInfo.label !== 'Take Profit' && <div><span className="text-red-500">●</span> 2.0-4.0 Take Profit</div>}
+              {zoneInfo.label !== 'Top' && <div><span className="text-red-600">●</span> &gt;4 Top</div>}
+            </div>
           </div>
         </div>
       )}

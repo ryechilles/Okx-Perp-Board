@@ -26,6 +26,8 @@ export interface AHR999ZoneInfo {
   color: string;
   bgColor: string;
   description: string;
+  dot: string;
+  range: string;
 }
 
 export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
@@ -36,7 +38,9 @@ export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
       labelCn: '--',
       color: 'text-gray-400',
       bgColor: 'bg-gray-50',
-      description: 'Loading...'
+      description: 'Loading...',
+      dot: '●',
+      range: '--'
     };
   }
 
@@ -47,7 +51,9 @@ export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
       labelCn: '抄底区',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
-      description: 'Strong buy opportunity'
+      description: 'Strong buy opportunity',
+      dot: '●',
+      range: '<0.45'
     };
   }
   if (value < 1.2) {
@@ -57,7 +63,9 @@ export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
       labelCn: '定投区',
       color: 'text-emerald-500',
       bgColor: 'bg-emerald-50',
-      description: 'Regular buying zone'
+      description: 'Regular buying zone',
+      dot: '●',
+      range: '0.45-1.2'
     };
   }
   if (value < 2.0) {
@@ -67,7 +75,9 @@ export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
       labelCn: '观望区',
       color: 'text-orange-500',
       bgColor: 'bg-orange-50',
-      description: 'Be cautious'
+      description: 'Be cautious',
+      dot: '●',
+      range: '1.2-2.0'
     };
   }
   if (value < 4.0) {
@@ -77,7 +87,9 @@ export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
       labelCn: '止盈区',
       color: 'text-red-500',
       bgColor: 'bg-red-50',
-      description: 'Consider taking profits'
+      description: 'Consider taking profits',
+      dot: '●',
+      range: '2.0-4.0'
     };
   }
   return {
@@ -86,7 +98,9 @@ export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
     labelCn: '逃顶区',
     color: 'text-red-600',
     bgColor: 'bg-red-50',
-    description: 'Market top signals'
+    description: 'Market top signals',
+    dot: '●',
+    range: '>4'
   };
 }
 
