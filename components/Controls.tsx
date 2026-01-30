@@ -9,7 +9,7 @@ import { AHR999Indicator } from './AHR999Indicator';
 let selectDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Debounced select - selects input content after user stops typing
-const debouncedSelect = (input: HTMLInputElement, delay: number = 800) => {
+const debouncedSelect = (input: HTMLInputElement, delay: number = 400) => {
   if (selectDebounceTimer) clearTimeout(selectDebounceTimer);
   selectDebounceTimer = setTimeout(() => {
     if (document.activeElement === input) {
