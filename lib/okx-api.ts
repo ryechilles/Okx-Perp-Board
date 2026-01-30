@@ -412,8 +412,9 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     let rsi14: number | null = null;
     let rsiW7: number | null = null;
     let rsiW14: number | null = null;
-    let change7d: number | null = null;
+    let change1h: number | null = null;
     let change4h: number | null = null;
+    let change7d: number | null = null;
     let sparkline7d: number[] | undefined;
     let sparkline24h: number[] | undefined;
 
@@ -466,9 +467,18 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
         const candles1h = [...data1h.data].reverse();
         sparkline24h = candles1h.map((c: string[]) => parseFloat(c[4]));
 
+        const currentClose = parseFloat(candles1h[candles1h.length - 1][4]);
+
+        // Calculate 1h change from the last 1 hour
+        if (candles1h.length >= 2) {
+          const prev1hClose = parseFloat(candles1h[candles1h.length - 2][4]);
+          if (prev1hClose > 0) {
+            change1h = ((currentClose - prev1hClose) / prev1hClose) * 100;
+          }
+        }
+
         // Calculate 4h change from the last 4 hours
         if (candles1h.length >= 5) {
-          const currentClose = parseFloat(candles1h[candles1h.length - 1][4]);
           const prev4hClose = parseFloat(candles1h[candles1h.length - 5][4]);
           if (prev4hClose > 0) {
             change4h = ((currentClose - prev4hClose) / prev4hClose) * 100;
@@ -501,8 +511,9 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
       rsi14,
       rsiW7,
       rsiW14,
-      change7d,
+      change1h,
       change4h,
+      change7d,
       sparkline7d,
       sparkline24h,
       lastUpdated: Date.now()

@@ -7,6 +7,7 @@ import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { ChangeWithSparkline } from '@/components/Sparkline';
+import { AltcoinMetrics } from '@/components/AltcoinMetrics';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval, formatRsi, getRsiSignal } from '@/lib/utils';
 
@@ -196,6 +197,17 @@ export default function PerpBoard() {
         </div>
       </div>
       
+      {/* Altcoin Metrics */}
+      <div className="px-6">
+        <div className="max-w-[1400px] mx-auto w-full">
+          <AltcoinMetrics
+            tickers={store.tickers}
+            rsiData={store.rsiData}
+            marketCapData={store.marketCapData}
+          />
+        </div>
+      </div>
+
       {/* Table Area */}
       <div className="flex-1 overflow-hidden flex flex-col px-6 pb-4">
         <div className="max-w-[1400px] mx-auto w-full flex flex-col h-full">
