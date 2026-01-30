@@ -623,8 +623,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsi7: `<${val}` }),
                           [30]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
@@ -668,8 +667,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
@@ -700,8 +698,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
@@ -740,8 +737,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsi7: `>${val}` }),
                           [70]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                   </div>
@@ -817,8 +813,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsi14: `<${val}` }),
                           [30]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
@@ -862,8 +857,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
@@ -894,8 +888,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
@@ -934,8 +927,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsi14: `>${val}` }),
                           [70]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                   </div>
@@ -1011,8 +1003,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsiW7: `<${val}` }),
                           [30]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
@@ -1056,8 +1047,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
@@ -1088,8 +1078,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
@@ -1128,8 +1117,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsiW7: `>${val}` }),
                           [70]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                   </div>
@@ -1205,8 +1193,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsiW14: `<${val}` }),
                           [30]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom range input */}
@@ -1250,8 +1237,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
                       <input
@@ -1282,8 +1268,7 @@ export function Controls({
                             [30, 70]
                           );
                         }}
-                        onFocus={(e) => e.target.select()}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                     {/* Custom > input */}
@@ -1322,8 +1307,7 @@ export function Controls({
                           (val) => onFiltersChange({ ...filters, rsiW14: `>${val}` }),
                           [70]
                         )}
-                        onFocus={(e) => e.target.select()}
-                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
+                                                className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
                   </div>
