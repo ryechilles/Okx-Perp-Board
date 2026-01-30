@@ -120,7 +120,8 @@ export function Controls({
     .filter(([key]) => !excludedColumns.includes(key))
     .filter(([, v]) => v).length;
   const totalCount = Object.keys(columns).length - excludedColumns.length;
-  const hasFilters = Object.keys(filters).length > 0;
+  // Only count filters that have actual values (not undefined or empty string)
+  const hasFilters = Object.values(filters).some(v => v !== undefined && v !== '');
   
   const handleApplyFilters = () => {
     onFiltersChange(tempFilters);
