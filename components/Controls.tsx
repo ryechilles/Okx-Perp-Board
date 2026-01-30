@@ -525,18 +525,43 @@ export function Controls({
                     >
                       D-RSI7
                     </button>
+                    {/* Preset buttons */}
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi7: '<30' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsi7 === '<30' ? 'bg-white shadow-sm text-green-600' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &lt;30
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi7: '30~70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsi7 === '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      30~70
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi7: '>70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsi7 === '>70' ? 'bg-white shadow-sm text-red-500' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &gt;70
+                    </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsi7?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsi7)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsi7?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsi7) ? filters.rsi7.slice(1) : ''}
+                        value={filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? filters.rsi7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -545,38 +570,63 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi7: `<${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
                       />
                     </div>
-                    {[
-                      { value: '<10', label: '<10' },
-                      { value: '<20', label: '<20' },
-                      { value: '<30', label: '<30' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsi7: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsi7 === opt.value
-                            ? 'bg-white shadow-sm text-green-600'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
+                    {/* Custom range input */}
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                      filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? 'bg-white shadow-sm' : ''
+                    }`}>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : ''}
+                        onChange={(e) => {
+                          const min = e.target.value;
+                          const max = filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsi7: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                      <span className="text-gray-400">~</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : ''}
+                        onChange={(e) => {
+                          const max = e.target.value;
+                          const min = filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsi7: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                    </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsi7?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsi7)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsi7?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsi7) ? filters.rsi7.slice(1) : ''}
+                        value={filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? filters.rsi7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -585,64 +635,7 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi7: `>${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
-                      />
-                    </div>
-                    {[
-                      { value: '>70', label: '>70' },
-                      { value: '>80', label: '>80' },
-                      { value: '>90', label: '>90' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsi7: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsi7 === opt.value
-                            ? 'bg-white shadow-sm text-red-500'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                    {/* Range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsi7?.includes('~') ? 'bg-white shadow-sm' : ''
-                    }`}>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsi7?.includes('~') ? filters.rsi7.split('~')[0] : ''}
-                        onChange={(e) => {
-                          const min = e.target.value;
-                          const max = filters.rsi7?.includes('~') ? filters.rsi7.split('~')[1] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsi7: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
-                      />
-                      <span className="text-gray-400">~</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsi7?.includes('~') ? filters.rsi7.split('~')[1] : ''}
-                        onChange={(e) => {
-                          const max = e.target.value;
-                          const min = filters.rsi7?.includes('~') ? filters.rsi7.split('~')[0] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsi7: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsi7: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
                       />
                     </div>
                   </div>
@@ -657,18 +650,43 @@ export function Controls({
                     >
                       D-RSI14
                     </button>
+                    {/* Preset buttons */}
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi14: '<30' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsi14 === '<30' ? 'bg-white shadow-sm text-green-600' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &lt;30
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi14: '30~70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsi14 === '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      30~70
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsi14: '>70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsi14 === '>70' ? 'bg-white shadow-sm text-red-500' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &gt;70
+                    </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsi14?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsi14)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsi14?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsi14) ? filters.rsi14.slice(1) : ''}
+                        value={filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? filters.rsi14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -677,38 +695,63 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi14: `<${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
                       />
                     </div>
-                    {[
-                      { value: '<10', label: '<10' },
-                      { value: '<20', label: '<20' },
-                      { value: '<30', label: '<30' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsi14: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsi14 === opt.value
-                            ? 'bg-white shadow-sm text-green-600'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
+                    {/* Custom range input */}
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                      filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? 'bg-white shadow-sm' : ''
+                    }`}>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : ''}
+                        onChange={(e) => {
+                          const min = e.target.value;
+                          const max = filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsi14: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                      <span className="text-gray-400">~</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : ''}
+                        onChange={(e) => {
+                          const max = e.target.value;
+                          const min = filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsi14: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                    </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsi14?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsi14)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsi14?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsi14) ? filters.rsi14.slice(1) : ''}
+                        value={filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? filters.rsi14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -717,64 +760,7 @@ export function Controls({
                             onFiltersChange({ ...filters, rsi14: `>${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
-                      />
-                    </div>
-                    {[
-                      { value: '>70', label: '>70' },
-                      { value: '>80', label: '>80' },
-                      { value: '>90', label: '>90' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsi14: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsi14 === opt.value
-                            ? 'bg-white shadow-sm text-red-500'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                    {/* Range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsi14?.includes('~') ? 'bg-white shadow-sm' : ''
-                    }`}>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsi14?.includes('~') ? filters.rsi14.split('~')[0] : ''}
-                        onChange={(e) => {
-                          const min = e.target.value;
-                          const max = filters.rsi14?.includes('~') ? filters.rsi14.split('~')[1] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsi14: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
-                      />
-                      <span className="text-gray-400">~</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsi14?.includes('~') ? filters.rsi14.split('~')[1] : ''}
-                        onChange={(e) => {
-                          const max = e.target.value;
-                          const min = filters.rsi14?.includes('~') ? filters.rsi14.split('~')[0] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsi14: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsi14: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
                       />
                     </div>
                   </div>
@@ -789,18 +775,43 @@ export function Controls({
                     >
                       W-RSI7
                     </button>
+                    {/* Preset buttons */}
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW7: '<30' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsiW7 === '<30' ? 'bg-white shadow-sm text-green-600' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &lt;30
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW7: '30~70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsiW7 === '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      30~70
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW7: '>70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsiW7 === '>70' ? 'bg-white shadow-sm text-red-500' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &gt;70
+                    </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsiW7?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsiW7)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsiW7?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsiW7) ? filters.rsiW7.slice(1) : ''}
+                        value={filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? filters.rsiW7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -809,38 +820,63 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW7: `<${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
                       />
                     </div>
-                    {[
-                      { value: '<10', label: '<10' },
-                      { value: '<20', label: '<20' },
-                      { value: '<30', label: '<30' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsiW7: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsiW7 === opt.value
-                            ? 'bg-white shadow-sm text-green-600'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
+                    {/* Custom range input */}
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                      filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? 'bg-white shadow-sm' : ''
+                    }`}>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : ''}
+                        onChange={(e) => {
+                          const min = e.target.value;
+                          const max = filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsiW7: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                      <span className="text-gray-400">~</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : ''}
+                        onChange={(e) => {
+                          const max = e.target.value;
+                          const min = filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsiW7: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                    </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsiW7?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsiW7)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsiW7?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsiW7) ? filters.rsiW7.slice(1) : ''}
+                        value={filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? filters.rsiW7.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -849,64 +885,7 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW7: `>${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
-                      />
-                    </div>
-                    {[
-                      { value: '>70', label: '>70' },
-                      { value: '>80', label: '>80' },
-                      { value: '>90', label: '>90' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsiW7: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsiW7 === opt.value
-                            ? 'bg-white shadow-sm text-red-500'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                    {/* Range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsiW7?.includes('~') ? 'bg-white shadow-sm' : ''
-                    }`}>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsiW7?.includes('~') ? filters.rsiW7.split('~')[0] : ''}
-                        onChange={(e) => {
-                          const min = e.target.value;
-                          const max = filters.rsiW7?.includes('~') ? filters.rsiW7.split('~')[1] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsiW7: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
-                      />
-                      <span className="text-gray-400">~</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsiW7?.includes('~') ? filters.rsiW7.split('~')[1] : ''}
-                        onChange={(e) => {
-                          const max = e.target.value;
-                          const min = filters.rsiW7?.includes('~') ? filters.rsiW7.split('~')[0] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsiW7: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsiW7: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
                       />
                     </div>
                   </div>
@@ -921,18 +900,43 @@ export function Controls({
                     >
                       W-RSI14
                     </button>
+                    {/* Preset buttons */}
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW14: '<30' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsiW14 === '<30' ? 'bg-white shadow-sm text-green-600' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &lt;30
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW14: '30~70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsiW14 === '30~70' ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      30~70
+                    </button>
+                    <button
+                      onClick={() => onFiltersChange({ ...filters, rsiW14: '>70' })}
+                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rsiW14 === '>70' ? 'bg-white shadow-sm text-red-500' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      &gt;70
+                    </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsiW14?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsiW14)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-green-600">&lt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsiW14?.startsWith('<') && !['<10', '<20', '<30'].includes(filters.rsiW14) ? filters.rsiW14.slice(1) : ''}
+                        value={filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? filters.rsiW14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -941,38 +945,63 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW14: `<${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-green-600 placeholder-gray-400"
                       />
                     </div>
-                    {[
-                      { value: '<10', label: '<10' },
-                      { value: '<20', label: '<20' },
-                      { value: '<30', label: '<30' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsiW14: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsiW14 === opt.value
-                            ? 'bg-white shadow-sm text-green-600'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
+                    {/* Custom range input */}
+                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                      filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? 'bg-white shadow-sm' : ''
+                    }`}>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : ''}
+                        onChange={(e) => {
+                          const min = e.target.value;
+                          const max = filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsiW14: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                      <span className="text-gray-400">~</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        placeholder="?"
+                        value={filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : ''}
+                        onChange={(e) => {
+                          const max = e.target.value;
+                          const min = filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : '';
+                          if (min === '' && max === '') {
+                            onFiltersChange({ ...filters, rsiW14: undefined });
+                          } else {
+                            onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
+                          }
+                        }}
+                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                      />
+                    </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsiW14?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsiW14)
-                        ? 'bg-white shadow-sm' : ''
+                      filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? 'bg-white shadow-sm' : ''
                     }`}>
                       <span className="text-red-500">&gt;</span>
                       <input
                         type="number"
                         min="0"
                         max="100"
+                        step="1"
                         placeholder="?"
-                        value={filters.rsiW14?.startsWith('>') && !['>70', '>80', '>90'].includes(filters.rsiW14) ? filters.rsiW14.slice(1) : ''}
+                        value={filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? filters.rsiW14.slice(1) : ''}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {
@@ -981,64 +1010,7 @@ export function Controls({
                             onFiltersChange({ ...filters, rsiW14: `>${val}` });
                           }
                         }}
-                        className="w-6 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
-                      />
-                    </div>
-                    {[
-                      { value: '>70', label: '>70' },
-                      { value: '>80', label: '>80' },
-                      { value: '>90', label: '>90' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rsiW14: opt.value })}
-                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          filters.rsiW14 === opt.value
-                            ? 'bg-white shadow-sm text-red-500'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                    {/* Range input */}
-                    <div className={`flex items-center px-1.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                      filters.rsiW14?.includes('~') ? 'bg-white shadow-sm' : ''
-                    }`}>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsiW14?.includes('~') ? filters.rsiW14.split('~')[0] : ''}
-                        onChange={(e) => {
-                          const min = e.target.value;
-                          const max = filters.rsiW14?.includes('~') ? filters.rsiW14.split('~')[1] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsiW14: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
-                      />
-                      <span className="text-gray-400">~</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="?"
-                        value={filters.rsiW14?.includes('~') ? filters.rsiW14.split('~')[1] : ''}
-                        onChange={(e) => {
-                          const max = e.target.value;
-                          const min = filters.rsiW14?.includes('~') ? filters.rsiW14.split('~')[0] : '';
-                          if (min === '' && max === '') {
-                            onFiltersChange({ ...filters, rsiW14: undefined });
-                          } else {
-                            onFiltersChange({ ...filters, rsiW14: `${min}~${max}` });
-                          }
-                        }}
-                        className="w-5 bg-transparent text-[12px] font-medium text-center outline-none text-gray-700 placeholder-gray-400"
+                        className="w-7 bg-transparent text-[12px] font-medium text-center outline-none text-red-500 placeholder-gray-400"
                       />
                     </div>
                   </div>
