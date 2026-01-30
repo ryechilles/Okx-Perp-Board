@@ -24,6 +24,8 @@ const handleNumberWheel = (
     newValue = Math.min(max, Math.max(min, newValue + delta));
   }
   onChange(newValue.toString());
+  // Auto-select after wheel so keyboard input replaces the value
+  setTimeout(() => e.currentTarget.select(), 0);
 };
 
 // Quick filter types
