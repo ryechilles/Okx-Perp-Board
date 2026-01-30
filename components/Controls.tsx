@@ -87,12 +87,12 @@ export function Controls({
 
   const activeQuickFilter = getActiveQuickFilter();
   
-  // Fixed columns that are always shown and not counted
-  const alwaysFixedColumns = ['favorite', 'rank', 'logo', 'symbol'];
+  // Fixed columns that are always shown and not counted, plus hidden columns
+  const excludedColumns = ['favorite', 'rank', 'logo', 'symbol', 'hasSpot'];
   const visibleCount = Object.entries(columns)
-    .filter(([key]) => !alwaysFixedColumns.includes(key))
+    .filter(([key]) => !excludedColumns.includes(key))
     .filter(([, v]) => v).length;
-  const totalCount = Object.keys(columns).length - alwaysFixedColumns.length;
+  const totalCount = Object.keys(columns).length - excludedColumns.length;
   const hasFilters = Object.keys(filters).length > 0;
   
   const handleApplyFilters = () => {

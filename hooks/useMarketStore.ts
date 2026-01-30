@@ -29,20 +29,20 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   logo: true,
   symbol: true,
   price: true,
-  fundingRate: true,
+  fundingRate: false,
   fundingApr: true,
-  fundingInterval: true,
-  change4h: true,
+  fundingInterval: false,
+  change4h: false,
   change: true,
-  change7d: true,
-  volume24h: true,
+  change7d: false,
+  volume24h: false,
   marketCap: true,
   rsi7: true,
   rsi14: true,
   rsiW7: true,
   rsiW14: true,
   listDate: true,
-  hasSpot: false  // Hidden by default, use No Spot quick filter instead
+  hasSpot: false  // Hidden, use No Spot quick filter instead
 };
 
 export function useMarketStore() {
