@@ -109,23 +109,44 @@ export function Controls({
     onFiltersChange({});
   };
 
-  const columnOptions: { key: ColumnKey; label: string }[] = [
-    { key: 'price', label: 'Price' },
-    { key: 'fundingRate', label: 'Funding Rate' },
-    { key: 'fundingApr', label: 'Funding APR' },
-    { key: 'fundingInterval', label: 'Funding Interval' },
-    { key: 'change4h', label: '4H Change' },
-    { key: 'change', label: '24H Change' },
-    { key: 'change7d', label: '7D Change' },
-    { key: 'volume24h', label: '24H Volume' },
-    { key: 'marketCap', label: 'Market Cap' },
-    { key: 'dRsiSignal', label: 'Daily RSI Signal' },
-    { key: 'wRsiSignal', label: 'Weekly RSI Signal' },
-    { key: 'rsi7', label: 'Daily RSI7' },
-    { key: 'rsi14', label: 'Daily RSI14' },
-    { key: 'rsiW7', label: 'Weekly RSI7' },
-    { key: 'rsiW14', label: 'Weekly RSI14' },
-    { key: 'listDate', label: 'List Date' }
+  // Column options grouped by category
+  const columnGroups: { label: string; columns: { key: ColumnKey; label: string }[] }[] = [
+    {
+      label: 'Price & Funding',
+      columns: [
+        { key: 'price', label: 'Price' },
+        { key: 'fundingRate', label: 'Funding Rate' },
+        { key: 'fundingApr', label: 'Funding APR' },
+        { key: 'fundingInterval', label: 'Funding Interval' },
+        { key: 'volume24h', label: '24H Volume' },
+        { key: 'marketCap', label: 'Market Cap' },
+      ]
+    },
+    {
+      label: 'Price Change',
+      columns: [
+        { key: 'change4h', label: '4H Change' },
+        { key: 'change', label: '24H Change' },
+        { key: 'change7d', label: '7D Change' },
+      ]
+    },
+    {
+      label: 'RSI Indicators',
+      columns: [
+        { key: 'dRsiSignal', label: 'Daily RSI Signal' },
+        { key: 'wRsiSignal', label: 'Weekly RSI Signal' },
+        { key: 'rsi7', label: 'Daily RSI7' },
+        { key: 'rsi14', label: 'Daily RSI14' },
+        { key: 'rsiW7', label: 'Weekly RSI7' },
+        { key: 'rsiW14', label: 'Weekly RSI14' },
+      ]
+    },
+    {
+      label: 'Other',
+      columns: [
+        { key: 'listDate', label: 'List Date' },
+      ]
+    }
   ];
   
   return (
@@ -374,24 +395,31 @@ export function Controls({
 
           {/* Columns tab content */}
           {customizeTab === 'columns' && (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2">
-              {columnOptions.map(col => (
-                <label
-                  key={col.key}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-[13px] cursor-pointer transition-all ${
-                    columns[col.key]
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={columns[col.key]}
-                    onChange={(e) => onColumnChange(col.key, e.target.checked)}
-                    className="w-4 h-4 cursor-pointer"
-                  />
-                  <span>{col.label}</span>
-                </label>
+            <div className="space-y-4">
+              {columnGroups.map(group => (
+                <div key={group.label}>
+                  <div className="text-[11px] text-gray-400 font-medium mb-2">{group.label}</div>
+                  <div className="flex flex-wrap gap-2">
+                    {group.columns.map(col => (
+                      <label
+                        key={col.key}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-md text-[13px] cursor-pointer transition-all ${
+                          columns[col.key]
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={columns[col.key]}
+                          onChange={(e) => onColumnChange(col.key, e.target.checked)}
+                          className="w-4 h-4 cursor-pointer"
+                        />
+                        <span>{col.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}
