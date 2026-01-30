@@ -43,8 +43,8 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   rsi14: false,
   rsiW7: false,
   rsiW14: false,
-  listDate: false,
-  hasSpot: false  // Hidden, use No Spot quick filter instead
+  listDate: true,
+  hasSpot: false
 };
 
 export function useMarketStore() {
