@@ -18,6 +18,8 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   change7d: true,
   volume24h: true,
   marketCap: true,
+  dRsiSignal: true,
+  wRsiSignal: true,
   rsi7: true,
   rsi14: true,
   rsiW7: true,
