@@ -554,58 +554,35 @@ export function useMarketStore() {
       }
     }
     
+    // RSI filter helper function
+    const applyRsiFilter = (rsiValue: number | null | undefined, filterValue: string): boolean => {
+      if (rsiValue === null || rsiValue === undefined) return false;
+      if (filterValue.startsWith('<')) {
+        const threshold = parseInt(filterValue.slice(1));
+        return rsiValue < threshold;
+      } else if (filterValue.startsWith('>')) {
+        const threshold = parseInt(filterValue.slice(1));
+        return rsiValue > threshold;
+      }
+      return true;
+    };
+
     if (filters.rsi7) {
-      if (filters.rsi7 === '<30') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsi7 ?? 50) < 30);
-      } else if (filters.rsi7 === '30-70') {
-        filtered = filtered.filter(t => {
-          const rsi = rsiData.get(t.instId)?.rsi7;
-          return rsi !== undefined && rsi !== null && rsi >= 30 && rsi <= 70;
-        });
-      } else if (filters.rsi7 === '>70') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsi7 ?? 50) > 70);
-      }
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi7, filters.rsi7!));
     }
-    
+
     if (filters.rsi14) {
-      if (filters.rsi14 === '<30') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsi14 ?? 50) < 30);
-      } else if (filters.rsi14 === '30-70') {
-        filtered = filtered.filter(t => {
-          const rsi = rsiData.get(t.instId)?.rsi14;
-          return rsi !== undefined && rsi !== null && rsi >= 30 && rsi <= 70;
-        });
-      } else if (filters.rsi14 === '>70') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsi14 ?? 50) > 70);
-      }
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi14, filters.rsi14!));
     }
-    
+
     // Weekly RSI7 filter
     if (filters.rsiW7) {
-      if (filters.rsiW7 === '<30') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW7 ?? 50) < 30);
-      } else if (filters.rsiW7 === '30-70') {
-        filtered = filtered.filter(t => {
-          const rsi = rsiData.get(t.instId)?.rsiW7;
-          return rsi !== undefined && rsi !== null && rsi >= 30 && rsi <= 70;
-        });
-      } else if (filters.rsiW7 === '>70') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW7 ?? 50) > 70);
-      }
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW7, filters.rsiW7!));
     }
-    
+
     // Weekly RSI14 filter
     if (filters.rsiW14) {
-      if (filters.rsiW14 === '<30') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW14 ?? 50) < 30);
-      } else if (filters.rsiW14 === '30-70') {
-        filtered = filtered.filter(t => {
-          const rsi = rsiData.get(t.instId)?.rsiW14;
-          return rsi !== undefined && rsi !== null && rsi >= 30 && rsi <= 70;
-        });
-      } else if (filters.rsiW14 === '>70') {
-        filtered = filtered.filter(t => (rsiData.get(t.instId)?.rsiW14 ?? 50) > 70);
-      }
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW14, filters.rsiW14!));
     }
     
     if (filters.hasSpot) {

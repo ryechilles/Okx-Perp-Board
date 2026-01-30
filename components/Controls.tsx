@@ -521,14 +521,19 @@ export function Controls({
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'D-RSI7' },
-                      { value: '<30', label: '<30', color: 'text-green-600' },
-                      { value: '30-70', label: '30-70' },
+                      { value: '<10', label: '<10', color: 'text-green-700' },
+                      { value: '<20', label: '<20', color: 'text-green-600' },
+                      { value: '<30', label: '<30', color: 'text-green-500' },
+                      { value: '<40', label: '<40', color: 'text-green-400' },
+                      { value: '>60', label: '>60', color: 'text-red-400' },
                       { value: '>70', label: '>70', color: 'text-red-500' },
+                      { value: '>80', label: '>80', color: 'text-red-600' },
+                      { value: '>90', label: '>90', color: 'text-red-700' },
                     ].map(opt => (
                       <button
                         key={opt.value}
                         onClick={() => onFiltersChange({ ...filters, rsi7: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
                           (filters.rsi7 || '') === opt.value
                             ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
                             : 'text-gray-500 hover:text-gray-700'
@@ -543,14 +548,19 @@ export function Controls({
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'D-RSI14' },
-                      { value: '<30', label: '<30', color: 'text-green-600' },
-                      { value: '30-70', label: '30-70' },
+                      { value: '<10', label: '<10', color: 'text-green-700' },
+                      { value: '<20', label: '<20', color: 'text-green-600' },
+                      { value: '<30', label: '<30', color: 'text-green-500' },
+                      { value: '<40', label: '<40', color: 'text-green-400' },
+                      { value: '>60', label: '>60', color: 'text-red-400' },
                       { value: '>70', label: '>70', color: 'text-red-500' },
+                      { value: '>80', label: '>80', color: 'text-red-600' },
+                      { value: '>90', label: '>90', color: 'text-red-700' },
                     ].map(opt => (
                       <button
                         key={opt.value}
                         onClick={() => onFiltersChange({ ...filters, rsi14: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
                           (filters.rsi14 || '') === opt.value
                             ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
                             : 'text-gray-500 hover:text-gray-700'
@@ -565,14 +575,19 @@ export function Controls({
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'W-RSI7' },
-                      { value: '<30', label: '<30', color: 'text-green-600' },
-                      { value: '30-70', label: '30-70' },
+                      { value: '<10', label: '<10', color: 'text-green-700' },
+                      { value: '<20', label: '<20', color: 'text-green-600' },
+                      { value: '<30', label: '<30', color: 'text-green-500' },
+                      { value: '<40', label: '<40', color: 'text-green-400' },
+                      { value: '>60', label: '>60', color: 'text-red-400' },
                       { value: '>70', label: '>70', color: 'text-red-500' },
+                      { value: '>80', label: '>80', color: 'text-red-600' },
+                      { value: '>90', label: '>90', color: 'text-red-700' },
                     ].map(opt => (
                       <button
                         key={opt.value}
                         onClick={() => onFiltersChange({ ...filters, rsiW7: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
                           (filters.rsiW7 || '') === opt.value
                             ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
                             : 'text-gray-500 hover:text-gray-700'
@@ -587,14 +602,19 @@ export function Controls({
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'W-RSI14' },
-                      { value: '<30', label: '<30', color: 'text-green-600' },
-                      { value: '30-70', label: '30-70' },
+                      { value: '<10', label: '<10', color: 'text-green-700' },
+                      { value: '<20', label: '<20', color: 'text-green-600' },
+                      { value: '<30', label: '<30', color: 'text-green-500' },
+                      { value: '<40', label: '<40', color: 'text-green-400' },
+                      { value: '>60', label: '>60', color: 'text-red-400' },
                       { value: '>70', label: '>70', color: 'text-red-500' },
+                      { value: '>80', label: '>80', color: 'text-red-600' },
+                      { value: '>90', label: '>90', color: 'text-red-700' },
                     ].map(opt => (
                       <button
                         key={opt.value}
                         onClick={() => onFiltersChange({ ...filters, rsiW14: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
                           (filters.rsiW14 || '') === opt.value
                             ? `bg-white shadow-sm ${opt.color || 'text-gray-900'}`
                             : 'text-gray-500 hover:text-gray-700'
