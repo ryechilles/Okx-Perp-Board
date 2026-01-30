@@ -644,7 +644,8 @@ export function Controls({
                             e,
                             filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[0] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsi7: `${val}~${max}` })
+                            (val) => onFiltersChange({ ...filters, rsi7: `${val}~${max}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
@@ -673,7 +674,8 @@ export function Controls({
                             e,
                             filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? filters.rsi7.split('~')[1] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsi7: `${min}~${val}` })
+                            (val) => onFiltersChange({ ...filters, rsi7: `${min}~${val}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
@@ -828,7 +830,8 @@ export function Controls({
                             e,
                             filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[0] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsi14: `${val}~${max}` })
+                            (val) => onFiltersChange({ ...filters, rsi14: `${val}~${max}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
@@ -857,7 +860,8 @@ export function Controls({
                             e,
                             filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? filters.rsi14.split('~')[1] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsi14: `${min}~${val}` })
+                            (val) => onFiltersChange({ ...filters, rsi14: `${min}~${val}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
@@ -1012,7 +1016,8 @@ export function Controls({
                             e,
                             filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[0] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsiW7: `${val}~${max}` })
+                            (val) => onFiltersChange({ ...filters, rsiW7: `${val}~${max}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
@@ -1041,7 +1046,8 @@ export function Controls({
                             e,
                             filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? filters.rsiW7.split('~')[1] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsiW7: `${min}~${val}` })
+                            (val) => onFiltersChange({ ...filters, rsiW7: `${min}~${val}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
@@ -1196,7 +1202,8 @@ export function Controls({
                             e,
                             filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[0] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsiW14: `${val}~${max}` })
+                            (val) => onFiltersChange({ ...filters, rsiW14: `${val}~${max}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
@@ -1225,7 +1232,8 @@ export function Controls({
                             e,
                             filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? filters.rsiW14.split('~')[1] : '',
                             1, 100, 1,
-                            (val) => onFiltersChange({ ...filters, rsiW14: `${min}~${val}` })
+                            (val) => onFiltersChange({ ...filters, rsiW14: `${min}~${val}` }),
+                            [30, 70]
                           );
                         }}
                         onFocus={(e) => e.target.select()}
