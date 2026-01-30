@@ -98,7 +98,13 @@ export function useMarketStore() {
   const [sort, setSort] = useState<SortConfig>({ column: 'rank', direction: 'asc' });
   const [view, setView] = useState<'market' | 'favorites'>('market');
   const [urlInitialized, setUrlInitialized] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTermInternal] = useState('');
+
+  // Wrapper for setSearchTerm that resets page to 1
+  const setSearchTerm = useCallback((term: string) => {
+    setSearchTermInternal(term);
+    setCurrentPage(1); // Reset to page 1 when searching
+  }, []);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 25;
   // Status - Always show 'live' as requested
@@ -195,6 +201,7 @@ export function useMarketStore() {
       localStorage.setItem('okx-filters', JSON.stringify(resolved));
       return resolved;
     });
+    setCurrentPage(1); // Reset to page 1 when filters change
   }, []);
   
   // Update column order (for drag and drop)

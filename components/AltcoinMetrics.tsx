@@ -40,8 +40,30 @@ function formatPrice(price: number): string {
   return `$${price.toFixed(6)}`;
 }
 
+// Time frame selector component
+function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (tf: TimeFrame) => void }) {
+  return (
+    <div className="flex bg-gray-100 rounded-lg p-0.5">
+      {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
+        <button
+          key={tf}
+          onClick={() => onChange(tf)}
+          className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${
+            value === tf
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          {tf}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetricsProps) {
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>('4h');
+  const [gainersTimeFrame, setGainersTimeFrame] = useState<TimeFrame>('4h');
+  const [avgTimeFrame, setAvgTimeFrame] = useState<TimeFrame>('4h');
 
   // Get altcoins sorted by market cap (excluding BTC)
   const altcoins = useMemo(() => {
@@ -76,22 +98,22 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
   // Top 100 altcoins (rank 2-101, excluding BTC)
   const top100 = useMemo(() => altcoins.slice(0, 100), [altcoins]);
 
-  // Get change value based on selected timeframe
-  const getChange = (token: TokenWithChange): number | null => {
-    switch (timeFrame) {
+  // Get change value based on timeframe
+  const getChangeByTimeFrame = (token: TokenWithChange, tf: TimeFrame): number | null => {
+    switch (tf) {
       case '1h': return token.change1h;
       case '4h': return token.change4h;
       case '24h': return token.change24h;
     }
   };
 
-  // Top gainers based on selected timeframe
+  // Top gainers based on gainers timeframe
   const topGainers = useMemo(() => {
     return [...top100]
-      .filter(t => getChange(t) !== null)
-      .sort((a, b) => (getChange(b) ?? 0) - (getChange(a) ?? 0))
+      .filter(t => getChangeByTimeFrame(t, gainersTimeFrame) !== null)
+      .sort((a, b) => (getChangeByTimeFrame(b, gainersTimeFrame) ?? 0) - (getChangeByTimeFrame(a, gainersTimeFrame) ?? 0))
       .slice(0, 5);
-  }, [top100, timeFrame]);
+  }, [top100, gainersTimeFrame]);
 
   // Calculate average changes for different tiers
   const avgChanges = useMemo(() => {
@@ -113,9 +135,9 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
     };
   }, [altcoins]);
 
-  // Get avg for current timeframe
+  // Get avg for average timeframe
   const getAvg = (tier: 'top10' | 'top20' | 'top50'): number | null => {
-    switch (timeFrame) {
+    switch (avgTimeFrame) {
       case '1h': return avgChanges[tier].avg1h;
       case '4h': return avgChanges[tier].avg4h;
       case '24h': return avgChanges[tier].avg24h;
@@ -131,61 +153,53 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData }: AltcoinMetri
       {/* Top Gainers Card */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 min-w-[280px]">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">涨幅榜 ▼</span>
-          <div className="flex bg-gray-100 rounded-lg p-0.5">
-            {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
-              <button
-                key={tf}
-                onClick={() => setTimeFrame(tf)}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                  timeFrame === tf
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {tf}
-              </button>
-            ))}
-          </div>
+          <span className="text-sm font-medium text-gray-700">Top Gainers</span>
+          <TimeFrameSelector value={gainersTimeFrame} onChange={setGainersTimeFrame} />
         </div>
 
         <div className="space-y-2">
-          {topGainers.map((token, i) => (
-            <div key={token.instId} className="flex items-center justify-between py-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400 w-4">{i + 1}</span>
-                {token.logo ? (
-                  <img
-                    src={token.logo}
-                    alt={token.symbol}
-                    className="w-6 h-6 rounded-full"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.onerror = null;
-                      target.style.display = 'none';
-                    }}
-                  />
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
-                    {token.symbol.charAt(0)}
-                  </div>
-                )}
-                <span className="text-sm font-medium text-gray-900">{token.symbol}</span>
+          {topGainers.map((token, i) => {
+            const change = getChangeByTimeFrame(token, gainersTimeFrame);
+            return (
+              <div key={token.instId} className="flex items-center justify-between py-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-400 w-4">{i + 1}</span>
+                  {token.logo ? (
+                    <img
+                      src={token.logo}
+                      alt={token.symbol}
+                      className="w-6 h-6 rounded-full"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                      {token.symbol.charAt(0)}
+                    </div>
+                  )}
+                  <span className="text-sm font-medium text-gray-900">{token.symbol}</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-500">{formatPrice(token.price)}</span>
+                  <span className={`text-sm font-medium ${formatChange(change).color}`}>
+                    {formatChange(change).text}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-500">{formatPrice(token.price)}</span>
-                <span className={`text-sm font-medium ${formatChange(getChange(token)).color}`}>
-                  {formatChange(getChange(token)).text}
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* Average Changes Card */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 min-w-[200px]">
-        <div className="text-sm font-medium text-gray-700 mb-3">山寨平均涨幅</div>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium text-gray-700">Altcoin Avg</span>
+          <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
+        </div>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs text-gray-500">Top 10</span>
