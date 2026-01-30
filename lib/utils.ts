@@ -26,7 +26,7 @@ export function isMemeToken(symbol: string): boolean {
   return false;
 }
 
-// Default column order
+// Default column order (hasSpot removed - use No Spot quick filter instead)
 export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'favorite',
   'rank',
@@ -45,8 +45,7 @@ export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
   'rsi14',
   'rsiW7',
   'rsiW14',
-  'listDate',
-  'hasSpot'
+  'listDate'
 ];
 
 // Column definitions - all columns centered except symbol (left-aligned)

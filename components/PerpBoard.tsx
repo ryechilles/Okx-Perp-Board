@@ -374,7 +374,7 @@ export default function PerpBoard() {
                                       <span className="text-gray-900">{base}</span>
                                       <span className="text-gray-400 font-normal">/{quote}</span>
                                       {!hasSpot && (
-                                        <div className="absolute top-full left-0 mt-2 hidden group-hover/symbol:block z-50">
+                                        <div className="absolute top-full left-0 mt-2 hidden group-hover/symbol:block" style={{ zIndex: 9999 }}>
                                           <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 whitespace-nowrap">
                                             <span className="text-[12px] text-gray-700 font-normal">This token spot not listed yet on OKX</span>
                                           </div>
