@@ -181,9 +181,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
     return altcoins.slice(0, n).map(t => t.symbol);
   };
 
-  if (altcoins.length === 0) {
-    return null;
-  }
+  const isLoading = altcoins.length === 0;
 
   return (
     <div className="flex gap-4 mb-4">
@@ -208,43 +206,60 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         )}
 
         <div className="space-y-2">
-          {topGainers.map((token, i) => {
-            const change = getChangeByTimeFrame(token, gainersTimeFrame);
-            return (
-              <div
-                key={token.instId}
-                className="flex items-center justify-between py-1 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
-                onClick={() => onTokenClick?.(token.symbol)}
-              >
+          {isLoading ? (
+            // Loading skeleton
+            [1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center justify-between py-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-400 w-4">{i + 1}</span>
-                  {token.logo ? (
-                    <img
-                      src={token.logo}
-                      alt={token.symbol}
-                      className="w-6 h-6 rounded-full"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
-                      {token.symbol.charAt(0)}
-                    </div>
-                  )}
-                  <span className="text-sm font-medium text-gray-900">{token.symbol}</span>
+                  <span className="text-sm text-gray-400 w-4">{i}</span>
+                  <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse" />
+                  <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-500">{formatPrice(token.price)}</span>
-                  <span className={`text-sm font-medium ${formatChange(change).color}`}>
-                    {formatChange(change).text}
-                  </span>
+                  <div className="w-14 h-4 bg-gray-200 rounded animate-pulse" />
+                  <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
                 </div>
               </div>
-            );
-          })}
+            ))
+          ) : (
+            topGainers.map((token, i) => {
+              const change = getChangeByTimeFrame(token, gainersTimeFrame);
+              return (
+                <div
+                  key={token.instId}
+                  className="flex items-center justify-between py-1 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
+                  onClick={() => onTokenClick?.(token.symbol)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-400 w-4">{i + 1}</span>
+                    {token.logo ? (
+                      <img
+                        src={token.logo}
+                        alt={token.symbol}
+                        className="w-6 h-6 rounded-full"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                        {token.symbol.charAt(0)}
+                      </div>
+                    )}
+                    <span className="text-sm font-medium text-gray-900">{token.symbol}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-gray-500">{formatPrice(token.price)}</span>
+                    <span className={`text-sm font-medium ${formatChange(change).color}`}>
+                      {formatChange(change).text}
+                    </span>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 
@@ -261,52 +276,66 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
           </div>
           <div className="flex items-center gap-2 text-[13px] leading-none">
-            {/* Altcoin averages - clickable */}
-            <span
-              className="text-gray-500 cursor-pointer hover:text-gray-700"
-              onClick={() => onTopNClick?.(getTopNSymbols(10))}
-            >
-              Top10:
-            </span>
-            <span
-              className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top10')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(10))}
-            >
-              {formatChange(getAvg('top10')).text}
-            </span>
-            <span
-              className="text-gray-500 cursor-pointer hover:text-gray-700"
-              onClick={() => onTopNClick?.(getTopNSymbols(20))}
-            >
-              Top20:
-            </span>
-            <span
-              className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top20')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(20))}
-            >
-              {formatChange(getAvg('top20')).text}
-            </span>
-            <span
-              className="text-gray-500 cursor-pointer hover:text-gray-700"
-              onClick={() => onTopNClick?.(getTopNSymbols(50))}
-            >
-              Top50:
-            </span>
-            <span
-              className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top50')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(50))}
-            >
-              {formatChange(getAvg('top50')).text}
-            </span>
+            {isLoading ? (
+              // Loading skeleton
+              <>
+                <span className="text-gray-500">Top10:</span>
+                <span className="text-gray-400">--</span>
+                <span className="text-gray-500">Top20:</span>
+                <span className="text-gray-400">--</span>
+                <span className="text-gray-500">Top50:</span>
+                <span className="text-gray-400">--</span>
+                <span className="text-gray-300">|</span>
+                <span className="text-gray-500">BTC:</span>
+                <span className="text-gray-400">--</span>
+              </>
+            ) : (
+              <>
+                {/* Altcoin averages - clickable */}
+                <span
+                  className="text-gray-500 cursor-pointer hover:text-gray-700"
+                  onClick={() => onTopNClick?.(getTopNSymbols(10))}
+                >
+                  Top10:
+                </span>
+                <span
+                  className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top10')).color}`}
+                  onClick={() => onTopNClick?.(getTopNSymbols(10))}
+                >
+                  {formatChange(getAvg('top10')).text}
+                </span>
+                <span
+                  className="text-gray-500 cursor-pointer hover:text-gray-700"
+                  onClick={() => onTopNClick?.(getTopNSymbols(20))}
+                >
+                  Top20:
+                </span>
+                <span
+                  className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top20')).color}`}
+                  onClick={() => onTopNClick?.(getTopNSymbols(20))}
+                >
+                  {formatChange(getAvg('top20')).text}
+                </span>
+                <span
+                  className="text-gray-500 cursor-pointer hover:text-gray-700"
+                  onClick={() => onTopNClick?.(getTopNSymbols(50))}
+                >
+                  Top50:
+                </span>
+                <span
+                  className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top50')).color}`}
+                  onClick={() => onTopNClick?.(getTopNSymbols(50))}
+                >
+                  {formatChange(getAvg('top50')).text}
+                </span>
 
-            {/* Separator */}
-            <span className="text-gray-300">|</span>
-
-            {/* BTC change */}
-            <span className="text-gray-500">BTC:</span>
-            <span className={`font-medium ${formatChange(getBtcChange()).color}`}>
-              {formatChange(getBtcChange()).text}
-            </span>
+                {/* BTC change */}
+                <span className="text-gray-500">BTC:</span>
+                <span className={`font-medium ${formatChange(getBtcChange()).color}`}>
+                  {formatChange(getBtcChange()).text}
+                </span>
+              </>
+            )}
           </div>
         </div>
 

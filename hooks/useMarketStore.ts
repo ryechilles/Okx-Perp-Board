@@ -99,14 +99,14 @@ export function useMarketStore() {
   const [view, setView] = useState<'market' | 'favorites'>('market');
   const [urlInitialized, setUrlInitialized] = useState(false);
   const [searchTerm, setSearchTermInternal] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 25;
 
   // Wrapper for setSearchTerm that resets page to 1
   const setSearchTerm = useCallback((term: string) => {
     setSearchTermInternal(term);
     setCurrentPage(1); // Reset to page 1 when searching
   }, []);
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 25;
   // Status - Always show 'live' as requested
   const [status, setStatus] = useState<'connecting' | 'live' | 'error'>('live');
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
