@@ -624,6 +624,7 @@ export function Controls({
                           [30]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -669,6 +670,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
@@ -701,6 +703,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -741,6 +744,7 @@ export function Controls({
                           [70]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -818,6 +822,7 @@ export function Controls({
                           [30]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -863,6 +868,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
@@ -895,6 +901,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -935,6 +942,7 @@ export function Controls({
                           [70]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1012,6 +1020,7 @@ export function Controls({
                           [30]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1057,6 +1066,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
@@ -1089,6 +1099,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1129,6 +1140,7 @@ export function Controls({
                           [70]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1206,6 +1218,7 @@ export function Controls({
                           [30]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1251,6 +1264,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                       <span>~</span>
@@ -1283,6 +1297,7 @@ export function Controls({
                           );
                         }}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-6 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
@@ -1323,6 +1338,7 @@ export function Controls({
                           [70]
                         )}
                                                 onFocus={(e) => { const input = e.target; setTimeout(() => input.select(), 0); }}
+                        onClick={(e) => { const input = e.target as HTMLInputElement; setTimeout(() => input.select(), 0); }}
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
