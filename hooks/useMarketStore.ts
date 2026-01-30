@@ -23,7 +23,8 @@ import {
 } from '@/lib/okx-api';
 import { DEFAULT_COLUMN_ORDER, isMemeToken } from '@/lib/utils';
 
-const DEFAULT_COLUMNS: ColumnVisibility = {
+// Desktop default columns
+const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
   favorite: true,
   rank: true,
   logo: true,
@@ -34,7 +35,7 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   fundingInterval: false,
   change4h: false,
   change: true,
-  change7d: false,
+  change7d: true,
   volume24h: false,
   marketCap: true,
   dRsiSignal: true,
@@ -46,6 +47,39 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   listDate: true,
   hasSpot: false
 };
+
+// Mobile default columns (minimal for small screens)
+const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
+  favorite: true,
+  rank: true,
+  logo: true,
+  symbol: true,
+  price: true,
+  fundingRate: false,
+  fundingApr: false,
+  fundingInterval: false,
+  change4h: false,
+  change: true,
+  change7d: false,
+  volume24h: false,
+  marketCap: false,
+  dRsiSignal: false,
+  wRsiSignal: false,
+  rsi7: false,
+  rsi14: false,
+  rsiW7: false,
+  rsiW14: false,
+  listDate: false,
+  hasSpot: false
+};
+
+// Detect mobile device
+const isMobile = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < 768;
+};
+
+const DEFAULT_COLUMNS: ColumnVisibility = isMobile() ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS_DESKTOP;
 
 export function useMarketStore() {
   // Core data
@@ -136,6 +170,10 @@ export function useMarketStore() {
       } catch (e) {
         console.error('Failed to parse columns:', e);
       }
+    } else {
+      // No saved columns - apply device-appropriate defaults
+      const defaultCols = isMobile() ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS_DESKTOP;
+      setColumns(defaultCols);
     }
   }, []);
   
