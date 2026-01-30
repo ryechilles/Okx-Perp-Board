@@ -598,10 +598,49 @@ export async function fetchRSIBatch(
   onProgress('');
 }
 
-// Fetch CoinGecko market cap data with pagination (up to 1000 coins)
-// Now includes 7-day sparkline data for price charts
+// Logo cache helpers - logos rarely change, cache for 7 days
+const LOGO_CACHE_KEY = 'perp_board_logo_cache';
+const LOGO_CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+interface LogoCache {
+  logos: Record<string, string>;
+  timestamp: number;
+}
+
+function getLogoCache(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const cached = localStorage.getItem(LOGO_CACHE_KEY);
+    if (cached) {
+      const data: LogoCache = JSON.parse(cached);
+      if (Date.now() - data.timestamp < LOGO_CACHE_DURATION) {
+        return data.logos;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to read logo cache:', e);
+  }
+  return {};
+}
+
+function saveLogoCache(logos: Record<string, string>): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const data: LogoCache = { logos, timestamp: Date.now() };
+    localStorage.setItem(LOGO_CACHE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.warn('Failed to save logo cache:', e);
+  }
+}
+
+// Fetch CoinGecko market cap data with pagination (up to 1500 coins)
+// Logos are cached locally for 7 days to reduce API calls
 export async function fetchMarketCapData(): Promise<Map<string, { marketCap: number; rank: number; logo?: string; sparkline?: number[] }>> {
   const result = new Map<string, { marketCap: number; rank: number; logo?: string; sparkline?: number[] }>();
+
+  // Load cached logos
+  const cachedLogos = getLogoCache();
+  const newLogos: Record<string, string> = { ...cachedLogos };
 
   // CoinGecko coin type
   type CoinGeckoCoin = {
@@ -618,10 +657,15 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
       const symbol = coin.symbol.toUpperCase();
       const existing = result.get(symbol);
       if (!existing || (coin.market_cap_rank && coin.market_cap_rank < existing.rank)) {
+        // Use cached logo if available, otherwise use API response
+        const logo = cachedLogos[symbol] || coin.image;
+        if (coin.image) {
+          newLogos[symbol] = coin.image; // Update cache with fresh logo
+        }
         result.set(symbol, {
           marketCap: coin.market_cap,
           rank: coin.market_cap_rank || 9999,
-          logo: coin.image,
+          logo,
           sparkline: coin.sparkline_in_7d?.price
         });
       }
@@ -629,8 +673,8 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
   };
 
   try {
-    // Fetch 4 pages from CoinGecko (1000 coins total)
-    for (let page = 1; page <= 4; page++) {
+    // Fetch 6 pages from CoinGecko (1500 coins total) to cover more tokens
+    for (let page = 1; page <= 6; page++) {
       const response = await fetch(
         `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=true`
       );
@@ -640,43 +684,16 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
         processCoinGeckoData(data);
       }
 
-      // Delay between pages to respect rate limits
-      if (page < 4) {
-        await new Promise(r => setTimeout(r, 500));
+      // Delay between pages to respect rate limits (30 calls/min for free tier)
+      if (page < 6) {
+        await new Promise(r => setTimeout(r, 2500));
       }
     }
+
+    // Save updated logos to cache
+    saveLogoCache(newLogos);
   } catch (error) {
     console.error('Failed to fetch CoinGecko data:', error);
-  }
-
-  // Fallback: Fetch from CoinCap for missing logos/market caps
-  try {
-    await new Promise(r => setTimeout(r, 300));
-
-    const coincapResponse = await fetch('https://api.coincap.io/v2/assets?limit=500');
-    const coincapData = await coincapResponse.json();
-
-    if (coincapData.data && Array.isArray(coincapData.data)) {
-      coincapData.data.forEach((asset: { symbol: string; marketCapUsd: string; rank: string }) => {
-        const symbol = asset.symbol.toUpperCase();
-        const existing = result.get(symbol);
-
-        // Only add if missing from CoinGecko
-        if (!existing) {
-          const marketCap = parseFloat(asset.marketCapUsd) || 0;
-          const rank = parseInt(asset.rank, 10) || 9999;
-
-          result.set(symbol, {
-            marketCap,
-            rank,
-            // CoinCap doesn't provide logo URLs directly, but we can construct them
-            logo: `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`
-          });
-        }
-      });
-    }
-  } catch (error) {
-    console.error('Failed to fetch CoinCap fallback data:', error);
   }
 
   return result;
