@@ -175,7 +175,7 @@ export function Controls({
   return (
     <>
       {/* Indicators + Search Row */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 relative z-[70]">
         <div className="flex items-center gap-3">
           <MarketMomentum
             avgRsi7={avgRsi7}
