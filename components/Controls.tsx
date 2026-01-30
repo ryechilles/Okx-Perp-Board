@@ -551,8 +551,10 @@ export function Controls({
               {/* RSI */}
               <div>
                 <div className="text-[11px] text-gray-400 font-medium mb-2">RSI Indicators</div>
-                <div className="flex flex-wrap gap-x-4 gap-y-3">
-                  {/* Daily RSI7 */}
+                <div className="flex flex-col gap-3">
+                  {/* Daily RSI Row */}
+                  <div className="flex flex-wrap gap-x-4 gap-y-3">
+                    {/* Daily RSI7 */}
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
                     <button
                       onClick={() => onFiltersChange({ ...filters, rsi7: undefined })}
@@ -947,16 +949,19 @@ export function Controls({
                       />
                     </div>
                   </div>
+                  </div>
 
-                  {/* Weekly RSI7 */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
-                    <button
-                      onClick={() => onFiltersChange({ ...filters, rsiW7: undefined })}
-                      className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-                        !filters.rsiW7 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      W-RSI7
+                  {/* Weekly RSI Row */}
+                  <div className="flex flex-wrap gap-x-4 gap-y-3">
+                    {/* Weekly RSI7 */}
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
+                      <button
+                        onClick={() => onFiltersChange({ ...filters, rsiW7: undefined })}
+                        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+                          !filters.rsiW7 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                        }`}
+                      >
+                        W-RSI7
                     </button>
                     {/* Preset buttons */}
                     <button
@@ -1342,6 +1347,7 @@ export function Controls({
                         className="w-7 bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer"
                       />
                     </div>
+                  </div>
                   </div>
                 </div>
               </div>
