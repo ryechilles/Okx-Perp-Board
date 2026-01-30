@@ -568,7 +568,7 @@ export function Controls({
                     </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsi7?.startsWith('<') && filters.rsi7 !== '<30' ? 'text-green-600' : ''}>&lt;</span>
                       <input
@@ -599,7 +599,7 @@ export function Controls({
                     </div>
                     {/* Custom range input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsi7?.includes('~') && filters.rsi7 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <input
                         type="number"
@@ -659,7 +659,7 @@ export function Controls({
                     </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsi7?.startsWith('>') && filters.rsi7 !== '>70' ? 'text-red-500' : ''}>&gt;</span>
                       <input
@@ -727,7 +727,7 @@ export function Controls({
                     </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsi14?.startsWith('<') && filters.rsi14 !== '<30' ? 'text-green-600' : ''}>&lt;</span>
                       <input
@@ -758,7 +758,7 @@ export function Controls({
                     </div>
                     {/* Custom range input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsi14?.includes('~') && filters.rsi14 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <input
                         type="number"
@@ -818,7 +818,7 @@ export function Controls({
                     </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsi14?.startsWith('>') && filters.rsi14 !== '>70' ? 'text-red-500' : ''}>&gt;</span>
                       <input
@@ -886,7 +886,7 @@ export function Controls({
                     </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsiW7?.startsWith('<') && filters.rsiW7 !== '<30' ? 'text-green-600' : ''}>&lt;</span>
                       <input
@@ -917,7 +917,7 @@ export function Controls({
                     </div>
                     {/* Custom range input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsiW7?.includes('~') && filters.rsiW7 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <input
                         type="number"
@@ -977,7 +977,7 @@ export function Controls({
                     </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsiW7?.startsWith('>') && filters.rsiW7 !== '>70' ? 'text-red-500' : ''}>&gt;</span>
                       <input
@@ -1045,7 +1045,7 @@ export function Controls({
                     </button>
                     {/* Custom < input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsiW14?.startsWith('<') && filters.rsiW14 !== '<30' ? 'text-green-600' : ''}>&lt;</span>
                       <input
@@ -1076,7 +1076,7 @@ export function Controls({
                     </div>
                     {/* Custom range input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsiW14?.includes('~') && filters.rsiW14 !== '30~70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <input
                         type="number"
@@ -1136,7 +1136,7 @@ export function Controls({
                     </div>
                     {/* Custom > input */}
                     <div className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-                      filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                      filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? 'bg-white shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
                       <span className={filters.rsiW14?.startsWith('>') && filters.rsiW14 !== '>70' ? 'text-red-500' : ''}>&gt;</span>
                       <input

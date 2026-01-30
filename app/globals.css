@@ -69,10 +69,11 @@ input[type="checkbox"] {
   accent-color: #1a1a1a;
 }
 
-/* Hide number input spinners */
+/* Hide number input spinners and cursor */
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
+  caret-color: transparent;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
