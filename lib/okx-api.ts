@@ -673,34 +673,30 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
   };
 
   try {
-    // Fetch Top 250 coins (rank 1-250, covers BTC, ETH, major alts)
-    console.log('[CoinGecko] Fetching page 1...');
-    const response1 = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true'
-    );
+    // Use our API proxy to avoid CORS and rate limit issues
+    // Fetch Top 250 coins (rank 1-250)
+    console.log('[CoinGecko] Fetching page 1 via proxy...');
+    const response1 = await fetch('/api/coingecko?page=1');
 
     if (!response1.ok) {
-      console.error('[CoinGecko] Page 1 failed:', response1.status, response1.statusText);
+      console.error('[CoinGecko] Page 1 failed:', response1.status);
     } else {
       const data1 = await response1.json();
       if (Array.isArray(data1)) {
         console.log(`[CoinGecko] Page 1 loaded: ${data1.length} coins`);
         processCoinGeckoData(data1);
         saveLogoCache(newLogos);
-      } else {
-        console.error('[CoinGecko] Page 1 unexpected response:', data1);
+      } else if (data1.error) {
+        console.error('[CoinGecko] Page 1 error:', data1.error);
       }
     }
 
-    // Fetch rank 251-500 (2 sec delay for rate limit)
-    await new Promise(r => setTimeout(r, 2000));
-    console.log('[CoinGecko] Fetching page 2...');
-    const response2 = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=2&sparkline=true'
-    );
+    // Fetch rank 251-500
+    console.log('[CoinGecko] Fetching page 2 via proxy...');
+    const response2 = await fetch('/api/coingecko?page=2');
 
     if (!response2.ok) {
-      console.error('[CoinGecko] Page 2 failed:', response2.status, response2.statusText);
+      console.error('[CoinGecko] Page 2 failed:', response2.status);
     } else {
       const data2 = await response2.json();
       if (Array.isArray(data2)) {
