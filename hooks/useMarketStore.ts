@@ -781,13 +781,36 @@ export function useMarketStore() {
     const filtered = getFilteredData();
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    
+
     return {
       data: filtered.slice(startIndex, endIndex),
       totalPages: Math.ceil(filtered.length / pageSize),
       totalItems: filtered.length
     };
   }, [getFilteredData, currentPage, pageSize]);
+
+  // Get quick filter counts (for displaying on buttons)
+  const getQuickFilterCounts = useCallback(() => {
+    // Get all tickers
+    const allTickers = Array.from(tickers.values()).filter(t => t.instId.includes('-USDT-'));
+
+    // Count overbought: RSI7 > 70 AND RSI14 > 70
+    const overboughtCount = allTickers.filter(t => {
+      const rsi = rsiData.get(t.instId);
+      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 > 70 && rsi.rsi14 > 70;
+    }).length;
+
+    // Count oversold: RSI7 < 30 AND RSI14 < 30
+    const oversoldCount = allTickers.filter(t => {
+      const rsi = rsiData.get(t.instId);
+      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 < 30 && rsi.rsi14 < 30;
+    }).length;
+
+    return {
+      overbought: overboughtCount,
+      oversold: oversoldCount
+    };
+  }, [tickers, rsiData]);
   
   // Direct setters for URL state sync
   const setFavoritesDirectly = useCallback((newFavorites: string[]) => {
@@ -852,6 +875,7 @@ export function useMarketStore() {
     getFilteredData,
     getRsiAverages,
     getTopMovers,
-    getPaginatedData
+    getPaginatedData,
+    getQuickFilterCounts
   };
 }

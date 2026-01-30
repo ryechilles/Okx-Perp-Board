@@ -60,6 +60,7 @@ export default function PerpBoard() {
   
   const filteredData = store.getFilteredData();
   const { avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 } = store.getRsiAverages();
+  const quickFilterCounts = store.getQuickFilterCounts();
   
   // Pagination
   const totalPages = Math.ceil(filteredData.length / store.pageSize);
@@ -183,6 +184,8 @@ export default function PerpBoard() {
             avgRsi14={avgRsi14}
             avgRsiW7={avgRsiW7}
             avgRsiW14={avgRsiW14}
+            overboughtCount={quickFilterCounts.overbought}
+            oversoldCount={quickFilterCounts.oversold}
             onColumnChange={store.updateColumn}
             onColumnsPreset={store.setColumnsPreset}
             onFiltersChange={store.setFilters}

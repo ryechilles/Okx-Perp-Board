@@ -17,6 +17,8 @@ interface ControlsProps {
   avgRsi14: number | null;
   avgRsiW7: number | null;
   avgRsiW14: number | null;
+  overboughtCount: number;
+  oversoldCount: number;
   onColumnChange: (col: keyof ColumnVisibility, visible: boolean) => void;
   onColumnsPreset: (preset: 'all' | 'none' | 'default') => void;
   onFiltersChange: (filters: Filters) => void;
@@ -33,6 +35,8 @@ export function Controls({
   avgRsi14,
   avgRsiW7,
   avgRsiW14,
+  overboughtCount,
+  oversoldCount,
   onColumnChange,
   onColumnsPreset,
   onFiltersChange,
@@ -274,7 +278,7 @@ export function Controls({
               }`}
               onClick={() => handleQuickFilter('overbought')}
             >
-              🔥 Overbought
+              🔥 Overbought {overboughtCount > 0 && <span className="text-gray-400 font-normal">{overboughtCount}</span>}
             </button>
             {hoveredFilter === 'overbought' && (
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
@@ -301,7 +305,7 @@ export function Controls({
               }`}
               onClick={() => handleQuickFilter('oversold')}
             >
-              🧊 Oversold
+              🧊 Oversold {oversoldCount > 0 && <span className="text-gray-400 font-normal">{oversoldCount}</span>}
             </button>
             {hoveredFilter === 'oversold' && (
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
