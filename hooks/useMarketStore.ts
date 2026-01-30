@@ -561,10 +561,16 @@ export function useMarketStore() {
     // Filter by USDT swap
     filtered = filtered.filter(t => t.instId.includes('-USDT-'));
     
-    // Search filter
+    // Search filter - supports pipe-separated terms (e.g., "ETH|SOL|BTC")
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(t => t.instId.toLowerCase().includes(term));
+      const terms = searchTerm.toLowerCase().split('|').map(t => t.trim()).filter(t => t);
+      if (terms.length === 1) {
+        // Single term - partial match
+        filtered = filtered.filter(t => t.instId.toLowerCase().includes(terms[0]));
+      } else {
+        // Multiple terms - exact symbol match
+        filtered = filtered.filter(t => terms.some(term => t.baseSymbol.toLowerCase() === term));
+      }
     }
     
     // Favorites view

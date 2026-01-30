@@ -8,6 +8,7 @@ interface AltcoinMetricsProps {
   rsiData: Map<string, RSIData>;
   marketCapData: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
+  onTopNClick?: (symbols: string[]) => void;
 }
 
 interface TokenWithChange {
@@ -62,11 +63,29 @@ function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (t
   );
 }
 
-export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick }: AltcoinMetricsProps) {
+export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, onTopNClick }: AltcoinMetricsProps) {
   const [gainersTimeFrame, setGainersTimeFrame] = useState<TimeFrame>('4h');
   const [avgTimeFrame, setAvgTimeFrame] = useState<TimeFrame>('4h');
   const [showGainersTooltip, setShowGainersTooltip] = useState(false);
   const [showAvgTooltip, setShowAvgTooltip] = useState(false);
+
+  // Get BTC data
+  const btcData = useMemo(() => {
+    let btcTicker: ProcessedTicker | undefined;
+    tickers.forEach((ticker) => {
+      if (ticker.baseSymbol === 'BTC') {
+        btcTicker = ticker;
+      }
+    });
+    if (!btcTicker) return null;
+
+    const rsi = rsiData.get(btcTicker.instId);
+    return {
+      change1h: rsi?.change1h ?? null,
+      change4h: rsi?.change4h ?? null,
+      change24h: btcTicker.changeNum,
+    };
+  }, [tickers, rsiData]);
 
   // Get altcoins sorted by market cap (excluding BTC)
   const altcoins = useMemo(() => {
@@ -147,6 +166,21 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick }
     }
   };
 
+  // Get BTC change for selected timeframe
+  const getBtcChange = (): number | null => {
+    if (!btcData) return null;
+    switch (avgTimeFrame) {
+      case '1h': return btcData.change1h;
+      case '4h': return btcData.change4h;
+      case '24h': return btcData.change24h;
+    }
+  };
+
+  // Get top N symbols for filtering
+  const getTopNSymbols = (n: number): string[] => {
+    return altcoins.slice(0, n).map(t => t.symbol);
+  };
+
   if (altcoins.length === 0) {
     return null;
   }
@@ -214,45 +248,76 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick }
         </div>
       </div>
 
-      {/* Average Changes Card */}
+      {/* Average Changes Card - Compact style like MarketMomentum */}
       <div
-        className="relative bg-white border border-gray-200 rounded-lg p-4 min-w-[200px]"
+        className="relative flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg"
         onMouseEnter={() => setShowAvgTooltip(true)}
         onMouseLeave={() => setShowAvgTooltip(false)}
       >
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">Altcoin Avg Change</span>
-          <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
+        {/* Title and time selector */}
+        <div className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-2">
+            <span className="text-[13px] font-medium text-gray-700 leading-none">Altcoin Avg</span>
+            <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
+          </div>
+          <div className="flex items-center gap-2 text-[13px] leading-none">
+            {/* Altcoin averages - clickable */}
+            <span
+              className="text-gray-500 cursor-pointer hover:text-gray-700"
+              onClick={() => onTopNClick?.(getTopNSymbols(10))}
+            >
+              Top10:
+            </span>
+            <span
+              className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top10')).color}`}
+              onClick={() => onTopNClick?.(getTopNSymbols(10))}
+            >
+              {formatChange(getAvg('top10')).text}
+            </span>
+            <span
+              className="text-gray-500 cursor-pointer hover:text-gray-700"
+              onClick={() => onTopNClick?.(getTopNSymbols(20))}
+            >
+              Top20:
+            </span>
+            <span
+              className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top20')).color}`}
+              onClick={() => onTopNClick?.(getTopNSymbols(20))}
+            >
+              {formatChange(getAvg('top20')).text}
+            </span>
+            <span
+              className="text-gray-500 cursor-pointer hover:text-gray-700"
+              onClick={() => onTopNClick?.(getTopNSymbols(50))}
+            >
+              Top50:
+            </span>
+            <span
+              className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top50')).color}`}
+              onClick={() => onTopNClick?.(getTopNSymbols(50))}
+            >
+              {formatChange(getAvg('top50')).text}
+            </span>
+
+            {/* Separator */}
+            <span className="text-gray-300">|</span>
+
+            {/* BTC change */}
+            <span className="text-gray-500">BTC:</span>
+            <span className={`font-medium ${formatChange(getBtcChange()).color}`}>
+              {formatChange(getBtcChange()).text}
+            </span>
+          </div>
         </div>
 
         {/* Hover tooltip */}
         {showAvgTooltip && (
           <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
             <div className="text-[11px] text-gray-600 whitespace-nowrap">
-              Average price change of top N altcoins by market cap (excluding BTC)
+              Average price change of top N altcoins by market cap. Click to filter table.
             </div>
           </div>
         )}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">Top 10</span>
-            <span className={`text-sm font-medium ${formatChange(getAvg('top10')).color}`}>
-              {formatChange(getAvg('top10')).text}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">Top 20</span>
-            <span className={`text-sm font-medium ${formatChange(getAvg('top20')).color}`}>
-              {formatChange(getAvg('top20')).text}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">Top 50</span>
-            <span className={`text-sm font-medium ${formatChange(getAvg('top50')).color}`}>
-              {formatChange(getAvg('top50')).text}
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );
