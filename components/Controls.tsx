@@ -359,9 +359,9 @@ export function Controls({
         </div>
 
         {/* Search box - right side */}
-        <div className="flex items-center gap-2 px-3 h-9 bg-white border border-gray-200 rounded-lg">
+        <div className="inline-flex items-center bg-gray-100 rounded-lg p-1 gap-1">
           <svg
-            className="w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-gray-400 ml-2"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -377,7 +377,7 @@ export function Controls({
             placeholder="Search token..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="border-none outline-none text-sm w-[120px]"
+            className="bg-transparent border-none outline-none text-[13px] text-gray-700 placeholder-gray-500 w-[120px] px-1 py-1"
           />
         </div>
       </div>
