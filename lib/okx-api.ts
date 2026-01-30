@@ -674,28 +674,45 @@ export async function fetchMarketCapData(): Promise<Map<string, { marketCap: num
 
   try {
     // Fetch Top 250 coins (rank 1-250, covers BTC, ETH, major alts)
+    console.log('[CoinGecko] Fetching page 1...');
     const response1 = await fetch(
       'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true'
     );
-    const data1 = await response1.json();
-    if (Array.isArray(data1)) {
-      processCoinGeckoData(data1);
-      saveLogoCache(newLogos);
+
+    if (!response1.ok) {
+      console.error('[CoinGecko] Page 1 failed:', response1.status, response1.statusText);
+    } else {
+      const data1 = await response1.json();
+      if (Array.isArray(data1)) {
+        console.log(`[CoinGecko] Page 1 loaded: ${data1.length} coins`);
+        processCoinGeckoData(data1);
+        saveLogoCache(newLogos);
+      } else {
+        console.error('[CoinGecko] Page 1 unexpected response:', data1);
+      }
     }
 
     // Fetch rank 251-500 (2 sec delay for rate limit)
     await new Promise(r => setTimeout(r, 2000));
+    console.log('[CoinGecko] Fetching page 2...');
     const response2 = await fetch(
       'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=2&sparkline=true'
     );
-    const data2 = await response2.json();
-    if (Array.isArray(data2)) {
-      processCoinGeckoData(data2);
-      saveLogoCache(newLogos);
+
+    if (!response2.ok) {
+      console.error('[CoinGecko] Page 2 failed:', response2.status, response2.statusText);
+    } else {
+      const data2 = await response2.json();
+      if (Array.isArray(data2)) {
+        console.log(`[CoinGecko] Page 2 loaded: ${data2.length} coins`);
+        processCoinGeckoData(data2);
+        saveLogoCache(newLogos);
+      }
     }
 
+    console.log(`[CoinGecko] Total coins loaded: ${result.size}`);
   } catch (error) {
-    console.error('Failed to fetch CoinGecko data:', error);
+    console.error('[CoinGecko] Failed to fetch data:', error);
     saveLogoCache(newLogos);
   }
 

@@ -386,8 +386,11 @@ export function useMarketStore() {
     // Fetch CoinGecko data separately (slower, shouldn't block OKX data)
     // This runs in background and updates UI as data arrives
     fetchMarketCapData().then((marketCap) => {
+      console.log(`[MarketCap] Received ${marketCap.size} coins from CoinGecko`);
       setMarketCapData(marketCap);
       saveMarketCapCache(marketCap);
+    }).catch((error) => {
+      console.error('[MarketCap] Failed to fetch:', error);
     });
     
     // Initialize hybrid data manager
