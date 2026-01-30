@@ -299,7 +299,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
                   Top10:
                 </span>
                 <span
-                  className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top10')).color}`}
+                  className={`font-medium cursor-pointer hover:opacity-80 ${formatChange(getAvg('top10')).color}`}
                   onClick={() => onTopNClick?.(getTopNSymbols(10))}
                 >
                   {formatChange(getAvg('top10')).text}
@@ -311,7 +311,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
                   Top20:
                 </span>
                 <span
-                  className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top20')).color}`}
+                  className={`font-medium cursor-pointer hover:opacity-80 ${formatChange(getAvg('top20')).color}`}
                   onClick={() => onTopNClick?.(getTopNSymbols(20))}
                 >
                   {formatChange(getAvg('top20')).text}
@@ -323,7 +323,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
                   Top50:
                 </span>
                 <span
-                  className={`font-medium cursor-pointer hover:underline ${formatChange(getAvg('top50')).color}`}
+                  className={`font-medium cursor-pointer hover:opacity-80 ${formatChange(getAvg('top50')).color}`}
                   onClick={() => onTopNClick?.(getTopNSymbols(50))}
                 >
                   {formatChange(getAvg('top50')).text}
