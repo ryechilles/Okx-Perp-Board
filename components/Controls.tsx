@@ -342,7 +342,7 @@ export function Controls({
       </div>
       
       {showCustomizePanel && (
-        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm relative z-50">
           {/* Tab buttons */}
           <div className="flex gap-1 mb-4 border-b border-gray-200 pb-3">
             <button
