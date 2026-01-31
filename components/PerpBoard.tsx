@@ -196,7 +196,7 @@ export default function PerpBoard() {
             onColumnOrderChange={store.updateColumnOrder}
           >
             {/* Altcoin Metrics & Funding Killer - Hidden on mobile */}
-            <div className="hidden md:flex flex-col lg:flex-row lg:items-stretch gap-4 mb-4">
+            <div className="hidden md:flex flex-col lg:flex-row lg:items-stretch gap-4 mb-4 relative z-[65]">
               <AltcoinMetrics
                 tickers={store.tickers}
                 rsiData={store.rsiData}

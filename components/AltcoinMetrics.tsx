@@ -198,7 +198,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
         {/* Hover tooltip */}
         {showGainersTooltip && (
-          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
+          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[100]">
             <div className="text-[11px] text-gray-500 whitespace-nowrap">
               Top 5 gainers from top 100 altcoins by market cap (excluding BTC)
             </div>
@@ -315,7 +315,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         </div>
 
         {/* Ratio rows with direction indicators */}
-        <div className="space-y-1 text-[12px] text-gray-500 border-t border-gray-200 pt-2">
+        <div className="space-y-1 text-[12px] text-gray-500 border-t border-gray-200 pt-2 flex-1">
           {(['top10', 'top20', 'top50'] as const).map((tier, idx) => {
             const alt = getAvg(tier);
             const btc = getBtcChange();
@@ -350,7 +350,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
         {/* Hover tooltip */}
         {showAvgTooltip && (
-          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
+          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[100]">
             <div className="text-[11px] text-gray-500 whitespace-nowrap">
               Average price change of top N altcoins by market cap (excluding BTC)
             </div>

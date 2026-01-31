@@ -153,7 +153,7 @@ export function FundingKiller({
 
       {/* Hover tooltip - only shows filter logic */}
       {showTooltip && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
+        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[100] whitespace-nowrap">
           <div className="space-y-1 text-[12px]">
             <div className="flex items-center gap-2">
               <span className="text-red-500">●</span>
