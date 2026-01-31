@@ -245,7 +245,7 @@ export default function PerpBoard() {
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 3: Table Area (Quick Filters + Settings + Search + Table)
           ═══════════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 overflow-hidden relative z-0">
+      <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 overflow-hidden relative">
         <div className="max-w-[1400px] mx-auto w-full flex flex-col flex-1 overflow-hidden">
 
           {/* Controls: Quick Filters, Settings, Search */}
