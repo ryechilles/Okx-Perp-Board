@@ -197,7 +197,7 @@ export function Controls({
           </svg>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder=""
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="bg-transparent border-none outline-none text-[14px] text-gray-700 placeholder-gray-400 flex-1"
@@ -434,7 +434,7 @@ export function Controls({
           </svg>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder=""
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="bg-transparent border-none outline-none text-[13px] text-gray-700 placeholder-gray-400 w-[80px]"
