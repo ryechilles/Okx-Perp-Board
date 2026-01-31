@@ -444,12 +444,6 @@ export function Controls({
               className="bg-transparent border-none outline-none text-[13px] text-gray-700 w-[60px]"
             />
           </div>
-
-          {/* Branding */}
-          <div className="hidden md:flex items-center gap-1 text-gray-400">
-            <span className="text-[12px] font-medium">Perp Board</span>
-            <span className="text-[10px]">v2.4.0</span>
-          </div>
         </div>
       </div>
       
