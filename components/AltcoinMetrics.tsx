@@ -271,7 +271,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
       >
         {/* Title and time selector */}
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[13px] font-medium text-gray-700">Altcoin Avg Change</span>
+          <span className="text-[13px] font-medium text-gray-700">Altcoin Avg Change vs BTC</span>
           <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
         </div>
 
