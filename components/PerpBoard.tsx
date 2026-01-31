@@ -78,9 +78,9 @@ export default function PerpBoard() {
   
   // Fixed column widths - must match COLUMN_DEFINITIONS
   const FIXED_WIDTHS: Record<string, number> = {
-    favorite: 28,
-    rank: 48,
-    logo: 32,
+    favorite: 24,
+    rank: 40,
+    logo: 28,
     symbol: 95,
   };
   
@@ -371,9 +371,9 @@ export default function PerpBoard() {
                             switch (key) {
                               case 'favorite':
                                 return (
-                                  <td key={key} className={baseClass} style={getCellStyle(key)}>
+                                  <td key={key} className={`py-3 text-center ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`} style={getCellStyle(key)}>
                                     <button
-                                      className={`bg-transparent border-none cursor-pointer text-base transition-colors ${
+                                      className={`bg-transparent border-none cursor-pointer text-sm transition-colors ${
                                         isFavorite ? 'text-yellow-400' : 'text-gray-200 hover:text-yellow-400'
                                       }`}
                                       onClick={() => store.toggleFavorite(ticker.instId)}
