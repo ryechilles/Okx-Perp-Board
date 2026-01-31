@@ -225,11 +225,11 @@ export function Controls({
         </div>
       </div>
 
-      {/* Mobile Search Row */}
-      <div className="md:hidden mb-3">
-        <div className="flex items-center bg-gray-200 rounded-lg p-1 gap-1">
+      {/* Mobile Search Row - minimal style */}
+      <div className="md:hidden mb-3 w-full">
+        <div className="flex items-center gap-2 w-full border-b border-gray-300 pb-2">
           <svg
-            className="w-4 h-4 text-gray-500 ml-2"
+            className="w-4 h-4 text-gray-400 flex-shrink-0"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -242,10 +242,10 @@ export function Controls({
           </svg>
           <input
             type="text"
-            placeholder="Search token..."
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="bg-transparent border-none outline-none text-[13px] text-gray-700 placeholder-gray-500 flex-1 px-1 py-1"
+            className="bg-transparent border-none outline-none text-[14px] text-gray-700 placeholder-gray-400 flex-1"
           />
         </div>
       </div>

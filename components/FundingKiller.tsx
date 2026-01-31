@@ -71,7 +71,7 @@ export function FundingKiller({
 
   return (
     <div
-      className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-default min-h-[220px]"
+      className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-default"
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
