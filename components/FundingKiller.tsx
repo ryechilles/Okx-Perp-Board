@@ -87,7 +87,7 @@ export function FundingKiller({
               className={`flex items-center gap-1.5 ${longKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
               onClick={() => longKillers.length > 0 && onGroupClick?.(longKillers.map(t => t.symbol))}
             >
-              <span className="text-[11px] font-medium text-red-500">Long Killer</span>
+              <span className="text-gray-500">Long Killer</span>
               <span className="text-[11px] text-gray-400">{longKillers.length}</span>
             </div>
             <span className="text-[10px] text-gray-400 ml-2">APR</span>
@@ -123,7 +123,7 @@ export function FundingKiller({
               className={`flex items-center gap-1.5 ${shortKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
               onClick={() => shortKillers.length > 0 && onGroupClick?.(shortKillers.map(t => t.symbol))}
             >
-              <span className="text-[11px] font-medium text-green-500">Short Killer</span>
+              <span className="text-gray-500">Short Killer</span>
               <span className="text-[11px] text-gray-400">{shortKillers.length}</span>
             </div>
             <span className="text-[10px] text-gray-400 ml-2">APR</span>
