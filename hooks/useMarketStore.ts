@@ -7,10 +7,6 @@ import {
   FundingRateData,
   ListingData,
   MarketCapData,
-  ColumnVisibility,
-  ColumnKey,
-  Filters,
-  SortConfig
 } from '@/lib/types';
 import {
   OKXHybridDataManager,
@@ -20,26 +16,20 @@ import {
   fetchFundingRates,
   fetchListingDates
 } from '@/lib/okx-api';
-import { isMemeToken, isMobile } from '@/lib/utils';
-import { DEFAULT_COLUMN_ORDER, getDefaultColumns } from '@/lib/defaults';
-import { TIMING, UI } from '@/lib/constants';
+import { isMemeToken } from '@/lib/utils';
+import { TIMING } from '@/lib/constants';
 import {
   getRsiCache,
   setRsiCache,
   getMarketCapCache,
   setMarketCapCache,
-  getFavoritesCache,
-  setFavoritesCache,
-  getColumnOrderCache,
-  setColumnOrderCache,
-  getFiltersCache,
-  setFiltersCache,
-  getColumnsCache,
-  setColumnsCache,
 } from '@/lib/cache';
 
-// Get default columns based on device
-const DEFAULT_COLUMNS: ColumnVisibility = getDefaultColumns(isMobile());
+// Import composed hooks
+import { useColumns } from './useColumns';
+import { useFavorites } from './useFavorites';
+import { useFilters } from './useFilters';
+import { usePagination } from './usePagination';
 
 export function useMarketStore() {
   // Core data
@@ -49,144 +39,30 @@ export function useMarketStore() {
   const [listingData, setListingData] = useState<Map<string, ListingData>>(new Map());
   const [marketCapData, setMarketCapData] = useState<Map<string, MarketCapData>>(new Map());
   const [spotSymbols, setSpotSymbols] = useState<Set<string>>(new Set());
-  
-  // UI state
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [columns, setColumns] = useState<ColumnVisibility>(DEFAULT_COLUMNS);
-  const [columnOrder, setColumnOrder] = useState<ColumnKey[]>(DEFAULT_COLUMN_ORDER);
-  const [filters, setFiltersState] = useState<Filters>({});
-  const [sort, setSort] = useState<SortConfig>({ column: 'rank', direction: 'asc' });
-  const [view, setView] = useState<'market' | 'favorites'>('market');
-  const [urlInitialized, setUrlInitialized] = useState(false);
-  const [searchTerm, setSearchTermInternal] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = UI.PAGE_SIZE;
 
-  // Wrapper for setSearchTerm that resets page to 1
-  const setSearchTerm = useCallback((term: string) => {
-    setSearchTermInternal(term);
-    setCurrentPage(1); // Reset to page 1 when searching
-  }, []);
+  // Composed hooks
+  const columnsHook = useColumns();
+  const favoritesHook = useFavorites();
+  const paginationHook = usePagination();
+
+  // Pass pagination reset callback to filters hook
+  const filtersHook = useFilters(paginationHook.resetPage);
+
   // Status - Always show 'live' as requested
   const [status, setStatus] = useState<'connecting' | 'live' | 'error'>('live');
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [rsiProgress, setRsiProgress] = useState('');
-  
+  const [urlInitialized, setUrlInitialized] = useState(false);
+
   // Refs for WebSocket and intervals
   const dataManagerRef = useRef<OKXHybridDataManager | null>(null);
   const isFetchingRsiRef = useRef(false);
   const intervalsRef = useRef<NodeJS.Timeout[]>([]);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
-  
-  // Load favorites, column order, and filters from cache
-  useEffect(() => {
-    // Load saved favorites
-    const savedFavorites = getFavoritesCache();
-    if (savedFavorites.length > 0) {
-      setFavorites(savedFavorites);
-    }
 
-    // Load saved column order
-    const savedColumnOrder = getColumnOrderCache();
-    if (savedColumnOrder && Array.isArray(savedColumnOrder)) {
-      // Merge saved order with default order to handle new columns
-      const savedSet = new Set(savedColumnOrder);
-      const defaultSet = new Set(DEFAULT_COLUMN_ORDER);
-
-      // Start with saved order, but only include columns that still exist
-      const mergedOrder = savedColumnOrder.filter((col) => defaultSet.has(col as ColumnKey));
-
-      // Add any new columns that weren't in saved order (after the fixed columns)
-      const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
-      const newColumns = DEFAULT_COLUMN_ORDER.filter(col =>
-        !savedSet.has(col) && !fixedColumns.includes(col)
-      );
-
-      // Insert new columns after fixed columns
-      const nonFixedPart = mergedOrder.filter((col) => !fixedColumns.includes(col as ColumnKey));
-
-      const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedPart as ColumnKey[], ...newColumns];
-      setColumnOrder(finalOrder);
-      setColumnOrderCache(finalOrder);
-    }
-
-    // Load saved filters
-    const savedFilters = getFiltersCache<Filters>();
-    if (savedFilters) {
-      setFilters(savedFilters);
-    }
-
-    // Load saved columns visibility
-    const savedColumns = getColumnsCache<ColumnVisibility>();
-    if (savedColumns) {
-      setColumns(savedColumns);
-    } else {
-      // No saved columns - apply device-appropriate defaults
-      const defaultCols = getDefaultColumns(isMobile());
-      setColumns(defaultCols);
-    }
-  }, []);
-  
-  // Save favorites to cache
-  const toggleFavorite = useCallback((instId: string) => {
-    setFavorites(prev => {
-      const newFavorites = prev.includes(instId)
-        ? prev.filter(f => f !== instId)
-        : [...prev, instId];
-      setFavoritesCache(newFavorites);
-      return newFavorites;
-    });
-  }, []);
-
-  // Save filters to cache
-  const setFilters = useCallback((newFilters: Filters | ((prev: Filters) => Filters)) => {
-    setFiltersState(prev => {
-      const resolved = typeof newFilters === 'function' ? newFilters(prev) : newFilters;
-      setFiltersCache(resolved);
-      return resolved;
-    });
-    setCurrentPage(1); // Reset to page 1 when filters change
-  }, []);
-  
-  // Update column order (for drag and drop)
-  const updateColumnOrder = useCallback((newOrder: ColumnKey[]) => {
-    // Ensure fixed columns stay in place
-    const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
-    const nonFixedOrder = newOrder.filter(col => !fixedColumns.includes(col));
-    const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedOrder];
-
-    setColumnOrder(finalOrder);
-    setColumnOrderCache(finalOrder);
-  }, []);
-
-  // Move a column to a new position
-  const moveColumn = useCallback((dragKey: ColumnKey, hoverKey: ColumnKey) => {
-    // Fixed columns cannot be moved
-    const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
-    if (fixedColumns.includes(dragKey) || fixedColumns.includes(hoverKey)) {
-      return;
-    }
-
-    setColumnOrder(prev => {
-      const dragIndex = prev.indexOf(dragKey);
-      const hoverIndex = prev.indexOf(hoverKey);
-
-      if (dragIndex === -1 || hoverIndex === -1) return prev;
-
-      const newOrder = [...prev];
-      newOrder.splice(dragIndex, 1);
-      newOrder.splice(hoverIndex, 0, dragKey);
-
-      setColumnOrderCache(newOrder);
-      return newOrder;
-    });
-  }, []);
-  
-  // Save RSI data to localStorage (debounced)
   // Save RSI data to cache (debounced)
   const saveRsiCacheTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const saveRsiCacheDebounced = useCallback((rsiMap: Map<string, RSIData>) => {
-    // Debounce: only save after specified delay of no updates
     if (saveRsiCacheTimeoutRef.current) {
       clearTimeout(saveRsiCacheTimeoutRef.current);
     }
@@ -212,7 +88,7 @@ export function useMarketStore() {
       return newMap;
     });
   }, [saveRsiCacheDebounced]);
-  
+
   // Get sorted instrument IDs by market cap rank
   const getSortedInstIds = useCallback((tickerMap: Map<string, ProcessedTicker>) => {
     return Array.from(tickerMap.values())
@@ -264,8 +140,8 @@ export function useMarketStore() {
       isFetchingRsiRef.current = false;
     }
   }, [getSortedInstIds, rsiData, updateRsiData]);
-  
-  // Market cap cache helpers using unified cache manager
+
+  // Market cap cache helpers
   const saveMarketCapCacheLocal = useCallback((data: Map<string, MarketCapData>) => {
     setMarketCapCache(data);
   }, []);
@@ -294,7 +170,6 @@ export function useMarketStore() {
     setFundingRateData(fundingRates);
 
     // Fetch CoinGecko data separately (slower, shouldn't block OKX data)
-    // This runs in background and updates UI as data arrives
     fetchMarketCapData().then((marketCap) => {
       console.log(`[MarketCap] Received ${marketCap.size} coins from CoinGecko`);
       setMarketCapData(marketCap);
@@ -302,20 +177,20 @@ export function useMarketStore() {
     }).catch((error) => {
       console.error('[MarketCap] Failed to fetch:', error);
     });
-    
+
     // Initialize hybrid data manager
     const handleTickerUpdate = (newTickers: Map<string, ProcessedTicker>) => {
       setTickers(newTickers);
     };
-    
+
     const handleStatusUpdate = (newStatus: 'connecting' | 'live' | 'error', time?: Date) => {
       setStatus(newStatus);
       if (time) setLastUpdate(time);
     };
-    
+
     dataManagerRef.current = new OKXHybridDataManager(handleTickerUpdate, handleStatusUpdate);
     await dataManagerRef.current.start();
-    
+
     // Fetch RSI for initial data after tickers are loaded
     const initialRsiTimeout = setTimeout(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
@@ -326,8 +201,6 @@ export function useMarketStore() {
     timeoutsRef.current.push(initialRsiTimeout);
 
     // Setup tiered RSI refresh intervals
-
-    // Top 50 RSI refresh
     const rsiTop50Interval = setInterval(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
@@ -336,7 +209,6 @@ export function useMarketStore() {
     }, TIMING.RSI_REFRESH_TOP50);
     intervalsRef.current.push(rsiTop50Interval);
 
-    // Tier 2 (51-100) RSI refresh
     const rsiTier2Interval = setInterval(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
@@ -345,7 +217,6 @@ export function useMarketStore() {
     }, TIMING.RSI_REFRESH_TIER2);
     intervalsRef.current.push(rsiTier2Interval);
 
-    // Tier 3 (101+) RSI refresh
     const rsiTier3Interval = setInterval(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
@@ -370,7 +241,7 @@ export function useMarketStore() {
     intervalsRef.current.push(fundingRatesInterval);
 
   }, [fetchRsiForVisible, fetchRsiForTier, loadMarketCapCacheLocal, saveMarketCapCacheLocal]);
-  
+
   // Cleanup - clear all intervals, timeouts, and stop data manager
   const cleanup = useCallback(() => {
     // Clear all intervals
@@ -391,126 +262,39 @@ export function useMarketStore() {
     dataManagerRef.current?.stop();
     dataManagerRef.current = null;
   }, []);
-  
-  // Column management
-  const updateColumn = useCallback((col: keyof ColumnVisibility, visible: boolean) => {
-    setColumns(prev => ({ ...prev, [col]: visible }));
 
-    // If enabling logo and it's not in columnOrder, add it in the correct position
-    if (col === 'logo' && visible) {
-      setColumnOrder(prev => {
-        if (!prev.includes('logo')) {
-          // Insert logo between rank and symbol
-          const rankIndex = prev.indexOf('rank');
-          const newOrder = [...prev];
-          newOrder.splice(rankIndex + 1, 0, 'logo');
-          setColumnOrderCache(newOrder);
-          return newOrder;
-        }
-        return prev;
-      });
-    }
-  }, []);
-  
-  const setColumnsPreset = useCallback((preset: 'all' | 'none' | 'default') => {
-    if (preset === 'all') {
-      setColumns({
-        favorite: true,
-        rank: true,
-        logo: true,
-        symbol: true,
-        price: true,
-        fundingRate: true,
-        fundingApr: true,
-        fundingInterval: true,
-        change4h: true,
-        change: true,
-        change7d: true,
-        volume24h: true,
-        marketCap: true,
-        dRsiSignal: true,
-        wRsiSignal: true,
-        rsi7: true,
-        rsi14: true,
-        rsiW7: true,
-        rsiW14: true,
-        listDate: true,
-        hasSpot: false  // Keep hidden - use No Spot quick filter instead
-      });
-    } else if (preset === 'none') {
-      setColumns({
-        favorite: true,
-        rank: true,
-        logo: false,
-        symbol: true,
-        price: false,
-        fundingRate: false,
-        fundingApr: false,
-        fundingInterval: false,
-        change4h: false,
-        change: false,
-        change7d: false,
-        volume24h: false,
-        marketCap: false,
-        dRsiSignal: false,
-        wRsiSignal: false,
-        rsi7: false,
-        rsi14: false,
-        rsiW7: false,
-        rsiW14: false,
-        listDate: false,
-        hasSpot: false
-      });
-    } else {
-      setColumns(DEFAULT_COLUMNS);
-    }
-  }, []);
-  
-  // Sorting
-  const updateSort = useCallback((column: string) => {
-    setSort(prev => ({
-      column,
-      direction: prev.column === column 
-        ? (prev.direction === 'asc' ? 'desc' : 'asc')
-        : (column === 'rank' ? 'asc' : 'desc')
-    }));
-  }, []);
-  
   // Get filtered and sorted data
   const getFilteredData = useCallback((): ProcessedTicker[] => {
     let filtered = Array.from(tickers.values());
-    
+
     // Filter by USDT swap
     filtered = filtered.filter(t => t.instId.includes('-USDT-'));
-    
+
     // Search filter - supports pipe-separated terms (e.g., "ETH|SOL|BTC")
-    if (searchTerm) {
-      const terms = searchTerm.toLowerCase().split('|').map(t => t.trim()).filter(t => t);
+    if (filtersHook.searchTerm) {
+      const terms = filtersHook.searchTerm.toLowerCase().split('|').map(t => t.trim()).filter(t => t);
       if (terms.length === 1) {
-        // Single term - partial match
         filtered = filtered.filter(t => t.instId.toLowerCase().includes(terms[0]));
       } else {
-        // Multiple terms - exact symbol match
         filtered = filtered.filter(t => terms.some(term => t.baseSymbol.toLowerCase() === term));
       }
     }
-    
+
     // Favorites view
-    if (view === 'favorites') {
-      filtered = filtered.filter(t => favorites.includes(t.instId));
+    if (filtersHook.view === 'favorites') {
+      filtered = filtered.filter(t => favoritesHook.favorites.includes(t.instId));
     }
-    
+
     // Apply filters
+    const { filters } = filtersHook;
+
     if (filters.rank) {
-      // For Top N filters, we need to get the top N by market cap among OKX perps
-      // First sort all filtered tokens by market cap rank
       const sortedByMarketCap = [...filtered].sort((a, b) => {
         const rankA = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
         const rankB = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
         return rankA - rankB;
       });
 
-      // Create a set of top N instIds
       const getTopN = (n: number) => new Set(sortedByMarketCap.slice(0, n).map(t => t.instId));
       const getRangeSet = (start: number, end: number) => new Set(sortedByMarketCap.slice(start - 1, end).map(t => t.instId));
 
@@ -533,8 +317,8 @@ export function useMarketStore() {
         filtered = filtered.filter(t => !marketCapData.get(t.baseSymbol)?.rank);
       }
     }
-    
-    // RSI filter helper function - supports <N, >N, and N~M (range)
+
+    // RSI filter helper function
     const applyRsiFilter = (rsiValue: number | null | undefined, filterValue: string): boolean => {
       if (rsiValue === null || rsiValue === undefined) return false;
       if (filterValue.includes('~')) {
@@ -555,21 +339,16 @@ export function useMarketStore() {
     if (filters.rsi7) {
       filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi7, filters.rsi7!));
     }
-
     if (filters.rsi14) {
       filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi14, filters.rsi14!));
     }
-
-    // Weekly RSI7 filter
     if (filters.rsiW7) {
       filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW7, filters.rsiW7!));
     }
-
-    // Weekly RSI14 filter
     if (filters.rsiW14) {
       filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW14, filters.rsiW14!));
     }
-    
+
     if (filters.hasSpot) {
       filtered = filtered.filter(t => {
         const baseQuote = `${t.baseSymbol}-USDT`;
@@ -577,7 +356,7 @@ export function useMarketStore() {
         return filters.hasSpot === 'yes' ? hasSpot : !hasSpot;
       });
     }
-    
+
     if (filters.fundingRate) {
       if (filters.fundingRate === 'positive') {
         filtered = filtered.filter(t => {
@@ -591,15 +370,14 @@ export function useMarketStore() {
         });
       }
     }
-    
-    // Market cap filter (range-based)
+
     if (filters.marketCapMin) {
       filtered = filtered.filter(t => {
         const cap = marketCapData.get(t.baseSymbol)?.marketCap;
         if (cap === undefined) return false;
-        
+
         const capInMillions = cap / 1000000;
-        
+
         switch (filters.marketCapMin) {
           case '0-20':
             return capInMillions <= 20;
@@ -614,8 +392,7 @@ export function useMarketStore() {
         }
       });
     }
-    
-    // Listing age filter
+
     if (filters.listAge) {
       const now = Date.now();
       const oneDay = 24 * 60 * 60 * 1000;
@@ -641,7 +418,6 @@ export function useMarketStore() {
       });
     }
 
-    // Meme token filter
     if (filters.isMeme) {
       filtered = filtered.filter(t => {
         const isMeme = isMemeToken(t.baseSymbol);
@@ -650,10 +426,11 @@ export function useMarketStore() {
     }
 
     // Sort
+    const { sort } = filtersHook;
     filtered.sort((a, b) => {
       let aVal: number | string;
       let bVal: number | string;
-      
+
       switch (sort.column) {
         case 'symbol':
           aVal = a.instId;
@@ -676,14 +453,12 @@ export function useMarketStore() {
           bVal = rsiData.get(b.instId)?.change7d ?? -9999;
           break;
         case 'rank':
-          // Sort by market cap value (larger = better rank)
           aVal = marketCapData.get(a.baseSymbol)?.marketCap ?? 0;
           bVal = marketCapData.get(b.baseSymbol)?.marketCap ?? 0;
-          // Reverse for rank: higher market cap = lower rank number
           if (sort.direction === 'asc') {
-            return (bVal as number) - (aVal as number); // desc by marketCap = asc by rank
+            return (bVal as number) - (aVal as number);
           } else {
-            return (aVal as number) - (bVal as number); // asc by marketCap = desc by rank
+            return (aVal as number) - (bVal as number);
           }
         case 'marketCap':
           aVal = marketCapData.get(a.baseSymbol)?.marketCap ?? 0;
@@ -739,22 +514,20 @@ export function useMarketStore() {
           aVal = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
           bVal = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
       }
-      
+
       if (typeof aVal === 'string' && typeof bVal === 'string') {
         return sort.direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
       return sort.direction === 'asc' ? (aVal as number) - (bVal as number) : (bVal as number) - (aVal as number);
     });
-    
+
     return filtered;
-  }, [tickers, searchTerm, view, favorites, filters, sort, marketCapData, rsiData, spotSymbols, fundingRateData, listingData]);
-  
-  // Calculate RSI averages for Top 100 market cap tokens (fixed, not affected by filters)
+  }, [tickers, filtersHook, favoritesHook.favorites, marketCapData, rsiData, spotSymbols, fundingRateData, listingData]);
+
+  // Calculate RSI averages for Top 100 market cap tokens
   const getRsiAverages = useCallback(() => {
-    // Get all USDT swap tickers
     let allTickers = Array.from(tickers.values()).filter(t => t.instId.includes('-USDT-'));
 
-    // Sort by market cap and take top 100
     const top100 = allTickers
       .filter(t => marketCapData.get(t.baseSymbol)?.rank)
       .sort((a, b) => {
@@ -796,15 +569,15 @@ export function useMarketStore() {
       avgRsiW14: rsiW14Count > 0 ? rsiW14Sum / rsiW14Count : null
     };
   }, [tickers, marketCapData, rsiData]);
-  
+
   // Get top gainers/losers for leaderboard
   const getTopMovers = useCallback((timeframe: '4h' | '24h' | '7d', limit: number = 5) => {
     const allTickers = Array.from(tickers.values()).filter(t => t.instId.includes('-USDT-'));
-    
+
     const tickersWithChange = allTickers.map(t => {
       const rsi = rsiData.get(t.instId);
       let change: number | null = null;
-      
+
       if (timeframe === '4h') {
         change = rsi?.change4h ?? null;
       } else if (timeframe === '24h') {
@@ -812,22 +585,22 @@ export function useMarketStore() {
       } else if (timeframe === '7d') {
         change = rsi?.change7d ?? null;
       }
-      
+
       return { ...t, change };
     }).filter(t => t.change !== null);
-    
-    // Sort by change
+
     const sorted = [...tickersWithChange].sort((a, b) => (b.change ?? 0) - (a.change ?? 0));
-    
+
     return {
       gainers: sorted.slice(0, limit),
       losers: sorted.slice(-limit).reverse()
     };
   }, [tickers, rsiData]);
-  
+
   // Get paginated data
   const getPaginatedData = useCallback(() => {
     const filtered = getFilteredData();
+    const { currentPage, pageSize } = paginationHook;
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
@@ -836,20 +609,17 @@ export function useMarketStore() {
       totalPages: Math.ceil(filtered.length / pageSize),
       totalItems: filtered.length
     };
-  }, [getFilteredData, currentPage, pageSize]);
+  }, [getFilteredData, paginationHook]);
 
-  // Get quick filter counts (for displaying on buttons)
+  // Get quick filter counts
   const getQuickFilterCounts = useCallback(() => {
-    // Get all tickers
     const allTickers = Array.from(tickers.values()).filter(t => t.instId.includes('-USDT-'));
 
-    // Count overbought: RSI7 > 70 AND RSI14 > 70
     const overboughtCount = allTickers.filter(t => {
       const rsi = rsiData.get(t.instId);
       return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 > 70 && rsi.rsi14 > 70;
     }).length;
 
-    // Count oversold: RSI7 < 30 AND RSI14 < 30
     const oversoldCount = allTickers.filter(t => {
       const rsi = rsiData.get(t.instId);
       return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 < 30 && rsi.rsi14 < 30;
@@ -860,22 +630,6 @@ export function useMarketStore() {
       oversold: oversoldCount
     };
   }, [tickers, rsiData]);
-  
-  // Direct setters for URL state sync
-  const setFavoritesDirectly = useCallback((newFavorites: string[]) => {
-    setFavorites(newFavorites);
-    setFavoritesCache(newFavorites);
-  }, []);
-
-  const setColumnsDirectly = useCallback((newColumns: ColumnVisibility) => {
-    setColumns(newColumns);
-    setColumnsCache(newColumns);
-  }, []);
-
-  const setColumnOrderDirectly = useCallback((newOrder: ColumnKey[]) => {
-    setColumnOrder(newOrder);
-    setColumnOrderCache(newOrder);
-  }, []);
 
   return {
     // Data
@@ -885,41 +639,41 @@ export function useMarketStore() {
     listingData,
     marketCapData,
     spotSymbols,
-    favorites,
+    favorites: favoritesHook.favorites,
 
-    // UI state
-    columns,
-    columnOrder,
-    filters,
-    sort,
-    view,
-    searchTerm,
+    // UI state from composed hooks
+    columns: columnsHook.columns,
+    columnOrder: columnsHook.columnOrder,
+    filters: filtersHook.filters,
+    sort: filtersHook.sort,
+    view: filtersHook.view,
+    searchTerm: filtersHook.searchTerm,
     status,
     lastUpdate,
     rsiProgress,
-    currentPage,
-    pageSize,
+    currentPage: paginationHook.currentPage,
+    pageSize: paginationHook.pageSize,
     urlInitialized,
 
     // Actions
     initialize,
     cleanup,
-    toggleFavorite,
-    updateColumn,
-    setColumnsPreset,
-    setFilters,
-    updateSort,
-    setView,
-    setSearchTerm,
-    updateColumnOrder,
-    moveColumn,
-    setCurrentPage,
+    toggleFavorite: favoritesHook.toggleFavorite,
+    updateColumn: columnsHook.updateColumn,
+    setColumnsPreset: columnsHook.setColumnsPreset,
+    setFilters: filtersHook.setFilters,
+    updateSort: filtersHook.updateSort,
+    setView: filtersHook.setView,
+    setSearchTerm: filtersHook.setSearchTerm,
+    updateColumnOrder: columnsHook.updateColumnOrder,
+    moveColumn: columnsHook.moveColumn,
+    setCurrentPage: paginationHook.setCurrentPage,
     setUrlInitialized,
 
     // Direct setters for URL state sync
-    setFavoritesDirectly,
-    setColumnsDirectly,
-    setColumnOrderDirectly,
+    setFavoritesDirectly: favoritesHook.setFavoritesDirectly,
+    setColumnsDirectly: columnsHook.setColumnsDirectly,
+    setColumnOrderDirectly: columnsHook.setColumnOrderDirectly,
 
     // Derived data
     getFilteredData,
