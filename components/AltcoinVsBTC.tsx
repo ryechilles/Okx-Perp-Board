@@ -204,10 +204,12 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
             const btc = getBtcChange();
             const ratio = (() => {
               if (isLoading || btc === 0 || btc === null || alt === null) return '--';
+              // Only show ratio when both have same direction (both up or both down)
               if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
                 return `${Math.abs(alt / btc).toFixed(2)}x`;
               }
-              return '↕';
+              // Different directions - ratio doesn't make sense
+              return '--';
             })();
             const tierLabel = tier === 'top10' ? 'Top 10' : tier === 'top20' ? 'Top 20' : 'Top 50';
             const altDir = alt !== null ? (alt >= 0 ? '↑' : '↓') : '';
