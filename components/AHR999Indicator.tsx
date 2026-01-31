@@ -56,14 +56,9 @@ export function AHR999Indicator() {
           {loading ? (
             <span className="text-gray-500">Loading...</span>
           ) : (
-            <>
-              <span className={`font-medium tabular-nums ${zoneInfo.color}`}>
-                {formatValue(data?.value)}
-              </span>
-              <span className={`font-medium ${zoneInfo.color}`}>
-                {zoneInfo.label}
-              </span>
-            </>
+            <span className={`font-medium ${zoneInfo.color}`}>
+              {zoneInfo.label}
+            </span>
           )}
         </div>
 
@@ -94,7 +89,7 @@ export function AHR999Indicator() {
       {/* Hover tooltip with zone legend */}
       {showDetails && !loading && data && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
-          <div className="text-[11px] font-medium text-gray-500 mb-2">Ahr999 Zone</div>
+          <div className="text-[11px] font-medium text-gray-500 mb-2">Ahr999 Zone {formatValue(data?.value)}</div>
           <div className="flex items-start gap-3 text-[11px] text-gray-900">
             {/* Current zone - left side */}
             <div>
