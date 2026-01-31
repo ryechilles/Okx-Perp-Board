@@ -204,20 +204,12 @@ export default function PerpBoard() {
             <div className="flex-1 overflow-y-auto mt-4 space-y-4 pr-2">
               {/* RSI Tab Widgets */}
               {activeTab === 'rsi' && (
-                <>
-                  <MarketMomentum
-                    avgRsi7={avgRsi7}
-                    avgRsi14={avgRsi14}
-                    avgRsiW7={avgRsiW7}
-                    avgRsiW14={avgRsiW14}
-                  />
-                  <AltcoinTopGainers
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                  />
-                </>
+                <MarketMomentum
+                  avgRsi7={avgRsi7}
+                  avgRsi14={avgRsi14}
+                  avgRsiW7={avgRsiW7}
+                  avgRsiW14={avgRsiW14}
+                />
               )}
 
               {/* Funding Tab Widget */}
@@ -231,15 +223,23 @@ export default function PerpBoard() {
                 />
               )}
 
-              {/* Altcoin vs BTC Tab Widget */}
+              {/* Altcoin Tab Widgets */}
               {activeTab === 'altcoin' && (
-                <AltcoinVsBTC
-                  tickers={store.tickers}
-                  rsiData={store.rsiData}
-                  marketCapData={store.marketCapData}
-                  onTokenClick={handleTokenClick}
-                  onTopNClick={handleGroupClick}
-                />
+                <>
+                  <AltcoinTopGainers
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                  />
+                  <AltcoinVsBTC
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                    onTopNClick={handleGroupClick}
+                  />
+                </>
               )}
 
               {/* AHR999 Tab Widget */}
@@ -264,20 +264,12 @@ export default function PerpBoard() {
               />
 
               {activeTab === 'rsi' && (
-                <WidgetGrid variant="auto" gap="md">
-                  <MarketMomentum
-                    avgRsi7={avgRsi7}
-                    avgRsi14={avgRsi14}
-                    avgRsiW7={avgRsiW7}
-                    avgRsiW14={avgRsiW14}
-                  />
-                  <AltcoinTopGainers
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                  />
-                </WidgetGrid>
+                <MarketMomentum
+                  avgRsi7={avgRsi7}
+                  avgRsi14={avgRsi14}
+                  avgRsiW7={avgRsiW7}
+                  avgRsiW14={avgRsiW14}
+                />
               )}
               {activeTab === 'funding' && (
                 <FundingKiller
@@ -289,13 +281,21 @@ export default function PerpBoard() {
                 />
               )}
               {activeTab === 'altcoin' && (
-                <AltcoinVsBTC
-                  tickers={store.tickers}
-                  rsiData={store.rsiData}
-                  marketCapData={store.marketCapData}
-                  onTokenClick={handleTokenClick}
-                  onTopNClick={handleGroupClick}
-                />
+                <WidgetGrid variant="auto" gap="md">
+                  <AltcoinTopGainers
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                  />
+                  <AltcoinVsBTC
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                    onTopNClick={handleGroupClick}
+                  />
+                </WidgetGrid>
               )}
               {activeTab === 'ahr999' && (
                 <AHR999Indicator />
