@@ -353,17 +353,14 @@ export default function PerpBoard() {
                       const base = parts[0];
                       const quote = parts[1];
 
-                      // Calculate listing age label
+                      // Calculate listing age label - only show for tokens listed < 30 days
                       const getListingAgeLabel = (): string | null => {
                         if (!listingData?.listTime) return null;
                         const now = Date.now();
                         const ageMs = now - listingData.listTime;
                         const ageDays = ageMs / (24 * 60 * 60 * 1000);
                         if (ageDays <= 30) return 'Listed <30d';
-                        if (ageDays <= 60) return 'Listed <60d';
-                        if (ageDays <= 90) return 'Listed <90d';
-                        if (ageDays <= 180) return 'Listed <180d';
-                        return null; // Don't show for older tokens
+                        return null;
                       };
                       const listingAgeLabel = getListingAgeLabel();
                       
