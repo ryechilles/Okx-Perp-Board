@@ -88,9 +88,9 @@ export function FundingKiller({
               onClick={() => longKillers.length > 0 && onGroupClick?.(longKillers.map(t => t.symbol))}
             >
               <span className="text-[12px] text-gray-500">Long Killer</span>
-              <span className="text-[11px] text-gray-400">{longKillers.length}</span>
+              <span className="text-[12px] text-gray-500">{longKillers.length}</span>
             </div>
-            <span className="text-[10px] text-gray-400 ml-2">APR</span>
+            <span className="text-[12px] text-gray-500 ml-2">APR</span>
           </div>
           {displayLongKillers.length > 0 ? (
             displayLongKillers.map(t => (
@@ -124,9 +124,9 @@ export function FundingKiller({
               onClick={() => shortKillers.length > 0 && onGroupClick?.(shortKillers.map(t => t.symbol))}
             >
               <span className="text-[12px] text-gray-500">Short Killer</span>
-              <span className="text-[11px] text-gray-400">{shortKillers.length}</span>
+              <span className="text-[12px] text-gray-500">{shortKillers.length}</span>
             </div>
-            <span className="text-[10px] text-gray-400 ml-2">APR</span>
+            <span className="text-[12px] text-gray-500 ml-2">APR</span>
           </div>
           {displayShortKillers.length > 0 ? (
             displayShortKillers.map(t => (
