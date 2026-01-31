@@ -16,6 +16,7 @@ interface TokenWithApr {
   symbol: string;
   instId: string;
   apr: number;
+  price: number;
   logo?: string;
 }
 
@@ -23,6 +24,14 @@ interface TokenWithApr {
 function calculateApr(rate: number, intervalHours: number): number {
   const periodsPerYear = (365 * 24) / intervalHours;
   return rate * periodsPerYear * 100;
+}
+
+// Format price
+function formatPrice(price: number): string {
+  if (price >= 1000) return `$${price.toFixed(0)}`;
+  if (price >= 1) return `$${price.toFixed(2)}`;
+  if (price >= 0.01) return `$${price.toFixed(4)}`;
+  return `$${price.toFixed(6)}`;
 }
 
 export function FundingKiller({
@@ -48,6 +57,7 @@ export function FundingKiller({
         symbol: ticker.baseSymbol,
         instId,
         apr,
+        price: ticker.priceNum,
         logo: mc?.logo,
       });
     });
@@ -92,7 +102,10 @@ export function FundingKiller({
                 {isLoading ? '--' : shortKillers.length}
               </span>
             </div>
-            <span className="text-[10px] text-gray-400">APR</span>
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] text-gray-400 w-16 text-right">Price</span>
+              <span className="text-[10px] text-gray-400 w-16 text-right">APR</span>
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -113,9 +126,12 @@ export function FundingKiller({
                     )}
                     <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
-                  <span className="text-[12px] font-semibold text-green-500 tabular-nums">
-                    {t.apr.toFixed(1)}%
-                  </span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[11px] text-gray-500 tabular-nums w-16 text-right">{formatPrice(t.price)}</span>
+                    <span className="text-[12px] font-semibold text-green-500 tabular-nums w-16 text-right">
+                      {t.apr.toFixed(1)}%
+                    </span>
+                  </div>
                 </div>
               ))
             ) : (
@@ -141,7 +157,10 @@ export function FundingKiller({
                 {isLoading ? '--' : longKillers.length}
               </span>
             </div>
-            <span className="text-[10px] text-gray-400">APR</span>
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] text-gray-400 w-16 text-right">Price</span>
+              <span className="text-[10px] text-gray-400 w-16 text-right">APR</span>
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -162,9 +181,12 @@ export function FundingKiller({
                     )}
                     <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
-                  <span className="text-[12px] font-semibold text-red-500 tabular-nums">
-                    +{t.apr.toFixed(1)}%
-                  </span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[11px] text-gray-500 tabular-nums w-16 text-right">{formatPrice(t.price)}</span>
+                    <span className="text-[12px] font-semibold text-red-500 tabular-nums w-16 text-right">
+                      +{t.apr.toFixed(1)}%
+                    </span>
+                  </div>
                 </div>
               ))
             ) : (
