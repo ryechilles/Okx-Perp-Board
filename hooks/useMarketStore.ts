@@ -696,8 +696,7 @@ export function useMarketStore() {
     // Listing age filter
     if (filters.listAge) {
       const now = Date.now();
-      const oneYear = 365 * 24 * 60 * 60 * 1000;
-      const twoYears = 2 * oneYear;
+      const oneDay = 24 * 60 * 60 * 1000;
 
       filtered = filtered.filter(t => {
         const listTime = listingData.get(t.instId)?.listTime;
@@ -706,12 +705,14 @@ export function useMarketStore() {
         const age = now - listTime;
 
         switch (filters.listAge) {
-          case '<1y':
-            return age <= oneYear;
-          case '1-2y':
-            return age > oneYear && age <= twoYears;
-          case '>2y':
-            return age > twoYears;
+          case '<30d':
+            return age <= 30 * oneDay;
+          case '<60d':
+            return age <= 60 * oneDay;
+          case '<90d':
+            return age <= 90 * oneDay;
+          case '<180d':
+            return age <= 180 * oneDay;
           default:
             return true;
         }

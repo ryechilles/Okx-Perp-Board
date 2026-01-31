@@ -604,9 +604,10 @@ export function Controls({
                   <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'List Age' },
-                      { value: '<1y', label: '≤1y' },
-                      { value: '1-2y', label: '1-2y' },
-                      { value: '>2y', label: '>2y' },
+                      { value: '<30d', label: '<30d' },
+                      { value: '<60d', label: '<60d' },
+                      { value: '<90d', label: '<90d' },
+                      { value: '<180d', label: '<180d' },
                     ].map(opt => (
                       <button
                         key={opt.value}
