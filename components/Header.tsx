@@ -1,5 +1,7 @@
 'use client';
 
+import { APP_CONFIG } from '@/lib/config';
+
 // P Logo SVG Component - matches the new flat minimal logo design
 function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
   return (
@@ -59,8 +61,6 @@ function OkxLogo({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
-const VERSION = 'v2.4.0';
-
 export function Header() {
   return (
     <header className="bg-[#fafafa] border-b border-gray-200 px-4 sm:px-6 py-3 flex-shrink-0">
@@ -69,8 +69,8 @@ export function Header() {
         <div className="flex items-center gap-3">
           <PerpLogo className="w-8 h-8 rounded-lg" />
           <div className="flex items-baseline gap-2">
-            <span className="text-lg font-semibold text-gray-900">Perp Board</span>
-            <span className="text-xs text-gray-400 font-medium">{VERSION}</span>
+            <span className="text-lg font-semibold text-gray-900">{APP_CONFIG.name}</span>
+            <span className="text-xs text-gray-400 font-medium">{APP_CONFIG.versionDisplay}</span>
           </div>
         </div>
 
@@ -78,7 +78,7 @@ export function Header() {
         <div className="flex items-center">
           <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
             <a
-              href="https://okx.com/join/95869751"
+              href={APP_CONFIG.links.okx}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium bg-white text-gray-900 shadow-sm transition-all hover:bg-gray-50"
