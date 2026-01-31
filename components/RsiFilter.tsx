@@ -31,7 +31,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
         {/* Label */}
         <button
           onClick={() => onChange(undefined)}
-          className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all min-w-[56px] text-center ${
+          className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all w-[62px] text-center ${
             !value ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
           }`}
         >
