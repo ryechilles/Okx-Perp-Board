@@ -1,0 +1,261 @@
+/**
+ * OKX Hybrid Data Manager
+ * Manages WebSocket connection for TOP 50 tickers + REST polling for the rest
+ */
+
+import { OKXTicker, ProcessedTicker } from '../types';
+import { processTicker } from '../utils';
+import { API, TIMING, UI } from '../constants';
+
+const OKX_WS_PUBLIC = API.OKX_WS_PUBLIC;
+const OKX_REST_BASE = API.OKX_REST_BASE;
+
+export type TickerUpdateCallback = (tickers: Map<string, ProcessedTicker>) => void;
+export type StatusCallback = (status: 'connecting' | 'live' | 'error', time?: Date) => void;
+
+// Hybrid data manager: WebSocket for TOP 50 + REST polling for the rest
+export class OKXHybridDataManager {
+  private ws: WebSocket | null = null;
+  private tickers: Map<string, ProcessedTicker> = new Map();
+  private onUpdate: TickerUpdateCallback;
+  private onStatus: StatusCallback;
+  private top50InstIds: string[] = [];
+  private allInstIds: string[] = [];
+  private restPollInterval: NodeJS.Timeout | null = null;
+  private wsReconnectTimeout: NodeJS.Timeout | null = null;
+  private pingInterval: NodeJS.Timeout | null = null;
+  private isRunning = false;
+  private wsConnected = false;
+
+  constructor(onUpdate: TickerUpdateCallback, onStatus: StatusCallback) {
+    this.onUpdate = onUpdate;
+    this.onStatus = onStatus;
+  }
+
+  async start(): Promise<void> {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.onStatus('connecting');
+
+    // Step 1: Fetch all tickers via REST to get initial data and determine TOP 50
+    await this.fetchAllTickers();
+
+    // Step 2: Connect WebSocket for TOP 50
+    this.connectWebSocket();
+
+    // Step 3: Start REST polling for non-TOP 50
+    this.startRestPolling();
+  }
+
+  private async fetchAllTickers(): Promise<void> {
+    try {
+      const response = await fetch(`${OKX_REST_BASE}/market/tickers?instType=SWAP`);
+      const data = await response.json();
+
+      if (data.code === '0' && data.data) {
+        const usdtSwaps: ProcessedTicker[] = [];
+
+        data.data.forEach((ticker: OKXTicker) => {
+          if (ticker.instId.endsWith('-USDT-SWAP')) {
+            const processed = processTicker(ticker);
+            this.tickers.set(ticker.instId, processed);
+            usdtSwaps.push(processed);
+          }
+        });
+
+        // Sort by 24h volume in USD (volCcy24h * price) descending
+        usdtSwaps.sort((a, b) => {
+          const volA = (parseFloat(a.volCcy24h) || 0) * a.priceNum;
+          const volB = (parseFloat(b.volCcy24h) || 0) * b.priceNum;
+          return volB - volA;
+        });
+
+        // TOP 50 for WebSocket
+        this.top50InstIds = usdtSwaps.slice(0, UI.TOP50_COUNT).map(t => t.instId);
+        this.allInstIds = usdtSwaps.map(t => t.instId);
+
+        this.onUpdate(new Map(this.tickers));
+        this.onStatus('live', new Date());
+      }
+    } catch (error) {
+      console.error('Error fetching initial tickers:', error);
+      this.onStatus('error');
+    }
+  }
+
+  private connectWebSocket(): void {
+    if (this.ws?.readyState === WebSocket.OPEN) return;
+    if (this.top50InstIds.length === 0) return;
+
+    try {
+      this.ws = new WebSocket(OKX_WS_PUBLIC);
+
+      this.ws.onopen = () => {
+        console.log('WebSocket connected, subscribing to TOP 50...');
+        this.wsConnected = true;
+
+        // Subscribe to TOP 50 in batches
+        const batchSize = UI.WS_SUBSCRIBE_BATCH_SIZE;
+        for (let i = 0; i < this.top50InstIds.length; i += batchSize) {
+          const batch = this.top50InstIds.slice(i, i + batchSize);
+          const subscribeMsg = {
+            op: 'subscribe',
+            args: batch.map(instId => ({
+              channel: 'tickers',
+              instId: instId
+            }))
+          };
+          this.ws?.send(JSON.stringify(subscribeMsg));
+        }
+
+        // Start ping interval
+        this.startPing();
+      };
+
+      this.ws.onmessage = (event) => {
+        const rawData = event.data;
+
+        // Handle pong (plain text, not JSON)
+        if (rawData === 'pong') {
+          return;
+        }
+
+        try {
+          const data = JSON.parse(rawData);
+
+          // Handle subscription confirmation
+          if (data.event === 'subscribe') {
+            console.log('Subscribed:', data.arg?.instId || 'batch');
+            return;
+          }
+
+          // Handle error
+          if (data.event === 'error') {
+            console.error('WebSocket error:', data.msg);
+            return;
+          }
+
+          // Handle ticker data
+          if (data.arg?.channel === 'tickers' && data.data) {
+            data.data.forEach((ticker: OKXTicker) => {
+              const processed = processTicker(ticker);
+              this.tickers.set(ticker.instId, processed);
+            });
+            this.onUpdate(new Map(this.tickers));
+            this.onStatus('live', new Date());
+          }
+        } catch (e) {
+          // Ignore parse errors for non-JSON messages
+        }
+      };
+
+      this.ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+      this.ws.onclose = () => {
+        console.log('WebSocket closed');
+        this.wsConnected = false;
+        this.stopPing();
+
+        // Reconnect after delay
+        if (this.isRunning) {
+          this.wsReconnectTimeout = setTimeout(() => {
+            this.connectWebSocket();
+          }, TIMING.WS_RECONNECT_DELAY);
+        }
+      };
+    } catch (error) {
+      console.error('Failed to create WebSocket:', error);
+      // Retry after delay
+      if (this.isRunning) {
+        this.wsReconnectTimeout = setTimeout(() => {
+          this.connectWebSocket();
+        }, TIMING.WS_RECONNECT_FALLBACK);
+      }
+    }
+  }
+
+  private startPing(): void {
+    this.pingInterval = setInterval(() => {
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        this.ws.send('ping');
+      }
+    }, TIMING.WS_PING_INTERVAL);
+  }
+
+  private stopPing(): void {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
+  }
+
+  private startRestPolling(): void {
+    // Poll for all tickers (updates non-TOP 50)
+    this.restPollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`${OKX_REST_BASE}/market/tickers?instType=SWAP`);
+        const data = await response.json();
+
+        if (data.code === '0' && data.data) {
+          let updated = false;
+
+          data.data.forEach((ticker: OKXTicker) => {
+            if (ticker.instId.endsWith('-USDT-SWAP')) {
+              // Only update non-TOP 50 via REST (TOP 50 updated by WebSocket)
+              if (!this.wsConnected || !this.top50InstIds.includes(ticker.instId)) {
+                const processed = processTicker(ticker);
+                this.tickers.set(ticker.instId, processed);
+                updated = true;
+              }
+            }
+          });
+
+          if (updated) {
+            this.onUpdate(new Map(this.tickers));
+            // Only update status if WebSocket is not connected
+            if (!this.wsConnected) {
+              this.onStatus('live', new Date());
+            }
+          }
+        }
+      } catch (error) {
+        console.error('REST polling error:', error);
+      }
+    }, TIMING.REST_POLLING_INTERVAL);
+  }
+
+  stop(): void {
+    this.isRunning = false;
+
+    // Stop WebSocket
+    this.stopPing();
+    if (this.wsReconnectTimeout) {
+      clearTimeout(this.wsReconnectTimeout);
+      this.wsReconnectTimeout = null;
+    }
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
+
+    // Stop REST polling
+    if (this.restPollInterval) {
+      clearInterval(this.restPollInterval);
+      this.restPollInterval = null;
+    }
+  }
+
+  getTickers(): Map<string, ProcessedTicker> {
+    return new Map(this.tickers);
+  }
+
+  getTop50InstIds(): string[] {
+    return [...this.top50InstIds];
+  }
+
+  getAllInstIds(): string[] {
+    return [...this.allInstIds];
+  }
+}

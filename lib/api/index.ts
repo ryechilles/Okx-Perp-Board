@@ -1,0 +1,16 @@
+/**
+ * API module exports
+ * Re-exports all API functions for clean imports
+ */
+
+// OKX Data Manager
+export { OKXHybridDataManager, type TickerUpdateCallback, type StatusCallback } from './okx-data-manager';
+
+// OKX REST API
+export { fetchTickersREST, fetchSpotSymbols, fetchListingDates, fetchFundingRates } from './okx-rest';
+
+// OKX RSI
+export { fetchRSIForInstrument, fetchRSIBatch } from './okx-rsi';
+
+// CoinGecko
+export { fetchMarketCapData } from './coingecko';

@@ -2,36 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
+import { isMobile } from '@/lib/utils';
+import { getDefaultColumns } from '@/lib/defaults';
 import { MarketMomentum } from './MarketMomentum';
 import { AHR999Indicator } from './AHR999Indicator';
 import { RsiFilter } from './RsiFilter';
 
 // Quick filter types
 type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'newListed' | 'overbought' | 'oversold';
-
-// Check if mobile
-const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
-
-// Default columns for comparison - must match useMarketStore.ts
-const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
-  favorite: true, rank: true, logo: true, symbol: true, price: true,
-  fundingRate: false, fundingApr: true, fundingInterval: false,
-  change4h: false, change: true, change7d: true,
-  volume24h: false, marketCap: true,
-  dRsiSignal: true, wRsiSignal: true,
-  rsi7: false, rsi14: false, rsiW7: false, rsiW14: false,
-  listDate: true, hasSpot: false,
-};
-
-const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
-  favorite: true, rank: true, logo: true, symbol: true, price: true,
-  fundingRate: false, fundingApr: false, fundingInterval: false,
-  change4h: false, change: true, change7d: false,
-  volume24h: false, marketCap: false,
-  dRsiSignal: false, wRsiSignal: false,
-  rsi7: false, rsi14: false, rsiW7: false, rsiW14: false,
-  listDate: false, hasSpot: false,
-};
 
 interface ControlsProps {
   columns: ColumnVisibility;
@@ -158,7 +136,7 @@ export function Controls({
   const hasFilters = Object.values(filters).some(v => v !== undefined && v !== '');
 
   // Check if columns differ from default
-  const defaultColumns = isMobile() ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS_DESKTOP;
+  const defaultColumns = getDefaultColumns(isMobile());
   const hasNonDefaultColumns = Object.keys(columns).some(
     key => columns[key as keyof ColumnVisibility] !== defaultColumns[key as keyof ColumnVisibility]
   );

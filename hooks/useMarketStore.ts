@@ -1,85 +1,45 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { 
-  ProcessedTicker, 
-  RSIData, 
+import {
+  ProcessedTicker,
+  RSIData,
   FundingRateData,
   ListingData,
-  MarketCapData, 
-  ColumnVisibility, 
+  MarketCapData,
+  ColumnVisibility,
   ColumnKey,
-  Filters, 
-  SortConfig 
+  Filters,
+  SortConfig
 } from '@/lib/types';
 import {
   OKXHybridDataManager,
   fetchSpotSymbols,
   fetchRSIBatch,
   fetchMarketCapData,
-  fetchTickersREST,
   fetchFundingRates,
   fetchListingDates
 } from '@/lib/okx-api';
-import { DEFAULT_COLUMN_ORDER, isMemeToken } from '@/lib/utils';
+import { isMemeToken, isMobile } from '@/lib/utils';
+import { DEFAULT_COLUMN_ORDER, getDefaultColumns } from '@/lib/defaults';
+import { TIMING, UI } from '@/lib/constants';
+import {
+  getRsiCache,
+  setRsiCache,
+  getMarketCapCache,
+  setMarketCapCache,
+  getFavoritesCache,
+  setFavoritesCache,
+  getColumnOrderCache,
+  setColumnOrderCache,
+  getFiltersCache,
+  setFiltersCache,
+  getColumnsCache,
+  setColumnsCache,
+} from '@/lib/cache';
 
-// Desktop default columns
-const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
-  favorite: true,
-  rank: true,
-  logo: true,
-  symbol: true,
-  price: true,
-  fundingRate: false,
-  fundingApr: true,
-  fundingInterval: false,
-  change4h: false,
-  change: true,
-  change7d: true,
-  volume24h: false,
-  marketCap: true,
-  dRsiSignal: true,
-  wRsiSignal: true,
-  rsi7: false,
-  rsi14: false,
-  rsiW7: false,
-  rsiW14: false,
-  listDate: true,
-  hasSpot: false
-};
-
-// Mobile default columns (minimal for small screens)
-const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
-  favorite: true,
-  rank: true,
-  logo: true,
-  symbol: true,
-  price: true,
-  fundingRate: false,
-  fundingApr: false,
-  fundingInterval: false,
-  change4h: false,
-  change: true,
-  change7d: false,
-  volume24h: false,
-  marketCap: false,
-  dRsiSignal: false,
-  wRsiSignal: false,
-  rsi7: false,
-  rsi14: false,
-  rsiW7: false,
-  rsiW14: false,
-  listDate: false,
-  hasSpot: false
-};
-
-// Detect mobile device
-const isMobile = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  return window.innerWidth < 768;
-};
-
-const DEFAULT_COLUMNS: ColumnVisibility = isMobile() ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS_DESKTOP;
+// Get default columns based on device
+const DEFAULT_COLUMNS: ColumnVisibility = getDefaultColumns(isMobile());
 
 export function useMarketStore() {
   // Core data
@@ -100,7 +60,7 @@ export function useMarketStore() {
   const [urlInitialized, setUrlInitialized] = useState(false);
   const [searchTerm, setSearchTermInternal] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 25;
+  const pageSize = UI.PAGE_SIZE;
 
   // Wrapper for setSearchTerm that resets page to 1
   const setSearchTerm = useCallback((term: string) => {
@@ -115,90 +75,74 @@ export function useMarketStore() {
   // Refs for WebSocket and intervals
   const dataManagerRef = useRef<OKXHybridDataManager | null>(null);
   const isFetchingRsiRef = useRef(false);
+  const intervalsRef = useRef<NodeJS.Timeout[]>([]);
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
   
-  // Load favorites, column order, and filters from localStorage
+  // Load favorites, column order, and filters from cache
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('okx-favorites');
-    if (savedFavorites) {
-      try {
-        setFavorites(JSON.parse(savedFavorites));
-      } catch (e) {
-        console.error('Failed to parse favorites:', e);
-      }
+    // Load saved favorites
+    const savedFavorites = getFavoritesCache();
+    if (savedFavorites.length > 0) {
+      setFavorites(savedFavorites);
     }
 
-    const savedColumnOrder = localStorage.getItem('okx-column-order');
-    if (savedColumnOrder) {
-      try {
-        const parsed = JSON.parse(savedColumnOrder);
-        if (Array.isArray(parsed)) {
-          // Merge saved order with default order to handle new columns
-          const savedSet = new Set(parsed);
-          const defaultSet = new Set(DEFAULT_COLUMN_ORDER);
+    // Load saved column order
+    const savedColumnOrder = getColumnOrderCache();
+    if (savedColumnOrder && Array.isArray(savedColumnOrder)) {
+      // Merge saved order with default order to handle new columns
+      const savedSet = new Set(savedColumnOrder);
+      const defaultSet = new Set(DEFAULT_COLUMN_ORDER);
 
-          // Start with saved order, but only include columns that still exist
-          const mergedOrder = parsed.filter((col: ColumnKey) => defaultSet.has(col));
+      // Start with saved order, but only include columns that still exist
+      const mergedOrder = savedColumnOrder.filter((col) => defaultSet.has(col as ColumnKey));
 
-          // Add any new columns that weren't in saved order (after the fixed columns)
-          const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
-          const newColumns = DEFAULT_COLUMN_ORDER.filter(col =>
-            !savedSet.has(col) && !fixedColumns.includes(col)
-          );
+      // Add any new columns that weren't in saved order (after the fixed columns)
+      const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
+      const newColumns = DEFAULT_COLUMN_ORDER.filter(col =>
+        !savedSet.has(col) && !fixedColumns.includes(col)
+      );
 
-          // Insert new columns after fixed columns
-          const fixedPart = fixedColumns.filter(col => mergedOrder.includes(col) || DEFAULT_COLUMN_ORDER.includes(col));
-          const nonFixedPart = mergedOrder.filter((col: ColumnKey) => !fixedColumns.includes(col));
+      // Insert new columns after fixed columns
+      const nonFixedPart = mergedOrder.filter((col) => !fixedColumns.includes(col as ColumnKey));
 
-          const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedPart, ...newColumns];
-          setColumnOrder(finalOrder);
-          localStorage.setItem('okx-column-order', JSON.stringify(finalOrder));
-        }
-      } catch (e) {
-        console.error('Failed to parse column order:', e);
-      }
+      const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedPart as ColumnKey[], ...newColumns];
+      setColumnOrder(finalOrder);
+      setColumnOrderCache(finalOrder);
     }
 
     // Load saved filters
-    const savedFilters = localStorage.getItem('okx-filters');
+    const savedFilters = getFiltersCache<Filters>();
     if (savedFilters) {
-      try {
-        setFilters(JSON.parse(savedFilters));
-      } catch (e) {
-        console.error('Failed to parse filters:', e);
-      }
+      setFilters(savedFilters);
     }
 
     // Load saved columns visibility
-    const savedColumns = localStorage.getItem('okx-columns');
+    const savedColumns = getColumnsCache<ColumnVisibility>();
     if (savedColumns) {
-      try {
-        setColumns(JSON.parse(savedColumns));
-      } catch (e) {
-        console.error('Failed to parse columns:', e);
-      }
+      setColumns(savedColumns);
     } else {
       // No saved columns - apply device-appropriate defaults
-      const defaultCols = isMobile() ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS_DESKTOP;
+      const defaultCols = getDefaultColumns(isMobile());
       setColumns(defaultCols);
     }
   }, []);
   
-  // Save favorites to localStorage
+  // Save favorites to cache
   const toggleFavorite = useCallback((instId: string) => {
     setFavorites(prev => {
       const newFavorites = prev.includes(instId)
         ? prev.filter(f => f !== instId)
         : [...prev, instId];
-      localStorage.setItem('okx-favorites', JSON.stringify(newFavorites));
+      setFavoritesCache(newFavorites);
       return newFavorites;
     });
   }, []);
 
-  // Save filters to localStorage
+  // Save filters to cache
   const setFilters = useCallback((newFilters: Filters | ((prev: Filters) => Filters)) => {
     setFiltersState(prev => {
       const resolved = typeof newFilters === 'function' ? newFilters(prev) : newFilters;
-      localStorage.setItem('okx-filters', JSON.stringify(resolved));
+      setFiltersCache(resolved);
       return resolved;
     });
     setCurrentPage(1); // Reset to page 1 when filters change
@@ -210,11 +154,11 @@ export function useMarketStore() {
     const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
     const nonFixedOrder = newOrder.filter(col => !fixedColumns.includes(col));
     const finalOrder: ColumnKey[] = [...fixedColumns, ...nonFixedOrder];
-    
+
     setColumnOrder(finalOrder);
-    localStorage.setItem('okx-column-order', JSON.stringify(finalOrder));
+    setColumnOrderCache(finalOrder);
   }, []);
-  
+
   // Move a column to a new position
   const moveColumn = useCallback((dragKey: ColumnKey, hoverKey: ColumnKey) => {
     // Fixed columns cannot be moved
@@ -222,58 +166,40 @@ export function useMarketStore() {
     if (fixedColumns.includes(dragKey) || fixedColumns.includes(hoverKey)) {
       return;
     }
-    
+
     setColumnOrder(prev => {
       const dragIndex = prev.indexOf(dragKey);
       const hoverIndex = prev.indexOf(hoverKey);
-      
+
       if (dragIndex === -1 || hoverIndex === -1) return prev;
-      
+
       const newOrder = [...prev];
       newOrder.splice(dragIndex, 1);
       newOrder.splice(hoverIndex, 0, dragKey);
-      
-      localStorage.setItem('okx-column-order', JSON.stringify(newOrder));
+
+      setColumnOrderCache(newOrder);
       return newOrder;
     });
   }, []);
   
   // Save RSI data to localStorage (debounced)
+  // Save RSI data to cache (debounced)
   const saveRsiCacheTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const saveRsiCache = useCallback((rsiMap: Map<string, RSIData>) => {
-    // Debounce: only save after 2 seconds of no updates
+  const saveRsiCacheDebounced = useCallback((rsiMap: Map<string, RSIData>) => {
+    // Debounce: only save after specified delay of no updates
     if (saveRsiCacheTimeoutRef.current) {
       clearTimeout(saveRsiCacheTimeoutRef.current);
     }
     saveRsiCacheTimeoutRef.current = setTimeout(() => {
-      try {
-        const cacheData = {
-          timestamp: Date.now(),
-          data: Object.fromEntries(rsiMap)
-        };
-        localStorage.setItem('okx-rsi-cache', JSON.stringify(cacheData));
-      } catch (e) {
-        console.error('Failed to save RSI cache:', e);
-      }
-    }, 2000);
+      setRsiCache(rsiMap);
+    }, TIMING.RSI_CACHE_SAVE_DEBOUNCE);
   }, []);
 
-  // Load RSI cache from localStorage on mount
+  // Load RSI cache on mount
   useEffect(() => {
-    const savedRsiCache = localStorage.getItem('okx-rsi-cache');
-    if (savedRsiCache) {
-      try {
-        const { timestamp, data } = JSON.parse(savedRsiCache);
-        const cacheAge = Date.now() - timestamp;
-        // Use cache if less than 30 minutes old
-        if (cacheAge < 30 * 60 * 1000 && data) {
-          const rsiMap = new Map<string, RSIData>(Object.entries(data));
-          setRsiData(rsiMap);
-          console.log(`Loaded ${rsiMap.size} RSI entries from cache (${Math.round(cacheAge / 1000 / 60)}min old)`);
-        }
-      } catch (e) {
-        console.error('Failed to load RSI cache:', e);
-      }
+    const cachedRsi = getRsiCache();
+    if (cachedRsi && cachedRsi.size > 0) {
+      setRsiData(cachedRsi);
     }
   }, []);
 
@@ -282,10 +208,10 @@ export function useMarketStore() {
     setRsiData(prev => {
       const newMap = new Map(prev);
       newMap.set(instId, data);
-      saveRsiCache(newMap);
+      saveRsiCacheDebounced(newMap);
       return newMap;
     });
-  }, []);
+  }, [saveRsiCacheDebounced]);
   
   // Get sorted instrument IDs by market cap rank
   const getSortedInstIds = useCallback((tickerMap: Map<string, ProcessedTicker>) => {
@@ -339,42 +265,19 @@ export function useMarketStore() {
     }
   }, [getSortedInstIds, rsiData, updateRsiData]);
   
-  // Save market cap cache
-  const saveMarketCapCache = useCallback((data: Map<string, MarketCapData>) => {
-    try {
-      const cacheData = {
-        timestamp: Date.now(),
-        data: Object.fromEntries(data)
-      };
-      localStorage.setItem('okx-marketcap-cache', JSON.stringify(cacheData));
-    } catch (e) {
-      console.error('Failed to save market cap cache:', e);
-    }
+  // Market cap cache helpers using unified cache manager
+  const saveMarketCapCacheLocal = useCallback((data: Map<string, MarketCapData>) => {
+    setMarketCapCache(data);
   }, []);
 
-  // Load market cap cache
-  const loadMarketCapCache = useCallback((): Map<string, MarketCapData> | null => {
-    try {
-      const saved = localStorage.getItem('okx-marketcap-cache');
-      if (saved) {
-        const { timestamp, data } = JSON.parse(saved);
-        const cacheAge = Date.now() - timestamp;
-        // Use cache if less than 30 minutes old
-        if (cacheAge < 30 * 60 * 1000 && data) {
-          console.log(`Loaded market cap from cache (${Math.round(cacheAge / 1000 / 60)}min old)`);
-          return new Map(Object.entries(data)) as Map<string, MarketCapData>;
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load market cap cache:', e);
-    }
-    return null;
+  const loadMarketCapCacheLocal = useCallback((): Map<string, MarketCapData> | null => {
+    return getMarketCapCache();
   }, []);
 
   // Initialize hybrid data manager (WebSocket for TOP 50 + REST for rest)
   const initialize = useCallback(async () => {
     // Try to load cached market cap first for instant display
-    const cachedMarketCap = loadMarketCapCache();
+    const cachedMarketCap = loadMarketCapCacheLocal();
     if (cachedMarketCap) {
       setMarketCapData(cachedMarketCap);
     }
@@ -395,7 +298,7 @@ export function useMarketStore() {
     fetchMarketCapData().then((marketCap) => {
       console.log(`[MarketCap] Received ${marketCap.size} coins from CoinGecko`);
       setMarketCapData(marketCap);
-      saveMarketCapCache(marketCap);
+      saveMarketCapCacheLocal(marketCap);
     }).catch((error) => {
       console.error('[MarketCap] Failed to fetch:', error);
     });
@@ -414,66 +317,85 @@ export function useMarketStore() {
     await dataManagerRef.current.start();
     
     // Fetch RSI for initial data after tickers are loaded
-    setTimeout(() => {
+    const initialRsiTimeout = setTimeout(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
         fetchRsiForVisible(currentTickers);
       }
-    }, 2000);
+    }, TIMING.INITIAL_RSI_FETCH_DELAY);
+    timeoutsRef.current.push(initialRsiTimeout);
 
-    // Setup tiered RSI refresh intervals:
-    // Top 50: every 2 minutes
-    // 51-100: every 5 minutes
-    // 101+: every 10 minutes
+    // Setup tiered RSI refresh intervals
 
-    // Top 50 RSI refresh (every 2 minutes)
-    setInterval(() => {
+    // Top 50 RSI refresh
+    const rsiTop50Interval = setInterval(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
         fetchRsiForTier(currentTickers, 'top50');
       }
-    }, 2 * 60 * 1000);
+    }, TIMING.RSI_REFRESH_TOP50);
+    intervalsRef.current.push(rsiTop50Interval);
 
-    // Tier 2 (51-100) RSI refresh (every 5 minutes)
-    setInterval(() => {
+    // Tier 2 (51-100) RSI refresh
+    const rsiTier2Interval = setInterval(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
         fetchRsiForTier(currentTickers, 'tier2');
       }
-    }, 5 * 60 * 1000);
+    }, TIMING.RSI_REFRESH_TIER2);
+    intervalsRef.current.push(rsiTier2Interval);
 
-    // Tier 3 (101+) RSI refresh (every 10 minutes)
-    setInterval(() => {
+    // Tier 3 (101+) RSI refresh
+    const rsiTier3Interval = setInterval(() => {
       const currentTickers = dataManagerRef.current?.getTickers();
       if (currentTickers && currentTickers.size > 0) {
         fetchRsiForTier(currentTickers, 'tier3');
       }
-    }, 10 * 60 * 1000);
+    }, TIMING.RSI_REFRESH_TIER3);
+    intervalsRef.current.push(rsiTier3Interval);
 
-    // Refresh market cap every 5 minutes
-    setInterval(async () => {
+    // Refresh market cap
+    const marketCapInterval = setInterval(async () => {
       const newMarketCap = await fetchMarketCapData();
       setMarketCapData(newMarketCap);
-      saveMarketCapCache(newMarketCap);
-    }, 5 * 60 * 1000);
-    
-    // Refresh funding rates every 5 minutes
-    setInterval(async () => {
+      saveMarketCapCacheLocal(newMarketCap);
+    }, TIMING.MARKET_CAP_REFRESH);
+    intervalsRef.current.push(marketCapInterval);
+
+    // Refresh funding rates
+    const fundingRatesInterval = setInterval(async () => {
       const newFundingRates = await fetchFundingRates();
       setFundingRateData(newFundingRates);
-    }, 5 * 60 * 1000);
-    
-  }, [fetchRsiForVisible, fetchRsiForTier]);
+    }, TIMING.FUNDING_RATES_REFRESH);
+    intervalsRef.current.push(fundingRatesInterval);
+
+  }, [fetchRsiForVisible, fetchRsiForTier, loadMarketCapCacheLocal, saveMarketCapCacheLocal]);
   
-  // Cleanup
+  // Cleanup - clear all intervals, timeouts, and stop data manager
   const cleanup = useCallback(() => {
+    // Clear all intervals
+    intervalsRef.current.forEach(clearInterval);
+    intervalsRef.current = [];
+
+    // Clear all timeouts
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+
+    // Clear RSI cache save timeout
+    if (saveRsiCacheTimeoutRef.current) {
+      clearTimeout(saveRsiCacheTimeoutRef.current);
+      saveRsiCacheTimeoutRef.current = null;
+    }
+
+    // Stop data manager (WebSocket + REST polling)
     dataManagerRef.current?.stop();
+    dataManagerRef.current = null;
   }, []);
   
   // Column management
   const updateColumn = useCallback((col: keyof ColumnVisibility, visible: boolean) => {
     setColumns(prev => ({ ...prev, [col]: visible }));
-    
+
     // If enabling logo and it's not in columnOrder, add it in the correct position
     if (col === 'logo' && visible) {
       setColumnOrder(prev => {
@@ -482,7 +404,7 @@ export function useMarketStore() {
           const rankIndex = prev.indexOf('rank');
           const newOrder = [...prev];
           newOrder.splice(rankIndex + 1, 0, 'logo');
-          localStorage.setItem('okx-column-order', JSON.stringify(newOrder));
+          setColumnOrderCache(newOrder);
           return newOrder;
         }
         return prev;
@@ -942,16 +864,17 @@ export function useMarketStore() {
   // Direct setters for URL state sync
   const setFavoritesDirectly = useCallback((newFavorites: string[]) => {
     setFavorites(newFavorites);
-    localStorage.setItem('okx-favorites', JSON.stringify(newFavorites));
+    setFavoritesCache(newFavorites);
   }, []);
 
   const setColumnsDirectly = useCallback((newColumns: ColumnVisibility) => {
     setColumns(newColumns);
+    setColumnsCache(newColumns);
   }, []);
 
   const setColumnOrderDirectly = useCallback((newOrder: ColumnKey[]) => {
     setColumnOrder(newOrder);
-    localStorage.setItem('okx-column-order', JSON.stringify(newOrder));
+    setColumnOrderCache(newOrder);
   }, []);
 
   return {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getRsiClass, formatRsi, getRsiSignal, RsiSignalInfo } from '@/lib/utils';
 
 interface MarketMomentumProps {
   avgRsi7: number | null;
@@ -9,80 +10,37 @@ interface MarketMomentumProps {
   avgRsiW14: number | null;
 }
 
-type MomentumLevel = 'oversold' | 'weak' | 'neutral' | 'strong' | 'overbought';
-
-interface MomentumInfo {
-  level: MomentumLevel;
-  label: string;
-  color: string;
+// Extended momentum info with bgColor for this component
+interface MomentumInfo extends RsiSignalInfo {
   bgColor: string;
 }
 
-// Get RSI color based on value (7-level color scale, same as table)
-function getRsiColor(rsi: number | null): string {
-  if (rsi === null) return 'text-gray-500';
-  if (rsi <= 25) return 'text-green-600';      // Oversold Zone
-  if (rsi <= 35) return 'text-green-500';      // Weak
-  if (rsi <= 45) return 'text-emerald-500';    // Neutral → Weak
-  if (rsi <= 55) return 'text-gray-600';       // Neutral
-  if (rsi <= 65) return 'text-orange-500';     // Neutral → Strong
-  if (rsi <= 75) return 'text-red-500';        // Strong
-  return 'text-red-600';                       // Overbought Zone
-}
+// Get momentum info with background color
+function getMomentumInfo(rsi7: number | null, rsi14: number | null): MomentumInfo {
+  const signalInfo = getRsiSignal(rsi7, rsi14);
 
-// Format RSI value with emoji for extreme zones
-function formatRsi(rsi: number | null): string {
-  if (rsi === null) return '--';
-  const value = rsi.toFixed(1);
-  if (rsi <= 25) return `🧊${value}`;          // Oversold Zone (cold)
-  if (rsi > 75) return `🔥${value}`;           // Overbought Zone (hot)
-  return value;
-}
+  // Map signal to background color
+  const bgColorMap: Record<string, string> = {
+    'oversold': 'bg-green-50',
+    'weak': 'bg-green-50',
+    'neutral-weak': 'bg-emerald-50',
+    'neutral': 'bg-gray-50',
+    'neutral-strong': 'bg-orange-50',
+    'strong': 'bg-red-50',
+    'overbought': 'bg-red-50',
+  };
 
-function getMomentumInfo(rsi: number | null): MomentumInfo {
-  if (rsi === null) {
-    return { level: 'neutral', label: '--', color: 'text-gray-500', bgColor: 'bg-gray-50' };
-  }
-
-  if (rsi <= 25) {
-    return { level: 'oversold', label: '🧊 Oversold', color: 'text-green-600', bgColor: 'bg-green-50' };
-  }
-  if (rsi <= 35) {
-    return { level: 'weak', label: 'Weak', color: 'text-green-500', bgColor: 'bg-green-50' };
-  }
-  if (rsi <= 45) {
-    return { level: 'neutral', label: 'Neutral→Weak', color: 'text-emerald-500', bgColor: 'bg-emerald-50' };
-  }
-  if (rsi <= 55) {
-    return { level: 'neutral', label: 'Neutral', color: 'text-gray-600', bgColor: 'bg-gray-50' };
-  }
-  if (rsi <= 65) {
-    return { level: 'neutral', label: 'Neutral→Strong', color: 'text-orange-500', bgColor: 'bg-orange-50' };
-  }
-  if (rsi <= 75) {
-    return { level: 'strong', label: 'Strong', color: 'text-red-500', bgColor: 'bg-red-50' };
-  }
-  return { level: 'overbought', label: '🔥 Overbought', color: 'text-red-600', bgColor: 'bg-red-50' };
-}
-
-function getCombinedMomentum(rsi7: number | null, rsi14: number | null): MomentumInfo {
-  if (rsi7 === null && rsi14 === null) {
-    return { level: 'neutral', label: '--', color: 'text-gray-500', bgColor: 'bg-gray-50' };
-  }
-
-  // Use average of both, or whichever is available
-  const avg = rsi7 !== null && rsi14 !== null
-    ? (rsi7 + rsi14) / 2
-    : rsi7 ?? rsi14;
-
-  return getMomentumInfo(avg);
+  return {
+    ...signalInfo,
+    bgColor: bgColorMap[signalInfo.signal] || 'bg-gray-50',
+  };
 }
 
 export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: MarketMomentumProps) {
   const [showDetails, setShowDetails] = useState(false);
 
-  const dailyMomentum = getCombinedMomentum(avgRsi7, avgRsi14);
-  const weeklyMomentum = getCombinedMomentum(avgRsiW7, avgRsiW14);
+  const dailyMomentum = getMomentumInfo(avgRsi7, avgRsi14);
+  const weeklyMomentum = getMomentumInfo(avgRsiW7, avgRsiW14);
 
   return (
     <div
@@ -124,13 +82,13 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
                 <span className="text-gray-900">D-RSI7:</span>
-                <span className={`font-medium tabular-nums ${getRsiColor(avgRsi7)}`}>
+                <span className={`font-medium tabular-nums ${getRsiClass(avgRsi7)}`}>
                   {formatRsi(avgRsi7)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-gray-900">D-RSI14:</span>
-                <span className={`font-medium tabular-nums ${getRsiColor(avgRsi14)}`}>
+                <span className={`font-medium tabular-nums ${getRsiClass(avgRsi14)}`}>
                   {formatRsi(avgRsi14)}
                 </span>
               </div>
@@ -143,13 +101,13 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
                 <span className="text-gray-900">W-RSI7:</span>
-                <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW7)}`}>
+                <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW7)}`}>
                   {formatRsi(avgRsiW7)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-gray-900">W-RSI14:</span>
-                <span className={`font-medium tabular-nums ${getRsiColor(avgRsiW14)}`}>
+                <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW14)}`}>
                   {formatRsi(avgRsiW14)}
                 </span>
               </div>

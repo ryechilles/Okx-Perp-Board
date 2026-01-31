@@ -1,17 +1,20 @@
 import { RSIData, MarketCapData, ProcessedTicker, OKXTicker, ColumnKey } from './types';
+import {
+  MEME_TOKENS as MEME_TOKENS_SET,
+  RSI,
+  FUNDING,
+  RATE_LIMIT,
+  UI
+} from './constants';
 
-// Known Meme tokens list
-export const MEME_TOKENS = new Set([
-  'DOGE', 'SHIB', 'PEPE', 'FLOKI', 'BONK', 'WIF', 'MEME', 'ELON',
-  'BABYDOGE', 'SAITAMA', 'AKITA', 'KISHU', 'HOGE', 'SAMO', 'CHEEMS',
-  'TURBO', 'LADYS', 'AIDOGE', 'BOB', 'WOJAK', 'CHAD', 'MUMU', 'BOME',
-  'SLERF', 'MEW', 'POPCAT', 'GOAT', 'PNUT', 'ACT', 'NEIRO', 'HIPPO',
-  'CHILLGUY', 'BAN', 'LUCE', 'MOODENG', 'SUNDOG', 'MYRO', 'WEN',
-  'PONKE', 'BODEN', 'TREMP', 'MOTHER', 'GIGA', 'SPX', 'MOG', 'BRETT',
-  'TOSHI', 'MANEKI', 'KEYCAT', 'DOG', 'PIZZA', 'PEOPLE', 'COW',
-  'SATS', 'RATS', 'ORDI', 'TRUMP', 'MELANIA', 'VINE', 'ANIME', 'PENGU',
-  '1000PEPE', '1000SHIB', '1000BONK', '1000FLOKI', '1000SATS', '1000RATS',
-]);
+// Re-export MEME_TOKENS for backward compatibility
+export const MEME_TOKENS = MEME_TOKENS_SET;
+
+// Detect mobile device
+export function isMobile(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < UI.MOBILE_BREAKPOINT;
+}
 
 // Check if a token is a meme token
 export function isMemeToken(symbol: string): boolean {
@@ -26,29 +29,8 @@ export function isMemeToken(symbol: string): boolean {
   return false;
 }
 
-// Default column order (hasSpot removed - use No Spot quick filter instead)
-export const DEFAULT_COLUMN_ORDER: ColumnKey[] = [
-  'favorite',
-  'rank',
-  'logo',
-  'symbol',
-  'price',
-  'fundingRate',
-  'fundingApr',
-  'fundingInterval',
-  'change4h',
-  'change',
-  'change7d',
-  'volume24h',
-  'marketCap',
-  'dRsiSignal',
-  'wRsiSignal',
-  'rsi7',
-  'rsi14',
-  'rsiW7',
-  'rsiW14',
-  'listDate'
-];
+// Re-export from defaults for backward compatibility
+export { DEFAULT_COLUMN_ORDER, DEFAULT_COLUMNS_DESKTOP, DEFAULT_COLUMNS_MOBILE, getDefaultColumns } from './defaults';
 
 // Column definitions - all columns centered except symbol (left-aligned)
 export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: number; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
@@ -78,7 +60,7 @@ export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: numbe
 // Format funding APR (annualized)
 export function formatFundingApr(rate: number | undefined | null, intervalHours: number | undefined | null): string {
   if (rate === undefined || rate === null) return '--';
-  const interval = intervalHours || 8; // default 8 hours
+  const interval = intervalHours || FUNDING.DEFAULT_INTERVAL_HOURS;
   const periodsPerYear = (365 * 24) / interval;
   const apr = rate * periodsPerYear * 100;
   const sign = apr >= 0 ? '+' : '';
@@ -110,8 +92,8 @@ export function formatSettlementInterval(hours: number | undefined | null): stri
 // Get funding rate color class
 export function getFundingRateClass(rate: number | undefined | null): string {
   if (rate === undefined || rate === null) return 'text-gray-300';
-  if (rate > 0.0001) return 'text-green-500'; // Positive = longs pay shorts
-  if (rate < -0.0001) return 'text-red-500';  // Negative = shorts pay longs
+  if (rate > FUNDING.POSITIVE_THRESHOLD) return 'text-green-500'; // Positive = longs pay shorts
+  if (rate < FUNDING.NEGATIVE_THRESHOLD) return 'text-red-500';  // Negative = shorts pay longs
   return 'text-gray-500';
 }
 
@@ -196,22 +178,22 @@ export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSign
     ? (rsi7 + rsi14) / 2
     : rsi7 ?? rsi14 ?? 50;
 
-  if (avg <= 25) {
+  if (avg <= RSI.OVERSOLD_THRESHOLD) {
     return { signal: 'oversold', label: '🧊 Oversold', color: 'text-green-600' };
   }
-  if (avg <= 35) {
+  if (avg <= RSI.WEAK_THRESHOLD) {
     return { signal: 'weak', label: 'Weak', color: 'text-green-500' };
   }
-  if (avg <= 45) {
+  if (avg <= RSI.NEUTRAL_WEAK_THRESHOLD) {
     return { signal: 'neutral-weak', label: 'Neutral→Weak', color: 'text-emerald-500' };
   }
-  if (avg <= 55) {
+  if (avg <= RSI.NEUTRAL_THRESHOLD) {
     return { signal: 'neutral', label: 'Neutral', color: 'text-gray-600' };
   }
-  if (avg <= 65) {
+  if (avg <= RSI.NEUTRAL_STRONG_THRESHOLD) {
     return { signal: 'neutral-strong', label: 'Neutral→Strong', color: 'text-orange-500' };
   }
-  if (avg <= 75) {
+  if (avg <= RSI.STRONG_THRESHOLD) {
     return { signal: 'strong', label: 'Strong', color: 'text-red-500' };
   }
   return { signal: 'overbought', label: '🔥 Overbought', color: 'text-red-600' };
@@ -268,21 +250,21 @@ export function formatVolume(volCcy: string | number, price: number): string {
 // Get RSI class for styling (7-level color scale)
 export function getRsiClass(rsi: number | null | undefined): string {
   if (rsi === null || rsi === undefined) return 'text-gray-300';
-  if (rsi <= 25) return 'text-green-600';      // Oversold Zone
-  if (rsi <= 35) return 'text-green-500';      // Weak
-  if (rsi <= 45) return 'text-emerald-500';    // Neutral → Weak
-  if (rsi <= 55) return 'text-gray-600';       // Neutral
-  if (rsi <= 65) return 'text-orange-500';     // Neutral → Strong
-  if (rsi <= 75) return 'text-red-500';        // Strong
-  return 'text-red-600';                       // Overbought Zone
+  if (rsi <= RSI.OVERSOLD_THRESHOLD) return 'text-green-600';      // Oversold Zone
+  if (rsi <= RSI.WEAK_THRESHOLD) return 'text-green-500';          // Weak
+  if (rsi <= RSI.NEUTRAL_WEAK_THRESHOLD) return 'text-emerald-500';// Neutral → Weak
+  if (rsi <= RSI.NEUTRAL_THRESHOLD) return 'text-gray-600';        // Neutral
+  if (rsi <= RSI.NEUTRAL_STRONG_THRESHOLD) return 'text-orange-500';// Neutral → Strong
+  if (rsi <= RSI.STRONG_THRESHOLD) return 'text-red-500';          // Strong
+  return 'text-red-600';                                           // Overbought Zone
 }
 
 // Format RSI value with emoji for extreme zones
 export function formatRsi(rsi: number | null | undefined): string {
   if (rsi === null || rsi === undefined) return '--';
   const value = rsi.toFixed(1);
-  if (rsi <= 25) return `🧊${value}`;          // Oversold Zone (cold)
-  if (rsi > 75) return `🔥${value}`;           // Overbought Zone (hot)
+  if (rsi <= RSI.OVERSOLD_THRESHOLD) return `🧊${value}`;          // Oversold Zone (cold)
+  if (rsi > RSI.OVERBOUGHT_THRESHOLD) return `🔥${value}`;         // Overbought Zone (hot)
   return value;
 }
 
@@ -342,7 +324,7 @@ export class RateLimiter {
   private maxRequests: number;
   private windowMs: number;
 
-  constructor(maxRequests: number = 10, windowMs: number = 1000) {
+  constructor(maxRequests: number = RATE_LIMIT.MAX_REQUESTS_PER_SECOND, windowMs: number = RATE_LIMIT.WINDOW_MS) {
     this.maxRequests = maxRequests;
     this.windowMs = windowMs;
   }
