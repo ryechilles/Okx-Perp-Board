@@ -293,7 +293,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         </div>
 
         {/* Avg Change rows */}
-        <div className="flex mb-2">
+        <div className="flex items-center mb-2">
           {/* Left: Altcoin data */}
           <div className="space-y-1 text-[12px]">
             <div className="flex items-center">
@@ -338,7 +338,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         </div>
 
         {/* Ratio rows with summary on right */}
-        <div className="flex border-t border-gray-200 pt-2">
+        <div className="flex items-center border-t border-gray-200 pt-2">
           {/* Left: Ratios */}
           <div className="space-y-0.5 text-[12px] text-gray-500">
             <div className="flex items-center">
@@ -363,7 +363,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
           {/* Right: Performance summary */}
           {!isLoading && getPerformanceSummary() && (
-            <div className="text-[11px] text-right ml-auto pl-4 border-l border-gray-200 flex flex-col justify-center">
+            <div className="text-[11px] text-right ml-auto pl-4 border-l border-gray-200">
               <div className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</div>
               <div className="text-gray-500 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
             </div>
