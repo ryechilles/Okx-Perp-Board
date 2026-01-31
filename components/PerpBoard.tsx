@@ -234,7 +234,7 @@ export default function PerpBoard() {
             />
 
             {/* Widgets below tabs - scrollable */}
-            <div className="flex-1 overflow-y-auto mt-4 space-y-4 pr-2">
+            <div className="flex-1 overflow-y-auto mt-2 space-y-4 pr-2">
               {/* RSI Tab Widgets */}
               {activeTab === 'rsi' && (
                 <MarketMomentum
@@ -324,7 +324,7 @@ export default function PerpBoard() {
             </div>
 
             {/* Controls: Quick Filters, Settings, Search */}
-            <div className="mb-4">
+            <div className="mb-2">
               <Controls
                 columns={store.columns}
                 columnOrder={store.columnOrder}
