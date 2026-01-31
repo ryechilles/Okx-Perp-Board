@@ -15,8 +15,6 @@ import { TableHeader, TableRow, TablePagination } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS } from '@/lib/utils';
-import { Activity, DollarSign, BarChart2, Bitcoin } from 'lucide-react';
-
 // Fixed column configuration
 const FIXED_COLUMNS: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
 const FIXED_WIDTHS: Record<string, number> = {
@@ -26,12 +24,21 @@ const FIXED_WIDTHS: Record<string, number> = {
   symbol: 95,
 };
 
+// Bitcoin logo for AHR999 tab
+const BtcLogo = () => (
+  <img
+    src="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
+    alt="BTC"
+    className="w-4 h-4 rounded-full"
+  />
+);
+
 // Tab configuration
 const TABS = [
-  { id: 'rsi', label: 'RSI', icon: <Activity className="w-4 h-4" /> },
-  { id: 'funding', label: 'Funding', icon: <DollarSign className="w-4 h-4" /> },
-  { id: 'altcoin', label: 'Altcoin vs BTC', icon: <BarChart2 className="w-4 h-4" /> },
-  { id: 'ahr999', label: 'AHR999', icon: <Bitcoin className="w-4 h-4" /> },
+  { id: 'rsi', label: 'RSI' },
+  { id: 'funding', label: 'Funding' },
+  { id: 'altcoin', label: 'Altcoin' },
+  { id: 'ahr999', label: 'AHR999', icon: <BtcLogo /> },
 ];
 
 export default function PerpBoard() {
