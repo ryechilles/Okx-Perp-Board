@@ -112,7 +112,7 @@ export function FundingKiller({
         </div>
 
         {/* Divider */}
-        <div className="w-px bg-gray-200" />
+        <div className="w-px h-8 bg-gray-200 self-start mt-6" />
 
         {/* Short Killers Column */}
         <div className="flex flex-col gap-1">
