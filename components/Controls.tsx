@@ -398,48 +398,58 @@ export function Controls({
           </div>
         </div>
 
-        {/* Settings icon - minimal style */}
-        <div
-          ref={customizeButtonRef}
-          className="cursor-pointer flex-shrink-0 p-1"
-          onClick={() => setShowCustomizePanel(!showCustomizePanel)}
-        >
-          <svg
-            className={`w-4 h-4 transition-colors ${hasFilters || hasNonDefaultColumns ? 'text-gray-900' : 'text-gray-400'}`}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
         </div>
 
-        {/* Search - minimal icon with input */}
-        <div className="hidden md:inline-flex items-center gap-1 flex-shrink-0">
-          <svg
-            className="w-4 h-4 text-gray-400"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {/* Right side: Settings + Search + Branding */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Settings icon */}
+          <div
+            ref={customizeButtonRef}
+            className="cursor-pointer p-1"
+            onClick={() => setShowCustomizePanel(!showCustomizePanel)}
           >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-          <input
-            type="text"
-            placeholder=""
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="bg-transparent border-none outline-none text-[13px] text-gray-700 placeholder-gray-400 w-[80px]"
-          />
-        </div>
+            <svg
+              className={`w-4 h-4 transition-colors ${hasFilters || hasNonDefaultColumns ? 'text-gray-900' : 'text-gray-400'}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+
+          {/* Search */}
+          <div className="hidden md:inline-flex items-center gap-1">
+            <svg
+              className="w-4 h-4 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              type="text"
+              placeholder=""
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="bg-transparent border-none outline-none text-[13px] text-gray-700 w-[60px]"
+            />
+          </div>
+
+          {/* Branding */}
+          <div className="hidden md:flex items-center gap-1 text-gray-400">
+            <span className="text-[12px] font-medium">Perp Board</span>
+            <span className="text-[10px]">v2.4.0</span>
+          </div>
         </div>
       </div>
       
