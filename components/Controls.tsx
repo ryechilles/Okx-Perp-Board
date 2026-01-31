@@ -14,15 +14,23 @@ const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
 
 // Default columns for comparison
 const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
-  favorite: true, rank: true, logo: true, symbol: true, price: true, fundingRate: true,
-  change24h: true, change7d: true, rsi7: true, rsi14: true, rsiW7: false, rsiW14: false,
-  volume24h: false, openInterest: false, marketCap: true, signal: true, weeklySignal: true, listingDays: false,
+  favorite: true, rank: true, logo: true, symbol: true, price: true,
+  fundingRate: true, fundingApr: false, fundingInterval: false,
+  change4h: false, change: true, change7d: true,
+  volume24h: false, marketCap: true,
+  dRsiSignal: true, wRsiSignal: true,
+  rsi7: true, rsi14: true, rsiW7: false, rsiW14: false,
+  listDate: false,
 };
 
 const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
-  favorite: true, rank: true, logo: true, symbol: true, price: true, fundingRate: true,
-  change24h: true, change7d: false, rsi7: false, rsi14: false, rsiW7: false, rsiW14: false,
-  volume24h: false, openInterest: false, marketCap: false, signal: false, weeklySignal: false, listingDays: false,
+  favorite: true, rank: true, logo: true, symbol: true, price: true,
+  fundingRate: true, fundingApr: false, fundingInterval: false,
+  change4h: false, change: true, change7d: false,
+  volume24h: false, marketCap: false,
+  dRsiSignal: false, wRsiSignal: false,
+  rsi7: false, rsi14: false, rsiW7: false, rsiW14: false,
+  listDate: false,
 };
 
 interface ControlsProps {
