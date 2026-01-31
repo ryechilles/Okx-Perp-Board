@@ -152,14 +152,14 @@ export function Controls({
     },
     {
       value: 'noSpot',
-      label: 'No Spot',
+      label: '🚫 No Spot',
       activeColor: 'text-purple-500',
       hiddenOnMobile: true,
       tooltip: 'Tokens without Spot listing on OKX'
     },
     {
       value: 'newListed',
-      label: 'New Listed',
+      label: '🆕 New Listed',
       activeColor: 'text-blue-500',
       hiddenOnMobile: true,
       tooltip: 'Listed <180d'
