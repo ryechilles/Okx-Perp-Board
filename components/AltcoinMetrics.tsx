@@ -348,8 +348,8 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
               <>
                 <span className="text-gray-300 mx-4">|</span>
                 <div className="text-[11px]">
-                  <span className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</span>
-                  <span className="text-gray-500 font-medium ml-2">{getPerformanceSummary()?.summary}</span>
+                  <div className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</div>
+                  <div className="text-gray-500 font-medium">{getPerformanceSummary()?.summary}</div>
                 </div>
               </>
             )}
