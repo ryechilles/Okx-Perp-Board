@@ -6,7 +6,8 @@ import { useUrlState } from '@/hooks/useUrlState';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
-import { AltcoinMetrics } from '@/components/AltcoinMetrics';
+import { AltcoinTopGainers } from '@/components/AltcoinTopGainers';
+import { AltcoinVsBTC } from '@/components/AltcoinVsBTC';
 import { FundingKiller } from '@/components/FundingKiller';
 import { MarketMomentum } from '@/components/MarketMomentum';
 import { AHR999Indicator } from '@/components/AHR999Indicator';
@@ -14,7 +15,7 @@ import { TableHeader, TableRow, TablePagination } from '@/components/table';
 import { TabContainer, TabPanel, WidgetGrid } from '@/components/layout';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS } from '@/lib/utils';
-import { Activity, DollarSign, BarChart3, Settings2 } from 'lucide-react';
+import { Activity, DollarSign, BarChart2, Bitcoin } from 'lucide-react';
 
 // Fixed column configuration
 const FIXED_COLUMNS: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
@@ -29,8 +30,8 @@ const FIXED_WIDTHS: Record<string, number> = {
 const TABS = [
   { id: 'rsi', label: 'RSI', icon: <Activity className="w-4 h-4" /> },
   { id: 'funding', label: 'Funding', icon: <DollarSign className="w-4 h-4" /> },
-  { id: 'volume', label: 'Volume', icon: <BarChart3 className="w-4 h-4" />, disabled: true },
-  { id: 'custom', label: 'Custom', icon: <Settings2 className="w-4 h-4" />, disabled: true },
+  { id: 'altcoin', label: 'Altcoin vs BTC', icon: <BarChart2 className="w-4 h-4" /> },
+  { id: 'ahr999', label: 'AHR999', icon: <Bitcoin className="w-4 h-4" /> },
 ];
 
 export default function PerpBoard() {
@@ -188,30 +189,27 @@ export default function PerpBoard() {
                   SECTION 2: Switchable Widget Area (based on active tab)
                   ═══════════════════════════════════════════════════════════ */}
 
-              {/* RSI Tab */}
+              {/* RSI Tab - Market RSI + Top Gainers */}
               <TabPanel tabId="rsi" className="py-4">
                 <WidgetGrid variant="auto" gap="md">
-                  {/* Small Widgets */}
+                  {/* Small Widget */}
                   <MarketMomentum
                     avgRsi7={avgRsi7}
                     avgRsi14={avgRsi14}
                     avgRsiW7={avgRsiW7}
                     avgRsiW14={avgRsiW14}
                   />
-                  <AHR999Indicator />
-
                   {/* Large Widget */}
-                  <AltcoinMetrics
+                  <AltcoinTopGainers
                     tickers={store.tickers}
                     rsiData={store.rsiData}
                     marketCapData={store.marketCapData}
                     onTokenClick={handleTokenClick}
-                    onTopNClick={handleGroupClick}
                   />
                 </WidgetGrid>
               </TabPanel>
 
-              {/* Funding Tab */}
+              {/* Funding Tab - Funding Rate Killer */}
               <TabPanel tabId="funding" className="py-4">
                 <WidgetGrid variant="auto" gap="md">
                   <FundingKiller
@@ -224,22 +222,24 @@ export default function PerpBoard() {
                 </WidgetGrid>
               </TabPanel>
 
-              {/* Volume Tab - Coming Soon */}
-              <TabPanel tabId="volume" className="py-4">
-                <div className="text-center py-12 text-gray-500">
-                  <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p className="font-medium">Volume Analysis</p>
-                  <p className="text-sm">Coming soon...</p>
-                </div>
+              {/* Altcoin vs BTC Tab */}
+              <TabPanel tabId="altcoin" className="py-4">
+                <WidgetGrid variant="auto" gap="md">
+                  <AltcoinVsBTC
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                    onTopNClick={handleGroupClick}
+                  />
+                </WidgetGrid>
               </TabPanel>
 
-              {/* Custom Tab - Coming Soon */}
-              <TabPanel tabId="custom" className="py-4">
-                <div className="text-center py-12 text-gray-500">
-                  <Settings2 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p className="font-medium">Custom Dashboard</p>
-                  <p className="text-sm">Coming soon...</p>
-                </div>
+              {/* AHR999 Tab - BTC Indicator */}
+              <TabPanel tabId="ahr999" className="py-4">
+                <WidgetGrid variant="auto" gap="md">
+                  <AHR999Indicator />
+                </WidgetGrid>
               </TabPanel>
             </TabContainer>
           </div>
