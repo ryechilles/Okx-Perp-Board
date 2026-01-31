@@ -29,8 +29,8 @@ export interface SmallWidgetProps {
  * Use for: Quick stats, mini charts, indicators
  *
  * Features:
- * - Floating card effect on hover (elevation + scale)
- * - Smooth transitions
+ * - Floating card effect (always elevated with soft shadow)
+ * - Smooth transitions on hover
  * - Consistent styling across all widgets
  *
  * @example
@@ -57,12 +57,13 @@ export function SmallWidget({
   return (
     <div
       className={cn(
-        // Base styles
-        'bg-white rounded-xl border border-gray-200',
-        // Floating card effect - shadow + subtle scale on hover
-        'shadow-sm hover:shadow-lg hover:shadow-gray-200/50',
-        'hover:-translate-y-0.5 hover:border-gray-300',
-        'transition-all duration-200 ease-out',
+        // Base styles - floating card effect (always visible)
+        'bg-white rounded-2xl',
+        // Soft shadow for floating effect - always visible
+        'shadow-[0_2px_12px_rgba(0,0,0,0.08)]',
+        // Subtle hover enhancement
+        'hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]',
+        'transition-shadow duration-200 ease-out',
         // Size constraints
         'min-w-[280px] w-full',
         // Flex behavior in grid
