@@ -169,9 +169,9 @@ export default function PerpBoard() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
-      {/* ═══════════════════════════════════════════════════════════════════
+      {/* ===================================================================
           SECTION 1: Tab Navigation (Top Bar)
-          ═══════════════════════════════════════════════════════════════════ */}
+          =================================================================== */}
       <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-2 flex-shrink-0">
         <div className="max-w-[1600px] mx-auto w-full">
           <TabContainer
@@ -182,15 +182,15 @@ export default function PerpBoard() {
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
+      {/* ===================================================================
           SECTION 2: Main Content (Desktop: Left Widgets + Right Table)
-          ═══════════════════════════════════════════════════════════════════ */}
+          =================================================================== */}
       <div className="flex-1 flex flex-col lg:flex-row px-2 sm:px-6 pb-4 overflow-hidden relative gap-4">
         <div className="max-w-[1600px] mx-auto w-full flex flex-col lg:flex-row flex-1 overflow-hidden gap-4">
 
-          {/* ─────────────────────────────────────────────────────────────────
+          {/* -----------------------------------------------------------------
               LEFT COLUMN: Widgets (Desktop only, stacked vertically)
-              ───────────────────────────────────────────────────────────────── */}
+              ----------------------------------------------------------------- */}
           <div className="hidden lg:flex flex-col gap-4 w-[320px] flex-shrink-0 overflow-y-auto">
             {/* RSI Tab Widgets */}
             {activeTab === 'rsi' && (
@@ -238,9 +238,9 @@ export default function PerpBoard() {
             )}
           </div>
 
-          {/* ─────────────────────────────────────────────────────────────────
+          {/* -----------------------------------------------------------------
               RIGHT COLUMN: Controls + Table
-              ───────────────────────────────────────────────────────────────── */}
+              ----------------------------------------------------------------- */}
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Mobile: Show widgets above controls */}
             <div className="lg:hidden mb-4">
@@ -391,9 +391,9 @@ export default function PerpBoard() {
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
+      {/* ===================================================================
           SECTION 3: Footer
-          ═══════════════════════════════════════════════════════════════════ */}
+          =================================================================== */}
       <div className="px-6 flex-shrink-0">
         <div className="max-w-[1600px] mx-auto w-full">
           <Footer />
