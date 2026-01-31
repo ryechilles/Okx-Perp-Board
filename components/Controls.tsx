@@ -225,6 +225,31 @@ export function Controls({
         </div>
       </div>
 
+      {/* Mobile Search Row */}
+      <div className="md:hidden mb-3">
+        <div className="flex items-center bg-gray-200 rounded-lg p-1 gap-1">
+          <svg
+            className="w-4 h-4 text-gray-500 ml-2"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search token..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="bg-transparent border-none outline-none text-[13px] text-gray-700 placeholder-gray-500 flex-1 px-1 py-1"
+          />
+        </div>
+      </div>
+
       {/* Quick Filters + Controls Row */}
       <div className="flex items-center justify-between gap-4 mb-4 relative z-[60]">
         <div className="flex items-center gap-2 md:gap-4 overflow-x-auto pb-1 md:pb-0 md:flex-wrap scrollbar-hide">
@@ -420,8 +445,8 @@ export function Controls({
         </div>
         </div>
 
-        {/* Search box - right side */}
-        <div className="inline-flex items-center bg-gray-200 rounded-lg p-1 gap-1 flex-shrink-0">
+        {/* Search box - right side (desktop only) */}
+        <div className="hidden md:inline-flex items-center bg-gray-200 rounded-lg p-1 gap-1 flex-shrink-0">
           <svg
             className="w-4 h-4 text-gray-500 ml-2"
             viewBox="0 0 24 24"
