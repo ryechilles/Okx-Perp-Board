@@ -68,6 +68,7 @@ export function FundingKiller({
 
   const displayLongKillers = longKillers.slice(0, 5);
   const displayShortKillers = shortKillers.slice(0, 5);
+  const isLoading = tickers.size === 0;
 
   return (
     <div
@@ -88,7 +89,7 @@ export function FundingKiller({
               onClick={() => longKillers.length > 0 && onGroupClick?.(longKillers.map(t => t.symbol))}
             >
               <span className="text-[12px] text-gray-500">Long Killer</span>
-              <span className="text-[12px] text-gray-500">{longKillers.length}</span>
+              <span className="text-[12px] text-gray-500">{isLoading ? '--' : longKillers.length}</span>
             </div>
             <span className="text-[12px] text-gray-500 ml-2">APR</span>
           </div>
@@ -124,7 +125,7 @@ export function FundingKiller({
               onClick={() => shortKillers.length > 0 && onGroupClick?.(shortKillers.map(t => t.symbol))}
             >
               <span className="text-[12px] text-gray-500">Short Killer</span>
-              <span className="text-[12px] text-gray-500">{shortKillers.length}</span>
+              <span className="text-[12px] text-gray-500">{isLoading ? '--' : shortKillers.length}</span>
             </div>
             <span className="text-[12px] text-gray-500 ml-2">APR</span>
           </div>
