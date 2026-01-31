@@ -173,7 +173,7 @@ export default function PerpBoard() {
   return (
     <div className="flex flex-col min-h-screen bg-[#fafafa]">
       {/* Sticky Header */}
-      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0 overflow-x-auto">
+      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0 relative">
         <div className="max-w-[1400px] mx-auto w-full">
           <Header />
           
@@ -198,7 +198,7 @@ export default function PerpBoard() {
       </div>
       
       {/* Altcoin Metrics */}
-      <div className="px-2 sm:px-6 overflow-x-auto">
+      <div className="px-2 sm:px-6 relative z-10">
         <div className="max-w-[1400px] mx-auto w-full">
           <AltcoinMetrics
             tickers={store.tickers}
