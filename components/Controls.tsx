@@ -400,26 +400,31 @@ export function Controls({
           {/* Columns tab content */}
           {customizeTab === 'columns' && (
             <div className="space-y-4">
-              {columnGroups.map(group => (
-                <div key={group.label}>
-                  <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
-                  <div className="inline-flex flex-wrap bg-gray-200 rounded-lg p-1 gap-0.5">
-                    {group.columns.map(col => (
-                      <button
-                        key={col.key}
-                        onClick={() => onColumnChange(col.key, !columns[col.key])}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          columns[col.key]
-                            ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {col.label}
-                      </button>
-                    ))}
+              {columnGroups.map(group => {
+                const groupKeys = group.columns.map(c => c.key);
+                const activeKeys = groupKeys.filter(k => columns[k]);
+                return (
+                  <div key={group.label}>
+                    <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
+                    <PillButtonGroup
+                      options={group.columns.map(col => ({ value: col.key, label: col.label }))}
+                      value={activeKeys}
+                      onChange={(newKeys) => {
+                        // Toggle columns based on diff
+                        groupKeys.forEach(k => {
+                          const wasActive = columns[k];
+                          const isNowActive = newKeys.includes(k);
+                          if (wasActive !== isNowActive) {
+                            onColumnChange(k, isNowActive);
+                          }
+                        });
+                      }}
+                      multiSelect
+                      size="sm"
+                    />
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -429,73 +434,49 @@ export function Controls({
               {/* Market Cap Rank */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Market Cap Rank</div>
-                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-                  {[
+                <PillButtonGroup
+                  options={[
                     { value: '1-20', label: 'Top 20' },
                     { value: '21-50', label: '21-50' },
                     { value: '51-100', label: '51-100' },
                     { value: '>500', label: '>500' },
-                  ].map(opt => (
-                    <button
-                      key={opt.value}
-                      onClick={() => onFiltersChange({ ...filters, rank: filters.rank === opt.value ? undefined : opt.value })}
-                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                        filters.rank === opt.value
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                  ]}
+                  value={filters.rank || ''}
+                  onChange={(v) => onFiltersChange({ ...filters, rank: v || undefined })}
+                  allowDeselect
+                  size="sm"
+                />
               </div>
 
               {/* Market Cap */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Market Cap</div>
-                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-                  {[
+                <PillButtonGroup
+                  options={[
                     { value: '20-100', label: '$20M-$100M' },
                     { value: '100-1000', label: '$100M-$1B' },
                     { value: '1000+', label: '≥$1B' },
-                  ].map(opt => (
-                    <button
-                      key={opt.value}
-                      onClick={() => onFiltersChange({ ...filters, marketCapMin: filters.marketCapMin === opt.value ? undefined : opt.value })}
-                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                        filters.marketCapMin === opt.value
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                  ]}
+                  value={filters.marketCapMin || ''}
+                  onChange={(v) => onFiltersChange({ ...filters, marketCapMin: v || undefined })}
+                  allowDeselect
+                  size="sm"
+                />
               </div>
 
               {/* Funding Rate */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Funding Rate</div>
-                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-                  {[
+                <PillButtonGroup
+                  options={[
                     { value: 'positive', label: 'Positive' },
                     { value: 'negative', label: 'Negative' },
-                  ].map(opt => (
-                    <button
-                      key={opt.value}
-                      onClick={() => onFiltersChange({ ...filters, fundingRate: filters.fundingRate === opt.value ? undefined : opt.value })}
-                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                        filters.fundingRate === opt.value
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                  ]}
+                  value={filters.fundingRate || ''}
+                  onChange={(v) => onFiltersChange({ ...filters, fundingRate: v || undefined })}
+                  allowDeselect
+                  size="sm"
+                />
               </div>
 
               {/* RSI */}
@@ -518,49 +499,33 @@ export function Controls({
               {/* Has Spot */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Has Spot on OKX</div>
-                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-                  {[
+                <PillButtonGroup
+                  options={[
                     { value: 'yes', label: 'Yes' },
                     { value: 'no', label: 'No' },
-                  ].map(opt => (
-                    <button
-                      key={opt.value}
-                      onClick={() => onFiltersChange({ ...filters, hasSpot: filters.hasSpot === opt.value ? undefined : opt.value })}
-                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                        filters.hasSpot === opt.value
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                  ]}
+                  value={filters.hasSpot || ''}
+                  onChange={(v) => onFiltersChange({ ...filters, hasSpot: v || undefined })}
+                  allowDeselect
+                  size="sm"
+                />
               </div>
 
               {/* Listing Age */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Listing Age</div>
-                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-                  {[
+                <PillButtonGroup
+                  options={[
                     { value: '<30d', label: '<30d' },
                     { value: '<60d', label: '<60d' },
                     { value: '<90d', label: '<90d' },
                     { value: '<180d', label: '<180d' },
-                  ].map(opt => (
-                    <button
-                      key={opt.value}
-                      onClick={() => onFiltersChange({ ...filters, listAge: filters.listAge === opt.value ? undefined : opt.value })}
-                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                        filters.listAge === opt.value
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                  ]}
+                  value={filters.listAge || ''}
+                  onChange={(v) => onFiltersChange({ ...filters, listAge: v || undefined })}
+                  allowDeselect
+                  size="sm"
+                />
               </div>
 
             </div>
