@@ -198,7 +198,7 @@ export default function PerpBoard() {
       </div>
       
       {/* Altcoin Metrics */}
-      <div className="px-2 sm:px-6 relative z-10">
+      <div className="px-2 sm:px-6 relative z-30">
         <div className="max-w-[1400px] mx-auto w-full">
           <AltcoinMetrics
             tickers={store.tickers}
@@ -217,7 +217,7 @@ export default function PerpBoard() {
       </div>
 
       {/* Table Area */}
-      <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 min-h-[400px]">
+      <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 min-h-[400px] relative z-0">
         <div className="max-w-[1400px] mx-auto w-full flex flex-col flex-1">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
             {/* Scrollable Table Container */}
