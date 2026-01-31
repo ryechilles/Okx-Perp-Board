@@ -311,8 +311,8 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             >
               {isLoading ? '--' : formatChange(getAvg('top20')).text}
             </span>
-            <span className="text-gray-300 mx-2">|</span>
-            <span className="text-gray-600">BTC:</span>
+            <span className="text-gray-300 ml-6">|</span>
+            <span className="text-gray-600 ml-2">BTC:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
               onClick={() => onTokenClick?.('BTC')}
