@@ -1,7 +1,8 @@
 'use client';
 
-import { ReactNode, createContext, useContext, useState } from 'react';
+import { ReactNode, createContext, useContext, useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { PillButtonGroup, PillButtonOption } from '@/components/ui';
 
 // Tab context for state management
 interface TabContextValue {
@@ -42,7 +43,7 @@ export interface TabContainerProps {
   children?: ReactNode;
   /** Additional CSS classes for the container */
   className?: string;
-  /** Tab bar variant: 'horizontal' (default) or 'sidebar' */
+  /** Tab bar variant: 'horizontal' (default) or 'sidebar' (uses PillButtonGroup template) */
   variant?: 'horizontal' | 'sidebar';
 }
 
@@ -51,7 +52,7 @@ export interface TabContainerProps {
  *
  * Supports two variants:
  * - 'horizontal': Traditional horizontal tab bar with underline indicator
- * - 'sidebar': Compact pill-style tabs for sidebar layouts
+ * - 'sidebar': Uses PillButtonGroup template for consistent styling
  *
  * @example
  * ```tsx
@@ -96,46 +97,29 @@ export function TabContainer({
     onTabChange?.(tabId);
   };
 
-  // Sidebar variant - compact pill style
+  // Convert tabs to PillButtonGroup options for sidebar variant
+  const pillOptions = useMemo((): PillButtonOption<string>[] => {
+    return tabs.map((tab) => ({
+      value: tab.id,
+      label: tab.label,
+      icon: tab.icon,
+      badge: tab.badge,
+      disabled: tab.disabled,
+    }));
+  }, [tabs]);
+
+  // Sidebar variant - uses PillButtonGroup template
   if (variant === 'sidebar') {
     return (
       <TabContext.Provider value={{ activeTab, setActiveTab: handleTabChange }}>
         <div className={cn('flex flex-col', className)}>
-          {/* Sidebar Tab List - pill style like quick filters */}
-          <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5 w-fit">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => !tab.disabled && handleTabChange(tab.id)}
-                disabled={tab.disabled}
-                className={cn(
-                  // Base styles - exactly match quick filter buttons
-                  'flex items-center gap-1 px-3 py-1.5 rounded-md text-[13px] font-medium transition-all',
-                  // Active state
-                  activeTab === tab.id
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900',
-                  // Disabled state
-                  tab.disabled && 'opacity-50 cursor-not-allowed'
-                )}
-              >
-                {tab.icon}
-                {tab.label}
-                {tab.badge !== undefined && (
-                  <span
-                    className={cn(
-                      'px-1.5 py-0.5 text-xs rounded-full',
-                      activeTab === tab.id
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-300 text-gray-600'
-                    )}
-                  >
-                    {tab.badge}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+          {/* Uses PillButtonGroup template for consistent styling */}
+          <PillButtonGroup
+            options={pillOptions}
+            value={activeTab}
+            onChange={handleTabChange}
+            className="w-fit"
+          />
 
           {/* Tab Panels (only render if children exist) */}
           {children && <div className="flex-1 mt-4">{children}</div>}

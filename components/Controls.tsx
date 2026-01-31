@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
 import { isMobile } from '@/lib/utils';
 import { getDefaultColumns } from '@/lib/defaults';
 import { RsiFilter } from './RsiFilter';
+import { PillButtonGroup, PillButtonOption } from '@/components/ui';
 
 // Quick filter types
 type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'newListed' | 'overbought' | 'oversold';
@@ -38,8 +39,6 @@ export function Controls({
 }: ControlsProps) {
   const [showCustomizePanel, setShowCustomizePanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>('all');
-  const [hoveredFilter, setHoveredFilter] = useState<QuickFilter | null>(null);
   const [customizeTab, setCustomizeTab] = useState<'columns' | 'filters'>('columns');
   const customizePanelRef = useRef<HTMLDivElement>(null);
   const customizeButtonRef = useRef<HTMLDivElement>(null);
@@ -77,7 +76,6 @@ export function Controls({
   };
 
   const handleQuickFilter = (filter: QuickFilter) => {
-    setQuickFilter(filter);
     // Clear search term when using quick filters
     onSearchChange('');
     switch (filter) {
@@ -113,7 +111,7 @@ export function Controls({
   };
 
   const activeQuickFilter = getActiveQuickFilter();
-  
+
   // Fixed columns that are always shown and not counted
   const excludedColumns = ['favorite', 'rank', 'logo', 'symbol', 'hasSpot'];
   const visibleCount = Object.entries(columns)
@@ -129,14 +127,78 @@ export function Controls({
     key => columns[key as keyof ColumnVisibility] !== defaultColumns[key as keyof ColumnVisibility]
   );
 
-  const handleApplyFilters = () => {
-    onFiltersChange(tempFilters);
-  };
-  
   const handleClearFilters = () => {
     setTempFilters({});
     onFiltersChange({});
   };
+
+  // Main filter options - using PillButtonGroup template
+  const mainFilterOptions = useMemo((): PillButtonOption<QuickFilter>[] => [
+    {
+      value: 'all',
+      label: 'All',
+      tooltip: 'Show all tokens'
+    },
+    {
+      value: 'top25',
+      label: 'Top 25',
+      tooltip: 'OKX Perp Market Cap Rank 1-25'
+    },
+    {
+      value: 'meme',
+      label: '🐸 Meme',
+      activeColor: 'text-orange-500',
+      tooltip: 'Meme Tokens Only'
+    },
+    {
+      value: 'noSpot',
+      label: 'No Spot',
+      activeColor: 'text-purple-500',
+      hiddenOnMobile: true,
+      tooltip: 'Tokens without Spot listing on OKX'
+    },
+    {
+      value: 'newListed',
+      label: 'New Listed',
+      activeColor: 'text-blue-500',
+      hiddenOnMobile: true,
+      tooltip: 'Listed <180d'
+    },
+  ], []);
+
+  // RSI filter options - using PillButtonGroup template
+  const rsiFilterOptions = useMemo((): PillButtonOption<QuickFilter>[] => [
+    {
+      value: 'overbought',
+      label: '🔥 Overbought',
+      badge: overboughtCount > 0 ? overboughtCount : undefined,
+      activeColor: 'text-red-600',
+      tooltip: (
+        <>
+          <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Overbought</div>
+          <div className="text-[12px] flex flex-col gap-0.5">
+            <span className="text-gray-900">D-RSI7 &gt; 70</span>
+            <span className="text-gray-900">D-RSI14 &gt; 70</span>
+          </div>
+        </>
+      )
+    },
+    {
+      value: 'oversold',
+      label: '🧊 Oversold',
+      badge: oversoldCount > 0 ? oversoldCount : undefined,
+      activeColor: 'text-green-600',
+      tooltip: (
+        <>
+          <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Oversold</div>
+          <div className="text-[12px] flex flex-col gap-0.5">
+            <span className="text-gray-900">D-RSI7 &lt; 30</span>
+            <span className="text-gray-900">D-RSI14 &lt; 30</span>
+          </div>
+        </>
+      )
+    },
+  ], [overboughtCount, oversoldCount]);
 
   // Column options grouped by category
   const columnGroups: { label: string; columns: { key: ColumnKey; label: string }[] }[] = [
@@ -177,7 +239,7 @@ export function Controls({
       ]
     }
   ];
-  
+
   return (
     <>
       {/* Mobile Search Row - minimal style */}
@@ -208,196 +270,20 @@ export function Controls({
       {/* Quick Filters + Controls Row */}
       <div className="flex items-center gap-4 mb-4 relative z-[60]">
         <div className="flex items-center gap-2 md:gap-4 overflow-visible pb-1 md:pb-0 md:flex-wrap">
-        {/* Quick Filter Buttons - Part 1: All & Top 25 */}
-        <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-          {/* All with tooltip */}
-          <div
-            className="relative"
-            onMouseEnter={() => setHoveredFilter('all')}
-            onMouseLeave={() => setHoveredFilter(null)}
-          >
-            <button
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                activeQuickFilter === 'all'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleQuickFilter('all')}
-            >
-              All
-            </button>
-            {hoveredFilter === 'all' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
-                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
-                <div className="text-[12px]">
-                  <span className="text-gray-900">Show all tokens</span>
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Main Quick Filters - using PillButtonGroup template */}
+          <PillButtonGroup
+            options={mainFilterOptions}
+            value={activeQuickFilter}
+            onChange={handleQuickFilter}
+          />
 
-          {/* Top 25 with tooltip */}
-          <div
-            className="relative"
-            onMouseEnter={() => setHoveredFilter('top25')}
-            onMouseLeave={() => setHoveredFilter(null)}
-          >
-            <button
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                activeQuickFilter === 'top25'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleQuickFilter('top25')}
-            >
-              Top 25
-            </button>
-            {hoveredFilter === 'top25' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
-                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
-                <div className="text-[12px]">
-                  <span className="text-gray-900">OKX Perp Market Cap Rank 1-25</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Meme with tooltip */}
-          <div
-            className="relative"
-            onMouseEnter={() => setHoveredFilter('meme')}
-            onMouseLeave={() => setHoveredFilter(null)}
-          >
-            <button
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                activeQuickFilter === 'meme'
-                  ? 'bg-white text-orange-500 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleQuickFilter('meme')}
-            >
-              🐸 Meme
-            </button>
-            {hoveredFilter === 'meme' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
-                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
-                <div className="text-[12px]">
-                  <span className="text-gray-900">Meme Tokens Only</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* No Spot with tooltip - Hidden on mobile */}
-          <div
-            className="relative hidden md:block"
-            onMouseEnter={() => setHoveredFilter('noSpot')}
-            onMouseLeave={() => setHoveredFilter(null)}
-          >
-            <button
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                activeQuickFilter === 'noSpot'
-                  ? 'bg-white text-purple-500 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleQuickFilter('noSpot')}
-            >
-              No Spot
-            </button>
-            {hoveredFilter === 'noSpot' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
-                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
-                <div className="text-[12px]">
-                  <span className="text-gray-900">Tokens without Spot listing on OKX</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* New Listed with tooltip - Hidden on mobile */}
-          <div
-            className="relative hidden md:block"
-            onMouseEnter={() => setHoveredFilter('newListed')}
-            onMouseLeave={() => setHoveredFilter(null)}
-          >
-            <button
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                activeQuickFilter === 'newListed'
-                  ? 'bg-white text-blue-500 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleQuickFilter('newListed')}
-            >
-              New Listed
-            </button>
-            {hoveredFilter === 'newListed' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
-                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
-                <div className="text-[12px]">
-                  <span className="text-gray-900">Listed &lt;180d</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Quick Filter Buttons - Part 2: RSI Filters - Hidden on mobile */}
-        <div className="hidden md:inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-          {/* Overbought with tooltip */}
-          <div
-            className="relative"
-            onMouseEnter={() => setHoveredFilter('overbought')}
-            onMouseLeave={() => setHoveredFilter(null)}
-          >
-            <button
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                activeQuickFilter === 'overbought'
-                  ? 'bg-white text-red-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleQuickFilter('overbought')}
-            >
-              🔥 Overbought {overboughtCount > 0 && <span className="text-gray-500 font-normal">{overboughtCount}</span>}
-            </button>
-            {hoveredFilter === 'overbought' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
-                <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Overbought</div>
-                <div className="text-[12px] flex flex-col gap-0.5">
-                  <span className="text-gray-900">D-RSI7 &gt; 70</span>
-                  <span className="text-gray-900">D-RSI14 &gt; 70</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Oversold with tooltip */}
-          <div
-            className="relative"
-            onMouseEnter={() => setHoveredFilter('oversold')}
-            onMouseLeave={() => setHoveredFilter(null)}
-          >
-            <button
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                activeQuickFilter === 'oversold'
-                  ? 'bg-white text-green-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleQuickFilter('oversold')}
-            >
-              🧊 Oversold {oversoldCount > 0 && <span className="text-gray-500 font-normal">{oversoldCount}</span>}
-            </button>
-            {hoveredFilter === 'oversold' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
-                <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Oversold</div>
-                <div className="text-[12px] flex flex-col gap-0.5">
-                  <span className="text-gray-900">D-RSI7 &lt; 30</span>
-                  <span className="text-gray-900">D-RSI14 &lt; 30</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
+          {/* RSI Quick Filters - using PillButtonGroup template */}
+          <PillButtonGroup
+            options={rsiFilterOptions}
+            value={activeQuickFilter}
+            onChange={handleQuickFilter}
+            className="hidden md:inline-flex"
+          />
         </div>
 
         {/* Settings icon */}
@@ -443,7 +329,7 @@ export function Controls({
           />
         </div>
       </div>
-      
+
       {/* Sidebar Overlay */}
       {showCustomizePanel && (
         <div
@@ -488,7 +374,7 @@ export function Controls({
                 Filters {hasFilters && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 ml-1" />}
               </button>
             </div>
-{(hasFilters || hasNonDefaultColumns) && (
+            {(hasFilters || hasNonDefaultColumns) && (
               <button
                 onClick={() => {
                   if (customizeTab === 'columns') {
