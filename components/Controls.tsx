@@ -480,7 +480,7 @@ export function Controls({
       {/* Sidebar Panel */}
       <div
         ref={customizePanelRef}
-        className={`fixed top-0 right-0 h-full w-[420px] bg-white shadow-xl z-[101] transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-[500px] bg-white shadow-xl z-[101] transform transition-transform duration-300 ease-in-out ${
           showCustomizePanel ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
