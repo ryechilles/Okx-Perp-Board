@@ -428,23 +428,27 @@ export function Controls({
           </div>
         </div>
 
-        {/* Customize button - icon only */}
+        {/* Settings icon - minimal style */}
         <div
           ref={customizeButtonRef}
-          className={`inline-flex rounded-lg p-2.5 cursor-pointer transition-all flex-shrink-0 ${
-            showCustomizePanel || hasFilters
-              ? 'bg-white shadow-sm'
-              : 'bg-gray-200 hover:bg-gray-300'
-          }`}
+          className="cursor-pointer flex-shrink-0 p-1 transition-all hover:opacity-70"
           onClick={() => setShowCustomizePanel(!showCustomizePanel)}
         >
-          <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            className={`w-4 h-4 transition-colors ${hasFilters || hasNonDefaultColumns ? 'text-gray-900' : 'text-gray-400'}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </div>
 
-        {/* Search - minimal icon with expandable input */}
+        {/* Search - minimal icon with input */}
         <div className="hidden md:inline-flex items-center gap-1 flex-shrink-0">
           <svg
             className="w-4 h-4 text-gray-400"
@@ -493,10 +497,12 @@ export function Controls({
                 className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
                   customizeTab === 'columns'
                     ? 'bg-white text-gray-900 shadow-sm'
+                    : hasNonDefaultColumns
+                    ? 'text-blue-500 hover:text-blue-600'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Columns ({visibleCount}/{totalCount})
+                Columns {hasNonDefaultColumns && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 ml-1" />}
               </button>
               <button
                 onClick={() => setCustomizeTab('filters')}
@@ -530,22 +536,20 @@ export function Controls({
               {columnGroups.map(group => (
                 <div key={group.label}>
                   <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-                    <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5 flex-wrap">
-                      {group.columns.map(col => (
-                        <button
-                          key={col.key}
-                          onClick={() => onColumnChange(col.key, !columns[col.key])}
-                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                            columns[col.key]
-                              ? 'bg-white text-gray-900 shadow-sm'
-                              : 'text-gray-500 hover:text-gray-700'
-                          }`}
-                        >
-                          {col.label}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {group.columns.map(col => (
+                      <button
+                        key={col.key}
+                        onClick={() => onColumnChange(col.key, !columns[col.key])}
+                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                          columns[col.key]
+                            ? 'bg-gray-900 text-white'
+                            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                        }`}
+                      >
+                        {col.label}
+                      </button>
+                    ))}
                     {group.label === 'Other' && hasNonDefaultColumns && (
                       <button
                         onClick={() => onColumnsPreset('default')}
@@ -567,75 +571,75 @@ export function Controls({
           {/* Filters tab content */}
           {customizeTab === 'filters' && (
             <div className="space-y-4">
-              {/* Market & Funding */}
+              {/* Market Cap Rank */}
               <div>
-                <div className="text-[11px] text-gray-500 font-medium mb-2">Market & Funding</div>
-                <div className="flex flex-wrap gap-x-4 gap-y-3">
-                  {/* Market Cap Rank */}
-                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'MC Rank' },
-                      { value: '1-20', label: 'Top 20' },
-                      { value: '21-50', label: '21-50' },
-                      { value: '51-100', label: '51-100' },
-                      { value: '>500', label: '>500' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, rank: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.rank || '') === opt.value
-                            ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">Market Cap Rank</div>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: '1-20', label: 'Top 20' },
+                    { value: '21-50', label: '21-50' },
+                    { value: '51-100', label: '51-100' },
+                    { value: '>500', label: '>500' },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => onFiltersChange({ ...filters, rank: filters.rank === opt.value ? undefined : opt.value })}
+                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.rank === opt.value
+                          ? 'bg-gray-900 text-white'
+                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                  {/* Market Cap */}
-                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'Market Cap' },
-                      { value: '20-100', label: '$20M-$100M' },
-                      { value: '100-1000', label: '$100M-$1B' },
-                      { value: '1000+', label: '≥$1B' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, marketCapMin: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.marketCapMin || '') === opt.value
-                            ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+              {/* Market Cap */}
+              <div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">Market Cap</div>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: '20-100', label: '$20M-$100M' },
+                    { value: '100-1000', label: '$100M-$1B' },
+                    { value: '1000+', label: '≥$1B' },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => onFiltersChange({ ...filters, marketCapMin: filters.marketCapMin === opt.value ? undefined : opt.value })}
+                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.marketCapMin === opt.value
+                          ? 'bg-gray-900 text-white'
+                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                  {/* Funding Rate */}
-                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'Funding' },
-                      { value: 'positive', label: 'Positive' },
-                      { value: 'negative', label: 'Negative' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, fundingRate: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.fundingRate || '') === opt.value
-                            ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+              {/* Funding Rate */}
+              <div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">Funding Rate</div>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: 'positive', label: 'Positive' },
+                    { value: 'negative', label: 'Negative' },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => onFiltersChange({ ...filters, fundingRate: filters.fundingRate === opt.value ? undefined : opt.value })}
+                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.fundingRate === opt.value
+                          ? 'bg-gray-900 text-white'
+                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -656,68 +660,65 @@ export function Controls({
                 </div>
               </div>
 
-              {/* Other */}
+              {/* Has Spot */}
               <div>
-                <div className="text-[11px] text-gray-500 font-medium mb-2">Other</div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-                  {/* Has Spot */}
-                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'Spot' },
-                      { value: 'yes', label: 'Yes' },
-                      { value: 'no', label: 'No' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, hasSpot: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.hasSpot || '') === opt.value
-                            ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Listing Age */}
-                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
-                    {[
-                      { value: '', label: 'List Age' },
-                      { value: '<30d', label: '<30d' },
-                      { value: '<60d', label: '<60d' },
-                      { value: '<90d', label: '<90d' },
-                      { value: '<180d', label: '<180d' },
-                    ].map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => onFiltersChange({ ...filters, listAge: opt.value || undefined })}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          (filters.listAge || '') === opt.value
-                            ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {hasFilters && (
+                <div className="text-[11px] text-gray-500 font-medium mb-2">Has Spot on OKX</div>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: 'yes', label: 'Yes' },
+                    { value: 'no', label: 'No' },
+                  ].map(opt => (
                     <button
-                      onClick={handleClearFilters}
-                      className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-300"
-                      title="Reset filters"
+                      key={opt.value}
+                      onClick={() => onFiltersChange({ ...filters, hasSpot: filters.hasSpot === opt.value ? undefined : opt.value })}
+                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.hasSpot === opt.value
+                          ? 'bg-gray-900 text-white'
+                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      }`}
                     >
-                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                        <path d="M3 3v5h5" />
-                      </svg>
+                      {opt.label}
                     </button>
-                  )}
+                  ))}
                 </div>
               </div>
+
+              {/* Listing Age */}
+              <div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">Listing Age</div>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: '<30d', label: '<30d' },
+                    { value: '<60d', label: '<60d' },
+                    { value: '<90d', label: '<90d' },
+                    { value: '<180d', label: '<180d' },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => onFiltersChange({ ...filters, listAge: filters.listAge === opt.value ? undefined : opt.value })}
+                      className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                        filters.listAge === opt.value
+                          ? 'bg-gray-900 text-white'
+                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Reset button */}
+              {hasFilters && (
+                <div>
+                  <button
+                    onClick={handleClearFilters}
+                    className="px-3 py-1.5 rounded-md text-[12px] font-medium transition-all bg-red-100 text-red-600 hover:bg-red-200"
+                  >
+                    Reset All Filters
+                  </button>
+                </div>
+              )}
             </div>
           )}
           </div>
