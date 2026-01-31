@@ -326,7 +326,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
 
           {/* Right: BTC data */}
-          <div className="flex-1 flex items-center justify-center pl-4 border-l border-gray-200">
+          <div className="flex-1 flex items-center justify-center pl-4">
             <span className="text-gray-500 text-[12px]">BTC:</span>
             <span
               className={`font-medium ml-2 text-[12px] cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
@@ -362,7 +362,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
 
           {/* Right: Performance summary */}
-          <div className="flex-1 flex items-center justify-center pl-4 border-l border-gray-200">
+          <div className="flex-1 flex items-center justify-center pl-4">
             {!isLoading && getPerformanceSummary() && (
               <div className="text-[11px] text-center">
                 <div className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</div>
