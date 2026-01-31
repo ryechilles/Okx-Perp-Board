@@ -332,23 +332,23 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         </div>
 
         {/* Ratio rows with summary on right */}
-        <div className="flex items-start justify-between border-t border-gray-100 pt-2">
-          <div className="space-y-1 text-[12px] text-gray-600">
+        <div className="flex items-center justify-between border-t border-gray-100 pt-2">
+          <div className="space-y-0.5 text-[12px] text-gray-600">
             <div className="flex items-center">
-              <span>Altcoin Top10 / BTC:</span>
-              <span className="font-medium text-gray-800 ml-2">
+              <span className="w-[130px]">Altcoin Top10 / BTC:</span>
+              <span className="font-medium text-gray-800">
                 {isLoading ? '--' : (getBtcChange() === 0 || getBtcChange() === null ? '--' : Math.abs((getAvg('top10') ?? 0) / getBtcChange()!).toFixed(1))}
               </span>
             </div>
             <div className="flex items-center">
-              <span>Altcoin Top20 / BTC:</span>
-              <span className="font-medium text-gray-800 ml-2">
+              <span className="w-[130px]">Altcoin Top20 / BTC:</span>
+              <span className="font-medium text-gray-800">
                 {isLoading ? '--' : (getBtcChange() === 0 || getBtcChange() === null ? '--' : Math.abs((getAvg('top20') ?? 0) / getBtcChange()!).toFixed(1))}
               </span>
             </div>
             <div className="flex items-center">
-              <span>Altcoin Top50 / BTC:</span>
-              <span className="font-medium text-gray-800 ml-2">
+              <span className="w-[130px]">Altcoin Top50 / BTC:</span>
+              <span className="font-medium text-gray-800">
                 {isLoading ? '--' : (getBtcChange() === 0 || getBtcChange() === null ? '--' : Math.abs((getAvg('top50') ?? 0) / getBtcChange()!).toFixed(1))}
               </span>
             </div>
@@ -356,9 +356,9 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
           {/* Performance summary on right */}
           {!isLoading && getPerformanceSummary() && (
-            <div className="text-[11px] text-gray-500 text-right ml-4">
-              <div>{getPerformanceSummary()?.altStatus} | {getPerformanceSummary()?.btcStatus}</div>
-              <div className="text-gray-700 font-medium mt-1">{getPerformanceSummary()?.summary}</div>
+            <div className="text-[11px] text-right ml-6 border-l border-gray-100 pl-4">
+              <div className="text-gray-400">{getPerformanceSummary()?.altStatus} | {getPerformanceSummary()?.btcStatus}</div>
+              <div className="text-gray-600 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
             </div>
           )}
         </div>
