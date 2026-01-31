@@ -287,7 +287,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {/* Avg Change rows */}
         <div className="space-y-1 text-[12px] mb-2">
           <div className="flex items-center">
-            <span className="text-gray-600">Altcoin Top10 Avg Change:</span>
+            <span className="text-gray-600">Altcoin Top10:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top10')).color}`}
               onClick={() => onTopNClick?.(getTopNSymbols(10))}
@@ -296,7 +296,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             </span>
           </div>
           <div className="flex items-center">
-            <span className="text-gray-600">Altcoin Top20 Avg Change:</span>
+            <span className="text-gray-600">Altcoin Top20:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top20')).color}`}
               onClick={() => onTopNClick?.(getTopNSymbols(20))}
@@ -304,7 +304,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
               {isLoading ? '--' : formatChange(getAvg('top20')).text}
             </span>
             <span className="text-gray-300 mx-2">|</span>
-            <span className="text-gray-600">BTC Change:</span>
+            <span className="text-gray-600">BTC:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
               onClick={() => onTokenClick?.('BTC')}
@@ -313,7 +313,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             </span>
           </div>
           <div className="flex items-center">
-            <span className="text-gray-600">Altcoin Top50 Avg Change:</span>
+            <span className="text-gray-600">Altcoin Top50:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top50')).color}`}
               onClick={() => onTopNClick?.(getTopNSymbols(50))}
@@ -326,15 +326,15 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {/* Ratio rows */}
         <div className="space-y-1 text-[12px] text-gray-600 border-t border-gray-100 pt-2">
           <div className="flex items-center">
-            <span>Altcoin Top10 Avg Change / BTC Change:</span>
+            <span>Altcoin Top10 / BTC:</span>
             <span className="font-medium text-gray-800 ml-2">{isLoading ? '--' : getRatio('top10')}</span>
           </div>
           <div className="flex items-center">
-            <span>Altcoin Top20 Avg Change / BTC Change:</span>
+            <span>Altcoin Top20 / BTC:</span>
             <span className="font-medium text-gray-800 ml-2">{isLoading ? '--' : getRatio('top20')}</span>
           </div>
           <div className="flex items-center">
-            <span>Altcoin Top50 Avg Change / BTC Change:</span>
+            <span>Altcoin Top50 / BTC:</span>
             <span className="font-medium text-gray-800 ml-2">{isLoading ? '--' : getRatio('top50')}</span>
           </div>
         </div>
