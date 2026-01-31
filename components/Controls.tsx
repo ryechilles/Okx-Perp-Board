@@ -13,20 +13,20 @@ type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'overbought' | 'oversol
 // Check if mobile
 const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
 
-// Default columns for comparison
+// Default columns for comparison - must match useMarketStore.ts
 const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
   favorite: true, rank: true, logo: true, symbol: true, price: true,
-  fundingRate: true, fundingApr: false, fundingInterval: false,
+  fundingRate: false, fundingApr: true, fundingInterval: false,
   change4h: false, change: true, change7d: true,
   volume24h: false, marketCap: true,
   dRsiSignal: true, wRsiSignal: true,
-  rsi7: true, rsi14: true, rsiW7: false, rsiW14: false,
-  listDate: false, hasSpot: false,
+  rsi7: false, rsi14: false, rsiW7: false, rsiW14: false,
+  listDate: true, hasSpot: false,
 };
 
 const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
   favorite: true, rank: true, logo: true, symbol: true, price: true,
-  fundingRate: true, fundingApr: false, fundingInterval: false,
+  fundingRate: false, fundingApr: false, fundingInterval: false,
   change4h: false, change: true, change7d: false,
   volume24h: false, marketCap: false,
   dRsiSignal: false, wRsiSignal: false,
