@@ -25,30 +25,35 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
   const clickHandler = (e: React.MouseEvent<HTMLInputElement>) => setTimeout(() => (e.target as HTMLInputElement).select(), 0);
 
   return (
-    <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5 items-center">
-      {/* Label */}
-      <button
-        onClick={() => onChange(undefined)}
-        className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-          !value ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-        }`}
-      >
-        {label}
-      </button>
-
-      {/* Presets */}
-      {['<30', '30~70', '>70'].map(preset => (
+    <div className="inline-flex items-center gap-2">
+      {/* Label + Presets */}
+      <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5 items-center">
+        {/* Label */}
         <button
-          key={preset}
-          onClick={() => onChange(preset)}
+          onClick={() => onChange(undefined)}
           className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-            value === preset ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700'
+            !value ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
           }`}
         >
-          {preset.replace('<', '<').replace('>', '>')}
+          {label}
         </button>
-      ))}
 
+        {/* Presets */}
+        {['<30', '30~70', '>70'].map(preset => (
+          <button
+            key={preset}
+            onClick={() => onChange(preset)}
+            className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
+              value === preset ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {preset.replace('<', '<').replace('>', '>')}
+          </button>
+        ))}
+      </div>
+
+      {/* Custom inputs - separated */}
+      <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5 items-center">
       {/* Custom < */}
       <div
         onClick={(e) => {
@@ -148,6 +153,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
           onFocus={focusHandler} onClick={clickHandler}
           className={`w-7 ${inputClass}`}
         />
+      </div>
       </div>
     </div>
   );
