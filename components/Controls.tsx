@@ -20,7 +20,7 @@ const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
   volume24h: false, marketCap: true,
   dRsiSignal: true, wRsiSignal: true,
   rsi7: true, rsi14: true, rsiW7: false, rsiW14: false,
-  listDate: false,
+  listDate: false, hasSpot: false,
 };
 
 const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
@@ -30,7 +30,7 @@ const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
   volume24h: false, marketCap: false,
   dRsiSignal: false, wRsiSignal: false,
   rsi7: false, rsi14: false, rsiW7: false, rsiW14: false,
-  listDate: false,
+  listDate: false, hasSpot: false,
 };
 
 interface ControlsProps {
