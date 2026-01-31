@@ -390,6 +390,7 @@ export default function PerpBoard() {
           </div>
         </div>
       </div>
+    </div>
 
       {/* ===================================================================
           SECTION 3: Footer
