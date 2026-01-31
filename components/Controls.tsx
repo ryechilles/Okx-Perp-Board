@@ -255,16 +255,31 @@ export function Controls({
         <div className="flex items-center gap-2 md:gap-4 overflow-x-auto pb-1 md:pb-0 md:flex-wrap scrollbar-hide">
         {/* Quick Filter Buttons - Part 1: All & Top 25 */}
         <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-          <button
-            className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-              activeQuickFilter === 'all'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-            onClick={() => handleQuickFilter('all')}
+          {/* All with tooltip */}
+          <div
+            className="relative"
+            onMouseEnter={() => setHoveredFilter('all')}
+            onMouseLeave={() => setHoveredFilter(null)}
           >
-            All
-          </button>
+            <button
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                activeQuickFilter === 'all'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => handleQuickFilter('all')}
+            >
+              All
+            </button>
+            {hoveredFilter === 'all' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
+                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
+                <div className="text-[12px]">
+                  <span className="text-gray-900">Show all tokens</span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Top 25 with tooltip */}
           <div
