@@ -170,32 +170,88 @@ export default function PerpBoard() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 1: Tab Navigation
+          SECTION 1: Tab Navigation (Top Bar)
           ═══════════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0">
-        <div className="max-w-[1400px] mx-auto w-full">
-          {/* Tab Navigation */}
-          <div>
-            <TabContainer
-              tabs={TABS}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            >
-              {/* ═══════════════════════════════════════════════════════════
-                  SECTION 2: Switchable Widget Area (based on active tab)
-                  ═══════════════════════════════════════════════════════════ */}
+      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-2 flex-shrink-0">
+        <div className="max-w-[1600px] mx-auto w-full">
+          <TabContainer
+            tabs={TABS}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+        </div>
+      </div>
 
-              {/* RSI Tab - Market RSI + Top Gainers */}
-              <TabPanel tabId="rsi" className="py-4">
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 2: Main Content (Desktop: Left Widgets + Right Table)
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col lg:flex-row px-2 sm:px-6 pb-4 overflow-hidden relative gap-4">
+        <div className="max-w-[1600px] mx-auto w-full flex flex-col lg:flex-row flex-1 overflow-hidden gap-4">
+
+          {/* ─────────────────────────────────────────────────────────────────
+              LEFT COLUMN: Widgets (Desktop only, stacked vertically)
+              ───────────────────────────────────────────────────────────────── */}
+          <div className="hidden lg:flex flex-col gap-4 w-[320px] flex-shrink-0 overflow-y-auto">
+            {/* RSI Tab Widgets */}
+            {activeTab === 'rsi' && (
+              <>
+                <MarketMomentum
+                  avgRsi7={avgRsi7}
+                  avgRsi14={avgRsi14}
+                  avgRsiW7={avgRsiW7}
+                  avgRsiW14={avgRsiW14}
+                />
+                <AltcoinTopGainers
+                  tickers={store.tickers}
+                  rsiData={store.rsiData}
+                  marketCapData={store.marketCapData}
+                  onTokenClick={handleTokenClick}
+                />
+              </>
+            )}
+
+            {/* Funding Tab Widget */}
+            {activeTab === 'funding' && (
+              <FundingKiller
+                tickers={store.tickers}
+                fundingRateData={store.fundingRateData}
+                marketCapData={store.marketCapData}
+                onTokenClick={handleTokenClick}
+                onGroupClick={handleGroupClick}
+              />
+            )}
+
+            {/* Altcoin vs BTC Tab Widget */}
+            {activeTab === 'altcoin' && (
+              <AltcoinVsBTC
+                tickers={store.tickers}
+                rsiData={store.rsiData}
+                marketCapData={store.marketCapData}
+                onTokenClick={handleTokenClick}
+                onTopNClick={handleGroupClick}
+              />
+            )}
+
+            {/* AHR999 Tab Widget */}
+            {activeTab === 'ahr999' && (
+              <AHR999Indicator />
+            )}
+          </div>
+
+          {/* ─────────────────────────────────────────────────────────────────
+              RIGHT COLUMN: Controls + Table
+              ───────────────────────────────────────────────────────────────── */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Mobile: Show widgets above controls */}
+            <div className="lg:hidden mb-4">
+              {activeTab === 'rsi' && (
                 <WidgetGrid variant="auto" gap="md">
-                  {/* Small Widget */}
                   <MarketMomentum
                     avgRsi7={avgRsi7}
                     avgRsi14={avgRsi14}
                     avgRsiW7={avgRsiW7}
                     avgRsiW14={avgRsiW14}
                   />
-                  {/* Large Widget */}
                   <AltcoinTopGainers
                     tickers={store.tickers}
                     rsiData={store.rsiData}
@@ -203,54 +259,33 @@ export default function PerpBoard() {
                     onTokenClick={handleTokenClick}
                   />
                 </WidgetGrid>
-              </TabPanel>
+              )}
+              {activeTab === 'funding' && (
+                <FundingKiller
+                  tickers={store.tickers}
+                  fundingRateData={store.fundingRateData}
+                  marketCapData={store.marketCapData}
+                  onTokenClick={handleTokenClick}
+                  onGroupClick={handleGroupClick}
+                />
+              )}
+              {activeTab === 'altcoin' && (
+                <AltcoinVsBTC
+                  tickers={store.tickers}
+                  rsiData={store.rsiData}
+                  marketCapData={store.marketCapData}
+                  onTokenClick={handleTokenClick}
+                  onTopNClick={handleGroupClick}
+                />
+              )}
+              {activeTab === 'ahr999' && (
+                <AHR999Indicator />
+              )}
+            </div>
 
-              {/* Funding Tab - Funding Rate Killer */}
-              <TabPanel tabId="funding" className="py-4">
-                <WidgetGrid variant="auto" gap="md">
-                  <FundingKiller
-                    tickers={store.tickers}
-                    fundingRateData={store.fundingRateData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                    onGroupClick={handleGroupClick}
-                  />
-                </WidgetGrid>
-              </TabPanel>
-
-              {/* Altcoin vs BTC Tab */}
-              <TabPanel tabId="altcoin" className="py-4">
-                <WidgetGrid variant="auto" gap="md">
-                  <AltcoinVsBTC
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                    onTopNClick={handleGroupClick}
-                  />
-                </WidgetGrid>
-              </TabPanel>
-
-              {/* AHR999 Tab - BTC Indicator */}
-              <TabPanel tabId="ahr999" className="py-4">
-                <WidgetGrid variant="auto" gap="md">
-                  <AHR999Indicator />
-                </WidgetGrid>
-              </TabPanel>
-            </TabContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 3: Table Area (Quick Filters + Settings + Search + Table)
-          ═══════════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 overflow-hidden relative">
-        <div className="max-w-[1400px] mx-auto w-full flex flex-col flex-1 overflow-hidden">
-
-          {/* Controls: Quick Filters, Settings, Search */}
-          <div className="mb-4">
-            <Controls
+            {/* Controls: Quick Filters, Settings, Search */}
+            <div className="mb-4">
+              <Controls
               columns={store.columns}
               columnOrder={store.columnOrder}
               filters={store.filters}
@@ -357,10 +392,10 @@ export default function PerpBoard() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 4: Footer
+          SECTION 3: Footer
           ═══════════════════════════════════════════════════════════════════ */}
       <div className="px-6 flex-shrink-0">
-        <div className="max-w-[1400px] mx-auto w-full">
+        <div className="max-w-[1600px] mx-auto w-full">
           <Footer />
         </div>
       </div>

@@ -38,8 +38,8 @@ export interface TabContainerProps {
   activeTab?: string;
   /** Callback when tab changes */
   onTabChange?: (tabId: string) => void;
-  /** Children (TabPanel components) */
-  children: ReactNode;
+  /** Children (TabPanel components) - optional */
+  children?: ReactNode;
   /** Additional CSS classes for the container */
   className?: string;
 }
@@ -128,8 +128,8 @@ export function TabContainer({
           ))}
         </div>
 
-        {/* Tab Panels */}
-        <div className="flex-1">{children}</div>
+        {/* Tab Panels (only render if children exist) */}
+        {children && <div className="flex-1">{children}</div>}
       </div>
     </TabContext.Provider>
   );
