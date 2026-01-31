@@ -293,46 +293,53 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         </div>
 
         {/* Avg Change rows */}
-        <div className="space-y-1 text-[12px] mb-2">
-          <div className="flex items-center">
-            <span className="text-gray-500">Altcoin Top10:</span>
-            <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top10')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(10))}
-            >
-              {isLoading ? '--' : formatChange(getAvg('top10')).text}
-            </span>
+        <div className="flex mb-2">
+          {/* Left: Altcoin data */}
+          <div className="space-y-1 text-[12px]">
+            <div className="flex items-center">
+              <span className="text-gray-500">Altcoin Top10:</span>
+              <span
+                className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top10')).color}`}
+                onClick={() => onTopNClick?.(getTopNSymbols(10))}
+              >
+                {isLoading ? '--' : formatChange(getAvg('top10')).text}
+              </span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-gray-500">Altcoin Top20:</span>
+              <span
+                className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top20')).color}`}
+                onClick={() => onTopNClick?.(getTopNSymbols(20))}
+              >
+                {isLoading ? '--' : formatChange(getAvg('top20')).text}
+              </span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-gray-500">Altcoin Top50:</span>
+              <span
+                className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top50')).color}`}
+                onClick={() => onTopNClick?.(getTopNSymbols(50))}
+              >
+                {isLoading ? '--' : formatChange(getAvg('top50')).text}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <span className="text-gray-500">Altcoin Top20:</span>
+
+          {/* Right: BTC data */}
+          <div className="flex items-center ml-auto pl-4 border-l border-gray-200">
+            <span className="text-gray-500 text-[12px]">BTC:</span>
             <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top20')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(20))}
-            >
-              {isLoading ? '--' : formatChange(getAvg('top20')).text}
-            </span>
-            <span className="text-gray-500 ml-6">|</span>
-            <span className="text-gray-500 ml-2">BTC:</span>
-            <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
+              className={`font-medium ml-2 text-[12px] cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
               onClick={() => onTokenClick?.('BTC')}
             >
               {isLoading ? '--' : formatChange(getBtcChange()).text}
             </span>
           </div>
-          <div className="flex items-center">
-            <span className="text-gray-500">Altcoin Top50:</span>
-            <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top50')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(50))}
-            >
-              {isLoading ? '--' : formatChange(getAvg('top50')).text}
-            </span>
-          </div>
         </div>
 
         {/* Ratio rows with summary on right */}
-        <div className="flex items-center justify-between border-t border-gray-200 pt-2">
+        <div className="flex border-t border-gray-200 pt-2">
+          {/* Left: Ratios */}
           <div className="space-y-0.5 text-[12px] text-gray-500">
             <div className="flex items-center">
               <span className="w-[130px]">Altcoin Top10 / BTC:</span>
@@ -354,9 +361,9 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             </div>
           </div>
 
-          {/* Performance summary on right */}
+          {/* Right: Performance summary */}
           {!isLoading && getPerformanceSummary() && (
-            <div className="text-[11px] text-right ml-6 border-l border-gray-200 pl-4">
+            <div className="text-[11px] text-right ml-auto pl-4 border-l border-gray-200 flex flex-col justify-center">
               <div className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</div>
               <div className="text-gray-500 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
             </div>
