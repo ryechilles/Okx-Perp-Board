@@ -187,7 +187,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
     <div className="flex items-start gap-4 mb-4">
       {/* Top Gainers Card */}
       <div
-        className="relative bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[260px]"
+        className="relative bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[300px]"
         onMouseEnter={() => setShowGainersTooltip(true)}
         onMouseLeave={() => setShowGainersTooltip(false)}
       >
