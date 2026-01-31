@@ -100,12 +100,12 @@ export function FundingKiller({
                 onClick={() => onTokenClick?.(t.symbol)}
               >
                 {t.logo ? (
-                  <img src={t.logo} alt={t.symbol} className="w-4 h-4 rounded-full" />
+                  <img src={t.logo} alt={t.symbol} className="w-5 h-5 rounded-full" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] text-gray-500">{t.symbol.charAt(0)}</div>
+                  <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">{t.symbol.charAt(0)}</div>
                 )}
                 <span className="text-[12px] font-medium text-gray-900 w-14">{t.symbol}</span>
-                <span className="text-[12px] text-red-500 tabular-nums text-right w-20">+{t.apr.toFixed(1)}%</span>
+                <span className="text-[12px] font-medium text-red-500 tabular-nums text-right w-20">+{t.apr.toFixed(1)}%</span>
               </div>
             ))
           ) : (
@@ -114,7 +114,7 @@ export function FundingKiller({
         </div>
 
         {/* Divider */}
-        <div className="text-[11px] text-gray-500 self-center">|</div>
+        <div className="text-[12px] text-gray-500 self-center">|</div>
 
         {/* Short Killers Column */}
         <div className="flex flex-col gap-1">
@@ -136,12 +136,12 @@ export function FundingKiller({
                 onClick={() => onTokenClick?.(t.symbol)}
               >
                 {t.logo ? (
-                  <img src={t.logo} alt={t.symbol} className="w-4 h-4 rounded-full" />
+                  <img src={t.logo} alt={t.symbol} className="w-5 h-5 rounded-full" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] text-gray-500">{t.symbol.charAt(0)}</div>
+                  <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">{t.symbol.charAt(0)}</div>
                 )}
                 <span className="text-[12px] font-medium text-gray-900 w-14">{t.symbol}</span>
-                <span className="text-[12px] text-green-500 tabular-nums text-right w-20">{t.apr.toFixed(1)}%</span>
+                <span className="text-[12px] font-medium text-green-500 tabular-nums text-right w-20">{t.apr.toFixed(1)}%</span>
               </div>
             ))
           ) : (

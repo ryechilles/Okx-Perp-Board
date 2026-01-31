@@ -248,11 +248,11 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
                         {token.symbol.charAt(0)}
                       </div>
                     )}
-                    <span className="text-[13px] font-medium text-gray-900">{token.symbol}</span>
+                    <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[13px] text-gray-500">{formatPrice(token.price)}</span>
-                    <span className={`text-[13px] font-medium ${formatChange(change).color}`}>
+                    <span className="text-[12px] text-gray-500">{formatPrice(token.price)}</span>
+                    <span className={`text-[12px] font-medium ${formatChange(change).color}`}>
                       {formatChange(change).text}
                     </span>
                   </div>
