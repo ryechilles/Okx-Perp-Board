@@ -543,7 +543,7 @@ export function Controls({
                         onClick={() => onColumnChange(col.key, !columns[col.key])}
                         className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                           columns[col.key]
-                            ? 'bg-gray-900 text-white'
+                            ? 'bg-white text-gray-900 shadow-sm'
                             : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                         }`}
                       >
@@ -586,7 +586,7 @@ export function Controls({
                       onClick={() => onFiltersChange({ ...filters, rank: filters.rank === opt.value ? undefined : opt.value })}
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.rank === opt.value
-                          ? 'bg-gray-900 text-white'
+                          ? 'bg-white text-gray-900 shadow-sm'
                           : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                       }`}
                     >
@@ -610,7 +610,7 @@ export function Controls({
                       onClick={() => onFiltersChange({ ...filters, marketCapMin: filters.marketCapMin === opt.value ? undefined : opt.value })}
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.marketCapMin === opt.value
-                          ? 'bg-gray-900 text-white'
+                          ? 'bg-white text-gray-900 shadow-sm'
                           : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                       }`}
                     >
@@ -633,7 +633,7 @@ export function Controls({
                       onClick={() => onFiltersChange({ ...filters, fundingRate: filters.fundingRate === opt.value ? undefined : opt.value })}
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.fundingRate === opt.value
-                          ? 'bg-gray-900 text-white'
+                          ? 'bg-white text-gray-900 shadow-sm'
                           : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                       }`}
                     >
@@ -673,7 +673,7 @@ export function Controls({
                       onClick={() => onFiltersChange({ ...filters, hasSpot: filters.hasSpot === opt.value ? undefined : opt.value })}
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.hasSpot === opt.value
-                          ? 'bg-gray-900 text-white'
+                          ? 'bg-white text-gray-900 shadow-sm'
                           : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                       }`}
                     >
@@ -698,7 +698,7 @@ export function Controls({
                       onClick={() => onFiltersChange({ ...filters, listAge: filters.listAge === opt.value ? undefined : opt.value })}
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.listAge === opt.value
-                          ? 'bg-gray-900 text-white'
+                          ? 'bg-white text-gray-900 shadow-sm'
                           : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                       }`}
                     >
@@ -710,12 +710,16 @@ export function Controls({
 
               {/* Reset button */}
               {hasFilters && (
-                <div>
+                <div className="pt-2">
                   <button
                     onClick={handleClearFilters}
-                    className="px-3 py-1.5 rounded-md text-[12px] font-medium transition-all bg-red-100 text-red-600 hover:bg-red-200"
+                    className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-300"
+                    title="Reset filters"
                   >
-                    Reset All Filters
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                      <path d="M3 3v5h5" />
+                    </svg>
                   </button>
                 </div>
               )}
