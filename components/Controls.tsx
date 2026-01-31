@@ -212,8 +212,8 @@ export function Controls({
   
   return (
     <>
-      {/* Indicators Row */}
-      <div className="flex items-center mb-4 relative z-[70]">
+      {/* Indicators Row - Hidden on mobile */}
+      <div className="hidden md:flex items-center mb-4 relative z-[70]">
         <div className="flex items-center gap-3 flex-wrap">
           <MarketMomentum
             avgRsi7={avgRsi7}
@@ -226,8 +226,8 @@ export function Controls({
       </div>
 
       {/* Quick Filters + Controls Row */}
-      <div className="flex items-center justify-between gap-4 mb-4 flex-wrap relative z-[60]">
-        <div className="flex items-center gap-4 flex-wrap">
+      <div className="flex items-center justify-between gap-4 mb-4 relative z-[60]">
+        <div className="flex items-center gap-2 md:gap-4 overflow-x-auto pb-1 md:pb-0 md:flex-wrap scrollbar-hide">
         {/* Quick Filter Buttons - Part 1: All & Top 25 */}
         <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
           <button
@@ -293,9 +293,9 @@ export function Controls({
             )}
           </div>
 
-          {/* No Spot with tooltip */}
+          {/* No Spot with tooltip - Hidden on mobile */}
           <div
-            className="relative"
+            className="relative hidden md:block"
             onMouseEnter={() => setHoveredFilter('noSpot')}
             onMouseLeave={() => setHoveredFilter(null)}
           >
@@ -319,9 +319,9 @@ export function Controls({
             )}
           </div>
 
-          {/* New Listed with tooltip */}
+          {/* New Listed with tooltip - Hidden on mobile */}
           <div
-            className="relative"
+            className="relative hidden md:block"
             onMouseEnter={() => setHoveredFilter('newListed')}
             onMouseLeave={() => setHoveredFilter(null)}
           >
@@ -346,8 +346,8 @@ export function Controls({
           </div>
         </div>
 
-        {/* Quick Filter Buttons - Part 2: RSI Filters */}
-        <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
+        {/* Quick Filter Buttons - Part 2: RSI Filters - Hidden on mobile */}
+        <div className="hidden md:inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
           {/* Overbought with tooltip */}
           <div
             className="relative"
@@ -406,7 +406,7 @@ export function Controls({
         {/* Customize button - icon only */}
         <div
           ref={customizeButtonRef}
-          className={`inline-flex rounded-lg p-2.5 cursor-pointer transition-all ${
+          className={`inline-flex rounded-lg p-2.5 cursor-pointer transition-all flex-shrink-0 ${
             showCustomizePanel || hasFilters
               ? 'bg-white shadow-sm'
               : 'bg-gray-200 hover:bg-gray-300'
@@ -421,7 +421,7 @@ export function Controls({
         </div>
 
         {/* Search box - right side */}
-        <div className="inline-flex items-center bg-gray-200 rounded-lg p-1 gap-1">
+        <div className="inline-flex items-center bg-gray-200 rounded-lg p-1 gap-1 flex-shrink-0">
           <svg
             className="w-4 h-4 text-gray-500 ml-2"
             viewBox="0 0 24 24"
