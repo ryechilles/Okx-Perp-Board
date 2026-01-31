@@ -352,6 +352,20 @@ export default function PerpBoard() {
                       const parts = ticker.instId.split('-');
                       const base = parts[0];
                       const quote = parts[1];
+
+                      // Calculate listing age label
+                      const getListingAgeLabel = (): string | null => {
+                        if (!listingData?.listTime) return null;
+                        const now = Date.now();
+                        const ageMs = now - listingData.listTime;
+                        const ageDays = ageMs / (24 * 60 * 60 * 1000);
+                        if (ageDays <= 30) return 'Listed <30d';
+                        if (ageDays <= 60) return 'Listed <60d';
+                        if (ageDays <= 90) return 'Listed <90d';
+                        if (ageDays <= 180) return 'Listed <180d';
+                        return null; // Don't show for older tokens
+                      };
+                      const listingAgeLabel = getListingAgeLabel();
                       
                       // Helper to get sticky style for cells
                       const getCellStyle = (key: ColumnKey): React.CSSProperties | undefined => {
@@ -418,6 +432,9 @@ export default function PerpBoard() {
                                       </div>
                                       {!hasSpot && (
                                         <span className="text-[9px] text-gray-500 font-normal">No Spot on OKX</span>
+                                      )}
+                                      {listingAgeLabel && (
+                                        <span className="text-[9px] text-blue-500 font-normal">{listingAgeLabel}</span>
                                       )}
                                     </div>
                                   </td>
