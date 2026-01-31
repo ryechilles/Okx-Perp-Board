@@ -176,23 +176,6 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
     }
   };
 
-  // Get summary info for altcoin vs BTC performance
-  const getPerformanceSummary = (): { altStatus: string; btcStatus: string; summary: string } | null => {
-    const altAvg = getAvg('top20'); // Use top20 as reference
-    const btcChange = getBtcChange();
-
-    if (altAvg === null || btcChange === null) {
-      return null;
-    }
-
-    const altStatus = altAvg >= 0 ? 'Altcoin ↑' : 'Altcoin ↓';
-    const btcStatus = btcChange >= 0 ? 'BTC ↑' : 'BTC ↓';
-    const altBetter = altAvg > btcChange;
-    const summary = altBetter ? 'Altcoin Outperforms BTC' : 'Altcoin Underperforms BTC';
-
-    return { altStatus, btcStatus, summary };
-  };
-
   // Get top N symbols for filtering
   const getTopNSymbols = (n: number): string[] => {
     return altcoins.slice(0, n).map(t => t.symbol);
@@ -331,60 +314,38 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
         </div>
 
-        {/* Ratio rows with summary on right */}
+        {/* Ratio rows with direction indicators */}
         <div className="space-y-1 text-[12px] text-gray-500 border-t border-gray-200 pt-2">
-          <div className="flex items-center">
-            <span className="w-[130px]">Altcoin Top10 / BTC:</span>
-            <span className="font-medium text-gray-800">
-              {isLoading ? '--' : (() => {
-                const alt = getAvg('top10');
-                const btc = getBtcChange();
-                if (btc === 0 || btc === null || alt === null) return '--';
-                // Only show ratio when same direction
-                if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
-                  return Math.abs(alt / btc).toFixed(1);
-                }
-                return '--';
-              })()}
-            </span>
-          </div>
-          <div className="flex items-center">
-            <span className="w-[130px]">Altcoin Top20 / BTC:</span>
-            <span className="font-medium text-gray-800">
-              {isLoading ? '--' : (() => {
-                const alt = getAvg('top20');
-                const btc = getBtcChange();
-                if (btc === 0 || btc === null || alt === null) return '--';
-                if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
-                  return Math.abs(alt / btc).toFixed(1);
-                }
-                return '--';
-              })()}
-            </span>
-            {!isLoading && getPerformanceSummary() && (
-              <>
-                <span className="text-gray-500 mx-4">|</span>
-                <div className="text-[11px]">
-                  <div className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</div>
-                  <div className="text-gray-500 font-medium">{getPerformanceSummary()?.summary}</div>
-                </div>
-              </>
-            )}
-          </div>
-          <div className="flex items-center">
-            <span className="w-[130px]">Altcoin Top50 / BTC:</span>
-            <span className="font-medium text-gray-800">
-              {isLoading ? '--' : (() => {
-                const alt = getAvg('top50');
-                const btc = getBtcChange();
-                if (btc === 0 || btc === null || alt === null) return '--';
-                if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
-                  return Math.abs(alt / btc).toFixed(1);
-                }
-                return '--';
-              })()}
-            </span>
-          </div>
+          {(['top10', 'top20', 'top50'] as const).map((tier, idx) => {
+            const alt = getAvg(tier);
+            const btc = getBtcChange();
+            const ratio = (() => {
+              if (isLoading || btc === 0 || btc === null || alt === null) return '--';
+              if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
+                return Math.abs(alt / btc).toFixed(1);
+              }
+              return '--';
+            })();
+            const altDir = alt !== null ? (alt >= 0 ? '↑' : '↓') : '';
+            const btcDir = btc !== null ? (btc >= 0 ? '↑' : '↓') : '';
+            const altColor = alt !== null ? (alt >= 0 ? 'text-green-500' : 'text-red-500') : 'text-gray-400';
+            const btcColor = btc !== null ? (btc >= 0 ? 'text-green-500' : 'text-red-500') : 'text-gray-400';
+            const tierLabel = tier === 'top10' ? 'Top10' : tier === 'top20' ? 'Top20' : 'Top50';
+
+            return (
+              <div key={tier} className="flex items-center">
+                <span className="w-[130px]">Altcoin {tierLabel} / BTC:</span>
+                <span className="font-medium text-gray-800 w-8">{ratio}</span>
+                {idx === 1 && <span className="text-gray-500 mx-3">|</span>}
+                {idx !== 1 && <span className="mx-3 w-px"></span>}
+                <span className="text-[11px]">
+                  <span className={altColor}>Altcoin {altDir}</span>
+                  <span className="text-gray-400 mx-1.5"></span>
+                  <span className={btcColor}>BTC {btcDir}</span>
+                </span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Hover tooltip */}
