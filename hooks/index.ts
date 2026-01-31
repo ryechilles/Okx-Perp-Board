@@ -9,3 +9,4 @@ export { useFilters } from './useFilters';
 export { usePagination } from './usePagination';
 export { useMarketStore } from './useMarketStore';
 export { useUrlState } from './useUrlState';
+export { useWidgetOrder } from './useWidgetOrder';

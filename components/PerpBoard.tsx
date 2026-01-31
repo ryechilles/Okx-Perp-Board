@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo, ReactNode } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
 import { useUrlState } from '@/hooks/useUrlState';
+import { useWidgetOrder } from '@/hooks/useWidgetOrder';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
@@ -41,9 +42,20 @@ const TABS = [
   { id: 'ahr999', label: 'AHR999', icon: <BtcLogo /> },
 ];
 
+// Default widget order per tab (for tabs with multiple widgets)
+const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
+  altcoin: ['topGainers', 'vsBtc'],
+};
+
 export default function PerpBoard() {
   const store = useMarketStore();
   const [activeTab, setActiveTab] = useState('rsi');
+
+  // Widget order for tabs with multiple widgets
+  const [altcoinWidgetOrder, setAltcoinWidgetOrder] = useWidgetOrder(
+    'altcoin',
+    DEFAULT_WIDGET_ORDER.altcoin
+  );
 
   // URL state sync
   useUrlState(
@@ -175,6 +187,27 @@ export default function PerpBoard() {
     store.setSearchTerm(symbols.join('|'));
   };
 
+  // Widget mapping for altcoin tab
+  const altcoinWidgets: Record<string, ReactNode> = useMemo(() => ({
+    topGainers: (
+      <AltcoinTopGainers
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+      />
+    ),
+    vsBtc: (
+      <AltcoinVsBTC
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+        onTopNClick={handleGroupClick}
+      />
+    ),
+  }), [store.tickers, store.rsiData, store.marketCapData]);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* ===================================================================
@@ -223,23 +256,17 @@ export default function PerpBoard() {
                 />
               )}
 
-              {/* Altcoin Tab Widgets */}
+              {/* Altcoin Tab Widgets - Sortable */}
               {activeTab === 'altcoin' && (
-                <>
-                  <AltcoinTopGainers
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                  />
-                  <AltcoinVsBTC
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                    onTopNClick={handleGroupClick}
-                  />
-                </>
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={altcoinWidgetOrder}
+                  onOrderChange={setAltcoinWidgetOrder}
+                >
+                  {altcoinWidgetOrder.map((id) => altcoinWidgets[id])}
+                </WidgetGrid>
               )}
 
               {/* AHR999 Tab Widget */}
@@ -281,20 +308,14 @@ export default function PerpBoard() {
                 />
               )}
               {activeTab === 'altcoin' && (
-                <WidgetGrid variant="auto" gap="md">
-                  <AltcoinTopGainers
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                  />
-                  <AltcoinVsBTC
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                    onTopNClick={handleGroupClick}
-                  />
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={altcoinWidgetOrder}
+                  onOrderChange={setAltcoinWidgetOrder}
+                >
+                  {altcoinWidgetOrder.map((id) => altcoinWidgets[id])}
                 </WidgetGrid>
               )}
               {activeTab === 'ahr999' && (
