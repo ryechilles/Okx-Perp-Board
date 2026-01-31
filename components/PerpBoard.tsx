@@ -78,7 +78,7 @@ export default function PerpBoard() {
   
   // Fixed column widths - must match COLUMN_DEFINITIONS
   const FIXED_WIDTHS: Record<string, number> = {
-    favorite: 40,
+    favorite: 28,
     rank: 48,
     logo: 32,
     symbol: 95,

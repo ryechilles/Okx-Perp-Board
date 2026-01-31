@@ -332,17 +332,34 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         </div>
 
         {/* Ratio rows with summary on right */}
-        <div className="space-y-0.5 text-[12px] text-gray-500 border-t border-gray-200 pt-2">
+        <div className="space-y-1 text-[12px] text-gray-500 border-t border-gray-200 pt-2">
           <div className="flex items-center">
             <span className="w-[130px]">Altcoin Top10 / BTC:</span>
             <span className="font-medium text-gray-800">
-              {isLoading ? '--' : (getBtcChange() === 0 || getBtcChange() === null ? '--' : Math.abs((getAvg('top10') ?? 0) / getBtcChange()!).toFixed(1))}
+              {isLoading ? '--' : (() => {
+                const alt = getAvg('top10');
+                const btc = getBtcChange();
+                if (btc === 0 || btc === null || alt === null) return '--';
+                // Only show ratio when same direction
+                if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
+                  return Math.abs(alt / btc).toFixed(1);
+                }
+                return '--';
+              })()}
             </span>
           </div>
           <div className="flex items-center">
             <span className="w-[130px]">Altcoin Top20 / BTC:</span>
             <span className="font-medium text-gray-800">
-              {isLoading ? '--' : (getBtcChange() === 0 || getBtcChange() === null ? '--' : Math.abs((getAvg('top20') ?? 0) / getBtcChange()!).toFixed(1))}
+              {isLoading ? '--' : (() => {
+                const alt = getAvg('top20');
+                const btc = getBtcChange();
+                if (btc === 0 || btc === null || alt === null) return '--';
+                if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
+                  return Math.abs(alt / btc).toFixed(1);
+                }
+                return '--';
+              })()}
             </span>
             {!isLoading && getPerformanceSummary() && (
               <>
@@ -357,7 +374,15 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           <div className="flex items-center">
             <span className="w-[130px]">Altcoin Top50 / BTC:</span>
             <span className="font-medium text-gray-800">
-              {isLoading ? '--' : (getBtcChange() === 0 || getBtcChange() === null ? '--' : Math.abs((getAvg('top50') ?? 0) / getBtcChange()!).toFixed(1))}
+              {isLoading ? '--' : (() => {
+                const alt = getAvg('top50');
+                const btc = getBtcChange();
+                if (btc === 0 || btc === null || alt === null) return '--';
+                if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
+                  return Math.abs(alt / btc).toFixed(1);
+                }
+                return '--';
+              })()}
             </span>
           </div>
         </div>
