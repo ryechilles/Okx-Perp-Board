@@ -216,7 +216,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {/* Hover tooltip */}
         {showGainersTooltip && (
           <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
-            <div className="text-[11px] text-gray-600 whitespace-nowrap">
+            <div className="text-[11px] text-gray-500 whitespace-nowrap">
               Top 5 gainers from top 100 altcoins by market cap (excluding BTC)
             </div>
           </div>
@@ -295,7 +295,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {/* Avg Change rows */}
         <div className="space-y-1 text-[12px] mb-2">
           <div className="flex items-center">
-            <span className="text-gray-600">Altcoin Top10:</span>
+            <span className="text-gray-500">Altcoin Top10:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top10')).color}`}
               onClick={() => onTopNClick?.(getTopNSymbols(10))}
@@ -304,15 +304,15 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             </span>
           </div>
           <div className="flex items-center">
-            <span className="text-gray-600">Altcoin Top20:</span>
+            <span className="text-gray-500">Altcoin Top20:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top20')).color}`}
               onClick={() => onTopNClick?.(getTopNSymbols(20))}
             >
               {isLoading ? '--' : formatChange(getAvg('top20')).text}
             </span>
-            <span className="text-gray-300 ml-6">|</span>
-            <span className="text-gray-600 ml-2">BTC:</span>
+            <span className="text-gray-500 ml-6">|</span>
+            <span className="text-gray-500 ml-2">BTC:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
               onClick={() => onTokenClick?.('BTC')}
@@ -321,7 +321,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             </span>
           </div>
           <div className="flex items-center">
-            <span className="text-gray-600">Altcoin Top50:</span>
+            <span className="text-gray-500">Altcoin Top50:</span>
             <span
               className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top50')).color}`}
               onClick={() => onTopNClick?.(getTopNSymbols(50))}
@@ -333,7 +333,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
         {/* Ratio rows with summary on right */}
         <div className="flex items-center justify-between border-t border-gray-100 pt-2">
-          <div className="space-y-0.5 text-[12px] text-gray-600">
+          <div className="space-y-0.5 text-[12px] text-gray-500">
             <div className="flex items-center">
               <span className="w-[130px]">Altcoin Top10 / BTC:</span>
               <span className="font-medium text-gray-800">
@@ -358,7 +358,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           {!isLoading && getPerformanceSummary() && (
             <div className="text-[11px] text-right ml-6 border-l border-gray-100 pl-4">
               <div className="text-gray-400">{getPerformanceSummary()?.altStatus} | {getPerformanceSummary()?.btcStatus}</div>
-              <div className="text-gray-600 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
+              <div className="text-gray-500 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
             </div>
           )}
         </div>
@@ -366,7 +366,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {/* Hover tooltip */}
         {showAvgTooltip && (
           <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50">
-            <div className="text-[11px] text-gray-600 whitespace-nowrap">
+            <div className="text-[11px] text-gray-500 whitespace-nowrap">
               Average price change of top N altcoins by market cap (excluding BTC)
             </div>
           </div>
