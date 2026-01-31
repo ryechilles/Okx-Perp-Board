@@ -63,7 +63,7 @@ export function AHR999Indicator() {
       icon={btcIcon}
       subtitle="BTC Accumulation Indicator"
       loading={loading}
-      className="min-w-[280px] max-w-[320px]"
+      className="min-w-[280px] max-w-[320px] group"
     >
       {/* Current Zone Display */}
       <div className={`rounded-lg px-4 py-3 mb-4 ${zoneInfo.bgColor || 'bg-gray-50'}`}>
@@ -84,7 +84,7 @@ export function AHR999Indicator() {
       </div>
 
       {/* Zone Bar */}
-      <div className="mb-4">
+      <div>
         <div className="flex h-2 rounded-full overflow-hidden">
           {ZONE_COLORS.map((zone, i) => (
             <div key={i} className={zone.color} style={{ width: zone.width }} />
@@ -104,8 +104,8 @@ export function AHR999Indicator() {
         )}
       </div>
 
-      {/* Zone Legend */}
-      <div className="space-y-1">
+      {/* Zone Legend - Show on hover */}
+      <div className="space-y-1 mt-0 max-h-0 overflow-hidden opacity-0 group-hover:mt-3 group-hover:max-h-32 group-hover:opacity-100 transition-all duration-200">
         {ZONE_LEGEND.map((zone) => (
           <div
             key={zone.label}
