@@ -200,7 +200,7 @@ export default function PerpBoard() {
       
       {/* Altcoin Metrics & Funding Killer - Hidden on mobile */}
       <div className="hidden md:block px-2 sm:px-6 relative z-30">
-        <div className="max-w-[1400px] mx-auto w-full flex flex-col lg:flex-row lg:items-start gap-4 mb-4 pb-2">
+        <div className="max-w-[1400px] mx-auto w-full flex flex-col lg:flex-row lg:items-stretch gap-4 mb-4 pb-2">
           <AltcoinMetrics
             tickers={store.tickers}
             rsiData={store.rsiData}

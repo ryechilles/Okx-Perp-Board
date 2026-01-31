@@ -72,7 +72,7 @@ export function FundingKiller({
 
   return (
     <div
-      className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-default"
+      className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-default h-full flex flex-col"
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
@@ -80,7 +80,7 @@ export function FundingKiller({
       <div className="text-[13px] font-medium text-gray-700 mb-2">☠️ Funding Rate Killer</div>
 
       {/* Content */}
-      <div className="flex gap-6">
+      <div className="flex gap-6 flex-1">
         {/* Long Killers Column */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between mb-1">
