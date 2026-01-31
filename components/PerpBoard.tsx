@@ -8,6 +8,7 @@ import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { ChangeWithSparkline } from '@/components/Sparkline';
 import { AltcoinMetrics } from '@/components/AltcoinMetrics';
+import { FundingKiller } from '@/components/FundingKiller';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS, formatPrice, formatMarketCap, formatVolume, getRsiClass, getChangeClass, formatFundingRate, getFundingRateClass, formatFundingApr, getFundingAprClass, formatListDate, formatSettlementInterval, formatRsi, getRsiSignal } from '@/lib/utils';
 
@@ -188,22 +189,18 @@ export default function PerpBoard() {
             avgRsiW14={avgRsiW14}
             overboughtCount={quickFilterCounts.overbought}
             oversoldCount={quickFilterCounts.oversold}
-            tickers={store.tickers}
-            fundingRateData={store.fundingRateData}
-            marketCapData={store.marketCapData}
             onColumnChange={store.updateColumn}
             onColumnsPreset={store.setColumnsPreset}
             onFiltersChange={store.setFilters}
             onSearchChange={store.setSearchTerm}
             onColumnOrderChange={store.updateColumnOrder}
-            onTokenClick={(symbol) => store.setSearchTerm(symbol)}
           />
         </div>
       </div>
       
-      {/* Altcoin Metrics */}
+      {/* Altcoin Metrics & Funding Killer */}
       <div className="px-2 sm:px-6 relative z-30">
-        <div className="max-w-[1400px] mx-auto w-full">
+        <div className="max-w-[1400px] mx-auto w-full flex flex-col lg:flex-row items-start gap-4 mb-4 pb-2">
           <AltcoinMetrics
             tickers={store.tickers}
             rsiData={store.rsiData}
@@ -215,6 +212,15 @@ export default function PerpBoard() {
             onTopNClick={(symbols) => {
               store.setFilters({}); // Clear all filters
               store.setSearchTerm(symbols.join('|'));
+            }}
+          />
+          <FundingKiller
+            tickers={store.tickers}
+            fundingRateData={store.fundingRateData}
+            marketCapData={store.marketCapData}
+            onTokenClick={(symbol) => {
+              store.setFilters({}); // Clear all filters
+              store.setSearchTerm(symbol);
             }}
           />
         </div>

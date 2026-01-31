@@ -74,7 +74,7 @@ export function FundingKiller({
       onMouseLeave={() => setShowTooltip(false)}
     >
       {/* Title */}
-      <div className="text-[13px] font-medium text-gray-700 mb-2">Funding Rate Killer</div>
+      <div className="text-[13px] font-medium text-gray-700 mb-2">☠️ Funding Rate Killer</div>
 
       {/* Content */}
       <div className="flex gap-6">

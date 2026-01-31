@@ -184,7 +184,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
   const isLoading = altcoins.length === 0;
 
   return (
-    <div className="flex flex-col lg:flex-row items-start gap-4 mb-4 pb-2">
+    <>
       {/* Top Gainers Card */}
       <div
         className="relative bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[300px] flex-shrink-0"
@@ -357,6 +357,6 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
