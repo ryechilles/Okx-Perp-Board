@@ -103,8 +103,8 @@ export function FundingKiller({
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-[10px] text-gray-400 w-16 text-right">Price</span>
-              <span className="text-[10px] text-gray-400 w-16 text-right">APR</span>
+              <span className="text-[10px] text-gray-400 w-16 text-center">Price</span>
+              <span className="text-[10px] text-gray-400 w-16 text-center">APR</span>
             </div>
           </div>
 
@@ -127,8 +127,8 @@ export function FundingKiller({
                     <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-[11px] text-gray-500 tabular-nums w-16 text-right">{formatPrice(t.price)}</span>
-                    <span className="text-[12px] font-semibold text-green-500 tabular-nums w-16 text-right">
+                    <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">{formatPrice(t.price)}</span>
+                    <span className="text-[12px] font-semibold text-green-500 tabular-nums w-16 text-center">
                       {t.apr.toFixed(1)}%
                     </span>
                   </div>
@@ -158,8 +158,8 @@ export function FundingKiller({
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-[10px] text-gray-400 w-16 text-right">Price</span>
-              <span className="text-[10px] text-gray-400 w-16 text-right">APR</span>
+              <span className="text-[10px] text-gray-400 w-16 text-center">Price</span>
+              <span className="text-[10px] text-gray-400 w-16 text-center">APR</span>
             </div>
           </div>
 
@@ -182,8 +182,8 @@ export function FundingKiller({
                     <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-[11px] text-gray-500 tabular-nums w-16 text-right">{formatPrice(t.price)}</span>
-                    <span className="text-[12px] font-semibold text-red-500 tabular-nums w-16 text-right">
+                    <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">{formatPrice(t.price)}</span>
+                    <span className="text-[12px] font-semibold text-red-500 tabular-nums w-16 text-center">
                       +{t.apr.toFixed(1)}%
                     </span>
                   </div>

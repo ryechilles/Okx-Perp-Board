@@ -8,8 +8,8 @@
 export const APP_CONFIG = {
   name: 'Perp Board',
   title: 'Perp Board — OKX Perpetual Market Dashboard',
-  version: '2.5.0',
-  versionDisplay: 'v2.5.0',
+  version: '2.6.1',
+  versionDisplay: 'v2.6.1',
   description: 'Real-time OKX perpetual futures dashboard. Funding rates, RSI signals, market cap and momentum at a glance.',
   author: 'ryechilles',
   links: {
