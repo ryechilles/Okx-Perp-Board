@@ -46,6 +46,7 @@ const TABS = [
 
 // Default widget order per tab (for tabs with multiple widgets)
 const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
+  rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
   altcoin: ['topGainers', 'vsBtc'],
 };
 
@@ -54,6 +55,10 @@ export default function PerpBoard() {
   const [activeTab, setActiveTab] = useState('rsi');
 
   // Widget order for tabs with multiple widgets
+  const [rsiWidgetOrder, setRsiWidgetOrder] = useWidgetOrder(
+    'rsi',
+    DEFAULT_WIDGET_ORDER.rsi
+  );
   const [altcoinWidgetOrder, setAltcoinWidgetOrder] = useWidgetOrder(
     'altcoin',
     DEFAULT_WIDGET_ORDER.altcoin
@@ -189,6 +194,34 @@ export default function PerpBoard() {
     store.setSearchTerm(symbols.join('|'));
   };
 
+  // Widget mapping for RSI tab
+  const rsiWidgets: Record<string, ReactNode> = useMemo(() => ({
+    marketMomentum: (
+      <MarketMomentum
+        avgRsi7={avgRsi7}
+        avgRsi14={avgRsi14}
+        avgRsiW7={avgRsiW7}
+        avgRsiW14={avgRsiW14}
+      />
+    ),
+    rsiOversold: (
+      <RsiOversold
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+      />
+    ),
+    rsiOverbought: (
+      <RsiOverbought
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+      />
+    ),
+  }), [avgRsi7, avgRsi14, avgRsiW7, avgRsiW14, store.tickers, store.rsiData, store.marketCapData]);
+
   // Widget mapping for altcoin tab
   const altcoinWidgets: Record<string, ReactNode> = useMemo(() => ({
     topGainers: (
@@ -261,28 +294,17 @@ export default function PerpBoard() {
           <div className="flex flex-col lg:flex-row flex-1 gap-4 overflow-hidden">
             {/* Widgets - Desktop: fixed width sidebar, Mobile: above table */}
             <div className="lg:w-[320px] flex-shrink-0 lg:overflow-y-auto lg:pr-2 space-y-4">
-              {/* RSI Tab Widgets */}
+              {/* RSI Tab Widgets - Sortable */}
               {activeTab === 'rsi' && (
-                <>
-                  <MarketMomentum
-                    avgRsi7={avgRsi7}
-                    avgRsi14={avgRsi14}
-                    avgRsiW7={avgRsiW7}
-                    avgRsiW14={avgRsiW14}
-                  />
-                  <RsiOversold
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                  />
-                  <RsiOverbought
-                    tickers={store.tickers}
-                    rsiData={store.rsiData}
-                    marketCapData={store.marketCapData}
-                    onTokenClick={handleTokenClick}
-                  />
-                </>
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={rsiWidgetOrder}
+                  onOrderChange={setRsiWidgetOrder}
+                >
+                  {rsiWidgetOrder.map((id) => rsiWidgets[id])}
+                </WidgetGrid>
               )}
 
               {/* Funding Tab Widget */}
