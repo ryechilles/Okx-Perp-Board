@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
 import { useUrlState } from '@/hooks/useUrlState';
-import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { AltcoinTopGainers } from '@/components/AltcoinTopGainers';
@@ -171,15 +170,12 @@ export default function PerpBoard() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 1: Fixed Header + Tab Navigation
+          SECTION 1: Tab Navigation
           ═══════════════════════════════════════════════════════════════════ */}
       <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0">
         <div className="max-w-[1400px] mx-auto w-full">
-          {/* Header */}
-          <Header />
-
           {/* Tab Navigation */}
-          <div className="mt-4">
+          <div>
             <TabContainer
               tabs={TABS}
               activeTab={activeTab}

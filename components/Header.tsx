@@ -48,21 +48,8 @@ function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
 
 export function Header() {
   return (
-    <div className="flex items-center justify-between gap-4 mb-4">
-      {/* Left: Logo only */}
-      <div className="flex items-center gap-1.5 flex-shrink-0">
-        <PerpLogo className="w-6 h-6 rounded" />
-      </div>
-
-      {/* Right: Exchange selector */}
-      <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-        <button className="px-2 md:px-3 py-1.5 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm">
-          OKX
-        </button>
-        <button className="hidden md:block px-3 py-1.5 rounded-md text-sm font-medium text-gray-500 cursor-not-allowed">
-          Coming soon
-        </button>
-      </div>
+    <div className="flex items-center gap-4 mb-4">
+      <PerpLogo className="w-6 h-6 rounded" />
     </div>
   );
 }
