@@ -82,12 +82,15 @@ export function FundingKiller({
       <div className="flex gap-6">
         {/* Long Killers Column */}
         <div className="flex flex-col gap-1">
-          <div
-            className={`flex items-center gap-1.5 mb-1 ${longKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
-            onClick={() => longKillers.length > 0 && onGroupClick?.(longKillers.map(t => t.symbol))}
-          >
-            <span className="text-[11px] font-medium text-red-500">Long Killer</span>
-            <span className="text-[11px] text-gray-400">({longKillers.length})</span>
+          <div className="flex items-center justify-between mb-1">
+            <div
+              className={`flex items-center gap-1.5 ${longKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
+              onClick={() => longKillers.length > 0 && onGroupClick?.(longKillers.map(t => t.symbol))}
+            >
+              <span className="text-[11px] font-medium text-red-500">Long Killer</span>
+              <span className="text-[11px] text-gray-400">({longKillers.length})</span>
+            </div>
+            <span className="text-[10px] text-gray-400 ml-2">APR</span>
           </div>
           {displayLongKillers.length > 0 ? (
             displayLongKillers.map(t => (
@@ -96,11 +99,13 @@ export function FundingKiller({
                 className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5 -mx-1"
                 onClick={() => onTokenClick?.(t.symbol)}
               >
-                {t.logo && (
+                {t.logo ? (
                   <img src={t.logo} alt={t.symbol} className="w-4 h-4 rounded-full" />
+                ) : (
+                  <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] text-gray-500">{t.symbol.charAt(0)}</div>
                 )}
                 <span className="text-[12px] font-medium text-gray-900 w-14">{t.symbol}</span>
-                <span className="text-[12px] text-red-500 tabular-nums">+{t.apr.toFixed(1)}%</span>
+                <span className="text-[12px] text-red-500 tabular-nums text-right w-20">+{t.apr.toFixed(1)}%</span>
               </div>
             ))
           ) : (
@@ -109,16 +114,19 @@ export function FundingKiller({
         </div>
 
         {/* Divider */}
-        <div className="text-gray-300 self-center">|</div>
+        <div className="text-gray-900 self-center">|</div>
 
         {/* Short Killers Column */}
         <div className="flex flex-col gap-1">
-          <div
-            className={`flex items-center gap-1.5 mb-1 ${shortKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
-            onClick={() => shortKillers.length > 0 && onGroupClick?.(shortKillers.map(t => t.symbol))}
-          >
-            <span className="text-[11px] font-medium text-green-500">Short Killer</span>
-            <span className="text-[11px] text-gray-400">({shortKillers.length})</span>
+          <div className="flex items-center justify-between mb-1">
+            <div
+              className={`flex items-center gap-1.5 ${shortKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
+              onClick={() => shortKillers.length > 0 && onGroupClick?.(shortKillers.map(t => t.symbol))}
+            >
+              <span className="text-[11px] font-medium text-green-500">Short Killer</span>
+              <span className="text-[11px] text-gray-400">({shortKillers.length})</span>
+            </div>
+            <span className="text-[10px] text-gray-400 ml-2">APR</span>
           </div>
           {displayShortKillers.length > 0 ? (
             displayShortKillers.map(t => (
@@ -127,11 +135,13 @@ export function FundingKiller({
                 className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5 -mx-1"
                 onClick={() => onTokenClick?.(t.symbol)}
               >
-                {t.logo && (
+                {t.logo ? (
                   <img src={t.logo} alt={t.symbol} className="w-4 h-4 rounded-full" />
+                ) : (
+                  <div className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] text-gray-500">{t.symbol.charAt(0)}</div>
                 )}
                 <span className="text-[12px] font-medium text-gray-900 w-14">{t.symbol}</span>
-                <span className="text-[12px] text-green-500 tabular-nums">{t.apr.toFixed(1)}%</span>
+                <span className="text-[12px] text-green-500 tabular-nums text-right w-20">{t.apr.toFixed(1)}%</span>
               </div>
             ))
           ) : (

@@ -353,16 +353,19 @@ export default function PerpBoard() {
                       const base = parts[0];
                       const quote = parts[1];
 
-                      // Calculate listing age label - only show for tokens listed < 30 days
-                      const getListingAgeLabel = (): string | null => {
+                      // Calculate listing age label - show for tokens listed < 180 days
+                      const getListingAgeLabel = (): { label: string; isNew: boolean } | null => {
                         if (!listingData?.listTime) return null;
                         const now = Date.now();
                         const ageMs = now - listingData.listTime;
                         const ageDays = ageMs / (24 * 60 * 60 * 1000);
-                        if (ageDays <= 30) return 'Listed <30d';
+                        if (ageDays <= 30) return { label: 'Listed <30d', isNew: true };
+                        if (ageDays <= 60) return { label: 'Listed <60d', isNew: false };
+                        if (ageDays <= 90) return { label: 'Listed <90d', isNew: false };
+                        if (ageDays <= 180) return { label: 'Listed <180d', isNew: false };
                         return null;
                       };
-                      const listingAgeLabel = getListingAgeLabel();
+                      const listingAgeInfo = getListingAgeLabel();
                       
                       // Helper to get sticky style for cells
                       const getCellStyle = (key: ColumnKey): React.CSSProperties | undefined => {
@@ -430,8 +433,8 @@ export default function PerpBoard() {
                                       {!hasSpot && (
                                         <span className="text-[11px] text-gray-500 font-normal">No Spot on OKX</span>
                                       )}
-                                      {listingAgeLabel && (
-                                        <span className="text-[11px] text-blue-500 font-normal">{listingAgeLabel}</span>
+                                      {listingAgeInfo && (
+                                        <span className={`text-[11px] font-normal ${listingAgeInfo.isNew ? 'text-blue-500' : 'text-gray-500'}`}>{listingAgeInfo.label}</span>
                                       )}
                                     </div>
                                   </td>
