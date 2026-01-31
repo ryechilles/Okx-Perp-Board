@@ -431,7 +431,7 @@ export function Controls({
         {/* Settings icon - minimal style */}
         <div
           ref={customizeButtonRef}
-          className="cursor-pointer flex-shrink-0 p-1 transition-all hover:opacity-70"
+          className="cursor-pointer flex-shrink-0 p-1"
           onClick={() => setShowCustomizePanel(!showCustomizePanel)}
         >
           <svg
@@ -517,14 +517,24 @@ export function Controls({
                 Filters {hasFilters && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 ml-1" />}
               </button>
             </div>
-            <button
-              onClick={() => setShowCustomizePanel(false)}
-              className="p-1.5 rounded-md hover:bg-gray-300 text-gray-500"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
+{(hasFilters || hasNonDefaultColumns) && (
+              <button
+                onClick={() => {
+                  if (customizeTab === 'columns') {
+                    onColumnsPreset('default');
+                  } else {
+                    handleClearFilters();
+                  }
+                }}
+                className="p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200"
+                title={customizeTab === 'columns' ? 'Reset columns' : 'Reset filters'}
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+              </button>
+            )}
           </div>
 
           {/* Content */}
@@ -536,7 +546,7 @@ export function Controls({
               {columnGroups.map(group => (
                 <div key={group.label}>
                   <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="inline-flex flex-wrap bg-gray-200 rounded-lg p-1 gap-0.5">
                     {group.columns.map(col => (
                       <button
                         key={col.key}
@@ -544,24 +554,12 @@ export function Controls({
                         className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                           columns[col.key]
                             ? 'bg-white text-gray-900 shadow-sm'
-                            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                            : 'text-gray-500 hover:text-gray-700'
                         }`}
                       >
                         {col.label}
                       </button>
                     ))}
-                    {group.label === 'Other' && hasNonDefaultColumns && (
-                      <button
-                        onClick={() => onColumnsPreset('default')}
-                        className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-300"
-                        title="Reset columns"
-                      >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                          <path d="M3 3v5h5" />
-                        </svg>
-                      </button>
-                    )}
                   </div>
                 </div>
               ))}
@@ -574,7 +572,7 @@ export function Controls({
               {/* Market Cap Rank */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Market Cap Rank</div>
-                <div className="flex flex-wrap gap-2">
+                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
                   {[
                     { value: '1-20', label: 'Top 20' },
                     { value: '21-50', label: '21-50' },
@@ -587,7 +585,7 @@ export function Controls({
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.rank === opt.value
                           ? 'bg-white text-gray-900 shadow-sm'
-                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       {opt.label}
@@ -599,7 +597,7 @@ export function Controls({
               {/* Market Cap */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Market Cap</div>
-                <div className="flex flex-wrap gap-2">
+                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
                   {[
                     { value: '20-100', label: '$20M-$100M' },
                     { value: '100-1000', label: '$100M-$1B' },
@@ -611,7 +609,7 @@ export function Controls({
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.marketCapMin === opt.value
                           ? 'bg-white text-gray-900 shadow-sm'
-                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       {opt.label}
@@ -623,7 +621,7 @@ export function Controls({
               {/* Funding Rate */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Funding Rate</div>
-                <div className="flex flex-wrap gap-2">
+                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
                   {[
                     { value: 'positive', label: 'Positive' },
                     { value: 'negative', label: 'Negative' },
@@ -634,7 +632,7 @@ export function Controls({
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.fundingRate === opt.value
                           ? 'bg-white text-gray-900 shadow-sm'
-                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       {opt.label}
@@ -663,7 +661,7 @@ export function Controls({
               {/* Has Spot */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Has Spot on OKX</div>
-                <div className="flex flex-wrap gap-2">
+                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
                   {[
                     { value: 'yes', label: 'Yes' },
                     { value: 'no', label: 'No' },
@@ -674,7 +672,7 @@ export function Controls({
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.hasSpot === opt.value
                           ? 'bg-white text-gray-900 shadow-sm'
-                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       {opt.label}
@@ -686,7 +684,7 @@ export function Controls({
               {/* Listing Age */}
               <div>
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Listing Age</div>
-                <div className="flex flex-wrap gap-2">
+                <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
                   {[
                     { value: '<30d', label: '<30d' },
                     { value: '<60d', label: '<60d' },
@@ -699,7 +697,7 @@ export function Controls({
                       className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
                         filters.listAge === opt.value
                           ? 'bg-white text-gray-900 shadow-sm'
-                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       {opt.label}
@@ -708,21 +706,6 @@ export function Controls({
                 </div>
               </div>
 
-              {/* Reset button */}
-              {hasFilters && (
-                <div className="pt-2">
-                  <button
-                    onClick={handleClearFilters}
-                    className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-300"
-                    title="Reset filters"
-                  >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                      <path d="M3 3v5h5" />
-                    </svg>
-                  </button>
-                </div>
-              )}
             </div>
           )}
           </div>
