@@ -216,25 +216,49 @@ export default function PerpBoard() {
       <Header />
 
       {/* ===================================================================
-          SECTION 2: Main Content (Left: Tabs + Widgets | Right: Controls + Table)
+          SECTION 2: Main Content
           =================================================================== */}
-      <div className="flex-1 flex flex-col lg:flex-row px-4 sm:px-6 py-4 overflow-hidden gap-4">
-        <div className="max-w-[1600px] mx-auto w-full flex flex-col lg:flex-row flex-1 overflow-hidden gap-4">
+      <div className="flex-1 flex flex-col px-4 sm:px-6 py-4 overflow-hidden">
+        <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 overflow-hidden">
 
           {/* -----------------------------------------------------------------
-              LEFT PANEL: Tabs + Widgets (Desktop sidebar)
+              ROW 1: Tabs (left) + Controls (right) - Mobile stacked
               ----------------------------------------------------------------- */}
-          <div className="hidden lg:flex flex-col w-[320px] flex-shrink-0 overflow-hidden">
-            {/* Tabs at top of left panel */}
-            <TabContainer
-              tabs={TABS}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              variant="sidebar"
-            />
+          <div className="flex flex-col lg:flex-row lg:items-start gap-4 mb-4">
+            {/* Tabs - Desktop: fixed width, Mobile: full width */}
+            <div className="lg:w-[320px] flex-shrink-0">
+              <TabContainer
+                tabs={TABS}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                variant="sidebar"
+              />
+            </div>
 
-            {/* Widgets below tabs - scrollable, aligned with table */}
-            <div className="flex-1 overflow-y-auto mt-4 space-y-4 pr-2">
+            {/* Controls - Desktop: flex-1, Mobile: full width */}
+            <div className="flex-1">
+              <Controls
+                columns={store.columns}
+                columnOrder={store.columnOrder}
+                filters={store.filters}
+                searchTerm={store.searchTerm}
+                overboughtCount={quickFilterCounts.overbought}
+                oversoldCount={quickFilterCounts.oversold}
+                onColumnChange={store.updateColumn}
+                onColumnsPreset={store.setColumnsPreset}
+                onFiltersChange={store.setFilters}
+                onSearchChange={store.setSearchTerm}
+                onColumnOrderChange={store.updateColumnOrder}
+              />
+            </div>
+          </div>
+
+          {/* -----------------------------------------------------------------
+              ROW 2: Widgets (left) + Table (right) - TOP ALIGNED
+              ----------------------------------------------------------------- */}
+          <div className="flex flex-col lg:flex-row flex-1 gap-4 overflow-hidden">
+            {/* Widgets - Desktop: fixed width sidebar, Mobile: above table */}
+            <div className="lg:w-[320px] flex-shrink-0 lg:overflow-y-auto lg:pr-2 space-y-4">
               {/* RSI Tab Widgets */}
               {activeTab === 'rsi' && (
                 <MarketMomentum
@@ -274,73 +298,8 @@ export default function PerpBoard() {
                 <AHR999Indicator />
               )}
             </div>
-          </div>
 
-          {/* -----------------------------------------------------------------
-              RIGHT PANEL: Controls + Table
-              ----------------------------------------------------------------- */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Mobile: Show tabs + widgets above controls */}
-            <div className="lg:hidden mb-4">
-              <TabContainer
-                tabs={TABS}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                variant="sidebar"
-                className="mb-4"
-              />
-
-              {activeTab === 'rsi' && (
-                <MarketMomentum
-                  avgRsi7={avgRsi7}
-                  avgRsi14={avgRsi14}
-                  avgRsiW7={avgRsiW7}
-                  avgRsiW14={avgRsiW14}
-                />
-              )}
-              {activeTab === 'funding' && (
-                <FundingKiller
-                  tickers={store.tickers}
-                  fundingRateData={store.fundingRateData}
-                  marketCapData={store.marketCapData}
-                  onTokenClick={handleTokenClick}
-                  onGroupClick={handleGroupClick}
-                />
-              )}
-              {activeTab === 'altcoin' && (
-                <WidgetGrid
-                  variant="vertical"
-                  gap="md"
-                  sortable
-                  itemIds={altcoinWidgetOrder}
-                  onOrderChange={setAltcoinWidgetOrder}
-                >
-                  {altcoinWidgetOrder.map((id) => altcoinWidgets[id])}
-                </WidgetGrid>
-              )}
-              {activeTab === 'ahr999' && (
-                <AHR999Indicator />
-              )}
-            </div>
-
-            {/* Controls: Quick Filters, Settings, Search */}
-            <div className="mb-4">
-              <Controls
-                columns={store.columns}
-                columnOrder={store.columnOrder}
-                filters={store.filters}
-                searchTerm={store.searchTerm}
-                overboughtCount={quickFilterCounts.overbought}
-                oversoldCount={quickFilterCounts.oversold}
-                onColumnChange={store.updateColumn}
-                onColumnsPreset={store.setColumnsPreset}
-                onFiltersChange={store.setFilters}
-                onSearchChange={store.setSearchTerm}
-                onColumnOrderChange={store.updateColumnOrder}
-              />
-            </div>
-
-            {/* Data Table */}
+            {/* Data Table - flex-1 to fill remaining space */}
             <div className="bg-white rounded-xl border border-gray-200 flex flex-col flex-1 overflow-hidden">
               {/* Scrollable Table Container */}
               <div
