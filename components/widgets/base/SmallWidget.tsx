@@ -59,11 +59,8 @@ export function SmallWidget({
       className={cn(
         // Base styles - floating card effect (always visible)
         'bg-white rounded-2xl',
-        // Soft shadow for floating effect - always visible
+        // Soft shadow for floating effect - always visible, no hover
         'shadow-[0_2px_12px_rgba(0,0,0,0.08)]',
-        // Subtle hover enhancement
-        'hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]',
-        'transition-shadow duration-200 ease-out',
         // Size constraints
         'min-w-[280px] w-full',
         // Flex behavior in grid

@@ -109,8 +109,8 @@ export function TabContainer({
                 onClick={() => !tab.disabled && handleTabChange(tab.id)}
                 disabled={tab.disabled}
                 className={cn(
-                  // Base styles
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium transition-all',
+                  // Base styles - exactly match quick filter buttons
+                  'flex items-center gap-1 px-3 py-1.5 rounded-md text-[13px] font-medium transition-all',
                   // Active state
                   activeTab === tab.id
                     ? 'bg-white text-gray-900 shadow-sm'
@@ -119,8 +119,8 @@ export function TabContainer({
                   tab.disabled && 'opacity-50 cursor-not-allowed'
                 )}
               >
-                {tab.icon && <span className="w-4 h-4">{tab.icon}</span>}
-                <span>{tab.label}</span>
+                {tab.icon}
+                {tab.label}
                 {tab.badge !== undefined && (
                   <span
                     className={cn(
