@@ -73,7 +73,7 @@ export function FundingKiller({
     <SmallWidget
       title="Funding Killer"
       icon={<span>☠️</span>}
-      subtitle="APR > 20% (excl. BTC/ETH)"
+      subtitle="Funding rate APR > 20%"
       loading={isLoading}
     >
       <div className="space-y-4">
