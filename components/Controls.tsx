@@ -443,10 +443,9 @@ export function Controls({
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </div>
-        </div>
 
-        {/* Search box - right side (desktop only) - minimal style */}
-        <div className="hidden md:inline-flex items-center gap-2 border-b border-gray-300 pb-1 flex-shrink-0">
+        {/* Search - minimal icon with expandable input */}
+        <div className="hidden md:inline-flex items-center gap-1 flex-shrink-0">
           <svg
             className="w-4 h-4 text-gray-400"
             viewBox="0 0 24 24"
@@ -464,8 +463,9 @@ export function Controls({
             placeholder="Search..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="bg-transparent border-none outline-none text-[13px] text-gray-700 placeholder-gray-400 w-[100px]"
+            className="bg-transparent border-none outline-none text-[13px] text-gray-700 placeholder-gray-400 w-[80px]"
           />
+        </div>
         </div>
       </div>
       
