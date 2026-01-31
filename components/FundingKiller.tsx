@@ -66,74 +66,74 @@ export function FundingKiller({
 
   const displayLongKillers = longKillers.slice(0, 5);
   const displayShortKillers = shortKillers.slice(0, 5);
-  const hasLongKillers = longKillers.length > 0;
-  const hasShortKillers = shortKillers.length > 0;
 
   return (
     <div
-      className="relative flex items-start gap-4 px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-default"
+      className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-default"
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
-      {/* Long Killers Section */}
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-1.5">
-          <span className="text-[11px] font-medium text-red-500">Long Killer</span>
-          <span className="text-[11px] text-gray-400">({longKillers.length})</span>
-        </div>
-        <div className="flex items-center gap-1">
-          {hasLongKillers ? (
+      {/* Title */}
+      <div className="text-[13px] font-medium text-gray-700 mb-2">Funding Rate Killer</div>
+
+      {/* Content */}
+      <div className="flex gap-6">
+        {/* Long Killers Column */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[11px] font-medium text-red-500">Long Killer</span>
+            <span className="text-[11px] text-gray-400">({longKillers.length})</span>
+          </div>
+          {displayLongKillers.length > 0 ? (
             displayLongKillers.map(t => (
               <div
                 key={t.instId}
-                className="flex items-center gap-1 px-1.5 py-0.5 bg-red-50 rounded cursor-pointer hover:bg-red-100 transition-colors"
+                className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5 -mx-1"
                 onClick={() => onTokenClick?.(t.symbol)}
-                title={`${t.symbol}: +${t.apr.toFixed(1)}% APR`}
               >
                 {t.logo && (
                   <img src={t.logo} alt={t.symbol} className="w-4 h-4 rounded-full" />
                 )}
-                <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
+                <span className="text-[12px] font-medium text-gray-900 w-14">{t.symbol}</span>
+                <span className="text-[12px] text-red-500 tabular-nums">+{t.apr.toFixed(1)}%</span>
               </div>
             ))
           ) : (
             <span className="text-[12px] text-gray-400">--</span>
           )}
           {longKillers.length > 5 && (
-            <span className="text-[11px] text-gray-400">+{longKillers.length - 5}</span>
+            <span className="text-[11px] text-gray-400">+{longKillers.length - 5} more</span>
           )}
         </div>
-      </div>
 
-      {/* Divider */}
-      <div className="w-px h-10 bg-gray-200 self-center" />
+        {/* Divider */}
+        <div className="w-px bg-gray-200" />
 
-      {/* Short Killers Section */}
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-1.5">
-          <span className="text-[11px] font-medium text-green-500">Short Killer</span>
-          <span className="text-[11px] text-gray-400">({shortKillers.length})</span>
-        </div>
-        <div className="flex items-center gap-1">
-          {hasShortKillers ? (
+        {/* Short Killers Column */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[11px] font-medium text-green-500">Short Killer</span>
+            <span className="text-[11px] text-gray-400">({shortKillers.length})</span>
+          </div>
+          {displayShortKillers.length > 0 ? (
             displayShortKillers.map(t => (
               <div
                 key={t.instId}
-                className="flex items-center gap-1 px-1.5 py-0.5 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5 -mx-1"
                 onClick={() => onTokenClick?.(t.symbol)}
-                title={`${t.symbol}: ${t.apr.toFixed(1)}% APR`}
               >
                 {t.logo && (
                   <img src={t.logo} alt={t.symbol} className="w-4 h-4 rounded-full" />
                 )}
-                <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
+                <span className="text-[12px] font-medium text-gray-900 w-14">{t.symbol}</span>
+                <span className="text-[12px] text-green-500 tabular-nums">{t.apr.toFixed(1)}%</span>
               </div>
             ))
           ) : (
             <span className="text-[12px] text-gray-400">--</span>
           )}
           {shortKillers.length > 5 && (
-            <span className="text-[11px] text-gray-400">+{shortKillers.length - 5}</span>
+            <span className="text-[11px] text-gray-400">+{shortKillers.length - 5} more</span>
           )}
         </div>
       </div>
@@ -141,7 +141,6 @@ export function FundingKiller({
       {/* Hover tooltip - only shows filter logic */}
       {showTooltip && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
-          <div className="text-[11px] font-medium text-gray-500 mb-2">Funding Killer</div>
           <div className="space-y-1 text-[12px]">
             <div className="flex items-center gap-2">
               <span className="text-red-500">●</span>
