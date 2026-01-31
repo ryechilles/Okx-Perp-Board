@@ -1,6 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { TrendingUp, BarChart2 } from 'lucide-react';
+import { LargeWidget } from '@/components/widgets/base';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 
 interface AltcoinMetricsProps {
@@ -45,12 +47,15 @@ function formatPrice(price: number): string {
 // Time frame selector component
 function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (tf: TimeFrame) => void }) {
   return (
-    <div className="flex bg-gray-200 rounded-lg p-0.5">
+    <div className="flex bg-gray-100 rounded-lg p-0.5">
       {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
         <button
           key={tf}
-          onClick={() => onChange(tf)}
-          className={`px-2 py-0.5 text-xs font-medium rounded-md transition-colors ${
+          onClick={(e) => {
+            e.stopPropagation();
+            onChange(tf);
+          }}
+          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
             value === tf
               ? 'bg-white text-gray-900 shadow-sm'
               : 'text-gray-500 hover:text-gray-700'
@@ -66,8 +71,6 @@ function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (t
 export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, onTopNClick }: AltcoinMetricsProps) {
   const [gainersTimeFrame, setGainersTimeFrame] = useState<TimeFrame>('4h');
   const [avgTimeFrame, setAvgTimeFrame] = useState<TimeFrame>('4h');
-  const [showGainersTooltip, setShowGainersTooltip] = useState(false);
-  const [showAvgTooltip, setShowAvgTooltip] = useState(false);
 
   // Get BTC data
   const btcData = useMemo(() => {
@@ -185,39 +188,30 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
   return (
     <>
-      {/* Top Gainers Card */}
-      <div
-        className="relative bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[300px] flex-shrink-0 h-full flex flex-col"
-        onMouseEnter={() => setShowGainersTooltip(true)}
-        onMouseLeave={() => setShowGainersTooltip(false)}
+      {/* ════════════════════════════════════════════════════════════════
+          Top Gainers Widget
+          ════════════════════════════════════════════════════════════════ */}
+      <LargeWidget
+        title="Altcoin Top Gainers"
+        icon={<TrendingUp className="w-5 h-5" />}
+        subtitle="Top 5 from Top 100 by market cap"
+        headerActions={<TimeFrameSelector value={gainersTimeFrame} onChange={setGainersTimeFrame} />}
+        loading={isLoading}
+        className="min-w-[300px] max-w-[360px]"
       >
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[13px] font-medium text-gray-700">Altcoin Top Gainers</span>
-          <TimeFrameSelector value={gainersTimeFrame} onChange={setGainersTimeFrame} />
-        </div>
-
-        {/* Hover tooltip */}
-        {showGainersTooltip && (
-          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[100]">
-            <div className="text-[11px] text-gray-500 whitespace-nowrap">
-              Top 5 gainers from top 100 altcoins by market cap (excluding BTC)
-            </div>
-          </div>
-        )}
-
-        <div className="space-y-1 flex-1">
+        <div className="space-y-1">
           {isLoading ? (
             // Loading skeleton
             [1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center justify-between py-0.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] text-gray-400 w-3">{i}</span>
-                  <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse" />
-                  <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
+              <div key={i} className="flex items-center justify-between py-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[12px] text-gray-400 w-4">{i}</span>
+                  <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse" />
+                  <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-3 bg-gray-200 rounded animate-pulse" />
-                  <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-4 bg-gray-200 rounded animate-pulse" />
+                  <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
                 </div>
               </div>
             ))
@@ -227,16 +221,16 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
               return (
                 <div
                   key={token.instId}
-                  className="flex items-center justify-between py-0.5 cursor-pointer hover:bg-gray-50 rounded -mx-1.5 px-1.5"
+                  className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
                   onClick={() => onTokenClick?.(token.symbol)}
                 >
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] text-gray-400 w-3">{i + 1}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[12px] text-gray-400 w-4">{i + 1}</span>
                     {token.logo ? (
                       <img
                         src={token.logo}
                         alt={token.symbol}
-                        className="w-5 h-5 rounded-full"
+                        className="w-6 h-6 rounded-full"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.onerror = null;
@@ -244,15 +238,15 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
                         }}
                       />
                     ) : (
-                      <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
+                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
                         {token.symbol.charAt(0)}
                       </div>
                     )}
-                    <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
+                    <span className="text-[13px] font-medium text-gray-900">{token.symbol}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[12px] text-gray-500">{formatPrice(token.price)}</span>
-                    <span className={`text-[12px] font-medium ${formatChange(change).color}`}>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[12px] text-gray-500 tabular-nums">{formatPrice(token.price)}</span>
+                    <span className={`text-[13px] font-semibold tabular-nums ${formatChange(change).color}`}>
                       {formatChange(change).text}
                     </span>
                   </div>
@@ -261,102 +255,93 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
             })
           )}
         </div>
-      </div>
+      </LargeWidget>
 
-      {/* Average Changes Card */}
-      <div
-        className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg flex-shrink-0 min-w-[380px] h-full flex flex-col"
-        onMouseEnter={() => setShowAvgTooltip(true)}
-        onMouseLeave={() => setShowAvgTooltip(false)}
+      {/* ════════════════════════════════════════════════════════════════
+          Avg Change vs BTC Widget
+          ════════════════════════════════════════════════════════════════ */}
+      <LargeWidget
+        title="Altcoin Avg Change vs BTC"
+        icon={<BarChart2 className="w-5 h-5" />}
+        subtitle="Average change comparison by tier"
+        headerActions={<TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />}
+        loading={isLoading}
+        className="min-w-[340px] max-w-[420px]"
       >
-        {/* Title and time selector */}
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[13px] font-medium text-gray-700">Altcoin Avg Change vs BTC</span>
-          <TimeFrameSelector value={avgTimeFrame} onChange={setAvgTimeFrame} />
-        </div>
+        {/* Avg Change Grid */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {/* Left column - Altcoin tiers */}
+          <div className="space-y-2">
+            {(['top10', 'top20', 'top50'] as const).map((tier) => {
+              const label = tier === 'top10' ? 'Top 10' : tier === 'top20' ? 'Top 20' : 'Top 50';
+              const avg = getAvg(tier);
+              const n = tier === 'top10' ? 10 : tier === 'top20' ? 20 : 50;
+              return (
+                <div
+                  key={tier}
+                  className="flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded -mx-1 px-1 py-0.5"
+                  onClick={() => onTopNClick?.(getTopNSymbols(n))}
+                >
+                  <span className="text-[12px] text-gray-500">{label}</span>
+                  <span className={`text-[13px] font-semibold tabular-nums ${formatChange(avg).color}`}>
+                    {formatChange(avg).text}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
 
-        {/* Avg Change rows */}
-        <div className="space-y-1 text-[12px] mb-2">
-          <div className="flex items-center">
-            <span className="text-gray-500">Altcoin Top10:</span>
-            <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top10')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(10))}
-            >
-              {isLoading ? '--' : formatChange(getAvg('top10')).text}
-            </span>
-          </div>
-          <div className="flex items-center">
-            <span className="text-gray-500">Altcoin Top20:</span>
-            <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top20')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(20))}
-            >
-              {isLoading ? '--' : formatChange(getAvg('top20')).text}
-            </span>
-            <span className="text-gray-500 mx-4">|</span>
-            <span className="text-gray-500">BTC:</span>
-            <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
-              onClick={() => onTokenClick?.('BTC')}
-            >
-              {isLoading ? '--' : formatChange(getBtcChange()).text}
-            </span>
-          </div>
-          <div className="flex items-center">
-            <span className="text-gray-500">Altcoin Top50:</span>
-            <span
-              className={`font-medium ml-2 cursor-pointer hover:opacity-80 ${formatChange(getAvg('top50')).color}`}
-              onClick={() => onTopNClick?.(getTopNSymbols(50))}
-            >
-              {isLoading ? '--' : formatChange(getAvg('top50')).text}
+          {/* Right column - BTC */}
+          <div
+            className="flex flex-col items-center justify-center bg-orange-50 rounded-lg py-2 cursor-pointer hover:bg-orange-100"
+            onClick={() => onTokenClick?.('BTC')}
+          >
+            <img
+              src="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
+              alt="BTC"
+              className="w-6 h-6 rounded-full mb-1"
+            />
+            <span className="text-[11px] text-gray-500">BTC</span>
+            <span className={`text-[14px] font-bold tabular-nums ${formatChange(getBtcChange()).color}`}>
+              {formatChange(getBtcChange()).text}
             </span>
           </div>
         </div>
 
-        {/* Ratio rows with direction indicators */}
-        <div className="space-y-1 text-[12px] text-gray-500 border-t border-gray-200 pt-2 flex-1">
-          {(['top10', 'top20', 'top50'] as const).map((tier, idx) => {
-            const alt = getAvg(tier);
-            const btc = getBtcChange();
-            const ratio = (() => {
-              if (isLoading || btc === 0 || btc === null || alt === null) return '--';
-              if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
-                return Math.abs(alt / btc).toFixed(1);
-              }
-              return '--';
-            })();
-            const altDir = alt !== null ? (alt >= 0 ? '↑' : '↓') : '';
-            const btcDir = btc !== null ? (btc >= 0 ? '↑' : '↓') : '';
-            const altColor = alt !== null ? (alt >= 0 ? 'text-green-500' : 'text-red-500') : 'text-gray-400';
-            const btcColor = btc !== null ? (btc >= 0 ? 'text-green-500' : 'text-red-500') : 'text-gray-400';
-            const tierLabel = tier === 'top10' ? 'Top10' : tier === 'top20' ? 'Top20' : 'Top50';
+        {/* Ratio Section */}
+        <div className="border-t border-gray-100 pt-3">
+          <div className="text-[11px] text-gray-400 mb-2">Altcoin / BTC Ratio</div>
+          <div className="space-y-1.5">
+            {(['top10', 'top20', 'top50'] as const).map((tier) => {
+              const alt = getAvg(tier);
+              const btc = getBtcChange();
+              const ratio = (() => {
+                if (isLoading || btc === 0 || btc === null || alt === null) return '--';
+                if ((alt >= 0 && btc >= 0) || (alt < 0 && btc < 0)) {
+                  return `${Math.abs(alt / btc).toFixed(2)}x`;
+                }
+                return '↕';
+              })();
+              const tierLabel = tier === 'top10' ? 'Top 10' : tier === 'top20' ? 'Top 20' : 'Top 50';
+              const altDir = alt !== null ? (alt >= 0 ? '↑' : '↓') : '';
+              const btcDir = btc !== null ? (btc >= 0 ? '↑' : '↓') : '';
+              const altColor = alt !== null ? (alt >= 0 ? 'text-green-500' : 'text-red-500') : 'text-gray-400';
+              const btcColor = btc !== null ? (btc >= 0 ? 'text-green-500' : 'text-red-500') : 'text-gray-400';
 
-            return (
-              <div key={tier} className="flex items-center">
-                <span className="w-[130px]">Altcoin {tierLabel} / BTC:</span>
-                <span className="font-medium text-gray-800 w-8">{ratio}</span>
-                {idx === 1 && <span className="text-gray-500 mx-3">|</span>}
-                {idx !== 1 && <span className="mx-3 w-px"></span>}
-                <span className="text-[11px]">
-                  <span className={altColor}>Altcoin {altDir}</span>
-                  <span className="text-gray-400 mx-1.5"></span>
-                  <span className={btcColor}>BTC {btcDir}</span>
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Hover tooltip */}
-        {showAvgTooltip && (
-          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[100]">
-            <div className="text-[11px] text-gray-500 whitespace-nowrap">
-              Average price change of top N altcoins by market cap (excluding BTC)
-            </div>
+              return (
+                <div key={tier} className="flex items-center text-[12px]">
+                  <span className="text-gray-500 w-16">{tierLabel}</span>
+                  <span className="font-semibold text-gray-800 w-12 tabular-nums">{ratio}</span>
+                  <span className="text-gray-300 mx-2">|</span>
+                  <span className={`${altColor}`}>Alt {altDir}</span>
+                  <span className="text-gray-300 mx-1.5">vs</span>
+                  <span className={`${btcColor}`}>BTC {btcDir}</span>
+                </div>
+              );
+            })}
           </div>
-        )}
-      </div>
+        </div>
+      </LargeWidget>
     </>
   );
 }
