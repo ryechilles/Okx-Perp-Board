@@ -124,9 +124,9 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
 
   return (
     <SmallWidget
-      title="Altcoin Top Gainers"
+      title="Top Gainers"
       icon={<TrendingUp className="w-4 h-4" />}
-      subtitle="Top 5 from Top 100"
+      subtitle="Top 5 in Top 100 by Market Cap"
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
     >
@@ -135,13 +135,13 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
           [1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-[12px] text-gray-400 w-4">{i}</span>
-                <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse" />
-                <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
+                <span className="text-[11px] text-gray-400 w-4">{i}</span>
+                <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse" />
+                <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
               </div>
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-4 bg-gray-200 rounded animate-pulse" />
-                <div className="w-12 h-4 bg-gray-200 rounded animate-pulse" />
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-3 bg-gray-200 rounded animate-pulse" />
+                <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
               </div>
             </div>
           ))
@@ -155,12 +155,12 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
                 onClick={() => onTokenClick?.(token.symbol)}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[12px] text-gray-400 w-4">{i + 1}</span>
+                  <span className="text-[11px] text-gray-400 w-4">{i + 1}</span>
                   {token.logo ? (
                     <img
                       src={token.logo}
                       alt={token.symbol}
-                      className="w-6 h-6 rounded-full"
+                      className="w-5 h-5 rounded-full"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.onerror = null;
@@ -168,15 +168,15 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
                       }}
                     />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500">
                       {token.symbol.charAt(0)}
                     </div>
                   )}
-                  <span className="text-[13px] font-medium text-gray-900">{token.symbol}</span>
+                  <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-[12px] text-gray-500 tabular-nums">{formatPrice(token.price)}</span>
-                  <span className={`text-[13px] font-semibold tabular-nums ${formatChange(change).color}`}>
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] text-gray-500 tabular-nums">{formatPrice(token.price)}</span>
+                  <span className={`text-[12px] font-semibold tabular-nums ${formatChange(change).color}`}>
                     {formatChange(change).text}
                   </span>
                 </div>
