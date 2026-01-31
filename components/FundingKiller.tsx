@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { Skull } from 'lucide-react';
-import { LargeWidget } from '@/components/widgets/base';
+import { SmallWidget } from '@/components/widgets/base';
 import { ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
 
 interface FundingKillerProps {
@@ -70,28 +70,12 @@ export function FundingKiller({
   const displayShortKillers = shortKillers.slice(0, 5);
   const isLoading = tickers.size === 0;
 
-  // Footer with filter criteria
-  const footer = (
-    <div className="flex items-center gap-4 text-[11px]">
-      <div className="flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-red-500" />
-        <span>Long Killer: APR &gt; 20%</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-green-500" />
-        <span>Short Killer: APR &lt; -20%</span>
-      </div>
-    </div>
-  );
-
   return (
-    <LargeWidget
-      title="Funding Rate Killer"
-      icon={<Skull className="w-5 h-5" />}
-      subtitle="High funding rate tokens (excl. BTC/ETH)"
+    <SmallWidget
+      title="Funding Killer"
+      icon={<Skull className="w-4 h-4" />}
+      subtitle="APR > 20% (excl. BTC/ETH)"
       loading={isLoading}
-      footer={footer}
-      className="min-w-[400px] max-w-[500px]"
     >
       <div className="grid grid-cols-2 gap-6">
         {/* Long Killers Column */}
@@ -192,6 +176,6 @@ export function FundingKiller({
           </div>
         </div>
       </div>
-    </LargeWidget>
+    </SmallWidget>
   );
 }

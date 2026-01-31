@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { BarChart2 } from 'lucide-react';
-import { LargeWidget } from '@/components/widgets/base';
+import { SmallWidget } from '@/components/widgets/base';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 
 interface AltcoinVsBTCProps {
@@ -148,13 +148,12 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
   const isLoading = altcoins.length === 0;
 
   return (
-    <LargeWidget
-      title="Altcoin Avg Change vs BTC"
-      icon={<BarChart2 className="w-5 h-5" />}
-      subtitle="Average change comparison by tier"
+    <SmallWidget
+      title="Altcoin vs BTC"
+      icon={<BarChart2 className="w-4 h-4" />}
+      subtitle="Avg change by tier"
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
-      className="min-w-[340px] max-w-[420px]"
     >
       {/* Avg Change Grid */}
       <div className="grid grid-cols-2 gap-4 mb-4">
@@ -229,6 +228,6 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
           })}
         </div>
       </div>
-    </LargeWidget>
+    </SmallWidget>
   );
 }

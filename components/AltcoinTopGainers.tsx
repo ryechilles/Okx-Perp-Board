@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { TrendingUp } from 'lucide-react';
-import { LargeWidget } from '@/components/widgets/base';
+import { SmallWidget } from '@/components/widgets/base';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 
 interface AltcoinTopGainersProps {
@@ -123,13 +123,12 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
   const isLoading = altcoins.length === 0;
 
   return (
-    <LargeWidget
+    <SmallWidget
       title="Altcoin Top Gainers"
-      icon={<TrendingUp className="w-5 h-5" />}
-      subtitle="Top 5 from Top 100 by market cap"
+      icon={<TrendingUp className="w-4 h-4" />}
+      subtitle="Top 5 from Top 100"
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
-      className="min-w-[300px] max-w-[360px]"
     >
       <div className="space-y-1">
         {isLoading ? (
@@ -186,6 +185,6 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
           })
         )}
       </div>
-    </LargeWidget>
+    </SmallWidget>
   );
 }
