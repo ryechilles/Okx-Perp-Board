@@ -171,7 +171,7 @@ export default function PerpBoard() {
   };
   
   return (
-    <div className="flex flex-col min-h-screen lg:h-screen lg:overflow-hidden bg-[#fafafa]">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* Sticky Header */}
       <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0 relative">
         <div className="max-w-[1400px] mx-auto w-full">
@@ -217,9 +217,9 @@ export default function PerpBoard() {
       </div>
 
       {/* Table Area */}
-      <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 min-h-[500px] lg:min-h-0 lg:overflow-hidden relative z-0">
-        <div className="max-w-[1400px] mx-auto w-full flex flex-col flex-1">
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
+      <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 overflow-hidden relative z-0">
+        <div className="max-w-[1400px] mx-auto w-full flex flex-col flex-1 overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-200 flex flex-col flex-1 overflow-hidden">
             {/* Scrollable Table Container */}
             <div 
               ref={tableContainerRef}
