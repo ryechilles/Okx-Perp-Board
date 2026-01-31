@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useMarketStore } from '@/hooks/useMarketStore';
 import { useUrlState } from '@/hooks/useUrlState';
+import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { AltcoinTopGainers } from '@/components/AltcoinTopGainers';
@@ -11,7 +12,7 @@ import { FundingKiller } from '@/components/FundingKiller';
 import { MarketMomentum } from '@/components/MarketMomentum';
 import { AHR999Indicator } from '@/components/AHR999Indicator';
 import { TableHeader, TableRow, TablePagination } from '@/components/table';
-import { TabContainer, TabPanel, WidgetGrid } from '@/components/layout';
+import { TabContainer, WidgetGrid } from '@/components/layout';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS } from '@/lib/utils';
 import { Activity, DollarSign, BarChart2, Bitcoin } from 'lucide-react';
@@ -170,80 +171,91 @@ export default function PerpBoard() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* ===================================================================
-          SECTION 1: Tab Navigation (Top Bar)
+          SECTION 1: Header (Logo + Title + Version + Exchange Buttons)
           =================================================================== */}
-      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-2 flex-shrink-0">
-        <div className="max-w-[1600px] mx-auto w-full">
-          <TabContainer
-            tabs={TABS}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
-        </div>
-      </div>
+      <Header />
 
       {/* ===================================================================
-          SECTION 2: Main Content (Desktop: Left Widgets + Right Table)
+          SECTION 2: Main Content (Left: Tabs + Widgets | Right: Controls + Table)
           =================================================================== */}
-      <div className="flex-1 flex flex-col lg:flex-row px-2 sm:px-6 pb-4 overflow-hidden relative gap-4">
+      <div className="flex-1 flex flex-col lg:flex-row px-4 sm:px-6 py-4 overflow-hidden gap-4">
         <div className="max-w-[1600px] mx-auto w-full flex flex-col lg:flex-row flex-1 overflow-hidden gap-4">
 
           {/* -----------------------------------------------------------------
-              LEFT COLUMN: Widgets (Desktop only, stacked vertically)
+              LEFT PANEL: Tabs + Widgets (Desktop sidebar)
               ----------------------------------------------------------------- */}
-          <div className="hidden lg:flex flex-col gap-4 w-[320px] flex-shrink-0 overflow-y-auto">
-            {/* RSI Tab Widgets */}
-            {activeTab === 'rsi' && (
-              <>
-                <MarketMomentum
-                  avgRsi7={avgRsi7}
-                  avgRsi14={avgRsi14}
-                  avgRsiW7={avgRsiW7}
-                  avgRsiW14={avgRsiW14}
+          <div className="hidden lg:flex flex-col w-[320px] flex-shrink-0 overflow-hidden">
+            {/* Tabs at top of left panel */}
+            <TabContainer
+              tabs={TABS}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              variant="sidebar"
+            />
+
+            {/* Widgets below tabs - scrollable */}
+            <div className="flex-1 overflow-y-auto mt-4 space-y-4 pr-2">
+              {/* RSI Tab Widgets */}
+              {activeTab === 'rsi' && (
+                <>
+                  <MarketMomentum
+                    avgRsi7={avgRsi7}
+                    avgRsi14={avgRsi14}
+                    avgRsiW7={avgRsiW7}
+                    avgRsiW14={avgRsiW14}
+                  />
+                  <AltcoinTopGainers
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                  />
+                </>
+              )}
+
+              {/* Funding Tab Widget */}
+              {activeTab === 'funding' && (
+                <FundingKiller
+                  tickers={store.tickers}
+                  fundingRateData={store.fundingRateData}
+                  marketCapData={store.marketCapData}
+                  onTokenClick={handleTokenClick}
+                  onGroupClick={handleGroupClick}
                 />
-                <AltcoinTopGainers
+              )}
+
+              {/* Altcoin vs BTC Tab Widget */}
+              {activeTab === 'altcoin' && (
+                <AltcoinVsBTC
                   tickers={store.tickers}
                   rsiData={store.rsiData}
                   marketCapData={store.marketCapData}
                   onTokenClick={handleTokenClick}
+                  onTopNClick={handleGroupClick}
                 />
-              </>
-            )}
+              )}
 
-            {/* Funding Tab Widget */}
-            {activeTab === 'funding' && (
-              <FundingKiller
-                tickers={store.tickers}
-                fundingRateData={store.fundingRateData}
-                marketCapData={store.marketCapData}
-                onTokenClick={handleTokenClick}
-                onGroupClick={handleGroupClick}
-              />
-            )}
-
-            {/* Altcoin vs BTC Tab Widget */}
-            {activeTab === 'altcoin' && (
-              <AltcoinVsBTC
-                tickers={store.tickers}
-                rsiData={store.rsiData}
-                marketCapData={store.marketCapData}
-                onTokenClick={handleTokenClick}
-                onTopNClick={handleGroupClick}
-              />
-            )}
-
-            {/* AHR999 Tab Widget */}
-            {activeTab === 'ahr999' && (
-              <AHR999Indicator />
-            )}
+              {/* AHR999 Tab Widget */}
+              {activeTab === 'ahr999' && (
+                <AHR999Indicator />
+              )}
+            </div>
           </div>
 
           {/* -----------------------------------------------------------------
-              RIGHT COLUMN: Controls + Table
+              RIGHT PANEL: Controls + Table
               ----------------------------------------------------------------- */}
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Mobile: Show widgets above controls */}
+            {/* Mobile: Show tabs + widgets above controls */}
             <div className="lg:hidden mb-4">
+              <TabContainer
+                tabs={TABS}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                variant="sidebar"
+                className="mb-4"
+              />
+
               {activeTab === 'rsi' && (
                 <WidgetGrid variant="auto" gap="md">
                   <MarketMomentum
@@ -286,111 +298,111 @@ export default function PerpBoard() {
             {/* Controls: Quick Filters, Settings, Search */}
             <div className="mb-4">
               <Controls
-              columns={store.columns}
-              columnOrder={store.columnOrder}
-              filters={store.filters}
-              searchTerm={store.searchTerm}
-              overboughtCount={quickFilterCounts.overbought}
-              oversoldCount={quickFilterCounts.oversold}
-              onColumnChange={store.updateColumn}
-              onColumnsPreset={store.setColumnsPreset}
-              onFiltersChange={store.setFilters}
-              onSearchChange={store.setSearchTerm}
-              onColumnOrderChange={store.updateColumnOrder}
-            />
-          </div>
-
-          {/* Data Table */}
-          <div className="bg-white rounded-xl border border-gray-200 flex flex-col flex-1 overflow-hidden">
-            {/* Scrollable Table Container */}
-            <div
-              ref={tableContainerRef}
-              className="flex-1 overflow-auto"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
-              <table
-                className="border-collapse"
-                style={{ width: 'max-content', minWidth: '100%' }}
-              >
-                <colgroup>
-                  {visibleColumns.map((key) => (
-                    <col key={key} style={getColStyle(key)} />
-                  ))}
-                </colgroup>
-
-                <TableHeader
-                  visibleColumns={visibleColumns}
-                  sort={store.sort}
-                  isScrolled={isScrolled}
-                  totalCount={filteredData.length}
-                  draggedColumn={draggedColumn}
-                  dragOverColumn={dragOverColumn}
-                  fixedColumns={FIXED_COLUMNS}
-                  fixedWidths={FIXED_WIDTHS}
-                  columns={store.columns}
-                  onSort={store.updateSort}
-                  onDragStart={handleDragStart}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onDragEnd={handleDragEnd}
-                />
-
-                <tbody>
-                  {filteredData.length === 0 ? (
-                    <tr>
-                      <td colSpan={visibleColumns.length}>
-                        <div className="flex items-center justify-center py-16 text-gray-500">
-                          {store.tickers.size === 0 ? (
-                            <>
-                              <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin mr-3" />
-                              Loading market data...
-                            </>
-                          ) : (
-                            'No data found'
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    paginatedData.map((ticker, index) => (
-                      <TableRow
-                        key={ticker.instId}
-                        ticker={ticker}
-                        index={index}
-                        currentPage={store.currentPage}
-                        pageSize={store.pageSize}
-                        visibleColumns={visibleColumns}
-                        rsi={store.rsiData.get(ticker.instId)}
-                        fundingRate={store.fundingRateData.get(ticker.instId)}
-                        listingData={store.listingData.get(ticker.instId)}
-                        marketCap={store.marketCapData.get(ticker.baseSymbol)}
-                        hasSpot={store.spotSymbols.has(`${ticker.baseSymbol}-USDT`)}
-                        isFavorite={store.favorites.includes(ticker.instId)}
-                        isScrolled={isScrolled}
-                        fixedColumns={FIXED_COLUMNS}
-                        fixedWidths={FIXED_WIDTHS}
-                        columns={store.columns}
-                        onToggleFavorite={store.toggleFavorite}
-                      />
-                    ))
-                  )}
-                </tbody>
-              </table>
+                columns={store.columns}
+                columnOrder={store.columnOrder}
+                filters={store.filters}
+                searchTerm={store.searchTerm}
+                overboughtCount={quickFilterCounts.overbought}
+                oversoldCount={quickFilterCounts.oversold}
+                onColumnChange={store.updateColumn}
+                onColumnsPreset={store.setColumnsPreset}
+                onFiltersChange={store.setFilters}
+                onSearchChange={store.setSearchTerm}
+                onColumnOrderChange={store.updateColumnOrder}
+              />
             </div>
 
-            <TablePagination
-              currentPage={store.currentPage}
-              totalPages={totalPages}
-              pageSize={store.pageSize}
-              totalItems={filteredData.length}
-              status={store.status}
-              onPageChange={store.setCurrentPage}
-            />
+            {/* Data Table */}
+            <div className="bg-white rounded-xl border border-gray-200 flex flex-col flex-1 overflow-hidden">
+              {/* Scrollable Table Container */}
+              <div
+                ref={tableContainerRef}
+                className="flex-1 overflow-auto"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                <table
+                  className="border-collapse"
+                  style={{ width: 'max-content', minWidth: '100%' }}
+                >
+                  <colgroup>
+                    {visibleColumns.map((key) => (
+                      <col key={key} style={getColStyle(key)} />
+                    ))}
+                  </colgroup>
+
+                  <TableHeader
+                    visibleColumns={visibleColumns}
+                    sort={store.sort}
+                    isScrolled={isScrolled}
+                    totalCount={filteredData.length}
+                    draggedColumn={draggedColumn}
+                    dragOverColumn={dragOverColumn}
+                    fixedColumns={FIXED_COLUMNS}
+                    fixedWidths={FIXED_WIDTHS}
+                    columns={store.columns}
+                    onSort={store.updateSort}
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onDragEnd={handleDragEnd}
+                  />
+
+                  <tbody>
+                    {filteredData.length === 0 ? (
+                      <tr>
+                        <td colSpan={visibleColumns.length}>
+                          <div className="flex items-center justify-center py-16 text-gray-500">
+                            {store.tickers.size === 0 ? (
+                              <>
+                                <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin mr-3" />
+                                Loading market data...
+                              </>
+                            ) : (
+                              'No data found'
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedData.map((ticker, index) => (
+                        <TableRow
+                          key={ticker.instId}
+                          ticker={ticker}
+                          index={index}
+                          currentPage={store.currentPage}
+                          pageSize={store.pageSize}
+                          visibleColumns={visibleColumns}
+                          rsi={store.rsiData.get(ticker.instId)}
+                          fundingRate={store.fundingRateData.get(ticker.instId)}
+                          listingData={store.listingData.get(ticker.instId)}
+                          marketCap={store.marketCapData.get(ticker.baseSymbol)}
+                          hasSpot={store.spotSymbols.has(`${ticker.baseSymbol}-USDT`)}
+                          isFavorite={store.favorites.includes(ticker.instId)}
+                          isScrolled={isScrolled}
+                          fixedColumns={FIXED_COLUMNS}
+                          fixedWidths={FIXED_WIDTHS}
+                          columns={store.columns}
+                          onToggleFavorite={store.toggleFavorite}
+                        />
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <TablePagination
+                currentPage={store.currentPage}
+                totalPages={totalPages}
+                pageSize={store.pageSize}
+                totalItems={filteredData.length}
+                status={store.status}
+                onPageChange={store.setCurrentPage}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
       {/* ===================================================================
           SECTION 3: Footer

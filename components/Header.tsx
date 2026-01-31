@@ -46,10 +46,55 @@ function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
   );
 }
 
+// OKX Logo Component
+function OkxLogo({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="currentColor" className={className}>
+      <path d="M19.67 12.33h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33v-7.34c0-.18-.15-.33-.33-.33z"/>
+      <path d="M11.67 4h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33V4.33c0-.18-.15-.33-.33-.33z"/>
+      <path d="M27.67 4h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33V4.33c0-.18-.15-.33-.33-.33z"/>
+      <path d="M11.67 20h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33v-7.34c0-.18-.15-.33-.33-.33z"/>
+      <path d="M27.67 20h-7.34c-.18 0-.33.15-.33.33v7.34c0 .18.15.33.33.33h7.34c.18 0 .33-.15.33-.33v-7.34c0-.18-.15-.33-.33-.33z"/>
+    </svg>
+  );
+}
+
+const VERSION = 'v2.4.0';
+
 export function Header() {
   return (
-    <div className="flex items-center gap-4 mb-4">
-      <PerpLogo className="w-6 h-6 rounded" />
-    </div>
+    <header className="bg-[#fafafa] border-b border-gray-200 px-4 sm:px-6 py-3 flex-shrink-0">
+      <div className="max-w-[1600px] mx-auto w-full flex items-center justify-between">
+        {/* Left: Logo + Title + Version */}
+        <div className="flex items-center gap-3">
+          <PerpLogo className="w-8 h-8 rounded-lg" />
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg font-semibold text-gray-900">Perp Board</span>
+            <span className="text-xs text-gray-400 font-medium">{VERSION}</span>
+          </div>
+        </div>
+
+        {/* Right: Exchange Buttons */}
+        <div className="flex items-center">
+          <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
+            <a
+              href="https://okx.com/join/95869751"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium bg-white text-gray-900 shadow-sm transition-all hover:bg-gray-50"
+            >
+              <OkxLogo className="w-4 h-4" />
+              <span>OKX</span>
+            </a>
+            <button
+              disabled
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium text-gray-400 cursor-not-allowed transition-all"
+            >
+              <span>Coming Soon</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }

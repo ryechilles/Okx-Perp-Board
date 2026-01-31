@@ -23,10 +23,15 @@ export interface SmallWidgetProps {
 }
 
 /**
- * SmallWidget - Base template for small dashboard widgets
+ * SmallWidget - Base template for small dashboard widgets with floating card effect
  *
  * Standard dimensions: 280px - 360px width
  * Use for: Quick stats, mini charts, indicators
+ *
+ * Features:
+ * - Floating card effect on hover (elevation + scale)
+ * - Smooth transitions
+ * - Consistent styling across all widgets
  *
  * @example
  * ```tsx
@@ -54,10 +59,12 @@ export function SmallWidget({
       className={cn(
         // Base styles
         'bg-white rounded-xl border border-gray-200',
-        // Shadow on hover
-        'hover:shadow-sm transition-shadow duration-200',
+        // Floating card effect - shadow + subtle scale on hover
+        'shadow-sm hover:shadow-lg hover:shadow-gray-200/50',
+        'hover:-translate-y-0.5 hover:border-gray-300',
+        'transition-all duration-200 ease-out',
         // Size constraints
-        'min-w-[280px] max-w-[360px] w-full',
+        'min-w-[280px] w-full',
         // Flex behavior in grid
         'flex flex-col',
         className

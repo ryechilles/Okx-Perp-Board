@@ -49,7 +49,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       icon={<Activity className="w-4 h-4" />}
       subtitle="Top 100 OKX Perp Tokens"
       loading={isLoading}
-      className="min-w-[280px] max-w-[320px]"
+      className="w-full"
     >
       {/* Signal Summary */}
       <div className="flex items-center gap-4 mb-4">
