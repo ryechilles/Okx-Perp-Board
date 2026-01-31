@@ -206,7 +206,7 @@ export function Controls({
       </div>
 
       {/* Quick Filters + Controls Row */}
-      <div className="flex items-center justify-between gap-4 mb-4 relative z-[60]">
+      <div className="flex items-center gap-4 mb-4 relative z-[60]">
         <div className="flex items-center gap-2 md:gap-4 overflow-visible pb-1 md:pb-0 md:flex-wrap">
         {/* Quick Filter Buttons - Part 1: All & Top 25 */}
         <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
@@ -400,50 +400,47 @@ export function Controls({
 
         </div>
 
-        {/* Right side: Settings + Search + Branding */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          {/* Settings icon */}
-          <div
-            ref={customizeButtonRef}
-            className="cursor-pointer p-1"
-            onClick={() => setShowCustomizePanel(!showCustomizePanel)}
+        {/* Settings icon */}
+        <div
+          ref={customizeButtonRef}
+          className="cursor-pointer p-1"
+          onClick={() => setShowCustomizePanel(!showCustomizePanel)}
+        >
+          <svg
+            className={`w-4 h-4 transition-colors ${hasFilters || hasNonDefaultColumns ? 'text-gray-900' : 'text-gray-400'}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <svg
-              className={`w-4 h-4 transition-colors ${hasFilters || hasNonDefaultColumns ? 'text-gray-900' : 'text-gray-400'}`}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-          </div>
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
 
-          {/* Search */}
-          <div className="hidden md:inline-flex items-center gap-1">
-            <svg
-              className="w-4 h-4 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              placeholder=""
-              value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="bg-transparent border-none outline-none text-[13px] text-gray-700 w-[60px]"
-            />
-          </div>
+        {/* Search */}
+        <div className="hidden md:inline-flex items-center gap-1">
+          <svg
+            className="w-4 h-4 text-gray-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input
+            type="text"
+            placeholder=""
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="bg-transparent border-none outline-none text-[13px] text-gray-700 w-[60px]"
+          />
         </div>
       </div>
       
