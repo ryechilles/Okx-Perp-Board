@@ -23,14 +23,14 @@ export interface SmallWidgetProps {
 }
 
 /**
- * SmallWidget - Base template for small dashboard widgets with floating card effect
+ * SmallWidget - Base template for small dashboard widgets
  *
  * Standard dimensions: 280px - 360px width
  * Use for: Quick stats, mini charts, indicators
  *
  * Features:
- * - Floating card effect (always elevated with soft shadow)
- * - Smooth transitions on hover
+ * - Flat card style matching PillButton aesthetic
+ * - Subtle border and shadow for definition
  * - Consistent styling across all widgets
  *
  * @example
@@ -57,10 +57,10 @@ export function SmallWidget({
   return (
     <div
       className={cn(
-        // Base styles - floating card effect (always visible)
-        'bg-white rounded-2xl',
-        // Soft shadow for floating effect - always visible, no hover
-        'shadow-[0_2px_12px_rgba(0,0,0,0.08)]',
+        // Base styles - flat card matching PillButton style
+        'bg-white rounded-xl',
+        // Subtle border and shadow for definition
+        'border border-gray-200 shadow-sm',
         // Size constraints
         'min-w-[280px] w-full',
         // Flex behavior in grid

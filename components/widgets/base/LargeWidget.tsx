@@ -32,6 +32,11 @@ export interface LargeWidgetProps {
  * Standard dimensions: 400px+ width, flexible height
  * Use for: Charts, detailed tables, multi-section content
  *
+ * Features:
+ * - Flat card style matching PillButton aesthetic
+ * - Subtle border and shadow for definition
+ * - Consistent styling across all widgets
+ *
  * @example
  * ```tsx
  * <LargeWidget
@@ -60,10 +65,10 @@ export function LargeWidget({
   return (
     <div
       className={cn(
-        // Base styles
-        'bg-white rounded-xl border border-gray-200',
-        // Shadow on hover
-        'hover:shadow-sm transition-shadow duration-200',
+        // Base styles - flat card matching PillButton style
+        'bg-white rounded-xl',
+        // Subtle border and shadow for definition
+        'border border-gray-200 shadow-sm',
         // Size constraints
         'min-w-[400px] flex-1',
         // Flex layout
