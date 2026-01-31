@@ -222,6 +222,10 @@ export default function PerpBoard() {
               store.setFilters({}); // Clear all filters
               store.setSearchTerm(symbol);
             }}
+            onGroupClick={(symbols) => {
+              store.setFilters({}); // Clear all filters
+              store.setSearchTerm(symbols.join('|'));
+            }}
           />
         </div>
       </div>

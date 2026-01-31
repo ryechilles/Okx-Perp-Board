@@ -8,6 +8,7 @@ interface FundingKillerProps {
   fundingRateData: Map<string, FundingRateData>;
   marketCapData?: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
+  onGroupClick?: (symbols: string[]) => void;
 }
 
 interface TokenWithApr {
@@ -28,6 +29,7 @@ export function FundingKiller({
   fundingRateData,
   marketCapData,
   onTokenClick,
+  onGroupClick,
 }: FundingKillerProps) {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -80,7 +82,10 @@ export function FundingKiller({
       <div className="flex gap-6">
         {/* Long Killers Column */}
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1.5 mb-1">
+          <div
+            className={`flex items-center gap-1.5 mb-1 ${longKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
+            onClick={() => longKillers.length > 0 && onGroupClick?.(longKillers.map(t => t.symbol))}
+          >
             <span className="text-[11px] font-medium text-red-500">Long Killer</span>
             <span className="text-[11px] text-gray-400">({longKillers.length})</span>
           </div>
@@ -111,7 +116,10 @@ export function FundingKiller({
 
         {/* Short Killers Column */}
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1.5 mb-1">
+          <div
+            className={`flex items-center gap-1.5 mb-1 ${shortKillers.length > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
+            onClick={() => shortKillers.length > 0 && onGroupClick?.(shortKillers.map(t => t.symbol))}
+          >
             <span className="text-[11px] font-medium text-green-500">Short Killer</span>
             <span className="text-[11px] text-gray-400">({shortKillers.length})</span>
           </div>
