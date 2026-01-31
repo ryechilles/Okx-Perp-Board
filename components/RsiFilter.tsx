@@ -10,12 +10,12 @@ interface RsiFilterProps {
 
 /**
  * Reusable RSI Filter component
- * Supports: preset buttons (<30, 30~70, >70), custom inputs (<, ~, >)
+ * Supports: preset buttons (<25, 25~75, >75), custom inputs (<, ~, >)
  */
 export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
-  const isCustomLess = value?.startsWith('<') && value !== '<30';
-  const isCustomRange = value?.includes('~') && value !== '30~70';
-  const isCustomGreater = value?.startsWith('>') && value !== '>70';
+  const isCustomLess = value?.startsWith('<') && value !== '<25';
+  const isCustomRange = value?.includes('~') && value !== '25~75';
+  const isCustomGreater = value?.startsWith('>') && value !== '>75';
 
   const rangeMin = isCustomRange && value ? value.split('~')[0] : '';
   const rangeMax = isCustomRange && value ? value.split('~')[1] : '';
@@ -39,7 +39,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
         </button>
 
         {/* Presets */}
-        {['<30', '30~70', '>70'].map(preset => (
+        {['<25', '25~75', '>75'].map(preset => (
           <button
             key={preset}
             onClick={() => onChange(preset)}
@@ -71,12 +71,12 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
               let val = e.target.value;
               if (val === '') { onChange(undefined); }
               else {
-                if (val === '30') val = '29';
+                if (val === '25') val = '24';
                 onChange(`<${val}`);
                 debouncedSelect(e.target);
               }
             }}
-            onWheel={(e) => handleNumberWheel(e, isCustomLess && value ? value.slice(1) : '', 1, 100, 1, (v) => onChange(`<${v}`), [30])}
+            onWheel={(e) => handleNumberWheel(e, isCustomLess && value ? value.slice(1) : '', 1, 100, 1, (v) => onChange(`<${v}`), [25])}
             onFocus={focusHandler} onClick={clickHandler}
             className={`w-7 ${inputClass}`}
           />
@@ -105,7 +105,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
                 debouncedRangeParse(e.target, val, (min, max) => onChange(`${min}~${max}`));
               }
             }}
-            onWheel={(e) => handleNumberWheel(e, rangeMin, 1, 100, 1, (v) => onChange(`${v}~${rangeMax}`), [30, 70])}
+            onWheel={(e) => handleNumberWheel(e, rangeMin, 1, 100, 1, (v) => onChange(`${v}~${rangeMax}`), [25, 75])}
             onFocus={focusHandler} onClick={clickHandler}
             className={`w-6 ${inputClass}`}
           />
@@ -121,7 +121,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
                 debouncedRangeParse(e.target, val, (min, max) => onChange(`${min}~${max}`));
               }
             }}
-            onWheel={(e) => handleNumberWheel(e, rangeMax, 1, 100, 1, (v) => onChange(`${rangeMin}~${v}`), [30, 70])}
+            onWheel={(e) => handleNumberWheel(e, rangeMax, 1, 100, 1, (v) => onChange(`${rangeMin}~${v}`), [25, 75])}
             onFocus={focusHandler} onClick={clickHandler}
             className={`w-6 ${inputClass}`}
           />
@@ -147,12 +147,12 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
               let val = e.target.value;
               if (val === '') { onChange(undefined); }
               else {
-                if (val === '70') val = '71';
+                if (val === '75') val = '76';
                 onChange(`>${val}`);
                 debouncedSelect(e.target);
               }
             }}
-            onWheel={(e) => handleNumberWheel(e, isCustomGreater && value ? value.slice(1) : '', 1, 100, 1, (v) => onChange(`>${v}`), [70])}
+            onWheel={(e) => handleNumberWheel(e, isCustomGreater && value ? value.slice(1) : '', 1, 100, 1, (v) => onChange(`>${v}`), [75])}
             onFocus={focusHandler} onClick={clickHandler}
             className={`w-7 ${inputClass}`}
           />

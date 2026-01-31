@@ -617,12 +617,12 @@ export function useMarketStore() {
 
     const overboughtCount = allTickers.filter(t => {
       const rsi = rsiData.get(t.instId);
-      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 > 70 && rsi.rsi14 > 70;
+      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 > 75 && rsi.rsi14 > 75;
     }).length;
 
     const oversoldCount = allTickers.filter(t => {
       const rsi = rsiData.get(t.instId);
-      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 < 30 && rsi.rsi14 < 30;
+      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 < 25 && rsi.rsi14 < 25;
     }).length;
 
     return {

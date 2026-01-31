@@ -61,8 +61,8 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
 
       const avgRsi = rsiValues.reduce((a, b) => a + b, 0) / rsiValues.length;
 
-      // Only include if overbought (avg RSI > 70)
-      if (avgRsi <= 70) return;
+      // Only include if overbought (avg RSI > 75)
+      if (avgRsi <= 75) return;
 
       tokens.push({
         symbol: ticker.baseSymbol,
@@ -84,7 +84,7 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
     <SmallWidget
       title="RSI Overbought"
       icon={<TrendingUp className="w-4 h-4" />}
-      subtitle="Avg RSI > 70 in Top 50"
+      subtitle="Avg RSI > 75 in Top 50"
       loading={isLoading}
     >
       <div className="space-y-1">

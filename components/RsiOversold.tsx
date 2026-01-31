@@ -61,8 +61,8 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
 
       const avgRsi = rsiValues.reduce((a, b) => a + b, 0) / rsiValues.length;
 
-      // Only include if oversold (avg RSI < 30)
-      if (avgRsi >= 30) return;
+      // Only include if oversold (avg RSI < 25)
+      if (avgRsi >= 25) return;
 
       tokens.push({
         symbol: ticker.baseSymbol,
@@ -84,7 +84,7 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
     <SmallWidget
       title="RSI Oversold"
       icon={<TrendingDown className="w-4 h-4" />}
-      subtitle="Avg RSI < 30 in Top 50"
+      subtitle="Avg RSI < 25 in Top 50"
       loading={isLoading}
     >
       <div className="space-y-1">

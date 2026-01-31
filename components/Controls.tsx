@@ -69,8 +69,8 @@ export function Controls({
     if (filters.isMeme === 'yes' && !filters.rsi7 && !filters.rsi14) return 'meme';
     if (filters.hasSpot === 'no' && !filters.rsi7 && !filters.rsi14) return 'noSpot';
     if (filters.listAge === '<180d' && !filters.rsi7 && !filters.rsi14) return 'newListed';
-    if (filters.rsi7 === '>70' && filters.rsi14 === '>70') return 'overbought';
-    if (filters.rsi7 === '<30' && filters.rsi14 === '<30') return 'oversold';
+    if (filters.rsi7 === '>75' && filters.rsi14 === '>75') return 'overbought';
+    if (filters.rsi7 === '<25' && filters.rsi14 === '<25') return 'oversold';
     if (Object.keys(filters).length === 0) return 'all';
     return 'all';
   };
@@ -100,12 +100,12 @@ export function Controls({
         setTempFilters({ listAge: '<180d' });
         break;
       case 'overbought':
-        onFiltersChange({ rsi7: '>70', rsi14: '>70' });
-        setTempFilters({ rsi7: '>70', rsi14: '>70' });
+        onFiltersChange({ rsi7: '>75', rsi14: '>75' });
+        setTempFilters({ rsi7: '>75', rsi14: '>75' });
         break;
       case 'oversold':
-        onFiltersChange({ rsi7: '<30', rsi14: '<30' });
-        setTempFilters({ rsi7: '<30', rsi14: '<30' });
+        onFiltersChange({ rsi7: '<25', rsi14: '<25' });
+        setTempFilters({ rsi7: '<25', rsi14: '<25' });
         break;
     }
   };
@@ -177,8 +177,8 @@ export function Controls({
         <>
           <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Overbought</div>
           <div className="text-[12px] flex flex-col gap-0.5">
-            <span className="text-gray-900">D-RSI7 &gt; 70</span>
-            <span className="text-gray-900">D-RSI14 &gt; 70</span>
+            <span className="text-gray-900">D-RSI7 &gt; 75</span>
+            <span className="text-gray-900">D-RSI14 &gt; 75</span>
           </div>
         </>
       )
@@ -192,8 +192,8 @@ export function Controls({
         <>
           <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Oversold</div>
           <div className="text-[12px] flex flex-col gap-0.5">
-            <span className="text-gray-900">D-RSI7 &lt; 30</span>
-            <span className="text-gray-900">D-RSI14 &lt; 30</span>
+            <span className="text-gray-900">D-RSI7 &lt; 25</span>
+            <span className="text-gray-900">D-RSI14 &lt; 25</span>
           </div>
         </>
       )
