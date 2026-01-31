@@ -4,8 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
 import { isMobile } from '@/lib/utils';
 import { getDefaultColumns } from '@/lib/defaults';
-import { MarketMomentum } from './MarketMomentum';
-import { AHR999Indicator } from './AHR999Indicator';
 import { RsiFilter } from './RsiFilter';
 
 // Quick filter types
@@ -16,10 +14,6 @@ interface ControlsProps {
   columnOrder: ColumnKey[];
   filters: Filters;
   searchTerm: string;
-  avgRsi7: number | null;
-  avgRsi14: number | null;
-  avgRsiW7: number | null;
-  avgRsiW14: number | null;
   overboughtCount: number;
   oversoldCount: number;
   onColumnChange: (col: keyof ColumnVisibility, visible: boolean) => void;
@@ -27,7 +21,6 @@ interface ControlsProps {
   onFiltersChange: (filters: Filters) => void;
   onSearchChange: (term: string) => void;
   onColumnOrderChange: (order: ColumnKey[]) => void;
-  children?: React.ReactNode;
 }
 
 export function Controls({
@@ -35,10 +28,6 @@ export function Controls({
   columnOrder,
   filters,
   searchTerm,
-  avgRsi7,
-  avgRsi14,
-  avgRsiW7,
-  avgRsiW14,
   overboughtCount,
   oversoldCount,
   onColumnChange,
@@ -46,7 +35,6 @@ export function Controls({
   onFiltersChange,
   onSearchChange,
   onColumnOrderChange,
-  children,
 }: ControlsProps) {
   const [showCustomizePanel, setShowCustomizePanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
@@ -192,22 +180,6 @@ export function Controls({
   
   return (
     <>
-      {/* Indicators Row - Small widgets, show on mobile */}
-      <div className="flex items-center mb-4 relative z-[70]">
-        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-          <MarketMomentum
-            avgRsi7={avgRsi7}
-            avgRsi14={avgRsi14}
-            avgRsiW7={avgRsiW7}
-            avgRsiW14={avgRsiW14}
-          />
-          <AHR999Indicator />
-        </div>
-      </div>
-
-      {/* Big Components Slot - for AltcoinMetrics & FundingKiller */}
-      {children}
-
       {/* Mobile Search Row - minimal style */}
       <div className="md:hidden mb-3 w-full">
         <div className="flex items-center gap-2 w-full border-b border-gray-300 pb-2">

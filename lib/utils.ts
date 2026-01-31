@@ -6,6 +6,13 @@ import {
   RATE_LIMIT,
   UI
 } from './constants';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+// Utility function for merging Tailwind classes
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 // Re-export MEME_TOKENS for backward compatibility
 export const MEME_TOKENS = MEME_TOKENS_SET;

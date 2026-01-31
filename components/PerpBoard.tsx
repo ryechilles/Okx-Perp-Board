@@ -8,9 +8,13 @@ import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
 import { AltcoinMetrics } from '@/components/AltcoinMetrics';
 import { FundingKiller } from '@/components/FundingKiller';
+import { MarketMomentum } from '@/components/MarketMomentum';
+import { AHR999Indicator } from '@/components/AHR999Indicator';
 import { TableHeader, TableRow, TablePagination } from '@/components/table';
+import { TabContainer, TabPanel, WidgetGrid } from '@/components/layout';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS } from '@/lib/utils';
+import { Activity, DollarSign, BarChart3, Settings2 } from 'lucide-react';
 
 // Fixed column configuration
 const FIXED_COLUMNS: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
@@ -21,8 +25,17 @@ const FIXED_WIDTHS: Record<string, number> = {
   symbol: 95,
 };
 
+// Tab configuration
+const TABS = [
+  { id: 'rsi', label: 'RSI', icon: <Activity className="w-4 h-4" /> },
+  { id: 'funding', label: 'Funding', icon: <DollarSign className="w-4 h-4" /> },
+  { id: 'volume', label: 'Volume', icon: <BarChart3 className="w-4 h-4" />, disabled: true },
+  { id: 'custom', label: 'Custom', icon: <Settings2 className="w-4 h-4" />, disabled: true },
+];
+
 export default function PerpBoard() {
   const store = useMarketStore();
+  const [activeTab, setActiveTab] = useState('rsi');
 
   // URL state sync
   useUrlState(
@@ -143,66 +156,120 @@ export default function PerpBoard() {
     setDragOverColumn(null);
   };
 
+  // Token click handler
+  const handleTokenClick = (symbol: string) => {
+    store.setFilters({});
+    store.setSearchTerm(symbol);
+  };
+
+  const handleGroupClick = (symbols: string[]) => {
+    store.setFilters({});
+    store.setSearchTerm(symbols.join('|'));
+  };
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
-      {/* Sticky Header */}
-      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0 relative">
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 1: Fixed Header + Tab Navigation
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0">
         <div className="max-w-[1400px] mx-auto w-full">
+          {/* Header */}
           <Header />
 
-          <Controls
-            columns={store.columns}
-            columnOrder={store.columnOrder}
-            filters={store.filters}
-            searchTerm={store.searchTerm}
-            avgRsi7={avgRsi7}
-            avgRsi14={avgRsi14}
-            avgRsiW7={avgRsiW7}
-            avgRsiW14={avgRsiW14}
-            overboughtCount={quickFilterCounts.overbought}
-            oversoldCount={quickFilterCounts.oversold}
-            onColumnChange={store.updateColumn}
-            onColumnsPreset={store.setColumnsPreset}
-            onFiltersChange={store.setFilters}
-            onSearchChange={store.setSearchTerm}
-            onColumnOrderChange={store.updateColumnOrder}
-          >
-            {/* Altcoin Metrics & Funding Killer - Hidden on mobile */}
-            <div className="hidden md:flex flex-col lg:flex-row lg:items-stretch gap-4 mb-4 relative z-[65]">
-              <AltcoinMetrics
-                tickers={store.tickers}
-                rsiData={store.rsiData}
-                marketCapData={store.marketCapData}
-                onTokenClick={(symbol) => {
-                  store.setFilters({});
-                  store.setSearchTerm(symbol);
-                }}
-                onTopNClick={(symbols) => {
-                  store.setFilters({});
-                  store.setSearchTerm(symbols.join('|'));
-                }}
-              />
-              <FundingKiller
-                tickers={store.tickers}
-                fundingRateData={store.fundingRateData}
-                marketCapData={store.marketCapData}
-                onTokenClick={(symbol) => {
-                  store.setFilters({});
-                  store.setSearchTerm(symbol);
-                }}
-                onGroupClick={(symbols) => {
-                  store.setFilters({});
-                  store.setSearchTerm(symbols.join('|'));
-                }}
-              />
-            </div>
-          </Controls>
+          {/* Tab Navigation */}
+          <div className="mt-4">
+            <TabContainer
+              tabs={TABS}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            >
+              {/* ═══════════════════════════════════════════════════════════
+                  SECTION 2: Switchable Widget Area (based on active tab)
+                  ═══════════════════════════════════════════════════════════ */}
+
+              {/* RSI Tab */}
+              <TabPanel tabId="rsi" className="py-4">
+                <WidgetGrid variant="auto" gap="md">
+                  {/* Small Widgets */}
+                  <MarketMomentum
+                    avgRsi7={avgRsi7}
+                    avgRsi14={avgRsi14}
+                    avgRsiW7={avgRsiW7}
+                    avgRsiW14={avgRsiW14}
+                  />
+                  <AHR999Indicator />
+
+                  {/* Large Widget */}
+                  <AltcoinMetrics
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                    onTopNClick={handleGroupClick}
+                  />
+                </WidgetGrid>
+              </TabPanel>
+
+              {/* Funding Tab */}
+              <TabPanel tabId="funding" className="py-4">
+                <WidgetGrid variant="auto" gap="md">
+                  <FundingKiller
+                    tickers={store.tickers}
+                    fundingRateData={store.fundingRateData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                    onGroupClick={handleGroupClick}
+                  />
+                </WidgetGrid>
+              </TabPanel>
+
+              {/* Volume Tab - Coming Soon */}
+              <TabPanel tabId="volume" className="py-4">
+                <div className="text-center py-12 text-gray-500">
+                  <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <p className="font-medium">Volume Analysis</p>
+                  <p className="text-sm">Coming soon...</p>
+                </div>
+              </TabPanel>
+
+              {/* Custom Tab - Coming Soon */}
+              <TabPanel tabId="custom" className="py-4">
+                <div className="text-center py-12 text-gray-500">
+                  <Settings2 className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <p className="font-medium">Custom Dashboard</p>
+                  <p className="text-sm">Coming soon...</p>
+                </div>
+              </TabPanel>
+            </TabContainer>
+          </div>
         </div>
       </div>
 
-      {/* Table Area */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 3: Table Area (Quick Filters + Settings + Search + Table)
+          ═══════════════════════════════════════════════════════════════════ */}
       <div className="flex-1 flex flex-col px-2 sm:px-6 pb-4 overflow-hidden relative z-0">
         <div className="max-w-[1400px] mx-auto w-full flex flex-col flex-1 overflow-hidden">
+
+          {/* Controls: Quick Filters, Settings, Search */}
+          <div className="mb-4">
+            <Controls
+              columns={store.columns}
+              columnOrder={store.columnOrder}
+              filters={store.filters}
+              searchTerm={store.searchTerm}
+              overboughtCount={quickFilterCounts.overbought}
+              oversoldCount={quickFilterCounts.oversold}
+              onColumnChange={store.updateColumn}
+              onColumnsPreset={store.setColumnsPreset}
+              onFiltersChange={store.setFilters}
+              onSearchChange={store.setSearchTerm}
+              onColumnOrderChange={store.updateColumnOrder}
+            />
+          </div>
+
+          {/* Data Table */}
           <div className="bg-white rounded-xl border border-gray-200 flex flex-col flex-1 overflow-hidden">
             {/* Scrollable Table Container */}
             <div
@@ -293,7 +360,9 @@ export default function PerpBoard() {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 4: Footer
+          ═══════════════════════════════════════════════════════════════════ */}
       <div className="px-6 flex-shrink-0">
         <div className="max-w-[1400px] mx-auto w-full">
           <Footer />
