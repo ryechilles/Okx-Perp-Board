@@ -49,26 +49,26 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       icon={<Activity className="w-4 h-4" />}
       subtitle="Top 100 OKX Perp Tokens"
       loading={isLoading}
-      className="w-full"
+      className="w-full group"
     >
-      {/* Signal Summary */}
-      <div className="flex items-center gap-4 mb-4">
+      {/* Signal Summary - Always visible */}
+      <div className="flex items-center gap-3">
         <div className={`flex-1 rounded-lg px-3 py-2 ${dailyMomentum.bgColor}`}>
-          <div className="text-[11px] text-gray-500 mb-0.5">Daily</div>
-          <div className={`text-sm font-semibold ${dailyMomentum.color}`}>
+          <div className="text-[10px] text-gray-500 mb-0.5">Daily</div>
+          <div className={`text-[13px] font-semibold ${dailyMomentum.color}`}>
             {dailyMomentum.label}
           </div>
         </div>
         <div className={`flex-1 rounded-lg px-3 py-2 ${weeklyMomentum.bgColor}`}>
-          <div className="text-[11px] text-gray-500 mb-0.5">Weekly</div>
-          <div className={`text-sm font-semibold ${weeklyMomentum.color}`}>
+          <div className="text-[10px] text-gray-500 mb-0.5">Weekly</div>
+          <div className={`text-[13px] font-semibold ${weeklyMomentum.color}`}>
             {weeklyMomentum.label}
           </div>
         </div>
       </div>
 
-      {/* Detailed RSI Values */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[12px]">
+      {/* Detailed RSI Values - Show on hover */}
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] mt-0 max-h-0 overflow-hidden opacity-0 group-hover:mt-3 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-200">
         {/* Daily RSI */}
         <div className="flex items-center justify-between">
           <span className="text-gray-500">D-RSI7</span>
