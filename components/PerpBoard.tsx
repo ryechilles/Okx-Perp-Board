@@ -11,6 +11,8 @@ import { AltcoinTopGainers } from '@/components/AltcoinTopGainers';
 import { AltcoinVsBTC } from '@/components/AltcoinVsBTC';
 import { FundingKiller } from '@/components/FundingKiller';
 import { MarketMomentum } from '@/components/MarketMomentum';
+import { RsiOversold } from '@/components/RsiOversold';
+import { RsiOverbought } from '@/components/RsiOverbought';
 import { AHR999Indicator } from '@/components/AHR999Indicator';
 import { TableHeader, TableRow, TablePagination } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
@@ -261,12 +263,26 @@ export default function PerpBoard() {
             <div className="lg:w-[320px] flex-shrink-0 lg:overflow-y-auto lg:pr-2 space-y-4">
               {/* RSI Tab Widgets */}
               {activeTab === 'rsi' && (
-                <MarketMomentum
-                  avgRsi7={avgRsi7}
-                  avgRsi14={avgRsi14}
-                  avgRsiW7={avgRsiW7}
-                  avgRsiW14={avgRsiW14}
-                />
+                <>
+                  <MarketMomentum
+                    avgRsi7={avgRsi7}
+                    avgRsi14={avgRsi14}
+                    avgRsiW7={avgRsiW7}
+                    avgRsiW14={avgRsiW14}
+                  />
+                  <RsiOversold
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                  />
+                  <RsiOverbought
+                    tickers={store.tickers}
+                    rsiData={store.rsiData}
+                    marketCapData={store.marketCapData}
+                    onTokenClick={handleTokenClick}
+                  />
+                </>
               )}
 
               {/* Funding Tab Widget */}
