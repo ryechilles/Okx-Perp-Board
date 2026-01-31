@@ -176,13 +176,21 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
     }
   };
 
-  // Calculate ratio of altcoin avg change to BTC change
-  const getRatio = (tier: 'top10' | 'top20' | 'top50'): string => {
-    const altAvg = getAvg(tier);
+  // Get summary info for altcoin vs BTC performance
+  const getPerformanceSummary = (): { altStatus: string; btcStatus: string; summary: string } | null => {
+    const altAvg = getAvg('top20'); // Use top20 as reference
     const btcChange = getBtcChange();
-    if (altAvg === null || btcChange === null || btcChange === 0) return '--';
-    const ratio = altAvg / btcChange;
-    return ratio.toFixed(1);
+
+    if (altAvg === null || btcChange === null) {
+      return null;
+    }
+
+    const altStatus = altAvg >= 0 ? 'Altcoin ↑' : 'Altcoin ↓';
+    const btcStatus = btcChange >= 0 ? 'BTC ↑' : 'BTC ↓';
+    const altBetter = altAvg > btcChange;
+    const summary = altBetter ? '山寨币跑赢 BTC' : '山寨币跑输 BTC';
+
+    return { altStatus, btcStatus, summary };
   };
 
   // Get top N symbols for filtering
@@ -323,21 +331,16 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
         </div>
 
-        {/* Ratio rows */}
-        <div className="space-y-1 text-[12px] text-gray-600 border-t border-gray-100 pt-2">
-          <div className="flex items-center">
-            <span>Altcoin Top10 / BTC:</span>
-            <span className="font-medium text-gray-800 ml-2">{isLoading ? '--' : getRatio('top10')}</span>
+        {/* Performance summary */}
+        {!isLoading && getPerformanceSummary() && (
+          <div className="text-[12px] text-gray-500 border-t border-gray-100 pt-2">
+            <span>{getPerformanceSummary()?.altStatus}</span>
+            <span className="mx-2">|</span>
+            <span>{getPerformanceSummary()?.btcStatus}</span>
+            <span className="mx-2">→</span>
+            <span className="text-gray-700 font-medium">{getPerformanceSummary()?.summary}</span>
           </div>
-          <div className="flex items-center">
-            <span>Altcoin Top20 / BTC:</span>
-            <span className="font-medium text-gray-800 ml-2">{isLoading ? '--' : getRatio('top20')}</span>
-          </div>
-          <div className="flex items-center">
-            <span>Altcoin Top50 / BTC:</span>
-            <span className="font-medium text-gray-800 ml-2">{isLoading ? '--' : getRatio('top50')}</span>
-          </div>
-        </div>
+        )}
 
         {/* Hover tooltip */}
         {showAvgTooltip && (
