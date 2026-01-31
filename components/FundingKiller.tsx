@@ -87,12 +87,12 @@ export function FundingKiller({
           >
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="text-[13px] font-medium text-gray-700">Short Killer</span>
-              <span className="text-[12px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+              <span className="text-[12px] font-medium text-gray-700">Short Killer</span>
+              <span className="text-[11px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
                 {isLoading ? '--' : shortKillers.length}
               </span>
             </div>
-            <span className="text-[11px] text-gray-400">APR</span>
+            <span className="text-[10px] text-gray-400">APR</span>
           </div>
 
           <div className="space-y-1">
@@ -105,21 +105,21 @@ export function FundingKiller({
                 >
                   <div className="flex items-center gap-2">
                     {t.logo ? (
-                      <img src={t.logo} alt={t.symbol} className="w-6 h-6 rounded-full" />
+                      <img src={t.logo} alt={t.symbol} className="w-5 h-5 rounded-full" />
                     ) : (
-                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
+                      <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500">
                         {t.symbol.charAt(0)}
                       </div>
                     )}
-                    <span className="text-[13px] font-medium text-gray-900">{t.symbol}</span>
+                    <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
-                  <span className="text-[13px] font-semibold text-green-500 tabular-nums">
+                  <span className="text-[12px] font-semibold text-green-500 tabular-nums">
                     {t.apr.toFixed(1)}%
                   </span>
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-[12px] text-gray-400">
+              <div className="text-center py-4 text-[11px] text-gray-400">
                 No tokens with APR &lt; -20%
               </div>
             )}
@@ -136,12 +136,12 @@ export function FundingKiller({
           >
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-red-500" />
-              <span className="text-[13px] font-medium text-gray-700">Long Killer</span>
-              <span className="text-[12px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+              <span className="text-[12px] font-medium text-gray-700">Long Killer</span>
+              <span className="text-[11px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
                 {isLoading ? '--' : longKillers.length}
               </span>
             </div>
-            <span className="text-[11px] text-gray-400">APR</span>
+            <span className="text-[10px] text-gray-400">APR</span>
           </div>
 
           <div className="space-y-1">
@@ -154,21 +154,21 @@ export function FundingKiller({
                 >
                   <div className="flex items-center gap-2">
                     {t.logo ? (
-                      <img src={t.logo} alt={t.symbol} className="w-6 h-6 rounded-full" />
+                      <img src={t.logo} alt={t.symbol} className="w-5 h-5 rounded-full" />
                     ) : (
-                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
+                      <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500">
                         {t.symbol.charAt(0)}
                       </div>
                     )}
-                    <span className="text-[13px] font-medium text-gray-900">{t.symbol}</span>
+                    <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
-                  <span className="text-[13px] font-semibold text-red-500 tabular-nums">
+                  <span className="text-[12px] font-semibold text-red-500 tabular-nums">
                     +{t.apr.toFixed(1)}%
                   </span>
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-[12px] text-gray-400">
+              <div className="text-center py-4 text-[11px] text-gray-400">
                 No tokens with APR &gt; 20%
               </div>
             )}
