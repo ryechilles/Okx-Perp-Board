@@ -448,24 +448,26 @@ export function Controls({
               {columnGroups.map(group => (
                 <div key={group.label}>
                   <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 flex-wrap items-center">
-                    {group.columns.map(col => (
-                      <button
-                        key={col.key}
-                        onClick={() => onColumnChange(col.key, !columns[col.key])}
-                        className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
-                          columns[col.key]
-                            ? 'bg-white text-gray-900 shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                      >
-                        {col.label}
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 flex-wrap">
+                      {group.columns.map(col => (
+                        <button
+                          key={col.key}
+                          onClick={() => onColumnChange(col.key, !columns[col.key])}
+                          className={`px-2.5 py-1 rounded-md text-[12px] font-medium transition-all ${
+                            columns[col.key]
+                              ? 'bg-white text-gray-900 shadow-sm'
+                              : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {col.label}
+                        </button>
+                      ))}
+                    </div>
                     {group.label === 'Other' && hasNonDefaultColumns && (
                       <button
                         onClick={() => onColumnsPreset('default')}
-                        className="p-1 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-200 ml-1"
+                        className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-100"
                         title="Reset columns"
                       >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
