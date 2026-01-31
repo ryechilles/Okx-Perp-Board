@@ -51,15 +51,9 @@ export function Footer() {
 
   return (
     <div className="border-t border-gray-200 py-4 flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500">
-          Copyright © {currentYear}
-        </span>
-        <PerpLogo className="w-4 h-4 rounded" />
-        <span className="text-xs text-gray-500">
-          Perp Board v2.4.0
-        </span>
-      </div>
+      <span className="text-xs text-gray-500">
+        Copyright © {currentYear}
+      </span>
       <div className="flex items-center gap-4">
         <a
           href="https://okx.com/join/95869751"
