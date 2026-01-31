@@ -49,6 +49,7 @@ interface ControlsProps {
   onFiltersChange: (filters: Filters) => void;
   onSearchChange: (term: string) => void;
   onColumnOrderChange: (order: ColumnKey[]) => void;
+  children?: React.ReactNode;
 }
 
 export function Controls({
@@ -67,6 +68,7 @@ export function Controls({
   onFiltersChange,
   onSearchChange,
   onColumnOrderChange,
+  children,
 }: ControlsProps) {
   const [showCustomizePanel, setShowCustomizePanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
@@ -224,6 +226,9 @@ export function Controls({
           <AHR999Indicator />
         </div>
       </div>
+
+      {/* Big Components Slot - for AltcoinMetrics & FundingKiller */}
+      {children}
 
       {/* Mobile Search Row - minimal style */}
       <div className="md:hidden mb-3 w-full">

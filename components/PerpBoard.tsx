@@ -177,44 +177,7 @@ export default function PerpBoard() {
       <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0 relative">
         <div className="max-w-[1400px] mx-auto w-full">
           <Header />
-        </div>
-      </div>
 
-      {/* Altcoin Metrics & Funding Killer - Hidden on mobile */}
-      <div className="hidden md:block px-2 sm:px-6 relative z-30">
-        <div className="max-w-[1400px] mx-auto w-full flex flex-col lg:flex-row lg:items-stretch gap-4 mb-4 pb-2">
-          <AltcoinMetrics
-            tickers={store.tickers}
-            rsiData={store.rsiData}
-            marketCapData={store.marketCapData}
-            onTokenClick={(symbol) => {
-              store.setFilters({}); // Clear all filters
-              store.setSearchTerm(symbol);
-            }}
-            onTopNClick={(symbols) => {
-              store.setFilters({}); // Clear all filters
-              store.setSearchTerm(symbols.join('|'));
-            }}
-          />
-          <FundingKiller
-            tickers={store.tickers}
-            fundingRateData={store.fundingRateData}
-            marketCapData={store.marketCapData}
-            onTokenClick={(symbol) => {
-              store.setFilters({}); // Clear all filters
-              store.setSearchTerm(symbol);
-            }}
-            onGroupClick={(symbols) => {
-              store.setFilters({}); // Clear all filters
-              store.setSearchTerm(symbols.join('|'));
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Controls - Quick Filters & Search */}
-      <div className="bg-[#fafafa] px-2 sm:px-6 pb-2 flex-shrink-0 relative z-40">
-        <div className="max-w-[1400px] mx-auto w-full">
           <Controls
             columns={store.columns}
             columnOrder={store.columnOrder}
@@ -231,7 +194,37 @@ export default function PerpBoard() {
             onFiltersChange={store.setFilters}
             onSearchChange={store.setSearchTerm}
             onColumnOrderChange={store.updateColumnOrder}
-          />
+          >
+            {/* Altcoin Metrics & Funding Killer - Hidden on mobile */}
+            <div className="hidden md:flex flex-col lg:flex-row lg:items-stretch gap-4 mb-4">
+              <AltcoinMetrics
+                tickers={store.tickers}
+                rsiData={store.rsiData}
+                marketCapData={store.marketCapData}
+                onTokenClick={(symbol) => {
+                  store.setFilters({}); // Clear all filters
+                  store.setSearchTerm(symbol);
+                }}
+                onTopNClick={(symbols) => {
+                  store.setFilters({}); // Clear all filters
+                  store.setSearchTerm(symbols.join('|'));
+                }}
+              />
+              <FundingKiller
+                tickers={store.tickers}
+                fundingRateData={store.fundingRateData}
+                marketCapData={store.marketCapData}
+                onTokenClick={(symbol) => {
+                  store.setFilters({}); // Clear all filters
+                  store.setSearchTerm(symbol);
+                }}
+                onGroupClick={(symbols) => {
+                  store.setFilters({}); // Clear all filters
+                  store.setSearchTerm(symbols.join('|'));
+                }}
+              />
+            </div>
+          </Controls>
         </div>
       </div>
 
