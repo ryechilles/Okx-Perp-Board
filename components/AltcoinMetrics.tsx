@@ -295,7 +295,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {/* Avg Change rows */}
         <div className="flex items-center mb-2">
           {/* Left: Altcoin data */}
-          <div className="space-y-1 text-[12px]">
+          <div className="flex-1 space-y-1 text-[12px]">
             <div className="flex items-center">
               <span className="text-gray-500">Altcoin Top10:</span>
               <span
@@ -326,7 +326,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
 
           {/* Right: BTC data */}
-          <div className="flex items-center ml-auto pl-4 border-l border-gray-200">
+          <div className="flex-1 flex items-center justify-center pl-4 border-l border-gray-200">
             <span className="text-gray-500 text-[12px]">BTC:</span>
             <span
               className={`font-medium ml-2 text-[12px] cursor-pointer hover:opacity-80 ${formatChange(getBtcChange()).color}`}
@@ -340,7 +340,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         {/* Ratio rows with summary on right */}
         <div className="flex items-center border-t border-gray-200 pt-2">
           {/* Left: Ratios */}
-          <div className="space-y-0.5 text-[12px] text-gray-500">
+          <div className="flex-1 space-y-0.5 text-[12px] text-gray-500">
             <div className="flex items-center">
               <span className="w-[130px]">Altcoin Top10 / BTC:</span>
               <span className="font-medium text-gray-800">
@@ -362,12 +362,14 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
           </div>
 
           {/* Right: Performance summary */}
-          {!isLoading && getPerformanceSummary() && (
-            <div className="text-[11px] text-right ml-auto pl-4 border-l border-gray-200">
-              <div className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</div>
-              <div className="text-gray-500 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
-            </div>
-          )}
+          <div className="flex-1 flex items-center justify-center pl-4 border-l border-gray-200">
+            {!isLoading && getPerformanceSummary() && (
+              <div className="text-[11px] text-center">
+                <div className="text-gray-400">{getPerformanceSummary()?.altStatus}  {getPerformanceSummary()?.btcStatus}</div>
+                <div className="text-gray-500 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Hover tooltip */}
