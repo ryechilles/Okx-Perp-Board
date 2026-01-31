@@ -431,10 +431,10 @@ export default function PerpBoard() {
                                         <span className="text-gray-500 font-normal">/{quote}</span>
                                       </div>
                                       {!hasSpot && (
-                                        <span className="text-[9px] text-gray-500 font-normal">No Spot on OKX</span>
+                                        <span className="text-[11px] text-gray-500 font-normal">No Spot on OKX</span>
                                       )}
                                       {listingAgeLabel && (
-                                        <span className="text-[9px] text-blue-500 font-normal">{listingAgeLabel}</span>
+                                        <span className="text-[11px] text-blue-500 font-normal">{listingAgeLabel}</span>
                                       )}
                                     </div>
                                   </td>
