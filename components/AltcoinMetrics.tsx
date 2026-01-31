@@ -332,7 +332,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
         </div>
 
         {/* Ratio rows with summary on right */}
-        <div className="flex items-center justify-between border-t border-gray-100 pt-2">
+        <div className="flex items-center justify-between border-t border-gray-200 pt-2">
           <div className="space-y-0.5 text-[12px] text-gray-500">
             <div className="flex items-center">
               <span className="w-[130px]">Altcoin Top10 / BTC:</span>
@@ -356,7 +356,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
           {/* Performance summary on right */}
           {!isLoading && getPerformanceSummary() && (
-            <div className="text-[11px] text-right ml-6 border-l border-gray-100 pl-4">
+            <div className="text-[11px] text-right ml-6 border-l border-gray-200 pl-4">
               <div className="text-gray-400">{getPerformanceSummary()?.altStatus} | {getPerformanceSummary()?.btcStatus}</div>
               <div className="text-gray-500 font-medium mt-0.5">{getPerformanceSummary()?.summary}</div>
             </div>
