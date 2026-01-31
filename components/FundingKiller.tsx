@@ -106,13 +106,10 @@ export function FundingKiller({
           ) : (
             <span className="text-[12px] text-gray-400">--</span>
           )}
-          {longKillers.length > 5 && (
-            <span className="text-[11px] text-gray-400">+{longKillers.length - 5} more</span>
-          )}
         </div>
 
         {/* Divider */}
-        <div className="w-px h-8 bg-gray-200 self-start mt-6" />
+        <div className="text-gray-300 self-center">|</div>
 
         {/* Short Killers Column */}
         <div className="flex flex-col gap-1">
@@ -139,9 +136,6 @@ export function FundingKiller({
             ))
           ) : (
             <span className="text-[12px] text-gray-400">--</span>
-          )}
-          {shortKillers.length > 5 && (
-            <span className="text-[11px] text-gray-400">+{shortKillers.length - 5} more</span>
           )}
         </div>
       </div>

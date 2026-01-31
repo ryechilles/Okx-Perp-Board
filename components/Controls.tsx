@@ -7,7 +7,7 @@ import { AHR999Indicator } from './AHR999Indicator';
 import { RsiFilter } from './RsiFilter';
 
 // Quick filter types
-type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'overbought' | 'oversold';
+type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'newListed' | 'overbought' | 'oversold';
 
 // Check if mobile
 const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
@@ -101,6 +101,7 @@ export function Controls({
     if (filters.rank === '1-25' && !filters.rsi7 && !filters.rsi14 && !filters.isMeme && !filters.hasSpot) return 'top25';
     if (filters.isMeme === 'yes' && !filters.rsi7 && !filters.rsi14) return 'meme';
     if (filters.hasSpot === 'no' && !filters.rsi7 && !filters.rsi14) return 'noSpot';
+    if (filters.listAge === '<180d' && !filters.rsi7 && !filters.rsi14) return 'newListed';
     if (filters.rsi7 === '>70' && filters.rsi14 === '>70') return 'overbought';
     if (filters.rsi7 === '<30' && filters.rsi14 === '<30') return 'oversold';
     if (Object.keys(filters).length === 0) return 'all';
@@ -127,6 +128,10 @@ export function Controls({
       case 'noSpot':
         onFiltersChange({ hasSpot: 'no' });
         setTempFilters({ hasSpot: 'no' });
+        break;
+      case 'newListed':
+        onFiltersChange({ listAge: '<180d' });
+        setTempFilters({ listAge: '<180d' });
         break;
       case 'overbought':
         onFiltersChange({ rsi7: '>70', rsi14: '>70' });
@@ -309,6 +314,32 @@ export function Controls({
                 <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
                 <div className="text-[12px]">
                   <span className="text-gray-900">Tokens without Spot listing on OKX</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* New Listed with tooltip */}
+          <div
+            className="relative"
+            onMouseEnter={() => setHoveredFilter('newListed')}
+            onMouseLeave={() => setHoveredFilter(null)}
+          >
+            <button
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
+                activeQuickFilter === 'newListed'
+                  ? 'bg-white text-blue-500 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => handleQuickFilter('newListed')}
+            >
+              New Listed
+            </button>
+            {hoveredFilter === 'newListed' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-50 whitespace-nowrap">
+                <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
+                <div className="text-[12px]">
+                  <span className="text-gray-900">Listed &lt;180d</span>
                 </div>
               </div>
             )}
@@ -543,7 +574,6 @@ export function Controls({
                   <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'Market Cap' },
-                      { value: '0-20', label: '≤$20M' },
                       { value: '20-100', label: '$20M-$100M' },
                       { value: '100-1000', label: '$100M-$1B' },
                       { value: '1000+', label: '≥$1B' },
