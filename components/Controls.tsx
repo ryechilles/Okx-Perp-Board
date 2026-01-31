@@ -9,6 +9,22 @@ import { RsiFilter } from './RsiFilter';
 // Quick filter types
 type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'overbought' | 'oversold';
 
+// Check if mobile
+const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
+
+// Default columns for comparison
+const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
+  favorite: true, rank: true, logo: true, symbol: true, price: true, fundingRate: true,
+  change24h: true, change7d: true, rsi7: true, rsi14: true, rsiW7: false, rsiW14: false,
+  volume24h: false, openInterest: false, marketCap: true, signal: true, weeklySignal: true, listingDays: false,
+};
+
+const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
+  favorite: true, rank: true, logo: true, symbol: true, price: true, fundingRate: true,
+  change24h: true, change7d: false, rsi7: false, rsi14: false, rsiW7: false, rsiW14: false,
+  volume24h: false, openInterest: false, marketCap: false, signal: false, weeklySignal: false, listingDays: false,
+};
+
 interface ControlsProps {
   columns: ColumnVisibility;
   columnOrder: ColumnKey[];
@@ -125,7 +141,13 @@ export function Controls({
   const totalCount = Object.keys(columns).length - excludedColumns.length;
   // Only count filters that have actual values (not undefined or empty string)
   const hasFilters = Object.values(filters).some(v => v !== undefined && v !== '');
-  
+
+  // Check if columns differ from default
+  const defaultColumns = isMobile() ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS_DESKTOP;
+  const hasNonDefaultColumns = Object.keys(columns).some(
+    key => columns[key as keyof ColumnVisibility] !== defaultColumns[key as keyof ColumnVisibility]
+  );
+
   const handleApplyFilters = () => {
     onFiltersChange(tempFilters);
   };
@@ -435,6 +457,18 @@ export function Controls({
                   </div>
                 </div>
               ))}
+              {hasNonDefaultColumns && (
+                <button
+                  onClick={() => onColumnsPreset('default')}
+                  className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-100"
+                  title="Reset columns"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                </button>
+              )}
             </div>
           )}
 
