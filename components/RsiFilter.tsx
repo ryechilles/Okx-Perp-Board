@@ -25,7 +25,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
   const clickHandler = (e: React.MouseEvent<HTMLInputElement>) => setTimeout(() => (e.target as HTMLInputElement).select(), 0);
 
   return (
-    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 items-center">
+    <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5 items-center">
       {/* Label */}
       <button
         onClick={() => onChange(undefined)}

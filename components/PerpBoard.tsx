@@ -286,7 +286,7 @@ export default function PerpBoard() {
                           onDragLeave={handleDragLeave}
                           onDrop={(e) => handleDrop(e, key)}
                           onDragEnd={handleDragEnd}
-                          className={`px-1 py-3 text-[11px] font-medium text-gray-500 tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
+                          className={`px-1 py-3 text-[11px] font-medium text-gray-500 tracking-wide bg-[#fafafa] border-b border-gray-200 whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-gray-200' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
                           style={stickyStyle}
                           onClick={() => sortable && store.updateSort(key)}
                         >
@@ -627,14 +627,14 @@ export default function PerpBoard() {
                 <button
                   onClick={() => store.setCurrentPage(1)}
                   disabled={store.currentPage === 1}
-                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   ««
                 </button>
                 <button
                   onClick={() => store.setCurrentPage(store.currentPage - 1)}
                   disabled={store.currentPage === 1}
-                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   «
                 </button>
@@ -658,7 +658,7 @@ export default function PerpBoard() {
                       className={`px-2.5 py-1 text-xs rounded transition-colors ${
                         store.currentPage === pageNum
                           ? 'bg-gray-900 text-white'
-                          : 'text-gray-600 hover:bg-gray-100'
+                          : 'text-gray-600 hover:bg-gray-200'
                       }`}
                     >
                       {pageNum}
@@ -669,14 +669,14 @@ export default function PerpBoard() {
                 <button
                   onClick={() => store.setCurrentPage(store.currentPage + 1)}
                   disabled={store.currentPage === totalPages}
-                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   »
                 </button>
                 <button
                   onClick={() => store.setCurrentPage(totalPages)}
                   disabled={store.currentPage === totalPages}
-                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   »»
                 </button>

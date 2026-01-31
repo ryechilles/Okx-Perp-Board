@@ -57,7 +57,7 @@ export function Header() {
         <span className="text-[10px] text-gray-500">v2.4.0</span>
       </div>
       
-      <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
+      <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
         <button className="px-3 py-1.5 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm">
           OKX
         </button>

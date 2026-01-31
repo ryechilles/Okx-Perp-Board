@@ -45,7 +45,7 @@ function formatPrice(price: number): string {
 // Time frame selector component
 function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (tf: TimeFrame) => void }) {
   return (
-    <div className="flex bg-gray-100 rounded-lg p-0.5">
+    <div className="flex bg-gray-200 rounded-lg p-0.5">
       {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
         <button
           key={tf}
