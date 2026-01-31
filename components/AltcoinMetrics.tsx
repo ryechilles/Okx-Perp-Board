@@ -201,10 +201,10 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
   const isLoading = altcoins.length === 0;
 
   return (
-    <div className="flex items-start gap-4 mb-4">
+    <div className="flex flex-col lg:flex-row items-start gap-4 mb-4 overflow-x-auto pb-2">
       {/* Top Gainers Card */}
       <div
-        className="relative bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[300px]"
+        className="relative bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[300px] flex-shrink-0"
         onMouseEnter={() => setShowGainersTooltip(true)}
         onMouseLeave={() => setShowGainersTooltip(false)}
       >
@@ -282,7 +282,7 @@ export function AltcoinMetrics({ tickers, rsiData, marketCapData, onTokenClick, 
 
       {/* Average Changes Card */}
       <div
-        className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg"
+        className="relative px-3 py-2 bg-white border border-gray-200 rounded-lg flex-shrink-0"
         onMouseEnter={() => setShowAvgTooltip(true)}
         onMouseLeave={() => setShowAvgTooltip(false)}
       >

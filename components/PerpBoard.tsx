@@ -173,7 +173,7 @@ export default function PerpBoard() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* Sticky Header */}
-      <div className="bg-[#fafafa] z-50 px-6 pt-5 pb-0 flex-shrink-0">
+      <div className="bg-[#fafafa] z-50 px-2 sm:px-6 pt-5 pb-0 flex-shrink-0 overflow-x-auto">
         <div className="max-w-[1400px] mx-auto w-full">
           <Header />
           
@@ -198,7 +198,7 @@ export default function PerpBoard() {
       </div>
       
       {/* Altcoin Metrics */}
-      <div className="px-6">
+      <div className="px-2 sm:px-6 overflow-x-auto">
         <div className="max-w-[1400px] mx-auto w-full">
           <AltcoinMetrics
             tickers={store.tickers}
@@ -217,7 +217,7 @@ export default function PerpBoard() {
       </div>
 
       {/* Table Area */}
-      <div className="flex-1 overflow-hidden flex flex-col px-6 pb-4">
+      <div className="flex-1 overflow-hidden flex flex-col px-2 sm:px-6 pb-4">
         <div className="max-w-[1400px] mx-auto w-full flex flex-col h-full">
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col flex-1">
             {/* Scrollable Table Container */}
