@@ -212,9 +212,9 @@ export function Controls({
   
   return (
     <>
-      {/* Indicators Row - Hidden on mobile */}
-      <div className="hidden md:flex items-center mb-4 relative z-[70]">
-        <div className="flex items-center gap-3 flex-wrap">
+      {/* Indicators Row - Small widgets, show on mobile */}
+      <div className="flex items-center mb-4 relative z-[70]">
+        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
           <MarketMomentum
             avgRsi7={avgRsi7}
             avgRsi14={avgRsi14}
