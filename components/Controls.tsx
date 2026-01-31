@@ -517,7 +517,7 @@ export function Controls({
               {columnGroups.map(group => (
                 <div key={group.label}>
                   <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
-                  <div className="flex flex-wrap bg-gray-200 rounded-lg p-1 gap-0.5">
+                  <div className="inline-flex flex-wrap bg-gray-200 rounded-lg p-1 gap-0.5">
                     {group.columns.map(col => (
                       <button
                         key={col.key}
