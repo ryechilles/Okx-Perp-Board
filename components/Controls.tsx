@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
+import { ColumnVisibility, ColumnKey, Filters, ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
 import { MarketMomentum } from './MarketMomentum';
 import { AHR999Indicator } from './AHR999Indicator';
+import { FundingKiller } from './FundingKiller';
 import { RsiFilter } from './RsiFilter';
 
 // Quick filter types
@@ -44,11 +45,15 @@ interface ControlsProps {
   avgRsiW14: number | null;
   overboughtCount: number;
   oversoldCount: number;
+  tickers: Map<string, ProcessedTicker>;
+  fundingRateData: Map<string, FundingRateData>;
+  marketCapData: Map<string, MarketCapData>;
   onColumnChange: (col: keyof ColumnVisibility, visible: boolean) => void;
   onColumnsPreset: (preset: 'all' | 'none' | 'default') => void;
   onFiltersChange: (filters: Filters) => void;
   onSearchChange: (term: string) => void;
   onColumnOrderChange: (order: ColumnKey[]) => void;
+  onTokenClick?: (symbol: string) => void;
 }
 
 export function Controls({
@@ -62,11 +67,15 @@ export function Controls({
   avgRsiW14,
   overboughtCount,
   oversoldCount,
+  tickers,
+  fundingRateData,
+  marketCapData,
   onColumnChange,
   onColumnsPreset,
   onFiltersChange,
   onSearchChange,
   onColumnOrderChange,
+  onTokenClick,
 }: ControlsProps) {
   const [showCustomizePanel, setShowCustomizePanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
@@ -209,7 +218,7 @@ export function Controls({
     <>
       {/* Indicators Row */}
       <div className="flex items-center mb-4 relative z-[70]">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <MarketMomentum
             avgRsi7={avgRsi7}
             avgRsi14={avgRsi14}
@@ -217,6 +226,12 @@ export function Controls({
             avgRsiW14={avgRsiW14}
           />
           <AHR999Indicator />
+          <FundingKiller
+            tickers={tickers}
+            fundingRateData={fundingRateData}
+            marketCapData={marketCapData}
+            onTokenClick={onTokenClick}
+          />
         </div>
       </div>
 

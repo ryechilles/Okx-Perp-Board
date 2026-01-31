@@ -188,11 +188,15 @@ export default function PerpBoard() {
             avgRsiW14={avgRsiW14}
             overboughtCount={quickFilterCounts.overbought}
             oversoldCount={quickFilterCounts.oversold}
+            tickers={store.tickers}
+            fundingRateData={store.fundingRateData}
+            marketCapData={store.marketCapData}
             onColumnChange={store.updateColumn}
             onColumnsPreset={store.setColumnsPreset}
             onFiltersChange={store.setFilters}
             onSearchChange={store.setSearchTerm}
             onColumnOrderChange={store.updateColumnOrder}
+            onTokenClick={(symbol) => store.setSearchTerm(symbol)}
           />
         </div>
       </div>
