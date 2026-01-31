@@ -224,7 +224,7 @@ export function Controls({
       <div className="flex items-center justify-between gap-4 mb-4 flex-wrap relative z-[60]">
         <div className="flex items-center gap-4 flex-wrap">
         {/* Quick Filter Buttons - Part 1: All & Top 25 */}
-        <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
+        <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
           <button
             className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
               activeQuickFilter === 'all'
@@ -316,7 +316,7 @@ export function Controls({
         </div>
 
         {/* Quick Filter Buttons - Part 2: RSI Filters */}
-        <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
+        <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
           {/* Overbought with tooltip */}
           <div
             className="relative"
@@ -373,12 +373,12 @@ export function Controls({
         </div>
 
         {/* Customize button - icon only */}
-        <div ref={customizeButtonRef} className="inline-flex bg-gray-100 rounded-lg p-1">
+        <div ref={customizeButtonRef} className="inline-flex bg-gray-200 rounded-lg p-1">
           <button
             className={`flex items-center justify-center p-1.5 rounded-md transition-all ${
               showCustomizePanel || hasFilters
                 ? 'bg-white shadow-sm'
-                : 'hover:bg-gray-200'
+                : 'hover:bg-gray-300'
             }`}
             onClick={() => setShowCustomizePanel(!showCustomizePanel)}
           >
@@ -391,7 +391,7 @@ export function Controls({
         </div>
 
         {/* Search box - right side */}
-        <div className="inline-flex items-center bg-gray-100 rounded-lg p-1 gap-1">
+        <div className="inline-flex items-center bg-gray-200 rounded-lg p-1 gap-1">
           <svg
             className="w-4 h-4 text-gray-500 ml-2"
             viewBox="0 0 24 24"
@@ -432,7 +432,7 @@ export function Controls({
         <div className="h-full flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-0.5">
+            <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
               <button
                 onClick={() => setCustomizeTab('columns')}
                 className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
@@ -458,7 +458,7 @@ export function Controls({
             </div>
             <button
               onClick={() => setShowCustomizePanel(false)}
-              className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500"
+              className="p-1.5 rounded-md hover:bg-gray-300 text-gray-500"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 6L6 18M6 6l12 12" />
@@ -476,7 +476,7 @@ export function Controls({
                 <div key={group.label}>
                   <div className="text-[11px] text-gray-500 font-medium mb-2">{group.label}</div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-                    <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5 flex-wrap">
+                    <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5 flex-wrap">
                       {group.columns.map(col => (
                         <button
                           key={col.key}
@@ -494,7 +494,7 @@ export function Controls({
                     {group.label === 'Other' && hasNonDefaultColumns && (
                       <button
                         onClick={() => onColumnsPreset('default')}
-                        className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-100"
+                        className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-300"
                         title="Reset columns"
                       >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -517,7 +517,7 @@ export function Controls({
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Market & Funding</div>
                 <div className="flex flex-wrap gap-x-4 gap-y-3">
                   {/* Market Cap Rank */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'MC Rank' },
                       { value: '1-20', label: 'Top 20' },
@@ -540,7 +540,7 @@ export function Controls({
                   </div>
 
                   {/* Market Cap */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'Market Cap' },
                       { value: '0-20', label: '≤$20M' },
@@ -563,7 +563,7 @@ export function Controls({
                   </div>
 
                   {/* Funding Rate */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'Funding' },
                       { value: 'positive', label: 'Positive' },
@@ -607,7 +607,7 @@ export function Controls({
                 <div className="text-[11px] text-gray-500 font-medium mb-2">Other</div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
                   {/* Has Spot */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'Spot' },
                       { value: 'yes', label: 'Yes' },
@@ -628,7 +628,7 @@ export function Controls({
                   </div>
 
                   {/* Listing Age */}
-                  <div className="inline-flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+                  <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5">
                     {[
                       { value: '', label: 'List Age' },
                       { value: '<30d', label: '<30d' },
@@ -653,7 +653,7 @@ export function Controls({
                   {hasFilters && (
                     <button
                       onClick={handleClearFilters}
-                      className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-100"
+                      className="p-1.5 rounded-md cursor-pointer transition-all text-gray-500 hover:text-gray-600 hover:bg-gray-300"
                       title="Reset filters"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
