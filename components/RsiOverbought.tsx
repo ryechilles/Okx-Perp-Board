@@ -89,15 +89,19 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
           overboughtTokens.map((token) => (
             <div
               key={token.instId}
-              className="flex items-center py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
+              className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
               onClick={() => onTokenClick?.(token.symbol)}
             >
-              <TokenAvatar symbol={token.symbol} logo={token.logo} />
-              <span className="text-[12px] font-medium text-gray-900 ml-2 min-w-[45px]">{token.symbol}</span>
-              <span className="text-[11px] text-gray-500 tabular-nums ml-3">{formatPrice(token.price)}</span>
-              <span className={`text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-md ml-auto ${getRsiOverboughtPillStyle(token.avgRsi)}`}>
-                {token.avgRsi.toFixed(2)}
-              </span>
+              <div className="flex items-center gap-2">
+                <TokenAvatar symbol={token.symbol} logo={token.logo} />
+                <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">{formatPrice(token.price)}</span>
+                <span className={`text-[11px] font-semibold tabular-nums w-14 text-center py-0.5 rounded-md ${getRsiOverboughtPillStyle(token.avgRsi)}`}>
+                  {token.avgRsi.toFixed(2)}
+                </span>
+              </div>
             </div>
           ))
         ) : (
