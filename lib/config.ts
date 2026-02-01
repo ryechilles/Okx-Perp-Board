@@ -2,14 +2,16 @@
  * Application Configuration
  *
  * Centralized configuration for the app.
- * Update VERSION here and it will reflect everywhere.
+ * Version is imported from constants.ts - update APP_VERSION there.
  */
+
+import { APP_VERSION } from './constants';
 
 export const APP_CONFIG = {
   name: 'Perp Board',
   title: 'Perp Board — OKX Perpetual Market Dashboard',
-  version: '2.6.1',
-  versionDisplay: 'v2.6.1',
+  version: APP_VERSION,
+  versionDisplay: `v${APP_VERSION}`,
   description: 'Real-time OKX perpetual futures dashboard. Funding rates, RSI signals, market cap and momentum at a glance.',
   author: 'ryechilles',
   links: {
