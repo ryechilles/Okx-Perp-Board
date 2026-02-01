@@ -29,6 +29,15 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
         <TooltipContent items={[
           "OKX perp top 100 by market cap",
           "Avg = (D-RSI7 + D-RSI14) / 2",
+          "≤20: Extreme Oversold",
+          "≤25: Oversold",
+          "≤30: Very Weak",
+          "≤40: Weak",
+          "≤60: Neutral",
+          "≤70: Strong",
+          "≤80: Very Strong",
+          "≤85: Overbought",
+          ">85: Extreme Overbought",
         ]} />
       }
     >
