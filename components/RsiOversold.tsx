@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { TrendingDown } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
+import { TokenAvatar } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 import { formatPrice, getRsiOversoldPillStyle } from '@/lib/utils';
 
@@ -95,22 +96,7 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
               onClick={() => onTokenClick?.(token.symbol)}
             >
               <div className="flex items-center gap-2">
-                {token.logo ? (
-                  <img
-                    src={token.logo}
-                    alt={token.symbol}
-                    className="w-5 h-5 rounded-full"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.onerror = null;
-                      target.style.display = 'none';
-                    }}
-                  />
-                ) : (
-                  <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500">
-                    {token.symbol.charAt(0)}
-                  </div>
-                )}
+                <TokenAvatar symbol={token.symbol} logo={token.logo} />
                 <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
               </div>
               <div className="flex items-center gap-3">

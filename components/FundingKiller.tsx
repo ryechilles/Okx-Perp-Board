@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
+import { TokenAvatar } from '@/components/ui';
 import { ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
 
@@ -110,13 +111,7 @@ export function FundingKiller({
                   onClick={() => onTokenClick?.(t.symbol)}
                 >
                   <div className="flex items-center gap-2">
-                    {t.logo ? (
-                      <img src={t.logo} alt={t.symbol} className="w-5 h-5 rounded-full" />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500">
-                        {t.symbol.charAt(0)}
-                      </div>
-                    )}
+                    <TokenAvatar symbol={t.symbol} logo={t.logo} />
                     <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
                   <div className="flex items-center gap-4">
@@ -165,13 +160,7 @@ export function FundingKiller({
                   onClick={() => onTokenClick?.(t.symbol)}
                 >
                   <div className="flex items-center gap-2">
-                    {t.logo ? (
-                      <img src={t.logo} alt={t.symbol} className="w-5 h-5 rounded-full" />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[9px] text-gray-500">
-                        {t.symbol.charAt(0)}
-                      </div>
-                    )}
+                    <TokenAvatar symbol={t.symbol} logo={t.logo} />
                     <span className="text-[12px] font-medium text-gray-900">{t.symbol}</span>
                   </div>
                   <div className="flex items-center gap-4">
