@@ -54,7 +54,6 @@ function KillerSectionHeader({
           {isLoading ? '--' : count}
         </span>
       </div>
-      <span className="text-[10px] text-gray-400 w-16 text-center">APR</span>
     </div>
   );
 }
