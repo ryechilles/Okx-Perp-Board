@@ -32,23 +32,23 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
         ]} />
       }
     >
-      {/* Signal Pill - Larger */}
+      {/* Signal Pill - Large, Left aligned */}
       <div className="mb-3">
-        <span className={`inline-block px-4 py-1.5 rounded-lg text-[15px] font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
+        <span className={`inline-block px-5 py-2 rounded-lg text-base font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
           {dailySignal.label}
         </span>
       </div>
 
-      {/* Daily RSI Values */}
-      <div className="space-y-1.5 text-[11px]">
-        <div className="flex items-center justify-between">
-          <span className="text-gray-500">D-RSI7</span>
+      {/* Daily RSI Values - Compact spacing */}
+      <div className="space-y-1 text-[11px]">
+        <div className="flex items-center gap-2">
+          <span className="text-gray-500">D-RSI7 Avg</span>
           <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
             {avgRsi7 != null ? avgRsi7.toFixed(1) : '--'}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-500">D-RSI14</span>
+        <div className="flex items-center gap-2">
+          <span className="text-gray-500">D-RSI14 Avg</span>
           <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi14)}`}>
             {avgRsi14 != null ? avgRsi14.toFixed(1) : '--'}
           </span>
