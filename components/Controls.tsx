@@ -22,6 +22,7 @@ interface ControlsProps {
   onFiltersChange: (filters: Filters) => void;
   onSearchChange: (term: string) => void;
   onColumnOrderChange: (order: ColumnKey[]) => void;
+  onScrollToTop?: () => void;
 }
 
 export function Controls({
@@ -36,6 +37,7 @@ export function Controls({
   onFiltersChange,
   onSearchChange,
   onColumnOrderChange,
+  onScrollToTop,
 }: ControlsProps) {
   const [showCustomizePanel, setShowCustomizePanel] = useState(false);
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
@@ -110,6 +112,8 @@ export function Controls({
         setTempFilters({ rsi7: '<25', rsi14: '<25' });
         break;
     }
+    // Scroll table to top when filter changes
+    onScrollToTop?.();
   };
 
   const activeQuickFilter = getActiveQuickFilter();

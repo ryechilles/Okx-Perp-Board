@@ -189,11 +189,20 @@ export default function PerpBoard() {
   const handleTokenClick = (symbol: string) => {
     store.setFilters({});
     store.setSearchTerm(symbol);
+    // Scroll table to top
+    tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleGroupClick = (symbols: string[]) => {
     store.setFilters({});
     store.setSearchTerm(symbols.join('|'));
+    // Scroll table to top
+    tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Scroll table to top
+  const handleScrollToTop = () => {
+    tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Widget mapping for RSI tab
@@ -307,6 +316,7 @@ export default function PerpBoard() {
                 onFiltersChange={store.setFilters}
                 onSearchChange={store.setSearchTerm}
                 onColumnOrderChange={store.updateColumnOrder}
+                onScrollToTop={handleScrollToTop}
               />
             </div>
           </div>
