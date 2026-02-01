@@ -35,14 +35,14 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       }
     >
       {/* Signal Summary - Always visible */}
-      <div className="flex items-center gap-4">
-        <div className="flex-1 text-center">
+      <div className="flex gap-4">
+        <div className="flex-1">
           <div className="text-[10px] text-gray-500 mb-1.5">Daily</div>
           <span className={`inline-block px-3 py-1 rounded-lg text-[13px] font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
             {dailySignal.label}
           </span>
         </div>
-        <div className="flex-1 text-center">
+        <div className="flex-1">
           <div className="text-[10px] text-gray-500 mb-1.5">Weekly</div>
           <span className={`inline-block px-3 py-1 rounded-lg text-[13px] font-semibold whitespace-nowrap ${weeklySignal.pillStyle}`}>
             {weeklySignal.label}
