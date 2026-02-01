@@ -19,6 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Force desktop view on mobile - min 1200px width */}
+        <meta name="viewport" content="width=1200, initial-scale=0.35, maximum-scale=2, user-scalable=yes" />
         {/* Version meta tag */}
         <meta name="version" content={APP_CONFIG.version} />
         {/* Standard favicon */}
