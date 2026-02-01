@@ -295,7 +295,9 @@ export function TableRow({
         const hasRsiData = (rsi?.rsi7 != null || rsi?.rsi14 != null) && dSignal.label !== '--';
         return (
           <td key={key} className={`${baseClass} align-middle group/dsignal`}>
-            <div className="inline-flex flex-col items-center justify-center">
+            <div className="inline-flex flex-col items-center">
+              {/* Top spacer - matches bottom line height for vertical centering */}
+              <span className="text-[10px] leading-none mb-0.5 invisible">00.0/00.0</span>
               <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${dSignal.pillStyle}`}>
                 {dSignal.label}
               </span>
@@ -312,7 +314,9 @@ export function TableRow({
         const hasRsiData = (rsi?.rsiW7 != null || rsi?.rsiW14 != null) && wSignal.label !== '--';
         return (
           <td key={key} className={`${baseClass} align-middle group/wsignal`}>
-            <div className="inline-flex flex-col items-center justify-center">
+            <div className="inline-flex flex-col items-center">
+              {/* Top spacer - matches bottom line height for vertical centering */}
+              <span className="text-[10px] leading-none mb-0.5 invisible">00.0/00.0</span>
               <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${wSignal.pillStyle}`}>
                 {wSignal.label}
               </span>
