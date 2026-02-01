@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TooltipContent, TokenRowItem, TokenRowSkeleton, TokenRowEmpty } from '@/components/ui';
+import { TooltipContent, TokenAvatar } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 import { formatPrice, getRsiOverboughtPillStyle } from '@/lib/utils';
 import { calculateAvgRsi } from '@/lib/widget-utils';
@@ -73,28 +73,41 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
     >
       <div className="space-y-1">
         {isLoading ? (
-          [1, 2, 3].map((i) => <TokenRowSkeleton key={i} columns={2} />)
+          [1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse" />
+                <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-3 bg-gray-200 rounded animate-pulse" />
+                <div className="w-12 h-5 bg-gray-200 rounded-md animate-pulse" />
+              </div>
+            </div>
+          ))
         ) : overboughtTokens.length > 0 ? (
           overboughtTokens.map((token) => (
-            <TokenRowItem
+            <div
               key={token.instId}
-              symbol={token.symbol}
-              logo={token.logo}
+              className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
               onClick={() => onTokenClick?.(token.symbol)}
-              rightContent={
-                <>
-                  <span className="text-[11px] text-gray-500 tabular-nums">
-                    {formatPrice(token.price)}
-                  </span>
-                  <span className={`text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-md ${getRsiOverboughtPillStyle(token.avgRsi)}`}>
-                    {token.avgRsi.toFixed(2)}
-                  </span>
-                </>
-              }
-            />
+            >
+              <div className="flex items-center gap-2">
+                <TokenAvatar symbol={token.symbol} logo={token.logo} />
+                <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] text-gray-500 tabular-nums">{formatPrice(token.price)}</span>
+                <span className={`text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-md ${getRsiOverboughtPillStyle(token.avgRsi)}`}>
+                  {token.avgRsi.toFixed(2)}
+                </span>
+              </div>
+            </div>
           ))
         ) : (
-          <TokenRowEmpty message="No overbought tokens in Top 50" />
+          <div className="text-center py-4 text-[11px] text-gray-400">
+            No overbought tokens in Top 50
+          </div>
         )}
       </div>
     </SmallWidget>
