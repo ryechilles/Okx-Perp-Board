@@ -50,7 +50,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       icon={<Activity className="w-4 h-4" />}
       subtitle="Top 100 OKX Perp Tokens"
       loading={isLoading}
-      className="w-full group"
+      className="w-full"
       tooltip={
         <TooltipContent items={[
           "Average RSI across top 100 perp tokens",
@@ -75,8 +75,8 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
         </div>
       </div>
 
-      {/* Detailed RSI Values - Show on hover */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] mt-0 max-h-0 overflow-hidden opacity-0 group-hover:mt-3 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-200">
+      {/* Detailed RSI Values */}
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] mt-3">
         {/* Daily RSI */}
         <div className="flex items-center justify-between">
           <span className="text-gray-500">D-RSI7</span>
