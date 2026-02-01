@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TooltipContent, TokenRowItem, TokenRowEmpty } from '@/components/ui';
+import { TooltipContent, TokenAvatar } from '@/components/ui';
 import { ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
 import { calculateFundingApr } from '@/lib/widget-utils';
@@ -100,22 +100,24 @@ export function FundingKiller({
   const isLoading = tickers.size === 0;
 
   const renderTokenRow = (token: TokenWithApr, colorClass: string, showSign: boolean) => (
-    <TokenRowItem
+    <div
       key={token.instId}
-      symbol={token.symbol}
-      logo={token.logo}
+      className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
       onClick={() => onTokenClick?.(token.symbol)}
-      rightContent={
-        <>
-          <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">
-            {formatPrice(token.price)}
-          </span>
-          <span className={`text-[12px] font-semibold tabular-nums w-16 text-center ${colorClass}`}>
-            {showSign && token.apr > 0 ? '+' : ''}{token.apr.toFixed(1)}%
-          </span>
-        </>
-      }
-    />
+    >
+      <div className="flex items-center gap-2">
+        <TokenAvatar symbol={token.symbol} logo={token.logo} />
+        <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
+      </div>
+      <div className="flex items-center">
+        <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">
+          {formatPrice(token.price)}
+        </span>
+        <span className={`text-[12px] font-semibold tabular-nums w-16 text-center ${colorClass}`}>
+          {showSign && token.apr > 0 ? '+' : ''}{token.apr.toFixed(1)}%
+        </span>
+      </div>
+    </div>
   );
 
   return (
@@ -146,7 +148,9 @@ export function FundingKiller({
             {displayShortKillers.length > 0 ? (
               displayShortKillers.map(t => renderTokenRow(t, 'text-green-500', false))
             ) : (
-              <TokenRowEmpty message="No tokens with APR < -20%" />
+              <div className="text-center py-4 text-[11px] text-gray-400">
+                No tokens with APR &lt; -20%
+              </div>
             )}
           </div>
         </div>
@@ -164,7 +168,9 @@ export function FundingKiller({
             {displayLongKillers.length > 0 ? (
               displayLongKillers.map(t => renderTokenRow(t, 'text-red-500', true))
             ) : (
-              <TokenRowEmpty message="No tokens with APR > 20%" />
+              <div className="text-center py-4 text-[11px] text-gray-400">
+                No tokens with APR &gt; 20%
+              </div>
             )}
           </div>
         </div>
