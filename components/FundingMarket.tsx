@@ -9,7 +9,7 @@ interface FundingMarketProps {
   tickers: Map<string, ProcessedTicker>;
   fundingRateData: Map<string, FundingRateData>;
   marketCapData?: Map<string, MarketCapData>;
-  onFilterClick?: (filter: 'positive' | 'negative' | 'neutral') => void;
+  onGroupClick?: (symbols: string[]) => void;
 }
 
 /**
@@ -22,9 +22,9 @@ export function FundingMarket({
   tickers,
   fundingRateData,
   marketCapData,
-  onFilterClick,
+  onGroupClick,
 }: FundingMarketProps) {
-  const { positiveCount, negativeCount, neutralCount, total } = useMemo(() => {
+  const { positiveSymbols, negativeSymbols, neutralSymbols, total } = useMemo(() => {
     // Get tickers with market cap data, sorted by rank
     const tickersWithMcap: Array<{
       instId: string;
@@ -52,27 +52,31 @@ export function FundingMarket({
       .sort((a, b) => a.rank - b.rank)
       .slice(0, 100);
 
-    let positive = 0;
-    let negative = 0;
-    let neutral = 0;
+    const positive: string[] = [];
+    const negative: string[] = [];
+    const neutral: string[] = [];
 
     top100.forEach((t) => {
       if (t.fundingRate > 0.0001) {
-        positive++;
+        positive.push(t.symbol);
       } else if (t.fundingRate < -0.0001) {
-        negative++;
+        negative.push(t.symbol);
       } else {
-        neutral++;
+        neutral.push(t.symbol);
       }
     });
 
     return {
-      positiveCount: positive,
-      negativeCount: negative,
-      neutralCount: neutral,
+      positiveSymbols: positive,
+      negativeSymbols: negative,
+      neutralSymbols: neutral,
       total: top100.length,
     };
   }, [tickers, fundingRateData, marketCapData]);
+
+  const positiveCount = positiveSymbols.length;
+  const negativeCount = negativeSymbols.length;
+  const neutralCount = neutralSymbols.length;
 
   const isLoading = tickers.size === 0;
 
@@ -100,8 +104,8 @@ export function FundingMarket({
         <div className="flex items-center justify-between">
           {/* Positive */}
           <div
-            className={`text-center ${onFilterClick && positiveCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
-            onClick={() => positiveCount > 0 && onFilterClick?.('positive')}
+            className={`text-center ${onGroupClick && positiveCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
+            onClick={() => positiveCount > 0 && onGroupClick?.(positiveSymbols)}
           >
             <div className="text-[24px] font-bold text-red-500">
               {isLoading ? '--' : positiveCount}
@@ -114,8 +118,8 @@ export function FundingMarket({
 
           {/* Neutral */}
           <div
-            className={`text-center ${onFilterClick && neutralCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
-            onClick={() => neutralCount > 0 && onFilterClick?.('neutral')}
+            className={`text-center ${onGroupClick && neutralCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
+            onClick={() => neutralCount > 0 && onGroupClick?.(neutralSymbols)}
           >
             <div className="text-[24px] font-bold text-gray-400">
               {isLoading ? '--' : neutralCount}
@@ -128,8 +132,8 @@ export function FundingMarket({
 
           {/* Negative */}
           <div
-            className={`text-center ${onFilterClick && negativeCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
-            onClick={() => negativeCount > 0 && onFilterClick?.('negative')}
+            className={`text-center ${onGroupClick && negativeCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
+            onClick={() => negativeCount > 0 && onGroupClick?.(negativeSymbols)}
           >
             <div className="text-[24px] font-bold text-green-500">
               {isLoading ? '--' : negativeCount}
