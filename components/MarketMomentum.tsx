@@ -35,25 +35,24 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       }
     >
       {/* Signal Summary - Always visible */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 rounded-lg px-3 py-2 bg-gray-50">
-          <div className="text-[10px] text-gray-500 mb-1">Daily</div>
-          <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
+      <div className="flex items-center gap-4">
+        <div className="flex-1 text-center">
+          <div className="text-[10px] text-gray-500 mb-1.5">Daily</div>
+          <span className={`inline-block px-3 py-1 rounded-lg text-[13px] font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
             {dailySignal.label}
           </span>
         </div>
-        <div className="flex-1 rounded-lg px-3 py-2 bg-gray-50">
-          <div className="text-[10px] text-gray-500 mb-1">Weekly</div>
-          <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${weeklySignal.pillStyle}`}>
+        <div className="flex-1 text-center">
+          <div className="text-[10px] text-gray-500 mb-1.5">Weekly</div>
+          <span className={`inline-block px-3 py-1 rounded-lg text-[13px] font-semibold whitespace-nowrap ${weeklySignal.pillStyle}`}>
             {weeklySignal.label}
           </span>
         </div>
       </div>
 
-      {/* Detailed RSI Values - same flex layout as boxes above for alignment */}
-      <div className="flex gap-3 text-[11px] mt-3">
-        {/* Daily RSI (left column) - px-3 matches the box above */}
-        <div className="flex-1 space-y-1.5 px-3">
+      {/* Detailed RSI Values */}
+      <div className="flex gap-4 text-[11px] mt-3">
+        <div className="flex-1 space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-gray-500">D-RSI7</span>
             <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
@@ -67,8 +66,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             </span>
           </div>
         </div>
-        {/* Weekly RSI (right column) - px-3 matches the box above */}
-        <div className="flex-1 space-y-1.5 px-3">
+        <div className="flex-1 space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-gray-500">W-RSI7</span>
             <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsiW7)}`}>
