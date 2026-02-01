@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 
 interface AltcoinTopGainersProps {
   tickers: Map<string, ProcessedTicker>;
@@ -33,14 +34,6 @@ function formatChange(value: number | null | undefined): { text: string; color: 
   const sign = value > 0 ? '+' : '';
   const color = value > 0 ? 'text-green-500' : value < 0 ? 'text-red-500' : 'text-gray-400';
   return { text: `${sign}${value.toFixed(2)}%`, color };
-}
-
-// Format price
-function formatPrice(price: number): string {
-  if (price >= 1000) return `$${price.toFixed(0)}`;
-  if (price >= 1) return `$${price.toFixed(2)}`;
-  if (price >= 0.01) return `$${price.toFixed(4)}`;
-  return `$${price.toFixed(6)}`;
 }
 
 // Time frame selector component

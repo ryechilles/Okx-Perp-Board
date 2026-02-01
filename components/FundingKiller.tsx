@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
 import { ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 
 interface FundingKillerProps {
   tickers: Map<string, ProcessedTicker>;
@@ -24,14 +25,6 @@ interface TokenWithApr {
 function calculateApr(rate: number, intervalHours: number): number {
   const periodsPerYear = (365 * 24) / intervalHours;
   return rate * periodsPerYear * 100;
-}
-
-// Format price
-function formatPrice(price: number): string {
-  if (price >= 1000) return `$${price.toFixed(0)}`;
-  if (price >= 1) return `$${price.toFixed(2)}`;
-  if (price >= 0.01) return `$${price.toFixed(4)}`;
-  return `$${price.toFixed(6)}`;
 }
 
 export function FundingKiller({

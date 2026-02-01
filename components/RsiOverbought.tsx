@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
+import { formatPrice, getRsiOverboughtPillStyle } from '@/lib/utils';
 
 interface RsiOverboughtProps {
   tickers: Map<string, ProcessedTicker>;
@@ -19,21 +20,6 @@ interface TokenWithRsi {
   price: number;
   avgRsi: number;
   logo?: string;
-}
-
-// Format price
-function formatPrice(price: number): string {
-  if (price >= 1000) return `$${price.toFixed(0)}`;
-  if (price >= 1) return `$${price.toFixed(2)}`;
-  if (price >= 0.01) return `$${price.toFixed(4)}`;
-  return `$${price.toFixed(6)}`;
-}
-
-// Get RSI pill color based on value
-function getRsiPillStyle(rsi: number): string {
-  if (rsi >= 85) return 'bg-red-600 text-white';
-  if (rsi >= 80) return 'bg-red-500 text-white';
-  return 'bg-red-400 text-white';
 }
 
 export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }: RsiOverboughtProps) {
@@ -129,7 +115,7 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[11px] text-gray-500 tabular-nums">{formatPrice(token.price)}</span>
-                <span className={`text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-md ${getRsiPillStyle(token.avgRsi)}`}>
+                <span className={`text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-md ${getRsiOverboughtPillStyle(token.avgRsi)}`}>
                   {token.avgRsi.toFixed(2)}
                 </span>
               </div>
