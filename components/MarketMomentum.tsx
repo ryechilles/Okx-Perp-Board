@@ -54,8 +54,8 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       tooltip={
         <TooltipContent items={[
           "OKX perp top 100 by market cap",
-          "Daily: RSI7 & RSI14 (4h candles)",
-          "Weekly: W-RSI7 & W-RSI14 (1d candles)",
+          "Daily: RSI7 & RSI14 (1D candles)",
+          "Weekly: W-RSI7 & W-RSI14 (1W candles)",
         ]} />
       }
     >
