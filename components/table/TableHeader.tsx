@@ -1,7 +1,8 @@
 'use client';
 
+import { Info } from 'lucide-react';
 import { ColumnKey, SortConfig } from '@/lib/types';
-import { COLUMN_DEFINITIONS } from '@/lib/utils';
+import { COLUMN_DEFINITIONS, COLUMN_TOOLTIPS } from '@/lib/utils';
 
 interface TableHeaderProps {
   visibleColumns: ColumnKey[];
@@ -92,6 +93,8 @@ export function TableHeader({
               }
             : undefined;
 
+          const tooltipItems = COLUMN_TOOLTIPS[key];
+
           return (
             <th
               key={key}
@@ -110,6 +113,20 @@ export function TableHeader({
                 {key === 'symbol' && (
                   <span className="text-[10px] text-gray-500 font-normal ml-0.5">
                     ({totalCount})
+                  </span>
+                )}
+                {tooltipItems && (
+                  <span className="relative group/tooltip ml-0.5" onClick={(e) => e.stopPropagation()}>
+                    <Info className="w-3 h-3 text-gray-400 hover:text-gray-600 cursor-help" />
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-50 hidden group-hover/tooltip:block">
+                      <div className="bg-gray-800 text-white text-[10px] leading-relaxed rounded-lg px-3 py-2 shadow-lg whitespace-nowrap">
+                        {tooltipItems.map((item, i) => (
+                          <div key={i} className={i === 0 ? 'font-medium text-yellow-300 mb-1' : ''}>
+                            {i === 0 ? item : `• ${item}`}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </span>
                 )}
                 {sortable && (

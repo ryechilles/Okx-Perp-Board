@@ -39,6 +39,34 @@ export function isMemeToken(symbol: string): boolean {
 // Re-export from defaults for backward compatibility
 export { DEFAULT_COLUMN_ORDER, DEFAULT_COLUMNS_DESKTOP, DEFAULT_COLUMNS_MOBILE, getDefaultColumns } from './defaults';
 
+// Column tooltip content
+export const COLUMN_TOOLTIPS: Partial<Record<ColumnKey, string[]>> = {
+  dRsiSignal: [
+    'Avg = (D-RSI7 + D-RSI14) / 2',
+    '≤20: Extreme Oversold',
+    '≤25: Oversold',
+    '≤30: Very Weak',
+    '≤40: Weak',
+    '≤60: Neutral',
+    '≤70: Strong',
+    '≤80: Very Strong',
+    '≤85: Overbought',
+    '>85: Extreme Overbought',
+  ],
+  wRsiSignal: [
+    'Avg = (W-RSI7 + W-RSI14) / 2',
+    '≤20: Extreme Oversold',
+    '≤25: Oversold',
+    '≤30: Very Weak',
+    '≤40: Weak',
+    '≤60: Neutral',
+    '≤70: Strong',
+    '≤80: Very Strong',
+    '≤85: Overbought',
+    '>85: Extreme Overbought',
+  ],
+};
+
 // Column definitions - all columns centered except symbol (left-aligned)
 export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: number; align: 'left' | 'right' | 'center'; fixed?: boolean; sortable?: boolean }> = {
   favorite: { label: '', width: 40, align: 'center', fixed: true, sortable: false },
@@ -54,8 +82,8 @@ export const COLUMN_DEFINITIONS: Record<ColumnKey, { label: string; width: numbe
   change7d: { label: '7d', width: 68, align: 'center', sortable: true },
   volume24h: { label: 'Vol 24h', width: 85, align: 'center', sortable: true },
   marketCap: { label: 'Market Cap', width: 90, align: 'center', sortable: true },
-  dRsiSignal: { label: 'D-RSI Signal', width: 95, align: 'center', sortable: true },
-  wRsiSignal: { label: 'W-RSI Signal', width: 95, align: 'center', sortable: true },
+  dRsiSignal: { label: 'D-RSI Signal', width: 115, align: 'center', sortable: true },
+  wRsiSignal: { label: 'W-RSI Signal', width: 115, align: 'center', sortable: true },
   rsi7: { label: 'D-RSI7', width: 58, align: 'center', sortable: true },
   rsi14: { label: 'D-RSI14', width: 62, align: 'center', sortable: true },
   rsiW7: { label: 'W-RSI7', width: 58, align: 'center', sortable: true },
