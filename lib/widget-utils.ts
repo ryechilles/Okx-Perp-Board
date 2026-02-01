@@ -21,8 +21,8 @@ export interface RSIValues {
   rsiW14: number | null;
 }
 
-// Token with change data for altcoin widgets (internal use)
-interface TokenWithChangeInternal {
+// Token with change data for altcoin widgets
+export interface TokenWithChange {
   symbol: string;
   instId: string;
   rank: number;
@@ -48,7 +48,7 @@ export function formatChange(value: number | null | undefined): { text: string; 
 }
 
 // Get change value based on timeframe
-export function getChangeByTimeFrame(token: TokenWithChangeInternal, tf: TimeFrame): number | null {
+export function getChangeByTimeFrame(token: TokenWithChange, tf: TimeFrame): number | null {
   switch (tf) {
     case '1h': return token.change1h;
     case '4h': return token.change4h;
@@ -112,7 +112,7 @@ export function getTokensByRsiThreshold(
   // Collect all tokens with market cap and RSI data
   tickers.forEach((ticker) => {
     // Exclude specific symbols (e.g., BTC)
-    if (WIDGET.EXCLUDE_SYMBOLS.includes(ticker.baseSymbol)) return;
+    if ((WIDGET.EXCLUDE_SYMBOLS as readonly string[]).includes(ticker.baseSymbol)) return;
 
     const mc = marketCapData.get(ticker.baseSymbol);
     const rsi = rsiData.get(ticker.instId);

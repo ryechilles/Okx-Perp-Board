@@ -63,7 +63,7 @@ export function FundingKiller({
 
     tickers.forEach((ticker, instId) => {
       // Exclude specific symbols
-      if (WIDGET.EXCLUDE_SYMBOLS.includes(ticker.baseSymbol)) return;
+      if ((WIDGET.EXCLUDE_SYMBOLS as readonly string[]).includes(ticker.baseSymbol)) return;
 
       const fr = fundingRateData.get(instId);
       if (!fr) return;

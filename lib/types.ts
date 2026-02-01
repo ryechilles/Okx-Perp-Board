@@ -202,16 +202,6 @@ export interface TokenWithApr {
   logo?: string;
 }
 
-// Token with price change data for Altcoin widgets
-export interface TokenWithChange {
-  symbol: string;
-  instId: string;
-  change: number;
-  price: number;
-  marketCap: number;
-  logo?: string;
-}
-
 // Store state
 export interface AppState {
   tickers: Map<string, ProcessedTicker>;
