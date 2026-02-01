@@ -294,7 +294,7 @@ export function TableRow({
         const dSignal = getRsiSignal(rsi?.rsi7 ?? null, rsi?.rsi14 ?? null);
         return (
           <td key={key} className={`${baseClass} group/dsignal`}>
-            <div className="inline-flex flex-col items-center">
+            <div className="flex flex-col items-center justify-center">
               <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${dSignal.pillStyle}`}>
                 {dSignal.label}
               </span>
@@ -312,7 +312,7 @@ export function TableRow({
         const wSignal = getRsiSignal(rsi?.rsiW7 ?? null, rsi?.rsiW14 ?? null);
         return (
           <td key={key} className={`${baseClass} group/wsignal`}>
-            <div className="inline-flex flex-col items-center">
+            <div className="flex flex-col items-center justify-center">
               <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${wSignal.pillStyle}`}>
                 {wSignal.label}
               </span>
