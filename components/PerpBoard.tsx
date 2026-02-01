@@ -15,7 +15,7 @@ import { MarketMomentum } from '@/components/MarketMomentum';
 import { RsiOversold } from '@/components/RsiOversold';
 import { RsiOverbought } from '@/components/RsiOverbought';
 import { AHR999Indicator } from '@/components/AHR999Indicator';
-import { TableHeader, TableRow, TablePagination } from '@/components/table';
+import { TableHeader, TableRow } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS } from '@/lib/utils';
@@ -118,12 +118,8 @@ export default function PerpBoard() {
   const { avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 } = store.getRsiAverages();
   const quickFilterCounts = store.getQuickFilterCounts();
 
-  // Pagination
-  const totalPages = Math.ceil(filteredData.length / store.pageSize);
-  const paginatedData = filteredData.slice(
-    (store.currentPage - 1) * store.pageSize,
-    store.currentPage * store.pageSize
-  );
+  // Show all data (no pagination)
+  const displayData = filteredData;
 
   // Get visible columns in order
   const visibleColumns = store.columnOrder.filter((key) => store.columns[key]);
@@ -418,13 +414,13 @@ export default function PerpBoard() {
                         </td>
                       </tr>
                     ) : (
-                      paginatedData.map((ticker, index) => (
+                      displayData.map((ticker, index) => (
                         <TableRow
                           key={ticker.instId}
                           ticker={ticker}
                           index={index}
-                          currentPage={store.currentPage}
-                          pageSize={store.pageSize}
+                          currentPage={1}
+                          pageSize={displayData.length}
                           visibleColumns={visibleColumns}
                           rsi={store.rsiData.get(ticker.instId)}
                           fundingRate={store.fundingRateData.get(ticker.instId)}
@@ -443,15 +439,6 @@ export default function PerpBoard() {
                   </tbody>
                 </table>
               </div>
-
-              <TablePagination
-                currentPage={store.currentPage}
-                totalPages={totalPages}
-                pageSize={store.pageSize}
-                totalItems={filteredData.length}
-                status={store.status}
-                onPageChange={store.setCurrentPage}
-              />
             </div>
           </div>
         </div>
