@@ -35,7 +35,16 @@ export interface SmallWidgetProps {
  * - Flat card style matching PillButton aesthetic
  * - Subtle border and shadow for definition
  * - Consistent styling across all widgets
- * - Click info icon to show/hide explanation inline
+ * - Click info icon to show/hide explanation inline (smooth expand)
+ *
+ * Tooltip Guidelines:
+ * - Click ⓘ icon to expand/collapse explanation inside widget
+ * - Icon turns blue when expanded
+ * - Keep content simple: use <div> with bullet points
+ * - NO titles/headers (e.g. "Explanation")
+ * - NO "Hover to see..." hints
+ * - NO dark theme styles (text-gray-300, font-medium)
+ * - Use colored spans for keywords: <span className="text-red-500">keyword</span>
  *
  * @example
  * ```tsx
@@ -43,7 +52,13 @@ export interface SmallWidgetProps {
  *   title="RSI Overview"
  *   icon={<Activity className="w-4 h-4" />}
  *   subtitle="Daily RSI distribution"
- *   tooltip={<div>Explanation content here</div>}
+ *   tooltip={
+ *     <div className="space-y-1">
+ *       <div>• Point one explanation</div>
+ *       <div>• Point two with <span className="text-red-500">highlight</span></div>
+ *       <div>• Point three explanation</div>
+ *     </div>
+ *   }
  * >
  *   <div>Your content here</div>
  * </SmallWidget>
