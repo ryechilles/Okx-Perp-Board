@@ -10,6 +10,7 @@ import {
   useSensors,
   DragEndEvent,
   DragStartEvent,
+  DragOverEvent,
   DragOverlay,
 } from '@dnd-kit/core';
 import {
@@ -21,7 +22,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@/lib/utils';
-import { GripVertical } from 'lucide-react';
 
 export interface WidgetGridProps {
   /** Grid children (widgets) */
@@ -44,12 +44,14 @@ interface SortableItemProps {
   id: string;
   children: ReactNode;
   disabled?: boolean;
+  isOver?: boolean;
 }
 
 /**
  * SortableItem - Wrapper for draggable widgets
+ * Entire widget is draggable (similar to table column headers)
  */
-function SortableItem({ id, children, disabled }: SortableItemProps) {
+function SortableItem({ id, children, disabled, isOver }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -62,29 +64,24 @@ function SortableItem({ id, children, disabled }: SortableItemProps) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
-    position: 'relative' as const,
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="group">
-      {/* Drag Handle - appears on hover */}
-      {!disabled && (
-        <div
-          {...attributes}
-          {...listeners}
-          className={cn(
-            'absolute -left-1 top-1/2 -translate-y-1/2 -translate-x-full',
-            'p-1 rounded-md cursor-grab active:cursor-grabbing',
-            'opacity-0 group-hover:opacity-100 transition-opacity',
-            'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
-            'z-20'
-          )}
-          title="拖动排序"
-        >
-          <GripVertical className="w-4 h-4" />
-        </div>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={cn(
+        'relative',
+        // Cursor styles
+        !disabled && 'cursor-grab active:cursor-grabbing',
+        // Dragging state - semi-transparent
+        isDragging && 'opacity-50',
+        // Drop target indicator - blue left border (like table columns)
+        isOver && !isDragging && 'ring-2 ring-blue-400 ring-offset-2 rounded-xl'
       )}
+    >
       {children}
     </div>
   );
@@ -92,6 +89,11 @@ function SortableItem({ id, children, disabled }: SortableItemProps) {
 
 /**
  * WidgetGrid - Responsive grid layout for widgets with optional drag-and-drop sorting
+ *
+ * Drag behavior:
+ * - Entire widget is draggable (no separate handle)
+ * - Visual feedback: opacity when dragging, ring highlight when hovering
+ * - Similar to table column drag behavior
  *
  * Variants:
  * - auto: Auto-fit columns based on content (default)
@@ -101,12 +103,6 @@ function SortableItem({ id, children, disabled }: SortableItemProps) {
  *
  * @example
  * ```tsx
- * // Basic usage
- * <WidgetGrid variant="auto" gap="md">
- *   <SmallWidget title="Widget 1">...</SmallWidget>
- *   <SmallWidget title="Widget 2">...</SmallWidget>
- * </WidgetGrid>
- *
  * // With drag-and-drop sorting
  * <WidgetGrid
  *   variant="vertical"
@@ -129,6 +125,7 @@ export function WidgetGrid({
   onOrderChange,
 }: WidgetGridProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -170,9 +167,14 @@ export function WidgetGrid({
     setActiveId(event.active.id as string);
   };
 
+  const handleDragOver = (event: DragOverEvent) => {
+    setOverId(event.over?.id as string | null);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
+    setOverId(null);
 
     if (over && active.id !== over.id) {
       const oldIndex = itemIds.indexOf(active.id as string);
@@ -191,12 +193,13 @@ export function WidgetGrid({
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
-        <div className={cn(variantClasses[variant], gapClasses[gap], 'pl-6', className)}>
+        <div className={cn(variantClasses[variant], gapClasses[gap], className)}>
           {itemIds.map((id, index) => (
-            <SortableItem key={id} id={id}>
+            <SortableItem key={id} id={id} isOver={overId === id}>
               {childrenArray[index]}
             </SortableItem>
           ))}
@@ -206,7 +209,7 @@ export function WidgetGrid({
       {/* Drag Overlay - shows dragged item */}
       <DragOverlay>
         {activeChild && isValidElement(activeChild) ? (
-          <div className="opacity-90 shadow-2xl rounded-2xl">
+          <div className="opacity-90 shadow-2xl rounded-2xl cursor-grabbing">
             {cloneElement(activeChild)}
           </div>
         ) : null}
