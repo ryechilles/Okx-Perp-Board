@@ -138,16 +138,9 @@ export function SmallWidget({
           <>
             {children}
 
-            {/* Inline Tooltip - smooth expand */}
-            {tooltip && (
-              <div
-                className={cn(
-                  'overflow-hidden transition-all duration-200',
-                  showTooltip
-                    ? 'max-h-40 opacity-100 mt-4 pt-3 border-t border-gray-100'
-                    : 'max-h-0 opacity-0'
-                )}
-              >
+            {/* Inline Tooltip - auto height */}
+            {tooltip && showTooltip && (
+              <div className="mt-4 pt-3 border-t border-gray-100">
                 <div className="text-[11px] text-gray-500 space-y-1">
                   {tooltip}
                 </div>
