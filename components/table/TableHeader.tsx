@@ -118,13 +118,14 @@ export function TableHeader({
                 {tooltipItems && (
                   <span className="relative group/tooltip ml-0.5" onClick={(e) => e.stopPropagation()}>
                     <Info className="w-3 h-3 text-gray-400 hover:text-gray-600 cursor-help" />
-                    <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-50 hidden group-hover/tooltip:block">
-                      <div className="bg-gray-800 text-white text-[10px] leading-relaxed rounded-lg px-3 py-2 shadow-lg whitespace-nowrap">
-                        {tooltipItems.map((item, i) => (
-                          <div key={i} className={i === 0 ? 'font-medium text-yellow-300 mb-1' : ''}>
-                            {i === 0 ? item : `• ${item}`}
-                          </div>
-                        ))}
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 z-50 hidden group-hover/tooltip:block">
+                      <div className="bg-white border border-gray-200 rounded-lg px-3 py-2.5 shadow-lg min-w-[180px]">
+                        <div className="text-[11px] text-gray-600 font-medium mb-1.5">{tooltipItems[0]}</div>
+                        <div className="text-[10px] text-gray-500 space-y-0.5">
+                          {tooltipItems.slice(1).map((item, i) => (
+                            <div key={i}>• {item}</div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </span>
