@@ -3,8 +3,9 @@
 import { useMemo, useState } from 'react';
 import { BarChart2 } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TooltipContent } from '@/components/ui';
+import { TooltipContent, TimeFrameSelector } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
+import { TimeFrame, TokenWithChange, formatChange } from '@/lib/widget-utils';
 
 interface AltcoinVsBTCProps {
   tickers: Map<string, ProcessedTicker>;
@@ -12,51 +13,6 @@ interface AltcoinVsBTCProps {
   marketCapData: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
   onTopNClick?: (symbols: string[]) => void;
-}
-
-interface TokenWithChange {
-  symbol: string;
-  instId: string;
-  rank: number;
-  change1h: number | null;
-  change4h: number | null;
-  change24h: number;
-}
-
-type TimeFrame = '1h' | '4h' | '24h';
-
-// Format percentage with color
-function formatChange(value: number | null | undefined): { text: string; color: string } {
-  if (value === null || value === undefined) {
-    return { text: '--', color: 'text-gray-400' };
-  }
-  const sign = value > 0 ? '+' : '';
-  const color = value > 0 ? 'text-green-500' : value < 0 ? 'text-red-500' : 'text-gray-400';
-  return { text: `${sign}${value.toFixed(2)}%`, color };
-}
-
-// Time frame selector component
-function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (tf: TimeFrame) => void }) {
-  return (
-    <div className="flex bg-gray-100 rounded-lg p-0.5">
-      {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
-        <button
-          key={tf}
-          onClick={(e) => {
-            e.stopPropagation();
-            onChange(tf);
-          }}
-          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-            value === tf
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          {tf}
-        </button>
-      ))}
-    </div>
-  );
 }
 
 export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, onTopNClick }: AltcoinVsBTCProps) {

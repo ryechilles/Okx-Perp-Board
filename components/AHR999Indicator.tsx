@@ -4,24 +4,7 @@ import { useState, useEffect } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
 import { TooltipContent } from '@/components/ui';
 import { fetchAHR999Data, getAHR999ZoneInfo, AHR999Data } from '@/lib/ahr999';
-
-// Zone colors for the bar
-const ZONE_COLORS = [
-  { width: '9%', color: 'bg-green-500' },   // Bottom
-  { width: '15%', color: 'bg-emerald-400' }, // DCA
-  { width: '16%', color: 'bg-orange-400' },  // Wait
-  { width: '40%', color: 'bg-red-400' },     // Take Profit
-  { width: '20%', color: 'bg-red-600' },     // Top
-];
-
-// Zone legend data
-const ZONE_LEGEND = [
-  { range: '<0.45', label: 'Bottom', color: 'text-green-600', dot: '●' },
-  { range: '0.45-1.2', label: 'DCA', color: 'text-emerald-500', dot: '●' },
-  { range: '1.2-2.0', label: 'Wait', color: 'text-orange-500', dot: '●' },
-  { range: '2.0-4.0', label: 'Take Profit', color: 'text-red-500', dot: '●' },
-  { range: '>4', label: 'Top', color: 'text-red-600', dot: '●' },
-];
+import { AHR999_ZONE_COLORS, AHR999_ZONE_LEGEND } from '@/lib/constants';
 
 export function AHR999Indicator() {
   const [data, setData] = useState<AHR999Data | null>(null);
@@ -95,7 +78,7 @@ export function AHR999Indicator() {
       {/* Zone Bar */}
       <div>
         <div className="flex h-2 rounded-full overflow-hidden">
-          {ZONE_COLORS.map((zone, i) => (
+          {AHR999_ZONE_COLORS.map((zone, i) => (
             <div key={i} className={zone.color} style={{ width: zone.width }} />
           ))}
         </div>
@@ -115,7 +98,7 @@ export function AHR999Indicator() {
 
       {/* Zone Legend - Show on hover */}
       <div className="space-y-1 mt-0 max-h-0 overflow-hidden opacity-0 group-hover:mt-3 group-hover:max-h-32 group-hover:opacity-100 transition-all duration-200">
-        {ZONE_LEGEND.map((zone) => (
+        {AHR999_ZONE_LEGEND.map((zone) => (
           <div
             key={zone.label}
             className={`flex items-center justify-between text-[11px] ${

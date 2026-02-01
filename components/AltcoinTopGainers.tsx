@@ -3,62 +3,16 @@
 import { useMemo, useState } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TokenAvatar, TooltipContent } from '@/components/ui';
+import { TokenAvatar, TooltipContent, TimeFrameSelector } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
+import { TimeFrame, TokenWithChange, formatChange, getChangeByTimeFrame } from '@/lib/widget-utils';
 
 interface AltcoinTopGainersProps {
   tickers: Map<string, ProcessedTicker>;
   rsiData: Map<string, RSIData>;
   marketCapData: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
-}
-
-interface TokenWithChange {
-  symbol: string;
-  instId: string;
-  rank: number;
-  price: number;
-  change1h: number | null;
-  change4h: number | null;
-  change24h: number;
-  logo?: string;
-}
-
-type TimeFrame = '1h' | '4h' | '24h';
-
-// Format percentage with color
-function formatChange(value: number | null | undefined): { text: string; color: string } {
-  if (value === null || value === undefined) {
-    return { text: '--', color: 'text-gray-400' };
-  }
-  const sign = value > 0 ? '+' : '';
-  const color = value > 0 ? 'text-green-500' : value < 0 ? 'text-red-500' : 'text-gray-400';
-  return { text: `${sign}${value.toFixed(2)}%`, color };
-}
-
-// Time frame selector component
-function TimeFrameSelector({ value, onChange }: { value: TimeFrame; onChange: (tf: TimeFrame) => void }) {
-  return (
-    <div className="flex bg-gray-100 rounded-lg p-0.5">
-      {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
-        <button
-          key={tf}
-          onClick={(e) => {
-            e.stopPropagation();
-            onChange(tf);
-          }}
-          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-            value === tf
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          {tf}
-        </button>
-      ))}
-    </div>
-  );
 }
 
 export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClick }: AltcoinTopGainersProps) {
@@ -96,15 +50,6 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
 
   // Top 100 altcoins
   const top100 = useMemo(() => altcoins.slice(0, 100), [altcoins]);
-
-  // Get change value based on timeframe
-  const getChangeByTimeFrame = (token: TokenWithChange, tf: TimeFrame): number | null => {
-    switch (tf) {
-      case '1h': return token.change1h;
-      case '4h': return token.change4h;
-      case '24h': return token.change24h;
-    }
-  };
 
   // Top gainers
   const topGainers = useMemo(() => {
@@ -162,7 +107,7 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
                   <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-[11px] text-gray-500 tabular-nums">{formatPrice(token.price)}</span>
+                  <span className="text-[11px] text-gray-500 tabular-nums">{formatPrice(token.price ?? 0)}</span>
                   <span className={`text-[12px] font-semibold tabular-nums ${formatChange(change).color}`}>
                     {formatChange(change).text}
                   </span>
