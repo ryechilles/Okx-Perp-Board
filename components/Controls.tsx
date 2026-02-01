@@ -183,6 +183,7 @@ export function Controls({
         <>
           <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Overbought</div>
           <div className="text-[12px] flex flex-col gap-0.5">
+            <span className="text-gray-900">All OKX Perp Tokens</span>
             <span className="text-gray-900">D-RSI7 &gt; 75</span>
             <span className="text-gray-900">D-RSI14 &gt; 75</span>
           </div>
@@ -198,6 +199,7 @@ export function Controls({
         <>
           <div className="text-[11px] font-medium text-gray-500 mb-1">Daily Oversold</div>
           <div className="text-[12px] flex flex-col gap-0.5">
+            <span className="text-gray-900">All OKX Perp Tokens</span>
             <span className="text-gray-900">D-RSI7 &lt; 25</span>
             <span className="text-gray-900">D-RSI14 &lt; 25</span>
           </div>
