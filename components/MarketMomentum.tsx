@@ -77,8 +77,8 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
 
       {/* Detailed RSI Values - same flex layout as boxes above for alignment */}
       <div className="flex gap-3 text-[11px] mt-3">
-        {/* Daily RSI (left column) */}
-        <div className="flex-1 space-y-1">
+        {/* Daily RSI (left column) - px-3 matches the box above */}
+        <div className="flex-1 space-y-1 px-3">
           <div className="flex items-center justify-between">
             <span className="text-gray-500">D-RSI7</span>
             <span className={`font-medium tabular-nums ${getRsiClass(avgRsi7)}`}>
@@ -92,8 +92,8 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
             </span>
           </div>
         </div>
-        {/* Weekly RSI (right column) */}
-        <div className="flex-1 space-y-1">
+        {/* Weekly RSI (right column) - px-3 matches the box above */}
+        <div className="flex-1 space-y-1 px-3">
           <div className="flex items-center justify-between">
             <span className="text-gray-500">W-RSI7</span>
             <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW7)}`}>
