@@ -24,7 +24,7 @@ export function FundingMarket({
   marketCapData,
   onGroupClick,
 }: FundingMarketProps) {
-  const { positiveSymbols, negativeSymbols, neutralSymbols, total } = useMemo(() => {
+  const { positiveSymbols, negativeSymbols, total } = useMemo(() => {
     // Get tickers with market cap data, sorted by rank
     const tickersWithMcap: Array<{
       instId: string;
@@ -54,29 +54,24 @@ export function FundingMarket({
 
     const positive: string[] = [];
     const negative: string[] = [];
-    const neutral: string[] = [];
 
     top100.forEach((t) => {
-      if (t.fundingRate > 0.0001) {
+      if (t.fundingRate > 0) {
         positive.push(t.symbol);
-      } else if (t.fundingRate < -0.0001) {
+      } else if (t.fundingRate < 0) {
         negative.push(t.symbol);
-      } else {
-        neutral.push(t.symbol);
       }
     });
 
     return {
       positiveSymbols: positive,
       negativeSymbols: negative,
-      neutralSymbols: neutral,
       total: top100.length,
     };
   }, [tickers, fundingRateData, marketCapData]);
 
   const positiveCount = positiveSymbols.length;
   const negativeCount = negativeSymbols.length;
-  const neutralCount = neutralSymbols.length;
 
   const isLoading = tickers.size === 0;
 
@@ -93,49 +88,34 @@ export function FundingMarket({
       className="group"
       tooltip={
         <TooltipContent items={[
-          <><span className="text-red-500">Positive</span>: rate &gt; 0.01% (longs pay shorts)</>,
-          <><span className="text-green-500">Negative</span>: rate &lt; -0.01% (shorts pay longs)</>,
-          <><span className="text-gray-500">Neutral</span>: between -0.01% ~ 0.01%</>,
+          <><span className="text-red-500">Positive</span>: rate &gt; 0 (longs pay shorts)</>,
+          <><span className="text-green-500">Negative</span>: rate &lt; 0 (shorts pay longs)</>,
         ]} />
       }
     >
       <div className="space-y-4">
         {/* Main Stats */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-around">
           {/* Positive */}
           <div
             className={`text-center ${onGroupClick && positiveCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
             onClick={() => positiveCount > 0 && onGroupClick?.(positiveSymbols)}
           >
-            <div className="text-[24px] font-bold text-red-500">
+            <div className="text-[28px] font-bold text-red-500">
               {isLoading ? '--' : positiveCount}
             </div>
             <div className="text-[11px] text-gray-400">Positive</div>
           </div>
 
           {/* Divider */}
-          <div className="h-10 w-px bg-gray-200" />
-
-          {/* Neutral */}
-          <div
-            className={`text-center ${onGroupClick && neutralCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
-            onClick={() => neutralCount > 0 && onGroupClick?.(neutralSymbols)}
-          >
-            <div className="text-[24px] font-bold text-gray-400">
-              {isLoading ? '--' : neutralCount}
-            </div>
-            <div className="text-[11px] text-gray-400">Neutral</div>
-          </div>
-
-          {/* Divider */}
-          <div className="h-10 w-px bg-gray-200" />
+          <div className="h-12 w-px bg-gray-200" />
 
           {/* Negative */}
           <div
             className={`text-center ${onGroupClick && negativeCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
             onClick={() => negativeCount > 0 && onGroupClick?.(negativeSymbols)}
           >
-            <div className="text-[24px] font-bold text-green-500">
+            <div className="text-[28px] font-bold text-green-500">
               {isLoading ? '--' : negativeCount}
             </div>
             <div className="text-[11px] text-gray-400">Negative</div>
