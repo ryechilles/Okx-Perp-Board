@@ -70,7 +70,7 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
               <div className="flex items-center">
                 <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">{formatPrice(token.price)}</span>
                 <span className={`text-[11px] font-semibold tabular-nums w-14 text-center py-0.5 rounded-md ${getRsiOverboughtPillStyle(token.avgRsi)}`}>
-                  {token.avgRsi.toFixed(2)}
+                  {token.avgRsi.toFixed(1)}
                 </span>
               </div>
             </div>
