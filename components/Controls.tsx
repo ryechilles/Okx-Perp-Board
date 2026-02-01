@@ -42,6 +42,8 @@ export function Controls({
   const [customizeTab, setCustomizeTab] = useState<'columns' | 'filters'>('columns');
   const customizePanelRef = useRef<HTMLDivElement>(null);
   const customizeButtonRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
   // Close panel when clicking outside
   useEffect(() => {
@@ -244,7 +246,10 @@ export function Controls({
     <>
       {/* Mobile Search Row - minimal style */}
       <div className="md:hidden mb-3 w-full">
-        <div className="flex items-center gap-2 w-full border-b border-gray-300 pb-2">
+        <div
+          className="flex items-center gap-2 w-full border-b border-gray-300 pb-2 cursor-text"
+          onClick={() => mobileSearchInputRef.current?.focus()}
+        >
           <svg
             className="w-4 h-4 text-gray-400 flex-shrink-0"
             viewBox="0 0 24 24"
@@ -258,6 +263,7 @@ export function Controls({
             <path d="m21 21-4.35-4.35" />
           </svg>
           <input
+            ref={mobileSearchInputRef}
             type="text"
             placeholder=""
             value={searchTerm}
@@ -307,7 +313,10 @@ export function Controls({
         </div>
 
         {/* Search */}
-        <div className="hidden md:inline-flex items-center gap-1">
+        <div
+          className="hidden md:inline-flex items-center gap-1 cursor-text"
+          onClick={() => searchInputRef.current?.focus()}
+        >
           <svg
             className="w-4 h-4 text-gray-400"
             viewBox="0 0 24 24"
@@ -321,6 +330,7 @@ export function Controls({
             <path d="m21 21-4.35-4.35" />
           </svg>
           <input
+            ref={searchInputRef}
             type="text"
             placeholder=""
             value={searchTerm}
