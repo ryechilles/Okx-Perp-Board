@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
 import { TooltipContent } from '@/components/ui';
 import { fetchAHR999Data, getAHR999ZoneInfo, AHR999Data } from '@/lib/ahr999';
-import { AHR999_ZONE_COLORS, AHR999_ZONE_LEGEND } from '@/lib/constants';
 
 export function AHR999Indicator() {
   const [data, setData] = useState<AHR999Data | null>(null);
@@ -75,12 +74,14 @@ export function AHR999Indicator() {
         </div>
       </div>
 
-      {/* Zone Bar */}
+      {/* Zone Bar - hardcoded classes for Tailwind JIT */}
       <div>
         <div className="flex h-2 rounded-full overflow-hidden">
-          {AHR999_ZONE_COLORS.map((zone, i) => (
-            <div key={i} className={zone.color} style={{ width: zone.width }} />
-          ))}
+          <div className="bg-green-500" style={{ width: '9%' }} />
+          <div className="bg-emerald-400" style={{ width: '15%' }} />
+          <div className="bg-orange-400" style={{ width: '16%' }} />
+          <div className="bg-red-400" style={{ width: '40%' }} />
+          <div className="bg-red-600" style={{ width: '20%' }} />
         </div>
         {/* Position indicator */}
         {data && (
@@ -98,20 +99,41 @@ export function AHR999Indicator() {
 
       {/* Zone Legend - Show on hover */}
       <div className="space-y-1 mt-0 max-h-0 overflow-hidden opacity-0 group-hover:mt-3 group-hover:max-h-32 group-hover:opacity-100 transition-all duration-200">
-        {AHR999_ZONE_LEGEND.map((zone) => (
-          <div
-            key={zone.label}
-            className={`flex items-center justify-between text-[11px] ${
-              zoneInfo.label === zone.label ? 'font-medium' : 'opacity-60'
-            }`}
-          >
-            <span className="flex items-center gap-1.5">
-              <span className={zone.color}>{zone.dot}</span>
-              <span className="text-gray-700">{zone.label}</span>
-            </span>
-            <span className="text-gray-500 tabular-nums">{zone.range}</span>
-          </div>
-        ))}
+        <div className={`flex items-center justify-between text-[11px] ${zoneInfo.label === 'Bottom' ? 'font-medium' : 'opacity-60'}`}>
+          <span className="flex items-center gap-1.5">
+            <span className="text-green-600">●</span>
+            <span className="text-gray-700">Bottom</span>
+          </span>
+          <span className="text-gray-500 tabular-nums">&lt;0.45</span>
+        </div>
+        <div className={`flex items-center justify-between text-[11px] ${zoneInfo.label === 'DCA' ? 'font-medium' : 'opacity-60'}`}>
+          <span className="flex items-center gap-1.5">
+            <span className="text-emerald-500">●</span>
+            <span className="text-gray-700">DCA</span>
+          </span>
+          <span className="text-gray-500 tabular-nums">0.45-1.2</span>
+        </div>
+        <div className={`flex items-center justify-between text-[11px] ${zoneInfo.label === 'Wait' ? 'font-medium' : 'opacity-60'}`}>
+          <span className="flex items-center gap-1.5">
+            <span className="text-orange-500">●</span>
+            <span className="text-gray-700">Wait</span>
+          </span>
+          <span className="text-gray-500 tabular-nums">1.2-2.0</span>
+        </div>
+        <div className={`flex items-center justify-between text-[11px] ${zoneInfo.label === 'Take Profit' ? 'font-medium' : 'opacity-60'}`}>
+          <span className="flex items-center gap-1.5">
+            <span className="text-red-500">●</span>
+            <span className="text-gray-700">Take Profit</span>
+          </span>
+          <span className="text-gray-500 tabular-nums">2.0-4.0</span>
+        </div>
+        <div className={`flex items-center justify-between text-[11px] ${zoneInfo.label === 'Top' ? 'font-medium' : 'opacity-60'}`}>
+          <span className="flex items-center gap-1.5">
+            <span className="text-red-600">●</span>
+            <span className="text-gray-700">Top</span>
+          </span>
+          <span className="text-gray-500 tabular-nums">&gt;4</span>
+        </div>
       </div>
     </SmallWidget>
   );
