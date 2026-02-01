@@ -165,19 +165,28 @@ export function calculateRSI(closes: number[], period: number): number | null {
   return rsi;
 }
 
-// RSI Signal types and helper functions
-export type RsiSignal = 'overbought' | 'strong' | 'neutral-strong' | 'neutral' | 'neutral-weak' | 'weak' | 'oversold';
+// RSI Signal types and helper functions (9-state system)
+export type RsiSignal =
+  | 'extreme-oversold'
+  | 'oversold'
+  | 'very-weak'
+  | 'weak'
+  | 'neutral'
+  | 'strong'
+  | 'very-strong'
+  | 'overbought'
+  | 'extreme-overbought';
 
 export interface RsiSignalInfo {
   signal: RsiSignal;
   label: string;
-  color: string;
+  pillStyle: string;
 }
 
-// Get RSI signal based on combined RSI7 and RSI14 values
+// Get RSI signal based on combined RSI7 and RSI14 values (9-state system)
 export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSignalInfo {
   if (rsi7 === null && rsi14 === null) {
-    return { signal: 'neutral', label: '--', color: 'text-gray-400' };
+    return { signal: 'neutral', label: '--', pillStyle: 'bg-gray-100 text-gray-400' };
   }
 
   // Use average of both, or whichever is available
@@ -185,25 +194,31 @@ export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSign
     ? (rsi7 + rsi14) / 2
     : rsi7 ?? rsi14 ?? 50;
 
-  if (avg <= RSI.OVERSOLD_THRESHOLD) {
-    return { signal: 'oversold', label: '🧊 Oversold', color: 'text-green-600' };
+  if (avg <= RSI.EXTREME_OVERSOLD) {
+    return { signal: 'extreme-oversold', label: 'Extreme Oversold', pillStyle: 'bg-green-500 text-white' };
   }
-  if (avg <= RSI.WEAK_THRESHOLD) {
-    return { signal: 'weak', label: 'Weak', color: 'text-green-500' };
+  if (avg <= RSI.OVERSOLD) {
+    return { signal: 'oversold', label: 'Oversold', pillStyle: 'bg-green-400 text-white' };
   }
-  if (avg <= RSI.NEUTRAL_WEAK_THRESHOLD) {
-    return { signal: 'neutral-weak', label: 'Neutral→Weak', color: 'text-emerald-500' };
+  if (avg <= RSI.VERY_WEAK) {
+    return { signal: 'very-weak', label: 'Very Weak', pillStyle: 'bg-green-300 text-green-800' };
   }
-  if (avg <= RSI.NEUTRAL_THRESHOLD) {
-    return { signal: 'neutral', label: 'Neutral', color: 'text-gray-600' };
+  if (avg <= RSI.WEAK) {
+    return { signal: 'weak', label: 'Weak', pillStyle: 'bg-emerald-100 text-emerald-700' };
   }
-  if (avg <= RSI.NEUTRAL_STRONG_THRESHOLD) {
-    return { signal: 'neutral-strong', label: 'Neutral→Strong', color: 'text-orange-500' };
+  if (avg <= RSI.NEUTRAL_HIGH) {
+    return { signal: 'neutral', label: 'Neutral', pillStyle: 'bg-gray-100 text-gray-600' };
   }
-  if (avg <= RSI.STRONG_THRESHOLD) {
-    return { signal: 'strong', label: 'Strong', color: 'text-red-500' };
+  if (avg <= RSI.STRONG) {
+    return { signal: 'strong', label: 'Strong', pillStyle: 'bg-orange-100 text-orange-700' };
   }
-  return { signal: 'overbought', label: '🔥 Overbought', color: 'text-red-600' };
+  if (avg <= RSI.VERY_STRONG) {
+    return { signal: 'very-strong', label: 'Very Strong', pillStyle: 'bg-red-300 text-red-800' };
+  }
+  if (avg <= RSI.OVERBOUGHT) {
+    return { signal: 'overbought', label: 'Overbought', pillStyle: 'bg-red-400 text-white' };
+  }
+  return { signal: 'extreme-overbought', label: 'Extreme Overbought', pillStyle: 'bg-red-500 text-white' };
 }
 
 // Calculate 7D change from candles
@@ -254,26 +269,6 @@ export function formatVolume(volCcy: string | number, price: number): string {
   return '$' + volumeUsd.toFixed(0);
 }
 
-// Get RSI class for styling (7-level color scale)
-export function getRsiClass(rsi: number | null | undefined): string {
-  if (rsi === null || rsi === undefined) return 'text-gray-300';
-  if (rsi <= RSI.OVERSOLD_THRESHOLD) return 'text-green-600';      // Oversold Zone
-  if (rsi <= RSI.WEAK_THRESHOLD) return 'text-green-500';          // Weak
-  if (rsi <= RSI.NEUTRAL_WEAK_THRESHOLD) return 'text-emerald-500';// Neutral → Weak
-  if (rsi <= RSI.NEUTRAL_THRESHOLD) return 'text-gray-600';        // Neutral
-  if (rsi <= RSI.NEUTRAL_STRONG_THRESHOLD) return 'text-orange-500';// Neutral → Strong
-  if (rsi <= RSI.STRONG_THRESHOLD) return 'text-red-500';          // Strong
-  return 'text-red-600';                                           // Overbought Zone
-}
-
-// Format RSI value with emoji for extreme zones
-export function formatRsi(rsi: number | null | undefined): string {
-  if (rsi === null || rsi === undefined) return '--';
-  const value = rsi.toFixed(1);
-  if (rsi <= RSI.OVERSOLD_THRESHOLD) return `🧊${value}`;          // Oversold Zone (cold)
-  if (rsi > RSI.OVERBOUGHT_THRESHOLD) return `🔥${value}`;         // Overbought Zone (hot)
-  return value;
-}
 
 // Get RSI pill style for oversold widget (green tones)
 export function getRsiOversoldPillStyle(rsi: number): string {

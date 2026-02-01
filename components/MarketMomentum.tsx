@@ -12,29 +12,46 @@ interface MarketMomentumProps {
   avgRsiW14: number | null;
 }
 
-// Extended momentum info with bgColor for this component
+// Extended momentum info with bgColor and textColor for this component
 interface MomentumInfo extends RsiSignalInfo {
   bgColor: string;
+  textColor: string;
 }
 
-// Get momentum info with background color
+// Get momentum info with background and text color for the summary boxes
 function getMomentumInfo(rsi7: number | null, rsi14: number | null): MomentumInfo {
   const signalInfo = getRsiSignal(rsi7, rsi14);
 
-  // Map signal to background color
+  // Map signal to background color (lighter version for summary box)
   const bgColorMap: Record<string, string> = {
+    'extreme-oversold': 'bg-green-100',
     'oversold': 'bg-green-50',
-    'weak': 'bg-green-50',
-    'neutral-weak': 'bg-emerald-50',
+    'very-weak': 'bg-green-50',
+    'weak': 'bg-emerald-50',
     'neutral': 'bg-gray-50',
-    'neutral-strong': 'bg-orange-50',
-    'strong': 'bg-red-50',
-    'overbought': 'bg-red-50',
+    'strong': 'bg-orange-50',
+    'very-strong': 'bg-red-50',
+    'overbought': 'bg-red-100',
+    'extreme-overbought': 'bg-red-100',
+  };
+
+  // Map signal to text color
+  const textColorMap: Record<string, string> = {
+    'extreme-oversold': 'text-green-600',
+    'oversold': 'text-green-600',
+    'very-weak': 'text-green-600',
+    'weak': 'text-emerald-600',
+    'neutral': 'text-gray-600',
+    'strong': 'text-orange-600',
+    'very-strong': 'text-red-600',
+    'overbought': 'text-red-600',
+    'extreme-overbought': 'text-red-600',
   };
 
   return {
     ...signalInfo,
     bgColor: bgColorMap[signalInfo.signal] || 'bg-gray-50',
+    textColor: textColorMap[signalInfo.signal] || 'text-gray-600',
   };
 }
 
@@ -63,13 +80,13 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       <div className="flex items-center gap-3">
         <div className={`flex-1 rounded-lg px-3 py-2 ${dailyMomentum.bgColor}`}>
           <div className="text-[10px] text-gray-500 mb-0.5">Daily</div>
-          <div className={`text-[13px] font-semibold ${dailyMomentum.color}`}>
+          <div className={`text-[13px] font-semibold ${dailyMomentum.textColor}`}>
             {dailyMomentum.label}
           </div>
         </div>
         <div className={`flex-1 rounded-lg px-3 py-2 ${weeklyMomentum.bgColor}`}>
           <div className="text-[10px] text-gray-500 mb-0.5">Weekly</div>
-          <div className={`text-[13px] font-semibold ${weeklyMomentum.color}`}>
+          <div className={`text-[13px] font-semibold ${weeklyMomentum.textColor}`}>
             {weeklyMomentum.label}
           </div>
         </div>

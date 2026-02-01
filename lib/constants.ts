@@ -74,14 +74,18 @@ export const RATE_LIMIT = {
 // RSI Configuration
 // ===========================================
 export const RSI = {
-  // Zone thresholds
+  // Zone thresholds (9-state system matching pill colors)
+  EXTREME_OVERSOLD: 20,
+  OVERSOLD: 25,
+  VERY_WEAK: 30,
+  WEAK: 40,
+  NEUTRAL_HIGH: 60,
+  STRONG: 70,
+  VERY_STRONG: 80,
+  OVERBOUGHT: 85,
+  // Legacy thresholds (for backward compatibility)
   OVERSOLD_THRESHOLD: 25,
-  WEAK_THRESHOLD: 35,
-  NEUTRAL_WEAK_THRESHOLD: 45,
-  NEUTRAL_THRESHOLD: 55,
-  NEUTRAL_STRONG_THRESHOLD: 65,
-  STRONG_THRESHOLD: 75,
-  OVERBOUGHT_THRESHOLD: 75,
+  OVERBOUGHT_THRESHOLD: 85,
 
   // Candle limits for calculation
   DAILY_CANDLE_LIMIT: 100,

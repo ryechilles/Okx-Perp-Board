@@ -293,19 +293,10 @@ export function TableRow({
       case 'dRsiSignal': {
         const dSignal = getRsiSignal(rsi?.rsi7 ?? null, rsi?.rsi14 ?? null);
         return (
-          <td key={key} className={`${baseClass} group/signal`}>
-            <div className="relative inline-flex flex-col items-center">
-              <span className={`font-medium text-[12px] ${dSignal.color}`}>
-                {dSignal.label}
-              </span>
-              {(rsi?.rsi7 != null || rsi?.rsi14 != null) &&
-                dSignal.label !== '--' && (
-                  <span className="text-[10px] text-gray-500 leading-none opacity-0 group-hover/signal:opacity-100 transition-opacity">
-                    {rsi?.rsi7 != null ? rsi.rsi7.toFixed(1) : '--'}/
-                    {rsi?.rsi14 != null ? rsi.rsi14.toFixed(1) : '--'}
-                  </span>
-                )}
-            </div>
+          <td key={key} className={baseClass}>
+            <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${dSignal.pillStyle}`}>
+              {dSignal.label}
+            </span>
           </td>
         );
       }
@@ -313,19 +304,10 @@ export function TableRow({
       case 'wRsiSignal': {
         const wSignal = getRsiSignal(rsi?.rsiW7 ?? null, rsi?.rsiW14 ?? null);
         return (
-          <td key={key} className={`${baseClass} group/wsignal`}>
-            <div className="relative inline-flex flex-col items-center">
-              <span className={`font-medium text-[12px] ${wSignal.color}`}>
-                {wSignal.label}
-              </span>
-              {(rsi?.rsiW7 != null || rsi?.rsiW14 != null) &&
-                wSignal.label !== '--' && (
-                  <span className="text-[10px] text-gray-500 leading-none opacity-0 group-hover/wsignal:opacity-100 transition-opacity">
-                    {rsi?.rsiW7 != null ? rsi.rsiW7.toFixed(1) : '--'}/
-                    {rsi?.rsiW14 != null ? rsi.rsiW14.toFixed(1) : '--'}
-                  </span>
-                )}
-            </div>
+          <td key={key} className={baseClass}>
+            <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${wSignal.pillStyle}`}>
+              {wSignal.label}
+            </span>
           </td>
         );
       }
