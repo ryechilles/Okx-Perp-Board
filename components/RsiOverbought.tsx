@@ -18,40 +18,49 @@ interface RsiOverboughtProps {
 interface TokenWithRsi {
   symbol: string;
   instId: string;
-  rank: number;
+  marketCap: number;
   price: number;
   avgRsi: number;
   logo?: string;
 }
 
 export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }: RsiOverboughtProps) {
-  // Get overbought tokens from top 50 by market cap
+  // Get overbought tokens from OKX perp top 50 by market cap
   const overboughtTokens = useMemo(() => {
-    const tokens: TokenWithRsi[] = [];
+    const allTokens: TokenWithRsi[] = [];
 
+    // First collect all tokens with market cap and RSI
     tickers.forEach((ticker) => {
       if (ticker.baseSymbol === 'BTC') return;
 
-      const marketCap = marketCapData.get(ticker.baseSymbol);
+      const mc = marketCapData.get(ticker.baseSymbol);
       const rsi = rsiData.get(ticker.instId);
 
-      if (!marketCap || !marketCap.rank || marketCap.rank > 50) return;
-      if (!rsi) return;
+      if (!mc || !mc.marketCap || !rsi) return;
 
       const avgRsi = calculateAvgRsi(rsi);
-      if (avgRsi === null || avgRsi <= 75) return;
+      if (avgRsi === null) return;
 
-      tokens.push({
+      allTokens.push({
         symbol: ticker.baseSymbol,
         instId: ticker.instId,
-        rank: marketCap.rank,
+        marketCap: mc.marketCap,
         price: ticker.priceNum,
         avgRsi,
-        logo: marketCap.logo,
+        logo: mc.logo,
       });
     });
 
-    return tokens.sort((a, b) => b.avgRsi - a.avgRsi).slice(0, 5);
+    // Sort by market cap and take top 50
+    const top50 = allTokens
+      .sort((a, b) => b.marketCap - a.marketCap)
+      .slice(0, 50);
+
+    // Filter overbought (avgRsi > 75) and sort by RSI desc
+    return top50
+      .filter(t => t.avgRsi > 75)
+      .sort((a, b) => b.avgRsi - a.avgRsi)
+      .slice(0, 5);
   }, [tickers, rsiData, marketCapData]);
 
   const isLoading = tickers.size === 0;
@@ -60,11 +69,11 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
     <SmallWidget
       title="RSI Overbought"
       icon={<TrendingUp className="w-4 h-4" />}
-      subtitle="Avg RSI > 75 in Top 50"
+      subtitle="Avg RSI > 75 in OKX Perp Top 50"
       loading={isLoading}
       tooltip={
         <TooltipContent items={[
-          "Filters top 50 altcoins by market cap",
+          "Filters OKX perp top 50 by market cap",
           "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
           "Shows tokens with Avg RSI > 75",
           "Higher RSI = potentially overbought",

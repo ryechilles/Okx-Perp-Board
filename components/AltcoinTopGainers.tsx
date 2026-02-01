@@ -20,32 +20,33 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
 
   // Get altcoins sorted by market cap (excluding BTC)
   const altcoins = useMemo(() => {
-    const tokens: TokenWithChange[] = [];
+    const tokens: (TokenWithChange & { marketCap: number })[] = [];
 
     tickers.forEach((ticker) => {
-      const marketCap = marketCapData.get(ticker.baseSymbol);
+      const mc = marketCapData.get(ticker.baseSymbol);
       const rsi = rsiData.get(ticker.instId);
 
       // Skip BTC
       if (ticker.baseSymbol === 'BTC') return;
 
-      // Only include tokens with market cap rank
-      if (marketCap && marketCap.rank) {
+      // Only include tokens with market cap
+      if (mc && mc.marketCap) {
         tokens.push({
           symbol: ticker.baseSymbol,
           instId: ticker.instId,
-          rank: marketCap.rank,
+          rank: 0, // Not used anymore
+          marketCap: mc.marketCap,
           price: ticker.priceNum,
           change1h: rsi?.change1h ?? null,
           change4h: rsi?.change4h ?? null,
           change24h: ticker.changeNum,
-          logo: marketCap.logo,
+          logo: mc.logo,
         });
       }
     });
 
-    // Sort by market cap rank
-    return tokens.sort((a, b) => a.rank - b.rank);
+    // Sort by market cap (descending)
+    return tokens.sort((a, b) => b.marketCap - a.marketCap);
   }, [tickers, rsiData, marketCapData]);
 
   // Top 100 altcoins
@@ -65,12 +66,12 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
     <SmallWidget
       title="Top Gainers"
       icon={<TrendingUp className="w-4 h-4" />}
-      subtitle="Top 5 in Top 100 by Market Cap"
+      subtitle="Top 5 in OKX Perp Top 100"
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
       tooltip={
         <TooltipContent items={[
-          "Top 5 gainers from top 100 altcoins",
+          "Top 5 gainers from OKX perp top 100",
           "Switch timeframe: 1h / 4h / 24h",
           "Excludes BTC",
           "Click token to filter in table",

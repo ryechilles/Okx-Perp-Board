@@ -38,19 +38,20 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
 
   // Get altcoins sorted by market cap (excluding BTC)
   const altcoins = useMemo(() => {
-    const tokens: TokenWithChange[] = [];
+    const tokens: (TokenWithChange & { marketCap: number })[] = [];
 
     tickers.forEach((ticker) => {
-      const marketCap = marketCapData.get(ticker.baseSymbol);
+      const mc = marketCapData.get(ticker.baseSymbol);
       const rsi = rsiData.get(ticker.instId);
 
       if (ticker.baseSymbol === 'BTC') return;
 
-      if (marketCap && marketCap.rank) {
+      if (mc && mc.marketCap) {
         tokens.push({
           symbol: ticker.baseSymbol,
           instId: ticker.instId,
-          rank: marketCap.rank,
+          rank: 0, // Not used anymore
+          marketCap: mc.marketCap,
           change1h: rsi?.change1h ?? null,
           change4h: rsi?.change4h ?? null,
           change24h: ticker.changeNum,
@@ -58,7 +59,8 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
       }
     });
 
-    return tokens.sort((a, b) => a.rank - b.rank);
+    // Sort by market cap (descending)
+    return tokens.sort((a, b) => b.marketCap - a.marketCap);
   }, [tickers, rsiData, marketCapData]);
 
   // Calculate average changes for different tiers
@@ -115,7 +117,7 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
       tooltip={
         <TooltipContent items={[
           "Compares altcoin avg change vs BTC",
-          "Tiers: Top 10 / 20 / 50 by market cap",
+          "Tiers: OKX perp top 10 / 20 / 50 by market cap",
           "Ratio shows relative strength",
           "Click tier to filter those tokens",
         ]} />

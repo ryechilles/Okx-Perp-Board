@@ -16,7 +16,7 @@ interface FundingMarketProps {
  * FundingMarket - Shows funding rate market sentiment
  *
  * Displays count of positive vs negative funding rates
- * from top 100 coins by market cap
+ * from top 100 OKX perp tokens by market cap
  */
 export function FundingMarket({
   tickers,
@@ -25,11 +25,11 @@ export function FundingMarket({
   onGroupClick,
 }: FundingMarketProps) {
   const { positiveSymbols, negativeSymbols, total } = useMemo(() => {
-    // Get tickers with market cap data, sorted by rank
+    // Get all OKX perp tickers with market cap and funding rate
     const tickersWithMcap: Array<{
       instId: string;
       symbol: string;
-      rank: number;
+      marketCap: number;
       fundingRate: number;
     }> = [];
 
@@ -37,19 +37,19 @@ export function FundingMarket({
       const mc = marketCapData?.get(ticker.baseSymbol);
       const fr = fundingRateData.get(instId);
 
-      if (mc && mc.rank && mc.rank <= 100 && fr) {
+      if (mc && mc.marketCap && fr) {
         tickersWithMcap.push({
           instId,
           symbol: ticker.baseSymbol,
-          rank: mc.rank,
+          marketCap: mc.marketCap,
           fundingRate: fr.fundingRate,
         });
       }
     });
 
-    // Sort by rank and take top 100
+    // Sort by market cap (descending) and take top 100 within OKX perp tokens
     const top100 = tickersWithMcap
-      .sort((a, b) => a.rank - b.rank)
+      .sort((a, b) => b.marketCap - a.marketCap)
       .slice(0, 100);
 
     const positive: string[] = [];
@@ -83,7 +83,7 @@ export function FundingMarket({
     <SmallWidget
       title="Funding Market"
       icon={<span>📊</span>}
-      subtitle="Top 100 by market cap"
+      subtitle="OKX Perp Top 100 by Market Cap"
       loading={isLoading}
       className="group"
       tooltip={

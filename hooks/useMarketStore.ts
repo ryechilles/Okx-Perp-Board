@@ -524,16 +524,17 @@ export function useMarketStore() {
     return filtered;
   }, [tickers, filtersHook, favoritesHook.favorites, marketCapData, rsiData, spotSymbols, fundingRateData, listingData]);
 
-  // Calculate RSI averages for Top 100 market cap tokens
+  // Calculate RSI averages for OKX Perp Top 100 by market cap
   const getRsiAverages = useCallback(() => {
     let allTickers = Array.from(tickers.values()).filter(t => t.instId.includes('-USDT-'));
 
+    // Sort by market cap (descending) and take top 100 within OKX perp tokens
     const top100 = allTickers
-      .filter(t => marketCapData.get(t.baseSymbol)?.rank)
+      .filter(t => marketCapData.get(t.baseSymbol)?.marketCap)
       .sort((a, b) => {
-        const rankA = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
-        const rankB = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
-        return rankA - rankB;
+        const mcA = marketCapData.get(a.baseSymbol)?.marketCap ?? 0;
+        const mcB = marketCapData.get(b.baseSymbol)?.marketCap ?? 0;
+        return mcB - mcA;
       })
       .slice(0, 100);
 
