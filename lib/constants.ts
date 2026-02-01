@@ -6,7 +6,7 @@
 // ===========================================
 // App Version (increment this when deploying updates that require cache refresh)
 // ===========================================
-export const APP_VERSION = '1.0.1';
+export const APP_VERSION = '2.6.2';
 
 // ===========================================
 // API Endpoints
