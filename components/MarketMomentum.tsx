@@ -39,15 +39,15 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
         </span>
       </div>
 
-      {/* Daily RSI Values - Compact spacing */}
-      <div className="space-y-1 text-[11px]">
-        <div className="flex items-center gap-2">
+      {/* Daily RSI Values - Horizontal layout */}
+      <div className="flex items-center gap-4 text-[11px]">
+        <div className="flex items-center gap-1.5">
           <span className="text-gray-500">D-RSI7 Avg</span>
           <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
             {avgRsi7 != null ? avgRsi7.toFixed(1) : '--'}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <span className="text-gray-500">D-RSI14 Avg</span>
           <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi14)}`}>
             {avgRsi14 != null ? avgRsi14.toFixed(1) : '--'}
