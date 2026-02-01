@@ -99,13 +99,14 @@ export function FundingKiller({
   const displayShortKillers = shortKillers.slice(0, 5);
   const isLoading = tickers.size === 0;
 
-  const renderTokenRow = (token: TokenWithApr, colorClass: string, showSign: boolean) => (
+  const renderTokenRow = (token: TokenWithApr, index: number, colorClass: string, showSign: boolean) => (
     <div
       key={token.instId}
       className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
       onClick={() => onTokenClick?.(token.symbol)}
     >
       <div className="flex items-center gap-2">
+        <span className="text-[11px] text-gray-400 w-4">{index + 1}</span>
         <TokenAvatar symbol={token.symbol} logo={token.logo} />
         <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
       </div>
@@ -146,7 +147,7 @@ export function FundingKiller({
           />
           <div className="space-y-1">
             {displayShortKillers.length > 0 ? (
-              displayShortKillers.map(t => renderTokenRow(t, 'text-green-500', false))
+              displayShortKillers.map((t, i) => renderTokenRow(t, i, 'text-green-500', false))
             ) : (
               <div className="text-center py-4 text-[11px] text-gray-400">
                 No tokens with APR &lt; -20%
@@ -166,7 +167,7 @@ export function FundingKiller({
           />
           <div className="space-y-1">
             {displayLongKillers.length > 0 ? (
-              displayLongKillers.map(t => renderTokenRow(t, 'text-red-500', true))
+              displayLongKillers.map((t, i) => renderTokenRow(t, i, 'text-red-500', true))
             ) : (
               <div className="text-center py-4 text-[11px] text-gray-400">
                 No tokens with APR &gt; 20%
