@@ -73,6 +73,17 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
       icon={<TrendingDown className="w-4 h-4" />}
       subtitle="Avg RSI < 25 in Top 50"
       loading={isLoading}
+      tooltip={
+        <div className="space-y-1.5">
+          <p className="font-medium">Oversold Detection</p>
+          <ul className="space-y-1 text-gray-300">
+            <li>• Filters top 50 altcoins by market cap</li>
+            <li>• Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4</li>
+            <li>• Shows tokens with Avg RSI &lt; 25</li>
+          </ul>
+          <p className="text-gray-400 mt-2">Lower RSI = potentially oversold</p>
+        </div>
+      }
     >
       <div className="space-y-1">
         {isLoading ? (

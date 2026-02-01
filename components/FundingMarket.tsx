@@ -83,6 +83,16 @@ export function FundingMarket({
       icon={<span>📊</span>}
       subtitle="Top 100 by market cap"
       loading={isLoading}
+      tooltip={
+        <div className="space-y-1.5">
+          <p className="font-medium">Funding Rate Distribution</p>
+          <ul className="space-y-1 text-gray-300">
+            <li>• <span className="text-red-400">Positive</span>: rate &gt; 0.01% (longs pay shorts)</li>
+            <li>• <span className="text-green-400">Negative</span>: rate &lt; -0.01% (shorts pay longs)</li>
+            <li>• <span className="text-gray-400">Neutral</span>: between -0.01% ~ 0.01%</li>
+          </ul>
+        </div>
+      }
     >
       <div className="space-y-4">
         {/* Main Stats */}

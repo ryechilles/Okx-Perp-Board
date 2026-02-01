@@ -79,6 +79,16 @@ export function FundingKiller({
       icon={<span>☠️</span>}
       subtitle="Funding rate APR > 20%"
       loading={isLoading}
+      tooltip={
+        <div className="space-y-1.5">
+          <p className="font-medium">High Funding Rate Warning</p>
+          <ul className="space-y-1 text-gray-300">
+            <li>• <span className="text-red-400">Long Killer</span>: APR &gt; 20% (expensive to hold longs)</li>
+            <li>• <span className="text-green-400">Short Killer</span>: APR &lt; -20% (expensive to hold shorts)</li>
+          </ul>
+          <p className="text-gray-400 mt-2">APR = Funding Rate × (365 × 24 / interval)</p>
+        </div>
+      }
     >
       <div className="space-y-4">
         {/* Short Killers Section (on top) */}

@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { InfoTooltip } from '@/components/ui';
 
 export interface SmallWidgetProps {
   /** Widget title displayed in header */
@@ -10,6 +11,8 @@ export interface SmallWidgetProps {
   icon?: ReactNode;
   /** Optional subtitle/description */
   subtitle?: string;
+  /** Tooltip content - shows info icon when provided */
+  tooltip?: ReactNode;
   /** Widget content */
   children: ReactNode;
   /** Optional header actions (buttons, etc.) */
@@ -48,6 +51,7 @@ export function SmallWidget({
   title,
   icon,
   subtitle,
+  tooltip,
   children,
   headerActions,
   className,
@@ -75,9 +79,12 @@ export function SmallWidget({
             <span className="text-gray-500 flex-shrink-0">{icon}</span>
           )}
           <div className="min-w-0">
-            <h3 className="font-medium text-gray-900 text-sm truncate">
-              {title}
-            </h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-medium text-gray-900 text-sm truncate">
+                {title}
+              </h3>
+              {tooltip && <InfoTooltip content={tooltip} />}
+            </div>
             {subtitle && (
               <p className="text-xs text-gray-500 truncate">{subtitle}</p>
             )}
