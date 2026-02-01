@@ -10,6 +10,7 @@ import { Footer } from '@/components/Footer';
 import { AltcoinTopGainers } from '@/components/AltcoinTopGainers';
 import { AltcoinVsBTC } from '@/components/AltcoinVsBTC';
 import { FundingKiller } from '@/components/FundingKiller';
+import { FundingMarket } from '@/components/FundingMarket';
 import { MarketMomentum } from '@/components/MarketMomentum';
 import { RsiOversold } from '@/components/RsiOversold';
 import { RsiOverbought } from '@/components/RsiOverbought';
@@ -47,6 +48,7 @@ const TABS = [
 // Default widget order per tab (for tabs with multiple widgets)
 const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
   rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
+  funding: ['fundingMarket', 'fundingKiller'],
   altcoin: ['topGainers', 'vsBtc'],
 };
 
@@ -62,6 +64,10 @@ export default function PerpBoard() {
   const [altcoinWidgetOrder, setAltcoinWidgetOrder] = useWidgetOrder(
     'altcoin',
     DEFAULT_WIDGET_ORDER.altcoin
+  );
+  const [fundingWidgetOrder, setFundingWidgetOrder] = useWidgetOrder(
+    'funding',
+    DEFAULT_WIDGET_ORDER.funding
   );
 
   // URL state sync
@@ -243,6 +249,26 @@ export default function PerpBoard() {
     ),
   }), [store.tickers, store.rsiData, store.marketCapData]);
 
+  // Widget mapping for funding tab
+  const fundingWidgets: Record<string, ReactNode> = useMemo(() => ({
+    fundingMarket: (
+      <FundingMarket
+        tickers={store.tickers}
+        fundingRateData={store.fundingRateData}
+        marketCapData={store.marketCapData}
+      />
+    ),
+    fundingKiller: (
+      <FundingKiller
+        tickers={store.tickers}
+        fundingRateData={store.fundingRateData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+        onGroupClick={handleGroupClick}
+      />
+    ),
+  }), [store.tickers, store.fundingRateData, store.marketCapData]);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
       {/* ===================================================================
@@ -307,15 +333,17 @@ export default function PerpBoard() {
                 </WidgetGrid>
               )}
 
-              {/* Funding Tab Widget */}
+              {/* Funding Tab Widgets - Sortable */}
               {activeTab === 'funding' && (
-                <FundingKiller
-                  tickers={store.tickers}
-                  fundingRateData={store.fundingRateData}
-                  marketCapData={store.marketCapData}
-                  onTokenClick={handleTokenClick}
-                  onGroupClick={handleGroupClick}
-                />
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={fundingWidgetOrder}
+                  onOrderChange={setFundingWidgetOrder}
+                >
+                  {fundingWidgetOrder.map((id) => fundingWidgets[id])}
+                </WidgetGrid>
               )}
 
               {/* Altcoin Tab Widgets - Sortable */}
