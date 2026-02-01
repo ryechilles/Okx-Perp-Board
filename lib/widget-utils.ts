@@ -141,7 +141,7 @@ export function getTokensByRsiThreshold(
   const threshold = mode === 'oversold' ? RSI.OVERSOLD_THRESHOLD : RSI.OVERBOUGHT_THRESHOLD;
 
   return topTokens
-    .filter(t => mode === 'oversold' ? t.avgRsi < threshold : t.avgRsi > threshold)
+    .filter(t => mode === 'oversold' ? t.avgRsi <= threshold : t.avgRsi >= threshold)
     .sort((a, b) => mode === 'oversold' ? a.avgRsi - b.avgRsi : b.avgRsi - a.avgRsi)
     .slice(0, displayLimit);
 }
