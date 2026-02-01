@@ -108,6 +108,21 @@ export const FUNDING = {
 } as const;
 
 // ===========================================
+// Widget Configuration
+// ===========================================
+export const WIDGET = {
+  // Tokens to exclude from certain widgets
+  EXCLUDE_SYMBOLS: ['BTC'],
+
+  // Top N selection for widgets
+  TOP_TOKENS_COUNT: 50,      // RSI oversold/overbought widgets
+  TOP_100_COUNT: 100,        // Market momentum, funding market
+
+  // Display limits
+  DISPLAY_LIMIT: 5,          // Max items to show in small widgets
+} as const;
+
+// ===========================================
 // AHR999 Indicator Zones
 // ===========================================
 export const AHR999 = {

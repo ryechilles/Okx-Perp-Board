@@ -3,9 +3,10 @@
 import { useMemo } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
 import { TooltipContent, TokenAvatar } from '@/components/ui';
-import { ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
+import { ProcessedTicker, FundingRateData, MarketCapData, TokenWithApr } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
 import { calculateFundingApr } from '@/lib/widget-utils';
+import { FUNDING, WIDGET } from '@/lib/constants';
 
 interface FundingKillerProps {
   tickers: Map<string, ProcessedTicker>;
@@ -13,14 +14,6 @@ interface FundingKillerProps {
   marketCapData?: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
   onGroupClick?: (symbols: string[]) => void;
-}
-
-interface TokenWithApr {
-  symbol: string;
-  instId: string;
-  apr: number;
-  price: number;
-  logo?: string;
 }
 
 // Section header component
@@ -69,12 +62,13 @@ export function FundingKiller({
     const tokensWithApr: TokenWithApr[] = [];
 
     tickers.forEach((ticker, instId) => {
-      if (ticker.baseSymbol === 'BTC') return;
+      // Exclude specific symbols
+      if (WIDGET.EXCLUDE_SYMBOLS.includes(ticker.baseSymbol)) return;
 
       const fr = fundingRateData.get(instId);
       if (!fr) return;
 
-      const apr = calculateFundingApr(fr.fundingRate, fr.settlementInterval || 8);
+      const apr = calculateFundingApr(fr.fundingRate, fr.settlementInterval);
       const mc = marketCapData?.get(ticker.baseSymbol);
       tokensWithApr.push({
         symbol: ticker.baseSymbol,
@@ -85,14 +79,15 @@ export function FundingKiller({
       });
     });
 
+    const threshold = FUNDING.KILLER_APR_THRESHOLD;
     return {
-      longKillers: tokensWithApr.filter(t => t.apr > 20).sort((a, b) => b.apr - a.apr),
-      shortKillers: tokensWithApr.filter(t => t.apr < -20).sort((a, b) => a.apr - b.apr),
+      longKillers: tokensWithApr.filter(t => t.apr > threshold).sort((a, b) => b.apr - a.apr),
+      shortKillers: tokensWithApr.filter(t => t.apr < -threshold).sort((a, b) => a.apr - b.apr),
     };
   }, [tickers, fundingRateData, marketCapData]);
 
-  const displayLongKillers = longKillers.slice(0, 5);
-  const displayShortKillers = shortKillers.slice(0, 5);
+  const displayLongKillers = longKillers.slice(0, WIDGET.DISPLAY_LIMIT);
+  const displayShortKillers = shortKillers.slice(0, WIDGET.DISPLAY_LIMIT);
   const isLoading = tickers.size === 0;
 
   const renderTokenRow = (token: TokenWithApr, index: number, colorClass: string, showSign: boolean) => (
@@ -117,6 +112,8 @@ export function FundingKiller({
     </div>
   );
 
+  const aprThreshold = FUNDING.KILLER_APR_THRESHOLD;
+
   return (
     <SmallWidget
       title="Funding Killer"
@@ -126,8 +123,8 @@ export function FundingKiller({
       tooltip={
         <TooltipContent items={[
           "All OKX perp tokens (excludes BTC)",
-          <><span className="text-red-500">Long Killer</span>: APR &gt; 20% (expensive to hold longs)</>,
-          <><span className="text-green-500">Short Killer</span>: APR &lt; -20% (expensive to hold shorts)</>,
+          <><span className="text-red-500">Long Killer</span>: APR &gt; {aprThreshold}% (expensive to hold longs)</>,
+          <><span className="text-green-500">Short Killer</span>: APR &lt; -{aprThreshold}% (expensive to hold shorts)</>,
           "APR = Funding Rate × (365 × 24 / interval)",
         ]} />
       }
@@ -147,7 +144,7 @@ export function FundingKiller({
               displayShortKillers.map((t, i) => renderTokenRow(t, i, 'text-green-500', false))
             ) : (
               <div className="text-center py-4 text-[11px] text-gray-400">
-                No tokens with APR &lt; -20%
+                No tokens with APR &lt; -{aprThreshold}%
               </div>
             )}
           </div>
@@ -167,7 +164,7 @@ export function FundingKiller({
               displayLongKillers.map((t, i) => renderTokenRow(t, i, 'text-red-500', true))
             ) : (
               <div className="text-center py-4 text-[11px] text-gray-400">
-                No tokens with APR &gt; 20%
+                No tokens with APR &gt; {aprThreshold}%
               </div>
             )}
           </div>

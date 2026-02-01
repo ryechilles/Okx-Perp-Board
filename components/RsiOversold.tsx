@@ -6,7 +6,8 @@ import { SmallWidget } from '@/components/widgets/base';
 import { TooltipContent, TokenAvatar } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 import { formatPrice, getRsiOversoldPillStyle } from '@/lib/utils';
-import { calculateAvgRsi } from '@/lib/widget-utils';
+import { getTokensByRsiThreshold } from '@/lib/widget-utils';
+import { RSI, WIDGET } from '@/lib/constants';
 
 interface RsiOversoldProps {
   tickers: Map<string, ProcessedTicker>;
@@ -15,53 +16,12 @@ interface RsiOversoldProps {
   onTokenClick?: (symbol: string) => void;
 }
 
-interface TokenWithRsi {
-  symbol: string;
-  instId: string;
-  marketCap: number;
-  price: number;
-  avgRsi: number;
-  logo?: string;
-}
-
 export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: RsiOversoldProps) {
-  // Get oversold tokens from OKX perp top 50 by market cap
-  const oversoldTokens = useMemo(() => {
-    const allTokens: TokenWithRsi[] = [];
-
-    // First collect all tokens with market cap and RSI
-    tickers.forEach((ticker) => {
-      if (ticker.baseSymbol === 'BTC') return;
-
-      const mc = marketCapData.get(ticker.baseSymbol);
-      const rsi = rsiData.get(ticker.instId);
-
-      if (!mc || !mc.marketCap || !rsi) return;
-
-      const avgRsi = calculateAvgRsi(rsi);
-      if (avgRsi === null) return;
-
-      allTokens.push({
-        symbol: ticker.baseSymbol,
-        instId: ticker.instId,
-        marketCap: mc.marketCap,
-        price: ticker.priceNum,
-        avgRsi,
-        logo: mc.logo,
-      });
-    });
-
-    // Sort by market cap and take top 50
-    const top50 = allTokens
-      .sort((a, b) => b.marketCap - a.marketCap)
-      .slice(0, 50);
-
-    // Filter oversold (avgRsi < 25) and sort by RSI
-    return top50
-      .filter(t => t.avgRsi < 25)
-      .sort((a, b) => a.avgRsi - b.avgRsi)
-      .slice(0, 5);
-  }, [tickers, rsiData, marketCapData]);
+  // Get oversold tokens using shared utility
+  const oversoldTokens = useMemo(
+    () => getTokensByRsiThreshold(tickers, rsiData, marketCapData, 'oversold'),
+    [tickers, rsiData, marketCapData]
+  );
 
   const isLoading = tickers.size === 0;
 
@@ -69,13 +29,13 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
     <SmallWidget
       title="RSI Oversold"
       icon={<TrendingDown className="w-4 h-4" />}
-      subtitle="Avg RSI < 25 in OKX Perp Top 50"
+      subtitle={`Avg RSI < ${RSI.OVERSOLD_THRESHOLD} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
       loading={isLoading}
       tooltip={
         <TooltipContent items={[
-          "Filters OKX perp top 50 by market cap",
+          `Filters OKX perp top ${WIDGET.TOP_TOKENS_COUNT} by market cap`,
           "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
-          "Shows tokens with Avg RSI < 25",
+          `Shows tokens with Avg RSI < ${RSI.OVERSOLD_THRESHOLD}`,
           "Lower RSI = potentially oversold",
         ]} />
       }
@@ -117,7 +77,7 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
           ))
         ) : (
           <div className="text-center py-4 text-[11px] text-gray-400">
-            No oversold tokens in Top 50
+            No oversold tokens in Top {WIDGET.TOP_TOKENS_COUNT}
           </div>
         )}
       </div>

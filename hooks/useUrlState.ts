@@ -3,8 +3,10 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { Filters, ColumnVisibility, ColumnKey } from '@/lib/types';
 import { DEFAULT_COLUMN_ORDER } from '@/lib/utils';
+import { FIXED_COLUMNS } from '@/lib/constants';
 
-const DEFAULT_COLUMNS: ColumnVisibility = {
+// All columns visible - used as base for URL parsing
+const ALL_COLUMNS_VISIBLE: ColumnVisibility = {
   favorite: true,
   rank: true,
   logo: true,
@@ -27,6 +29,9 @@ const DEFAULT_COLUMNS: ColumnVisibility = {
   listDate: true,
   hasSpot: true
 };
+
+// Convert readonly array to regular array for includes check
+const FIXED_COLS = [...FIXED_COLUMNS] as string[];
 
 interface UrlState {
   favorites: string[];
@@ -64,7 +69,7 @@ function stateToParams(state: Partial<UrlState>): URLSearchParams {
   // Columns - only include hidden columns (default is all visible)
   if (state.columns) {
     const hiddenCols = Object.entries(state.columns)
-      .filter(([key, visible]) => !visible && !['favorite', 'rank', 'logo', 'symbol'].includes(key))
+      .filter(([key, visible]) => !visible && !FIXED_COLS.includes(key))
       .map(([key]) => key);
     if (hiddenCols.length > 0) {
       params.set('hide', hiddenCols.join(','));
@@ -77,7 +82,7 @@ function stateToParams(state: Partial<UrlState>): URLSearchParams {
     const currentOrder = state.columnOrder.join(',');
     if (currentOrder !== defaultOrder) {
       // Only store non-fixed columns order
-      const nonFixed = state.columnOrder.filter(col => !['favorite', 'rank', 'logo', 'symbol'].includes(col));
+      const nonFixed = state.columnOrder.filter(col => !FIXED_COLS.includes(col));
       params.set('cols', nonFixed.join(','));
     }
   }
@@ -118,7 +123,7 @@ function paramsToState(params: URLSearchParams): Partial<UrlState> {
   const hide = params.get('hide');
   if (hide) {
     const hiddenCols = new Set(hide.split(',').filter(Boolean));
-    const columns = { ...DEFAULT_COLUMNS };
+    const columns = { ...ALL_COLUMNS_VISIBLE };
     hiddenCols.forEach(col => {
       if (col in columns) {
         columns[col as keyof ColumnVisibility] = false;
@@ -131,8 +136,7 @@ function paramsToState(params: URLSearchParams): Partial<UrlState> {
   const cols = params.get('cols');
   if (cols) {
     const nonFixedOrder = cols.split(',').filter(Boolean) as ColumnKey[];
-    const fixedColumns: ColumnKey[] = ['favorite', 'rank', 'logo', 'symbol'];
-    state.columnOrder = [...fixedColumns, ...nonFixedOrder];
+    state.columnOrder = [...FIXED_COLUMNS as unknown as ColumnKey[], ...nonFixedOrder];
   }
 
   return state;

@@ -179,6 +179,39 @@ export interface WSTickerUpdate {
   ts: string;
 }
 
+// ===========================================
+// Widget Types (shared across widget components)
+// ===========================================
+
+// Token with RSI data for RSI widgets
+export interface TokenWithRsi {
+  symbol: string;
+  instId: string;
+  marketCap: number;
+  price: number;
+  avgRsi: number;
+  logo?: string;
+}
+
+// Token with APR data for Funding widgets
+export interface TokenWithApr {
+  symbol: string;
+  instId: string;
+  apr: number;
+  price: number;
+  logo?: string;
+}
+
+// Token with price change data for Altcoin widgets
+export interface TokenWithChange {
+  symbol: string;
+  instId: string;
+  change: number;
+  price: number;
+  marketCap: number;
+  logo?: string;
+}
+
 // Store state
 export interface AppState {
   tickers: Map<string, ProcessedTicker>;

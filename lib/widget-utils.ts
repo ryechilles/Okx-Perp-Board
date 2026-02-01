@@ -3,8 +3,39 @@
  * Shared utilities for widget components
  */
 
+import { ProcessedTicker, RSIData, MarketCapData, TokenWithRsi } from './types';
+import { RSI, FUNDING, WIDGET } from './constants';
+
+// ===========================================
+// Types
+// ===========================================
+
 // Time frame type for 1h/4h/24h selectors
 export type TimeFrame = '1h' | '4h' | '24h';
+
+// RSI data structure (minimal for calculation)
+export interface RSIValues {
+  rsi7: number | null;
+  rsi14: number | null;
+  rsiW7: number | null;
+  rsiW14: number | null;
+}
+
+// Token with change data for altcoin widgets (internal use)
+interface TokenWithChangeInternal {
+  symbol: string;
+  instId: string;
+  rank: number;
+  price?: number;
+  change1h: number | null;
+  change4h: number | null;
+  change24h: number;
+  logo?: string;
+}
+
+// ===========================================
+// Formatting Functions
+// ===========================================
 
 // Format percentage with color class
 export function formatChange(value: number | null | undefined): { text: string; color: string } {
@@ -16,20 +47,8 @@ export function formatChange(value: number | null | undefined): { text: string; 
   return { text: `${sign}${value.toFixed(2)}%`, color };
 }
 
-// Token with change data for altcoin widgets
-export interface TokenWithChange {
-  symbol: string;
-  instId: string;
-  rank: number;
-  price?: number;
-  change1h: number | null;
-  change4h: number | null;
-  change24h: number;
-  logo?: string;
-}
-
 // Get change value based on timeframe
-export function getChangeByTimeFrame(token: TokenWithChange, tf: TimeFrame): number | null {
+export function getChangeByTimeFrame(token: TokenWithChangeInternal, tf: TimeFrame): number | null {
   switch (tf) {
     case '1h': return token.change1h;
     case '4h': return token.change4h;
@@ -37,13 +56,9 @@ export function getChangeByTimeFrame(token: TokenWithChange, tf: TimeFrame): num
   }
 }
 
-// RSI data structure (minimal for calculation)
-export interface RSIValues {
-  rsi7: number | null;
-  rsi14: number | null;
-  rsiW7: number | null;
-  rsiW14: number | null;
-}
+// ===========================================
+// Calculation Functions
+// ===========================================
 
 /**
  * Calculate average RSI from all 4 RSI values
@@ -59,9 +74,74 @@ export function calculateAvgRsi(rsi: RSIValues): number | null {
 
 /**
  * Calculate funding APR from rate and interval
- * Used in FundingKiller widget
+ * Uses FUNDING.DEFAULT_INTERVAL_HOURS as default
  */
-export function calculateFundingApr(rate: number, intervalHours: number = 8): number {
+export function calculateFundingApr(
+  rate: number,
+  intervalHours: number = FUNDING.DEFAULT_INTERVAL_HOURS
+): number {
   const periodsPerYear = (365 * 24) / intervalHours;
   return rate * periodsPerYear * 100;
+}
+
+// ===========================================
+// Token Filtering Functions (shared logic for widgets)
+// ===========================================
+
+/**
+ * Get tokens filtered by RSI threshold
+ * Used by RsiOversold and RsiOverbought widgets
+ *
+ * @param tickers - All tickers
+ * @param rsiData - RSI data map
+ * @param marketCapData - Market cap data map
+ * @param mode - 'oversold' (avgRsi < threshold) or 'overbought' (avgRsi > threshold)
+ * @param topN - Number of top tokens by market cap to consider (default: WIDGET.TOP_TOKENS_COUNT)
+ * @param displayLimit - Number of results to return (default: WIDGET.DISPLAY_LIMIT)
+ */
+export function getTokensByRsiThreshold(
+  tickers: Map<string, ProcessedTicker>,
+  rsiData: Map<string, RSIData>,
+  marketCapData: Map<string, MarketCapData>,
+  mode: 'oversold' | 'overbought',
+  topN: number = WIDGET.TOP_TOKENS_COUNT,
+  displayLimit: number = WIDGET.DISPLAY_LIMIT
+): TokenWithRsi[] {
+  const allTokens: TokenWithRsi[] = [];
+
+  // Collect all tokens with market cap and RSI data
+  tickers.forEach((ticker) => {
+    // Exclude specific symbols (e.g., BTC)
+    if (WIDGET.EXCLUDE_SYMBOLS.includes(ticker.baseSymbol)) return;
+
+    const mc = marketCapData.get(ticker.baseSymbol);
+    const rsi = rsiData.get(ticker.instId);
+
+    if (!mc || !mc.marketCap || !rsi) return;
+
+    const avgRsi = calculateAvgRsi(rsi);
+    if (avgRsi === null) return;
+
+    allTokens.push({
+      symbol: ticker.baseSymbol,
+      instId: ticker.instId,
+      marketCap: mc.marketCap,
+      price: ticker.priceNum,
+      avgRsi,
+      logo: mc.logo,
+    });
+  });
+
+  // Sort by market cap and take top N
+  const topTokens = allTokens
+    .sort((a, b) => b.marketCap - a.marketCap)
+    .slice(0, topN);
+
+  // Filter by RSI threshold and sort
+  const threshold = mode === 'oversold' ? RSI.OVERSOLD_THRESHOLD : RSI.OVERBOUGHT_THRESHOLD;
+
+  return topTokens
+    .filter(t => mode === 'oversold' ? t.avgRsi < threshold : t.avgRsi > threshold)
+    .sort((a, b) => mode === 'oversold' ? a.avgRsi - b.avgRsi : b.avgRsi - a.avgRsi)
+    .slice(0, displayLimit);
 }
