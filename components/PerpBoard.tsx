@@ -196,6 +196,18 @@ export default function PerpBoard() {
     store.setSearchTerm(symbols.join('|'));
   };
 
+  // Funding Market filter handler
+  const handleFundingFilterClick = (filter: 'positive' | 'negative' | 'neutral') => {
+    store.setSearchTerm('');
+    if (filter === 'positive') {
+      store.setFilters({ fundingRate: 'positive' });
+    } else if (filter === 'negative') {
+      store.setFilters({ fundingRate: 'negative' });
+    } else {
+      store.setFilters({ fundingRate: 'neutral' });
+    }
+  };
+
   // Widget mapping for RSI tab
   const rsiWidgets: Record<string, ReactNode> = useMemo(() => ({
     marketMomentum: (
@@ -252,6 +264,7 @@ export default function PerpBoard() {
         tickers={store.tickers}
         fundingRateData={store.fundingRateData}
         marketCapData={store.marketCapData}
+        onFilterClick={handleFundingFilterClick}
       />
     ),
     fundingKiller: (

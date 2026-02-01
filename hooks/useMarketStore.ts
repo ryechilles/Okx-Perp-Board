@@ -361,12 +361,17 @@ export function useMarketStore() {
       if (filters.fundingRate === 'positive') {
         filtered = filtered.filter(t => {
           const fr = fundingRateData.get(t.instId)?.fundingRate;
-          return fr !== undefined && fr > 0;
+          return fr !== undefined && fr > 0.0001;
         });
       } else if (filters.fundingRate === 'negative') {
         filtered = filtered.filter(t => {
           const fr = fundingRateData.get(t.instId)?.fundingRate;
-          return fr !== undefined && fr < 0;
+          return fr !== undefined && fr < -0.0001;
+        });
+      } else if (filters.fundingRate === 'neutral') {
+        filtered = filtered.filter(t => {
+          const fr = fundingRateData.get(t.instId)?.fundingRate;
+          return fr !== undefined && fr >= -0.0001 && fr <= 0.0001;
         });
       }
     }

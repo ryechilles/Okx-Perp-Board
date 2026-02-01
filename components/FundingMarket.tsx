@@ -9,6 +9,7 @@ interface FundingMarketProps {
   tickers: Map<string, ProcessedTicker>;
   fundingRateData: Map<string, FundingRateData>;
   marketCapData?: Map<string, MarketCapData>;
+  onFilterClick?: (filter: 'positive' | 'negative' | 'neutral') => void;
 }
 
 /**
@@ -21,6 +22,7 @@ export function FundingMarket({
   tickers,
   fundingRateData,
   marketCapData,
+  onFilterClick,
 }: FundingMarketProps) {
   const { positiveCount, negativeCount, neutralCount, total } = useMemo(() => {
     // Get tickers with market cap data, sorted by rank
@@ -97,7 +99,10 @@ export function FundingMarket({
         {/* Main Stats */}
         <div className="flex items-center justify-between">
           {/* Positive */}
-          <div className="text-center">
+          <div
+            className={`text-center ${onFilterClick && positiveCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
+            onClick={() => positiveCount > 0 && onFilterClick?.('positive')}
+          >
             <div className="text-[24px] font-bold text-red-500">
               {isLoading ? '--' : positiveCount}
             </div>
@@ -108,7 +113,10 @@ export function FundingMarket({
           <div className="h-10 w-px bg-gray-200" />
 
           {/* Neutral */}
-          <div className="text-center">
+          <div
+            className={`text-center ${onFilterClick && neutralCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
+            onClick={() => neutralCount > 0 && onFilterClick?.('neutral')}
+          >
             <div className="text-[24px] font-bold text-gray-400">
               {isLoading ? '--' : neutralCount}
             </div>
@@ -119,7 +127,10 @@ export function FundingMarket({
           <div className="h-10 w-px bg-gray-200" />
 
           {/* Negative */}
-          <div className="text-center">
+          <div
+            className={`text-center ${onFilterClick && negativeCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
+            onClick={() => negativeCount > 0 && onFilterClick?.('negative')}
+          >
             <div className="text-[24px] font-bold text-green-500">
               {isLoading ? '--' : negativeCount}
             </div>

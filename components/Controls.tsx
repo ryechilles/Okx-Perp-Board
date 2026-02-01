@@ -480,6 +480,7 @@ export function Controls({
                 <PillButtonGroup
                   options={[
                     { value: 'positive', label: 'Positive' },
+                    { value: 'neutral', label: 'Neutral' },
                     { value: 'negative', label: 'Negative' },
                   ]}
                   value={filters.fundingRate || ''}
