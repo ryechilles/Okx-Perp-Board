@@ -3,7 +3,7 @@
 import { Activity } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
 import { TooltipContent } from '@/components/ui';
-import { getRsiClass, formatRsi, getRsiSignal, RsiSignalInfo } from '@/lib/utils';
+import { getRsiPillStyle, getRsiSignal, RsiSignalInfo } from '@/lib/utils';
 
 interface MarketMomentumProps {
   avgRsi7: number | null;
@@ -78,32 +78,32 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       {/* Detailed RSI Values - same flex layout as boxes above for alignment */}
       <div className="flex gap-3 text-[11px] mt-3">
         {/* Daily RSI (left column) - px-3 matches the box above */}
-        <div className="flex-1 space-y-1 px-3">
+        <div className="flex-1 space-y-1.5 px-3">
           <div className="flex items-center justify-between">
             <span className="text-gray-500">D-RSI7</span>
-            <span className={`font-medium tabular-nums ${getRsiClass(avgRsi7)}`}>
-              {formatRsi(avgRsi7)}
+            <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
+              {avgRsi7 != null ? avgRsi7.toFixed(1) : '--'}
             </span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-500">D-RSI14</span>
-            <span className={`font-medium tabular-nums ${getRsiClass(avgRsi14)}`}>
-              {formatRsi(avgRsi14)}
+            <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi14)}`}>
+              {avgRsi14 != null ? avgRsi14.toFixed(1) : '--'}
             </span>
           </div>
         </div>
         {/* Weekly RSI (right column) - px-3 matches the box above */}
-        <div className="flex-1 space-y-1 px-3">
+        <div className="flex-1 space-y-1.5 px-3">
           <div className="flex items-center justify-between">
             <span className="text-gray-500">W-RSI7</span>
-            <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW7)}`}>
-              {formatRsi(avgRsiW7)}
+            <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsiW7)}`}>
+              {avgRsiW7 != null ? avgRsiW7.toFixed(1) : '--'}
             </span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-500">W-RSI14</span>
-            <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW14)}`}>
-              {formatRsi(avgRsiW14)}
+            <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsiW14)}`}>
+              {avgRsiW14 != null ? avgRsiW14.toFixed(1) : '--'}
             </span>
           </div>
         </div>
