@@ -78,8 +78,8 @@ function SortableItem({ id, children, disabled, isOver }: SortableItemProps) {
         !disabled && 'cursor-grab active:cursor-grabbing',
         // Dragging state - semi-transparent
         isDragging && 'opacity-50',
-        // Drop target indicator - blue left border (like table columns)
-        isOver && !isDragging && 'ring-2 ring-blue-400 ring-offset-2 rounded-xl'
+        // Drop target indicator - semi-transparent (like dragging state)
+        isOver && !isDragging && 'opacity-50'
       )}
     >
       {children}
