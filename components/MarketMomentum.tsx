@@ -3,7 +3,7 @@
 import { Activity } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
 import { TooltipContent } from '@/components/ui';
-import { getRsiPillStyle, getRsiSignal, RsiSignalInfo } from '@/lib/utils';
+import { getRsiPillStyle, getRsiSignal } from '@/lib/utils';
 
 interface MarketMomentumProps {
   avgRsi7: number | null;
@@ -12,52 +12,10 @@ interface MarketMomentumProps {
   avgRsiW14: number | null;
 }
 
-// Extended momentum info with bgColor and textColor for this component
-interface MomentumInfo extends RsiSignalInfo {
-  bgColor: string;
-  textColor: string;
-}
-
-// Get momentum info with background and text color for the summary boxes
-function getMomentumInfo(rsi7: number | null, rsi14: number | null): MomentumInfo {
-  const signalInfo = getRsiSignal(rsi7, rsi14);
-
-  // Map signal to background color (lighter version for summary box)
-  const bgColorMap: Record<string, string> = {
-    'extreme-oversold': 'bg-green-100',
-    'oversold': 'bg-green-50',
-    'very-weak': 'bg-green-50',
-    'weak': 'bg-emerald-50',
-    'neutral': 'bg-gray-50',
-    'strong': 'bg-orange-50',
-    'very-strong': 'bg-red-50',
-    'overbought': 'bg-red-100',
-    'extreme-overbought': 'bg-red-100',
-  };
-
-  // Map signal to text color
-  const textColorMap: Record<string, string> = {
-    'extreme-oversold': 'text-green-600',
-    'oversold': 'text-green-600',
-    'very-weak': 'text-green-600',
-    'weak': 'text-emerald-600',
-    'neutral': 'text-gray-600',
-    'strong': 'text-orange-600',
-    'very-strong': 'text-red-600',
-    'overbought': 'text-red-600',
-    'extreme-overbought': 'text-red-600',
-  };
-
-  return {
-    ...signalInfo,
-    bgColor: bgColorMap[signalInfo.signal] || 'bg-gray-50',
-    textColor: textColorMap[signalInfo.signal] || 'text-gray-600',
-  };
-}
 
 export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: MarketMomentumProps) {
-  const dailyMomentum = getMomentumInfo(avgRsi7, avgRsi14);
-  const weeklyMomentum = getMomentumInfo(avgRsiW7, avgRsiW14);
+  const dailySignal = getRsiSignal(avgRsi7, avgRsi14);
+  const weeklySignal = getRsiSignal(avgRsiW7, avgRsiW14);
 
   const isLoading = avgRsi7 === null && avgRsi14 === null;
 
@@ -78,17 +36,17 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
     >
       {/* Signal Summary - Always visible */}
       <div className="flex items-center gap-3">
-        <div className={`flex-1 rounded-lg px-3 py-2 ${dailyMomentum.bgColor}`}>
-          <div className="text-[10px] text-gray-500 mb-0.5">Daily</div>
-          <div className={`text-[13px] font-semibold ${dailyMomentum.textColor}`}>
-            {dailyMomentum.label}
-          </div>
+        <div className="flex-1 rounded-lg px-3 py-2 bg-gray-50">
+          <div className="text-[10px] text-gray-500 mb-1">Daily</div>
+          <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
+            {dailySignal.label}
+          </span>
         </div>
-        <div className={`flex-1 rounded-lg px-3 py-2 ${weeklyMomentum.bgColor}`}>
-          <div className="text-[10px] text-gray-500 mb-0.5">Weekly</div>
-          <div className={`text-[13px] font-semibold ${weeklyMomentum.textColor}`}>
-            {weeklyMomentum.label}
-          </div>
+        <div className="flex-1 rounded-lg px-3 py-2 bg-gray-50">
+          <div className="text-[10px] text-gray-500 mb-1">Weekly</div>
+          <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${weeklySignal.pillStyle}`}>
+            {weeklySignal.label}
+          </span>
         </div>
       </div>
 
