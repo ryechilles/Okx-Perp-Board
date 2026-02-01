@@ -75,34 +75,37 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
         </div>
       </div>
 
-      {/* Detailed RSI Values - Daily under Daily box, Weekly under Weekly box */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] mt-3">
+      {/* Detailed RSI Values - same flex layout as boxes above for alignment */}
+      <div className="flex gap-3 text-[11px] mt-3">
         {/* Daily RSI (left column) */}
-        <div className="flex items-center justify-between">
-          <span className="text-gray-500">D-RSI7</span>
-          <span className={`font-medium tabular-nums ${getRsiClass(avgRsi7)}`}>
-            {formatRsi(avgRsi7)}
-          </span>
+        <div className="flex-1 space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500">D-RSI7</span>
+            <span className={`font-medium tabular-nums ${getRsiClass(avgRsi7)}`}>
+              {formatRsi(avgRsi7)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500">D-RSI14</span>
+            <span className={`font-medium tabular-nums ${getRsiClass(avgRsi14)}`}>
+              {formatRsi(avgRsi14)}
+            </span>
+          </div>
         </div>
         {/* Weekly RSI (right column) */}
-        <div className="flex items-center justify-between">
-          <span className="text-gray-500">W-RSI7</span>
-          <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW7)}`}>
-            {formatRsi(avgRsiW7)}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-gray-500">D-RSI14</span>
-          <span className={`font-medium tabular-nums ${getRsiClass(avgRsi14)}`}>
-            {formatRsi(avgRsi14)}
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-500">W-RSI14</span>
-          <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW14)}`}>
-            {formatRsi(avgRsiW14)}
-          </span>
+        <div className="flex-1 space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500">W-RSI7</span>
+            <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW7)}`}>
+              {formatRsi(avgRsiW7)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500">W-RSI14</span>
+            <span className={`font-medium tabular-nums ${getRsiClass(avgRsiW14)}`}>
+              {formatRsi(avgRsiW14)}
+            </span>
+          </div>
         </div>
       </div>
     </SmallWidget>
