@@ -96,8 +96,8 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
                 <TokenAvatar symbol={token.symbol} logo={token.logo} />
                 <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-[11px] text-gray-500 tabular-nums">{formatPrice(token.price)}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-gray-500 tabular-nums w-14 text-right">{formatPrice(token.price)}</span>
                 <span className={`text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-md ${getRsiOversoldPillStyle(token.avgRsi)}`}>
                   {token.avgRsi.toFixed(2)}
                 </span>
