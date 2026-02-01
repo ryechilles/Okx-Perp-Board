@@ -58,31 +58,6 @@ export function calculateAvgRsi(rsi: RSIValues): number | null {
 }
 
 /**
- * Calculate average change for a list of tokens
- * Used in AltcoinVsBTC widget
- */
-export function calculateAvgChanges(tokens: TokenWithChange[]): {
-  avg1h: number | null;
-  avg4h: number | null;
-  avg24h: number | null;
-} {
-  const valid1h = tokens.filter(t => t.change1h !== null);
-  const valid4h = tokens.filter(t => t.change4h !== null);
-
-  return {
-    avg1h: valid1h.length > 0
-      ? valid1h.reduce((sum, t) => sum + (t.change1h ?? 0), 0) / valid1h.length
-      : null,
-    avg4h: valid4h.length > 0
-      ? valid4h.reduce((sum, t) => sum + (t.change4h ?? 0), 0) / valid4h.length
-      : null,
-    avg24h: tokens.length > 0
-      ? tokens.reduce((sum, t) => sum + t.change24h, 0) / tokens.length
-      : null,
-  };
-}
-
-/**
  * Calculate funding APR from rate and interval
  * Used in FundingKiller widget
  */
