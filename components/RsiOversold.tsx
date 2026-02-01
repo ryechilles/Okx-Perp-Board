@@ -29,13 +29,13 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
     <SmallWidget
       title="RSI Oversold"
       icon={<TrendingDown className="w-4 h-4" />}
-      subtitle={`Avg RSI ≤ ${RSI.OVERSOLD_THRESHOLD} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
+      subtitle={`Avg RSI ≤ ${RSI.OVERSOLD} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
       loading={isLoading}
       tooltip={
         <TooltipContent items={[
           `Filters OKX perp top ${WIDGET.TOP_TOKENS_COUNT} by market cap`,
           "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
-          `Shows tokens with Avg RSI ≤ ${RSI.OVERSOLD_THRESHOLD}`,
+          `Shows tokens with Avg RSI ≤ ${RSI.OVERSOLD}`,
           "Lower RSI = potentially oversold",
         ]} />
       }

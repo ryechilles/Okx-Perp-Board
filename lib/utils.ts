@@ -299,14 +299,16 @@ export function formatVolume(volCcy: string | number, price: number): string {
 
 
 // Get RSI pill style for oversold widget (green tones)
-export function getRsiOversoldPillStyle(rsi: number): string {
+export function getRsiOversoldPillStyle(rsi: number | null | undefined): string {
+  if (rsi === null || rsi === undefined) return 'bg-gray-100 text-gray-400';
   if (rsi <= 20) return 'bg-green-500 text-white';
   if (rsi <= 25) return 'bg-green-400 text-white';
   return 'bg-green-300 text-green-800';
 }
 
 // Get RSI pill style for overbought widget (red tones)
-export function getRsiOverboughtPillStyle(rsi: number): string {
+export function getRsiOverboughtPillStyle(rsi: number | null | undefined): string {
+  if (rsi === null || rsi === undefined) return 'bg-gray-100 text-gray-400';
   if (rsi >= 85) return 'bg-red-600 text-white';
   if (rsi >= 80) return 'bg-red-500 text-white';
   return 'bg-red-400 text-white';
@@ -334,12 +336,6 @@ export function getRsiPillStyle(rsi: number | null | undefined): string {
   if (rsi <= 80) return 'bg-red-300 text-red-800';
   if (rsi <= 85) return 'bg-red-400 text-white';
   return 'bg-red-500 text-white';
-}
-
-// Get change class for styling
-export function getChangeClass(change: number | null | undefined): string {
-  if (change === null || change === undefined) return '';
-  return change >= 0 ? 'text-green-500' : 'text-red-500';
 }
 
 // Process OKX ticker data

@@ -83,9 +83,6 @@ export const RSI = {
   STRONG: 70,
   VERY_STRONG: 80,
   OVERBOUGHT: 85,
-  // Legacy thresholds (for backward compatibility)
-  OVERSOLD_THRESHOLD: 25,
-  OVERBOUGHT_THRESHOLD: 85,
 
   // Candle limits for calculation
   DAILY_CANDLE_LIMIT: 100,
