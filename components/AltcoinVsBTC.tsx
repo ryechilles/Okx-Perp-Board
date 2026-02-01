@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { BarChart2 } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
+import { TooltipContent } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 
 interface AltcoinVsBTCProps {
@@ -156,12 +157,12 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
       loading={isLoading}
       className="group"
       tooltip={
-        <div className="space-y-1">
-          <div>• Compares altcoin avg change vs BTC</div>
-          <div>• Tiers: Top 10 / 20 / 50 by market cap</div>
-          <div>• Ratio shows relative strength</div>
-          <div>• Click tier to filter those tokens</div>
-        </div>
+        <TooltipContent items={[
+          "Compares altcoin avg change vs BTC",
+          "Tiers: Top 10 / 20 / 50 by market cap",
+          "Ratio shows relative strength",
+          "Click tier to filter those tokens",
+        ]} />
       }
     >
       {/* Avg Change Grid */}

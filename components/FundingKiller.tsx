@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TokenAvatar } from '@/components/ui';
+import { TokenAvatar, TooltipContent } from '@/components/ui';
 import { ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
 
@@ -80,11 +80,11 @@ export function FundingKiller({
       subtitle="Funding rate APR > 20%"
       loading={isLoading}
       tooltip={
-        <div className="space-y-1">
-          <div>• <span className="text-red-500">Long Killer</span>: APR &gt; 20% (expensive to hold longs)</div>
-          <div>• <span className="text-green-500">Short Killer</span>: APR &lt; -20% (expensive to hold shorts)</div>
-          <div>• APR = Funding Rate × (365 × 24 / interval)</div>
-        </div>
+        <TooltipContent items={[
+          <><span className="text-red-500">Long Killer</span>: APR &gt; 20% (expensive to hold longs)</>,
+          <><span className="text-green-500">Short Killer</span>: APR &lt; -20% (expensive to hold shorts)</>,
+          "APR = Funding Rate × (365 × 24 / interval)",
+        ]} />
       }
     >
       <div className="space-y-4">

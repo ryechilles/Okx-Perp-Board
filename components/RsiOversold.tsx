@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { TrendingDown } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TokenAvatar } from '@/components/ui';
+import { TokenAvatar, TooltipContent } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 import { formatPrice, getRsiOversoldPillStyle } from '@/lib/utils';
 
@@ -74,12 +74,12 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
       subtitle="Avg RSI < 25 in Top 50"
       loading={isLoading}
       tooltip={
-        <div className="space-y-1">
-          <div>• Filters top 50 altcoins by market cap</div>
-          <div>• Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4</div>
-          <div>• Shows tokens with Avg RSI &lt; 25</div>
-          <div>• Lower RSI = potentially oversold</div>
-        </div>
+        <TooltipContent items={[
+          "Filters top 50 altcoins by market cap",
+          "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
+          "Shows tokens with Avg RSI < 25",
+          "Lower RSI = potentially oversold",
+        ]} />
       }
     >
       <div className="space-y-1">

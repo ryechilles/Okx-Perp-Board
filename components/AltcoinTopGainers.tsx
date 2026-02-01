@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TokenAvatar } from '@/components/ui';
+import { TokenAvatar, TooltipContent } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
 
@@ -124,12 +124,12 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
       tooltip={
-        <div className="space-y-1">
-          <div>• Top 5 gainers from top 100 altcoins</div>
-          <div>• Switch timeframe: 1h / 4h / 24h</div>
-          <div>• Excludes BTC</div>
-          <div>• Click token to filter in table</div>
-        </div>
+        <TooltipContent items={[
+          "Top 5 gainers from top 100 altcoins",
+          "Switch timeframe: 1h / 4h / 24h",
+          "Excludes BTC",
+          "Click token to filter in table",
+        ]} />
       }
     >
       <div className="space-y-1">

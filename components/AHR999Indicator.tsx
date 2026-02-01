@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
+import { TooltipContent } from '@/components/ui';
 import { fetchAHR999Data, getAHR999ZoneInfo, AHR999Data } from '@/lib/ahr999';
 
 // Zone colors for the bar
@@ -64,6 +65,14 @@ export function AHR999Indicator() {
       subtitle="BTC Accumulation Indicator"
       loading={loading}
       className="min-w-[280px] max-w-[320px] group"
+      tooltip={
+        <TooltipContent items={[
+          "BTC accumulation timing indicator",
+          "Combines 200-day MA & growth curve",
+          <><span className="text-green-500">&lt;0.45</span>: Strong buy zone</>,
+          <><span className="text-red-500">&gt;4</span>: Consider taking profits</>,
+        ]} />
+      }
     >
       {/* Current Zone Display */}
       <div className={`rounded-lg px-4 py-3 mb-4 ${zoneInfo.bgColor || 'bg-gray-50'}`}>

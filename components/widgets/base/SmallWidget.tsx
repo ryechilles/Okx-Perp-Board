@@ -38,26 +38,25 @@ export interface SmallWidgetProps {
  * - Click info icon to show/hide explanation inline (smooth expand)
  *
  * Tooltip Guidelines:
- * - Click ⓘ icon to expand/collapse explanation inside widget
- * - Icon turns blue when expanded
- * - Keep content simple: use <div> with bullet points
- * - NO titles/headers (e.g. "Explanation")
- * - NO "Hover to see..." hints
- * - NO dark theme styles (text-gray-300, font-medium)
- * - Use colored spans for keywords: <span className="text-red-500">keyword</span>
+ * - Use <TooltipContent> component from @/components/ui
+ * - Pass array of strings or JSX elements
+ * - Bullet points are added automatically
+ * - Use colored spans for keywords
  *
  * @example
  * ```tsx
+ * import { TooltipContent } from '@/components/ui';
+ *
  * <SmallWidget
  *   title="RSI Overview"
  *   icon={<Activity className="w-4 h-4" />}
  *   subtitle="Daily RSI distribution"
  *   tooltip={
- *     <div className="space-y-1">
- *       <div>• Point one explanation</div>
- *       <div>• Point two with <span className="text-red-500">highlight</span></div>
- *       <div>• Point three explanation</div>
- *     </div>
+ *     <TooltipContent items={[
+ *       "Simple text explanation",
+ *       "Another point here",
+ *       <><span className="text-red-500">Keyword</span>: with explanation</>,
+ *     ]} />
  *   }
  * >
  *   <div>Your content here</div>

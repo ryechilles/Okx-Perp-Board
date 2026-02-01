@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { SmallWidget } from '@/components/widgets/base';
+import { TooltipContent } from '@/components/ui';
 import { ProcessedTicker, FundingRateData, MarketCapData } from '@/lib/types';
 
 interface FundingMarketProps {
@@ -85,11 +86,11 @@ export function FundingMarket({
       loading={isLoading}
       className="group"
       tooltip={
-        <div className="space-y-1">
-          <div>• <span className="text-red-500">Positive</span>: rate &gt; 0.01% (longs pay shorts)</div>
-          <div>• <span className="text-green-500">Negative</span>: rate &lt; -0.01% (shorts pay longs)</div>
-          <div>• <span className="text-gray-500">Neutral</span>: between -0.01% ~ 0.01%</div>
-        </div>
+        <TooltipContent items={[
+          <><span className="text-red-500">Positive</span>: rate &gt; 0.01% (longs pay shorts)</>,
+          <><span className="text-green-500">Negative</span>: rate &lt; -0.01% (shorts pay longs)</>,
+          <><span className="text-gray-500">Neutral</span>: between -0.01% ~ 0.01%</>,
+        ]} />
       }
     >
       <div className="space-y-4">

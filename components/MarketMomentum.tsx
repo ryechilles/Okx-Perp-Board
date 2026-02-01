@@ -2,6 +2,7 @@
 
 import { Activity } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
+import { TooltipContent } from '@/components/ui';
 import { getRsiClass, formatRsi, getRsiSignal, RsiSignalInfo } from '@/lib/utils';
 
 interface MarketMomentumProps {
@@ -51,11 +52,11 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       loading={isLoading}
       className="w-full group"
       tooltip={
-        <div className="space-y-1">
-          <div>• Average RSI across top 100 perp tokens</div>
-          <div>• Daily: RSI7 &amp; RSI14 (4h candles)</div>
-          <div>• Weekly: W-RSI7 &amp; W-RSI14 (1d candles)</div>
-        </div>
+        <TooltipContent items={[
+          "Average RSI across top 100 perp tokens",
+          "Daily: RSI7 & RSI14 (4h candles)",
+          "Weekly: W-RSI7 & W-RSI14 (1d candles)",
+        ]} />
       }
     >
       {/* Signal Summary - Always visible */}
