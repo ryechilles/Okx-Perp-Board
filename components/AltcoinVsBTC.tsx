@@ -154,6 +154,7 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
       subtitle="Avg change by tier"
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
+      className="group"
     >
       {/* Avg Change Grid */}
       <div className="grid grid-cols-2 gap-4 mb-4">
@@ -195,8 +196,8 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
         </div>
       </div>
 
-      {/* Ratio Section */}
-      <div className="border-t border-gray-100 pt-3">
+      {/* Ratio Section - Show on hover */}
+      <div className="max-h-0 overflow-hidden opacity-0 group-hover:max-h-40 group-hover:opacity-100 group-hover:mt-3 group-hover:pt-3 group-hover:border-t group-hover:border-gray-100 transition-all duration-200">
         <div className="text-[11px] text-gray-400 mb-2">Altcoin / BTC Ratio</div>
         <div className="space-y-1.5">
           {(['top10', 'top20', 'top50'] as const).map((tier) => {
@@ -220,7 +221,7 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
             return (
               <div key={tier} className="flex items-center text-[12px]">
                 <span className="text-gray-500 w-16">{tierLabel}</span>
-                <span className="font-semibold text-gray-800 w-12 tabular-nums">{ratio}</span>
+                <span className="text-gray-500 w-12 tabular-nums">{ratio}</span>
                 <span className="text-gray-300 mx-2">|</span>
                 <span className={`${altColor}`}>Alt {altDir}</span>
                 <span className="text-gray-300 mx-1.5">vs</span>
