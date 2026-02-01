@@ -23,6 +23,7 @@ import {
   setRsiCache,
   getMarketCapCache,
   setMarketCapCache,
+  checkVersionAndClearCache,
 } from '@/lib/cache';
 
 // Import composed hooks
@@ -152,6 +153,10 @@ export function useMarketStore() {
 
   // Initialize hybrid data manager (WebSocket for TOP 50 + REST for rest)
   const initialize = useCallback(async () => {
+    // Check app version and clear data cache if version changed
+    // This ensures users see fresh data after site updates
+    checkVersionAndClearCache();
+
     // Try to load cached market cap first for instant display
     const cachedMarketCap = loadMarketCapCacheLocal();
     if (cachedMarketCap) {

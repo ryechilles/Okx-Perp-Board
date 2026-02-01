@@ -54,14 +54,23 @@ export class OKXHybridDataManager {
 
       if (data.code === '0' && data.data) {
         const usdtSwaps: ProcessedTicker[] = [];
+        const currentInstIds = new Set<string>();
 
         data.data.forEach((ticker: OKXTicker) => {
           if (ticker.instId.endsWith('-USDT-SWAP')) {
             const processed = processTicker(ticker);
             this.tickers.set(ticker.instId, processed);
             usdtSwaps.push(processed);
+            currentInstIds.add(ticker.instId);
           }
         });
+
+        // Remove delisted tokens (tokens that no longer exist in API response)
+        for (const instId of this.tickers.keys()) {
+          if (!currentInstIds.has(instId)) {
+            this.tickers.delete(instId);
+          }
+        }
 
         // Sort by 24h volume in USD (volCcy24h * price) descending
         usdtSwaps.sort((a, b) => {
@@ -200,9 +209,11 @@ export class OKXHybridDataManager {
 
         if (data.code === '0' && data.data) {
           let updated = false;
+          const currentInstIds = new Set<string>();
 
           data.data.forEach((ticker: OKXTicker) => {
             if (ticker.instId.endsWith('-USDT-SWAP')) {
+              currentInstIds.add(ticker.instId);
               // Only update non-TOP 50 via REST (TOP 50 updated by WebSocket)
               if (!this.wsConnected || !this.top50InstIds.includes(ticker.instId)) {
                 const processed = processTicker(ticker);
@@ -211,6 +222,17 @@ export class OKXHybridDataManager {
               }
             }
           });
+
+          // Remove delisted tokens
+          for (const instId of this.tickers.keys()) {
+            if (!currentInstIds.has(instId)) {
+              this.tickers.delete(instId);
+              updated = true;
+            }
+          }
+
+          // Update allInstIds list
+          this.allInstIds = Array.from(currentInstIds);
 
           if (updated) {
             this.onUpdate(new Map(this.tickers));

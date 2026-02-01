@@ -4,6 +4,11 @@
  */
 
 // ===========================================
+// App Version (increment this when deploying updates that require cache refresh)
+// ===========================================
+export const APP_VERSION = '1.0.1';
+
+// ===========================================
 // API Endpoints
 // ===========================================
 export const API = {
@@ -173,6 +178,7 @@ export const FIXED_COLUMNS = ['favorite', 'rank', 'logo', 'symbol'] as const;
 // Cache Keys
 // ===========================================
 export const CACHE_KEYS = {
+  APP_VERSION: 'okx-app-version',
   FAVORITES: 'okx-favorites',
   COLUMN_ORDER: 'okx-column-order',
   FILTERS: 'okx-filters',

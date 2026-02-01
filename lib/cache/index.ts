@@ -3,7 +3,7 @@
  * Provides consistent caching with TTL support for all app data
  */
 
-import { CACHE_KEYS, TIMING } from '../constants';
+import { CACHE_KEYS, TIMING, APP_VERSION } from '../constants';
 import { RSIData, MarketCapData } from '../types';
 
 // ===========================================
@@ -315,4 +315,54 @@ export function getCacheStats(): Record<string, { size: number; age: number | nu
   });
 
   return stats;
+}
+
+// ===========================================
+// Version-based Cache Invalidation
+// ===========================================
+
+/**
+ * Check app version and clear data cache if version changed
+ * This ensures users always see the latest data after an update
+ * User preferences (favorites, columns, filters) are preserved
+ */
+export function checkVersionAndClearCache(): boolean {
+  if (!isBrowser()) return false;
+
+  try {
+    const storedVersion = localStorage.getItem(CACHE_KEYS.APP_VERSION);
+
+    if (storedVersion !== APP_VERSION) {
+      console.log(`[Cache] Version changed: ${storedVersion} → ${APP_VERSION}`);
+
+      // Clear data caches (keep user preferences)
+      clearDataCache();
+
+      // Update stored version
+      localStorage.setItem(CACHE_KEYS.APP_VERSION, APP_VERSION);
+
+      console.log('[Cache] Data cache cleared due to version update');
+      return true; // Cache was cleared
+    }
+
+    return false; // No change needed
+  } catch (e) {
+    console.warn('[Cache] Failed to check version:', e);
+    return false;
+  }
+}
+
+/**
+ * Get current app version
+ */
+export function getAppVersion(): string {
+  return APP_VERSION;
+}
+
+/**
+ * Get stored app version
+ */
+export function getStoredVersion(): string | null {
+  if (!isBrowser()) return null;
+  return localStorage.getItem(CACHE_KEYS.APP_VERSION);
 }
