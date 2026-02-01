@@ -125,6 +125,7 @@ export function FundingKiller({
       loading={isLoading}
       tooltip={
         <TooltipContent items={[
+          "All OKX perp tokens (excludes BTC/ETH)",
           <><span className="text-red-500">Long Killer</span>: APR &gt; 20% (expensive to hold longs)</>,
           <><span className="text-green-500">Short Killer</span>: APR &lt; -20% (expensive to hold shorts)</>,
           "APR = Funding Rate × (365 × 24 / interval)",

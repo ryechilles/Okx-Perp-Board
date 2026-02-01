@@ -88,6 +88,7 @@ export function FundingMarket({
       className="group"
       tooltip={
         <TooltipContent items={[
+          "OKX perp top 100 by market cap",
           <><span className="text-red-500">Positive</span>: rate &gt; 0 (longs pay shorts)</>,
           <><span className="text-green-500">Negative</span>: rate &lt; 0 (shorts pay longs)</>,
         ]} />
@@ -138,23 +139,6 @@ export function FundingMarket({
           )}
         </div>
 
-        {/* Percentage - Show on hover */}
-        <div className="max-h-0 overflow-hidden opacity-0 group-hover:max-h-10 group-hover:opacity-100 transition-all duration-200">
-          <div className="text-[11px] text-gray-400 text-center">
-            {isLoading ? (
-              'Loading...'
-            ) : total === 0 ? (
-              'No data available'
-            ) : (
-              <>
-                <span className="text-red-500">{positivePercent.toFixed(0)}%</span>
-                {' positive · '}
-                <span className="text-green-500">{negativePercent.toFixed(0)}%</span>
-                {' negative'}
-              </>
-            )}
-          </div>
-        </div>
       </div>
     </SmallWidget>
   );

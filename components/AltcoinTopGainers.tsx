@@ -66,7 +66,6 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
     <SmallWidget
       title="Top Gainers"
       icon={<TrendingUp className="w-4 h-4" />}
-      subtitle="Top 5 in OKX Perp Top 100"
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
       tooltip={

@@ -53,7 +53,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       className="w-full"
       tooltip={
         <TooltipContent items={[
-          "Average RSI across top 100 perp tokens",
+          "OKX perp top 100 by market cap",
           "Daily: RSI7 & RSI14 (4h candles)",
           "Weekly: W-RSI7 & W-RSI14 (1d candles)",
         ]} />
