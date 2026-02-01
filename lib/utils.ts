@@ -289,6 +289,30 @@ export function getRsiOverboughtPillStyle(rsi: number): string {
   return 'bg-red-400 text-white';
 }
 
+// Get RSI pill style for table columns (full range)
+export function getRsiPillStyle(rsi: number | null | undefined): string {
+  if (rsi === null || rsi === undefined) return 'bg-gray-100 text-gray-400';
+
+  // Oversold zone (green)
+  if (rsi <= 20) return 'bg-green-500 text-white';
+  if (rsi <= 25) return 'bg-green-400 text-white';
+  if (rsi <= 30) return 'bg-green-300 text-green-800';
+
+  // Weak zone (light green)
+  if (rsi <= 40) return 'bg-emerald-100 text-emerald-700';
+
+  // Neutral zone (gray)
+  if (rsi <= 60) return 'bg-gray-100 text-gray-600';
+
+  // Strong zone (light red/orange)
+  if (rsi <= 70) return 'bg-orange-100 text-orange-700';
+
+  // Overbought zone (red)
+  if (rsi <= 80) return 'bg-red-300 text-red-800';
+  if (rsi <= 85) return 'bg-red-400 text-white';
+  return 'bg-red-500 text-white';
+}
+
 // Get change class for styling
 export function getChangeClass(change: number | null | undefined): string {
   if (change === null || change === undefined) return '';

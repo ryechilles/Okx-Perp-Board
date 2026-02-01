@@ -13,14 +13,13 @@ import {
   formatPrice,
   formatMarketCap,
   formatVolume,
-  getRsiClass,
+  getRsiPillStyle,
   formatFundingRate,
   getFundingRateClass,
   formatFundingApr,
   getFundingAprClass,
   formatListDate,
   formatSettlementInterval,
-  formatRsi,
   getRsiSignal,
 } from '@/lib/utils';
 import { ChangeWithSparkline } from '@/components/Sparkline';
@@ -333,29 +332,37 @@ export function TableRow({
 
       case 'rsi7':
         return (
-          <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsi7)}`}>
-            {formatRsi(rsi?.rsi7)}
+          <td key={key} className={baseClass}>
+            <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(rsi?.rsi7)}`}>
+              {rsi?.rsi7 != null ? rsi.rsi7.toFixed(1) : '--'}
+            </span>
           </td>
         );
 
       case 'rsi14':
         return (
-          <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsi14)}`}>
-            {formatRsi(rsi?.rsi14)}
+          <td key={key} className={baseClass}>
+            <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(rsi?.rsi14)}`}>
+              {rsi?.rsi14 != null ? rsi.rsi14.toFixed(1) : '--'}
+            </span>
           </td>
         );
 
       case 'rsiW7':
         return (
-          <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsiW7)}`}>
-            {formatRsi(rsi?.rsiW7)}
+          <td key={key} className={baseClass}>
+            <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(rsi?.rsiW7)}`}>
+              {rsi?.rsiW7 != null ? rsi.rsiW7.toFixed(1) : '--'}
+            </span>
           </td>
         );
 
       case 'rsiW14':
         return (
-          <td key={key} className={`${baseClass} tabular-nums ${getRsiClass(rsi?.rsiW14)}`}>
-            {formatRsi(rsi?.rsiW14)}
+          <td key={key} className={baseClass}>
+            <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(rsi?.rsiW14)}`}>
+              {rsi?.rsiW14 != null ? rsi.rsiW14.toFixed(1) : '--'}
+            </span>
           </td>
         );
 
