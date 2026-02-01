@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import { APP_CONFIG } from '@/lib/config';
 import './globals.css';
 
@@ -32,7 +33,10 @@ export default function RootLayout({
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#22B96A" />
         <meta name="theme-color" content="#22B96A" />
       </head>
-      <body>{children}</body>
+      <body>
+          {children}
+          <Analytics />
+        </body>
     </html>
   );
 }
