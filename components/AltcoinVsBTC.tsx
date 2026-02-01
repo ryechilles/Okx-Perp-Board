@@ -156,14 +156,11 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
       loading={isLoading}
       className="group"
       tooltip={
-        <div className="space-y-1.5">
-          <p className="font-medium">Altcoin vs BTC Performance</p>
-          <ul className="space-y-1 text-gray-300">
-            <li>• Compares altcoin avg change vs BTC</li>
-            <li>• Tiers: Top 10 / 20 / 50 by market cap</li>
-            <li>• Ratio shows relative strength (hover)</li>
-          </ul>
-          <p className="text-gray-400 mt-2">Click tier to filter those tokens</p>
+        <div className="space-y-1">
+          <div>• Compares altcoin avg change vs BTC</div>
+          <div>• Tiers: Top 10 / 20 / 50 by market cap</div>
+          <div>• Ratio shows relative strength</div>
+          <div>• Click tier to filter those tokens</div>
         </div>
       }
     >

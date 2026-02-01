@@ -74,14 +74,11 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
       subtitle="Avg RSI > 75 in Top 50"
       loading={isLoading}
       tooltip={
-        <div className="space-y-1.5">
-          <p className="font-medium">Overbought Detection</p>
-          <ul className="space-y-1 text-gray-300">
-            <li>• Filters top 50 altcoins by market cap</li>
-            <li>• Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4</li>
-            <li>• Shows tokens with Avg RSI &gt; 75</li>
-          </ul>
-          <p className="text-gray-400 mt-2">Higher RSI = potentially overbought</p>
+        <div className="space-y-1">
+          <div>• Filters top 50 altcoins by market cap</div>
+          <div>• Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4</div>
+          <div>• Shows tokens with Avg RSI &gt; 75</div>
+          <div>• Higher RSI = potentially overbought</div>
         </div>
       }
     >

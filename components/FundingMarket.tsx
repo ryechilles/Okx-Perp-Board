@@ -83,14 +83,12 @@ export function FundingMarket({
       icon={<span>📊</span>}
       subtitle="Top 100 by market cap"
       loading={isLoading}
+      className="group"
       tooltip={
-        <div className="space-y-1.5">
-          <p className="font-medium">Funding Rate Distribution</p>
-          <ul className="space-y-1 text-gray-300">
-            <li>• <span className="text-red-400">Positive</span>: rate &gt; 0.01% (longs pay shorts)</li>
-            <li>• <span className="text-green-400">Negative</span>: rate &lt; -0.01% (shorts pay longs)</li>
-            <li>• <span className="text-gray-400">Neutral</span>: between -0.01% ~ 0.01%</li>
-          </ul>
+        <div className="space-y-1">
+          <div>• <span className="text-red-500">Positive</span>: rate &gt; 0.01% (longs pay shorts)</div>
+          <div>• <span className="text-green-500">Negative</span>: rate &lt; -0.01% (shorts pay longs)</div>
+          <div>• <span className="text-gray-500">Neutral</span>: between -0.01% ~ 0.01%</div>
         </div>
       }
     >
@@ -144,20 +142,22 @@ export function FundingMarket({
           )}
         </div>
 
-        {/* Description */}
-        <div className="text-[11px] text-gray-400 text-center">
-          {isLoading ? (
-            'Loading...'
-          ) : total === 0 ? (
-            'No data available'
-          ) : (
-            <>
-              <span className="text-red-500">{positivePercent.toFixed(0)}%</span>
-              {' positive · '}
-              <span className="text-green-500">{negativePercent.toFixed(0)}%</span>
-              {' negative'}
-            </>
-          )}
+        {/* Percentage - Show on hover */}
+        <div className="max-h-0 overflow-hidden opacity-0 group-hover:max-h-10 group-hover:opacity-100 transition-all duration-200">
+          <div className="text-[11px] text-gray-400 text-center">
+            {isLoading ? (
+              'Loading...'
+            ) : total === 0 ? (
+              'No data available'
+            ) : (
+              <>
+                <span className="text-red-500">{positivePercent.toFixed(0)}%</span>
+                {' positive · '}
+                <span className="text-green-500">{negativePercent.toFixed(0)}%</span>
+                {' negative'}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </SmallWidget>

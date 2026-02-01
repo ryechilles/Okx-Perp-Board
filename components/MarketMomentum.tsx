@@ -51,14 +51,10 @@ export function MarketMomentum({ avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 }: Marke
       loading={isLoading}
       className="w-full group"
       tooltip={
-        <div className="space-y-1.5">
-          <p className="font-medium">Market Momentum Signal</p>
-          <ul className="space-y-1 text-gray-300">
-            <li>• Average RSI across top 100 perp tokens</li>
-            <li>• Daily: RSI7 &amp; RSI14 (4h candles)</li>
-            <li>• Weekly: W-RSI7 &amp; W-RSI14 (1d candles)</li>
-          </ul>
-          <p className="text-gray-400 mt-2">Hover to see detailed values</p>
+        <div className="space-y-1">
+          <div>• Average RSI across top 100 perp tokens</div>
+          <div>• Daily: RSI7 &amp; RSI14 (4h candles)</div>
+          <div>• Weekly: W-RSI7 &amp; W-RSI14 (1d candles)</div>
         </div>
       }
     >

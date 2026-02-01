@@ -1,8 +1,8 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
+import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { InfoTooltip } from '@/components/ui';
 
 export interface SmallWidgetProps {
   /** Widget title displayed in header */
@@ -11,7 +11,7 @@ export interface SmallWidgetProps {
   icon?: ReactNode;
   /** Optional subtitle/description */
   subtitle?: string;
-  /** Tooltip content - shows info icon when provided */
+  /** Tooltip content - shows info icon, click to expand inline */
   tooltip?: ReactNode;
   /** Widget content */
   children: ReactNode;
@@ -35,6 +35,7 @@ export interface SmallWidgetProps {
  * - Flat card style matching PillButton aesthetic
  * - Subtle border and shadow for definition
  * - Consistent styling across all widgets
+ * - Click info icon to show/hide explanation inline
  *
  * @example
  * ```tsx
@@ -42,6 +43,7 @@ export interface SmallWidgetProps {
  *   title="RSI Overview"
  *   icon={<Activity className="w-4 h-4" />}
  *   subtitle="Daily RSI distribution"
+ *   tooltip={<div>Explanation content here</div>}
  * >
  *   <div>Your content here</div>
  * </SmallWidget>
@@ -58,6 +60,8 @@ export function SmallWidget({
   padded = true,
   loading = false,
 }: SmallWidgetProps) {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
     <div
       className={cn(
@@ -83,7 +87,20 @@ export function SmallWidget({
               <h3 className="font-medium text-gray-900 text-sm truncate">
                 {title}
               </h3>
-              {tooltip && <InfoTooltip content={tooltip} />}
+              {tooltip && (
+                <button
+                  type="button"
+                  onClick={() => setShowTooltip(!showTooltip)}
+                  className={cn(
+                    'text-gray-400 hover:text-gray-600 transition-colors',
+                    'focus:outline-none rounded-full',
+                    showTooltip && 'text-blue-500 hover:text-blue-600'
+                  )}
+                  aria-label="Toggle information"
+                >
+                  <Info className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
             {subtitle && (
               <p className="text-xs text-gray-500 truncate">{subtitle}</p>
@@ -104,7 +121,25 @@ export function SmallWidget({
             <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
           </div>
         ) : (
-          children
+          <>
+            {children}
+
+            {/* Inline Tooltip - smooth expand */}
+            {tooltip && (
+              <div
+                className={cn(
+                  'overflow-hidden transition-all duration-200',
+                  showTooltip
+                    ? 'max-h-40 opacity-100 mt-4 pt-3 border-t border-gray-100'
+                    : 'max-h-0 opacity-0'
+                )}
+              >
+                <div className="text-[11px] text-gray-500 space-y-1">
+                  {tooltip}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

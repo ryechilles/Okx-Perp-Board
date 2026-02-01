@@ -124,14 +124,11 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
       tooltip={
-        <div className="space-y-1.5">
-          <p className="font-medium">Top Gainers</p>
-          <ul className="space-y-1 text-gray-300">
-            <li>• Top 5 gainers from top 100 altcoins</li>
-            <li>• Switch timeframe: 1h / 4h / 24h</li>
-            <li>• Excludes BTC</li>
-          </ul>
-          <p className="text-gray-400 mt-2">Click token to filter in table</p>
+        <div className="space-y-1">
+          <div>• Top 5 gainers from top 100 altcoins</div>
+          <div>• Switch timeframe: 1h / 4h / 24h</div>
+          <div>• Excludes BTC</div>
+          <div>• Click token to filter in table</div>
         </div>
       }
     >
