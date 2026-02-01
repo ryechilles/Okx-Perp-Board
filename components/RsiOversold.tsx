@@ -76,6 +76,7 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
           [1, 2, 3].map((i) => (
             <div key={i} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
+                <span className="text-[11px] text-gray-400 w-4">{i}</span>
                 <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse" />
                 <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
               </div>
@@ -86,13 +87,14 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
             </div>
           ))
         ) : oversoldTokens.length > 0 ? (
-          oversoldTokens.map((token) => (
+          oversoldTokens.map((token, i) => (
             <div
               key={token.instId}
               className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
               onClick={() => onTokenClick?.(token.symbol)}
             >
               <div className="flex items-center gap-2">
+                <span className="text-[11px] text-gray-400 w-4">{i + 1}</span>
                 <TokenAvatar symbol={token.symbol} logo={token.logo} />
                 <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
               </div>
