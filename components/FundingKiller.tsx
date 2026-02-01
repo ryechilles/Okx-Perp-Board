@@ -54,10 +54,7 @@ function KillerSectionHeader({
           {isLoading ? '--' : count}
         </span>
       </div>
-      <div className="flex items-center gap-4">
-        <span className="text-[10px] text-gray-400 w-16 text-center">Price</span>
-        <span className="text-[10px] text-gray-400 w-16 text-center">APR</span>
-      </div>
+      <span className="text-[10px] text-gray-400 w-16 text-center">APR</span>
     </div>
   );
 }
@@ -125,7 +122,7 @@ export function FundingKiller({
     <SmallWidget
       title="Funding Killer"
       icon={<span>☠️</span>}
-      subtitle="Funding rate APR > 20%"
+      subtitle="Funding Killer's APR"
       loading={isLoading}
       tooltip={
         <TooltipContent items={[
