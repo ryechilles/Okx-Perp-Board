@@ -69,7 +69,7 @@ export function FundingKiller({
     const tokensWithApr: TokenWithApr[] = [];
 
     tickers.forEach((ticker, instId) => {
-      if (ticker.baseSymbol === 'BTC' || ticker.baseSymbol === 'ETH') return;
+      if (ticker.baseSymbol === 'BTC') return;
 
       const fr = fundingRateData.get(instId);
       if (!fr) return;
@@ -125,7 +125,7 @@ export function FundingKiller({
       loading={isLoading}
       tooltip={
         <TooltipContent items={[
-          "All OKX perp tokens (excludes BTC/ETH)",
+          "All OKX perp tokens (excludes BTC)",
           <><span className="text-red-500">Long Killer</span>: APR &gt; 20% (expensive to hold longs)</>,
           <><span className="text-green-500">Short Killer</span>: APR &lt; -20% (expensive to hold shorts)</>,
           "APR = Funding Rate × (365 × 24 / interval)",
