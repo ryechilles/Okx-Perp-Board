@@ -298,7 +298,7 @@ export function TableRow({
             <div className="inline-flex flex-col items-center">
               {/* Top spacer - matches bottom line height for vertical centering */}
               <span className="text-[10px] leading-none mb-0.5 invisible">00.0/00.0</span>
-              <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${dSignal.pillStyle}`}>
+              <span className={`inline-block px-2 py-0.5 rounded-md text-[13px] font-semibold whitespace-nowrap ${dSignal.pillStyle}`}>
                 {dSignal.label}
               </span>
               <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap ${hasRsiData ? 'invisible group-hover/dsignal:visible' : 'invisible'}`}>
@@ -317,7 +317,7 @@ export function TableRow({
             <div className="inline-flex flex-col items-center">
               {/* Top spacer - matches bottom line height for vertical centering */}
               <span className="text-[10px] leading-none mb-0.5 invisible">00.0/00.0</span>
-              <span className={`inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold whitespace-nowrap ${wSignal.pillStyle}`}>
+              <span className={`inline-block px-2 py-0.5 rounded-md text-[13px] font-semibold whitespace-nowrap ${wSignal.pillStyle}`}>
                 {wSignal.label}
               </span>
               <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap ${hasRsiData ? 'invisible group-hover/wsignal:visible' : 'invisible'}`}>
