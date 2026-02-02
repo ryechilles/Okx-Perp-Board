@@ -295,13 +295,11 @@ export function TableRow({
         const hasRsiData = (rsi?.rsi7 != null || rsi?.rsi14 != null) && dSignal.label !== '--';
         return (
           <td key={key} className={`${baseClass} align-middle group/dsignal`}>
-            <div className="inline-flex flex-col items-center">
-              {/* Top spacer - matches bottom line height for vertical centering */}
-              <span className="text-[10px] leading-none mb-0.5 invisible">00.0/00.0</span>
+            <div className="inline-flex flex-col items-center justify-center">
               <span className={`inline-block px-2 py-0.5 rounded-md text-[13px] font-semibold whitespace-nowrap ${dSignal.pillStyle}`}>
                 {dSignal.label}
               </span>
-              <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap ${hasRsiData ? 'invisible group-hover/dsignal:visible' : 'invisible'}`}>
+              <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap h-0 overflow-hidden group-hover/dsignal:h-auto ${hasRsiData ? '' : 'invisible'}`}>
                 {rsi?.rsi7 != null ? rsi.rsi7.toFixed(1) : '--'}/{rsi?.rsi14 != null ? rsi.rsi14.toFixed(1) : '--'}
               </span>
             </div>
@@ -314,13 +312,11 @@ export function TableRow({
         const hasRsiData = (rsi?.rsiW7 != null || rsi?.rsiW14 != null) && wSignal.label !== '--';
         return (
           <td key={key} className={`${baseClass} align-middle group/wsignal`}>
-            <div className="inline-flex flex-col items-center">
-              {/* Top spacer - matches bottom line height for vertical centering */}
-              <span className="text-[10px] leading-none mb-0.5 invisible">00.0/00.0</span>
+            <div className="inline-flex flex-col items-center justify-center">
               <span className={`inline-block px-2 py-0.5 rounded-md text-[13px] font-semibold whitespace-nowrap ${wSignal.pillStyle}`}>
                 {wSignal.label}
               </span>
-              <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap ${hasRsiData ? 'invisible group-hover/wsignal:visible' : 'invisible'}`}>
+              <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap h-0 overflow-hidden group-hover/wsignal:h-auto ${hasRsiData ? '' : 'invisible'}`}>
                 {rsi?.rsiW7 != null ? rsi.rsiW7.toFixed(1) : '--'}/{rsi?.rsiW14 != null ? rsi.rsiW14.toFixed(1) : '--'}
               </span>
             </div>
