@@ -293,7 +293,7 @@ export default function PerpBoard() {
           {/* -----------------------------------------------------------------
               ROW 1: Tabs (left) + Controls (right) - Mobile stacked
               ----------------------------------------------------------------- */}
-          <div className="flex flex-col lg:flex-row lg:items-start gap-4 mb-4">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-4">
             {/* Tabs - Desktop: fixed width, Mobile: full width */}
             <div className="lg:w-[320px] flex-shrink-0">
               <TabContainer

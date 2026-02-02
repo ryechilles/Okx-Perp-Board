@@ -280,8 +280,8 @@ export function Controls({
       </div>
 
       {/* Quick Filters + Controls Row */}
-      <div className="flex items-center gap-4 mb-4 relative z-[60]">
-        <div className="flex items-center gap-2 md:gap-4 overflow-visible pb-1 md:pb-0 md:flex-wrap">
+      <div className="flex items-center gap-6 mb-4 relative z-[60]">
+        <div className="flex items-center gap-6 overflow-visible pb-1 md:pb-0 md:flex-wrap">
           {/* Main Quick Filters - using PillButtonGroup template */}
           <PillButtonGroup
             options={mainFilterOptions}
