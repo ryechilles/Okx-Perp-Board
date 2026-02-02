@@ -48,8 +48,8 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
           {dailySignal.label}
         </span>
 
-        {/* Daily RSI Values - Horizontal */}
-        <div className="flex items-center gap-3 text-[11px] ml-auto">
+        {/* Daily RSI Values - Horizontal, left aligned */}
+        <div className="flex items-center gap-3 text-[11px]">
           <div className="flex items-center gap-1.5">
             <span className="text-gray-500">D-RSI7 Avg</span>
             <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
