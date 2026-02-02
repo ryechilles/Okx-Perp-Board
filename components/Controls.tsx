@@ -280,7 +280,7 @@ export function Controls({
       </div>
 
       {/* Quick Filters + Controls Row - Flat structure for consistent gap */}
-      <div className="flex items-center gap-4 mb-4 relative z-[60]">
+      <div className="flex items-center gap-4 relative z-[60]">
         {/* Main Quick Filters */}
         <PillButtonGroup
           options={mainFilterOptions}
