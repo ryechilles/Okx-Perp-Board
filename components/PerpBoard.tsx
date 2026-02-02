@@ -293,34 +293,30 @@ export default function PerpBoard() {
           {/* -----------------------------------------------------------------
               ROW 1: Tabs (left) + Controls (right) - Mobile stacked
               ----------------------------------------------------------------- */}
-          <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-4">
-            {/* Tabs - Desktop: fixed width, Mobile: full width */}
-            <div className="lg:w-[320px] flex-shrink-0">
-              <TabContainer
-                tabs={TABS}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                variant="sidebar"
-              />
-            </div>
+          <div className="flex flex-col lg:flex-row lg:items-center gap-6 mb-4">
+            {/* Tabs */}
+            <TabContainer
+              tabs={TABS}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              variant="sidebar"
+            />
 
-            {/* Controls - Desktop: flex-1, Mobile: full width */}
-            <div className="flex-1">
-              <Controls
-                columns={store.columns}
-                columnOrder={store.columnOrder}
-                filters={store.filters}
-                searchTerm={store.searchTerm}
-                overboughtCount={quickFilterCounts.overbought}
-                oversoldCount={quickFilterCounts.oversold}
-                onColumnChange={store.updateColumn}
-                onColumnsPreset={store.setColumnsPreset}
-                onFiltersChange={store.setFilters}
-                onSearchChange={store.setSearchTerm}
-                onColumnOrderChange={store.updateColumnOrder}
-                onScrollToTop={handleScrollToTop}
-              />
-            </div>
+            {/* Controls */}
+            <Controls
+              columns={store.columns}
+              columnOrder={store.columnOrder}
+              filters={store.filters}
+              searchTerm={store.searchTerm}
+              overboughtCount={quickFilterCounts.overbought}
+              oversoldCount={quickFilterCounts.oversold}
+              onColumnChange={store.updateColumn}
+              onColumnsPreset={store.setColumnsPreset}
+              onFiltersChange={store.setFilters}
+              onSearchChange={store.setSearchTerm}
+              onColumnOrderChange={store.updateColumnOrder}
+              onScrollToTop={handleScrollToTop}
+            />
           </div>
 
           {/* -----------------------------------------------------------------
