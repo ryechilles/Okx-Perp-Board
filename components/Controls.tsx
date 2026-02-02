@@ -279,24 +279,22 @@ export function Controls({
         </div>
       </div>
 
-      {/* Quick Filters + Controls Row */}
-      <div className="flex items-center gap-6 mb-4 relative z-[60]">
-        <div className="flex items-center gap-6 overflow-visible pb-1 md:pb-0 md:flex-wrap">
-          {/* Main Quick Filters - using PillButtonGroup template */}
-          <PillButtonGroup
-            options={mainFilterOptions}
-            value={activeQuickFilter}
-            onChange={handleQuickFilter}
-          />
+      {/* Quick Filters + Controls Row - Flat structure for consistent gap */}
+      <div className="flex items-center gap-4 mb-4 relative z-[60]">
+        {/* Main Quick Filters */}
+        <PillButtonGroup
+          options={mainFilterOptions}
+          value={activeQuickFilter}
+          onChange={handleQuickFilter}
+        />
 
-          {/* RSI Quick Filters - using PillButtonGroup template */}
-          <PillButtonGroup
-            options={rsiFilterOptions}
-            value={activeQuickFilter}
-            onChange={handleQuickFilter}
-            className="hidden md:inline-flex"
-          />
-        </div>
+        {/* RSI Quick Filters */}
+        <PillButtonGroup
+          options={rsiFilterOptions}
+          value={activeQuickFilter}
+          onChange={handleQuickFilter}
+          className="hidden md:inline-flex"
+        />
 
         {/* Settings icon */}
         <div
