@@ -276,16 +276,20 @@ export default function PerpBoard() {
   }), [store.tickers, store.fundingRateData, store.marketCapData]);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[#fafafa]">
+    <div className="flex flex-col h-screen overflow-hidden bg-gray-100">
       {/* ===================================================================
           SECTION 1: Header (Logo + Title + Version + Exchange Buttons)
           =================================================================== */}
-      <Header />
+      <div className="px-4 sm:px-6 pt-4">
+        <div className="max-w-[1600px] mx-auto w-full bg-white rounded-xl shadow-sm">
+          <Header />
+        </div>
+      </div>
 
       {/* ===================================================================
           SECTION 2: Main Content
           =================================================================== */}
-      <div className="flex-1 flex flex-col px-4 sm:px-6 py-4 overflow-hidden">
+      <div className="flex-1 flex flex-col px-4 sm:px-6 pt-4 pb-4 overflow-hidden">
         <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 overflow-hidden">
 
           {/* -----------------------------------------------------------------
