@@ -42,9 +42,9 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
       }
     >
       <div className="group/momentum">
-        {/* Signal Pill */}
-        <div>
-          <span className={`inline-block px-6 py-2.5 rounded-xl text-lg font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
+        {/* Signal Pill - Centered, full width */}
+        <div className="flex justify-center">
+          <span className={`inline-block w-full text-center px-6 py-3 rounded-xl text-lg font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
             {dailySignal.label}
           </span>
         </div>
