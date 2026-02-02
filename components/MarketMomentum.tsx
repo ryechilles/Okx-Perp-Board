@@ -41,27 +41,26 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
         ]} />
       }
     >
-      {/* Responsive layout: wrap when Extreme */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Signal Pill */}
+      {/* Signal Pill */}
+      <div className="mb-3">
         <span className={`inline-block px-5 py-2 rounded-lg text-base font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
           {dailySignal.label}
         </span>
+      </div>
 
-        {/* Daily RSI Values - Horizontal, left aligned */}
-        <div className="flex items-center gap-3 text-[11px]">
-          <div className="flex items-center gap-1.5">
-            <span className="text-gray-500">D-RSI7 Avg</span>
-            <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
-              {avgRsi7 != null ? avgRsi7.toFixed(1) : '--'}
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-gray-500">D-RSI14 Avg</span>
-            <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi14)}`}>
-              {avgRsi14 != null ? avgRsi14.toFixed(1) : '--'}
-            </span>
-          </div>
+      {/* Daily RSI Values - Horizontal, space between */}
+      <div className="flex items-center justify-between text-[11px]">
+        <div className="flex items-center gap-1.5">
+          <span className="text-gray-500">D-RSI7 Avg</span>
+          <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
+            {avgRsi7 != null ? avgRsi7.toFixed(1) : '--'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-gray-500">D-RSI14 Avg</span>
+          <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi14)}`}>
+            {avgRsi14 != null ? avgRsi14.toFixed(1) : '--'}
+          </span>
         </div>
       </div>
     </SmallWidget>
