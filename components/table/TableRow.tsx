@@ -125,14 +125,14 @@ export function TableRow({
     if (def.align === 'right') alignClass = 'text-right';
     if (def.align === 'center') alignClass = 'text-center';
 
-    const baseClass = `px-1 py-3 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`;
+    const baseClass = `px-1 py-2 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`;
 
     switch (key) {
       case 'favorite':
         return (
           <td
             key={key}
-            className={`py-3 text-center ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`}
+            className={`py-2 text-center ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`}
             style={getCellStyle(key)}
           >
             <button

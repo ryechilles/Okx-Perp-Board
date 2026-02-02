@@ -294,15 +294,17 @@ export default function PerpBoard() {
               ROW 1: Tabs (left) + Controls (right) - Mobile stacked
               ----------------------------------------------------------------- */}
           <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-4">
-            {/* Tabs */}
-            <TabContainer
-              tabs={TABS}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              variant="sidebar"
-            />
+            {/* Tabs - Same width as widget sidebar */}
+            <div className="lg:w-[320px] flex-shrink-0">
+              <TabContainer
+                tabs={TABS}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                variant="sidebar"
+              />
+            </div>
 
-            {/* Controls */}
+            {/* Controls - Aligns with table */}
             <Controls
               columns={store.columns}
               columnOrder={store.columnOrder}
