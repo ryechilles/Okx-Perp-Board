@@ -44,13 +44,13 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
       <div className="group/momentum">
         {/* Signal Pill */}
         <div>
-          <span className={`inline-block px-5 py-2 rounded-lg text-base font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
+          <span className={`inline-block px-6 py-2.5 rounded-xl text-lg font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
             {dailySignal.label}
           </span>
         </div>
 
         {/* Daily RSI Values - Show on hover with smooth transition */}
-        <div className="flex items-center justify-between text-[11px] max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-out group-hover/momentum:max-h-10 group-hover/momentum:opacity-100 group-hover/momentum:mt-3">
+        <div className="flex items-center justify-between text-[11px] max-h-0 opacity-0 overflow-hidden transition-all duration-200 ease-out group-hover/momentum:max-h-10 group-hover/momentum:opacity-100 group-hover/momentum:mt-3">
           <div className="flex items-center gap-1.5">
             <span className="text-gray-500">D-RSI7 Avg</span>
             <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
