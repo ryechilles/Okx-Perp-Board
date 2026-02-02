@@ -41,22 +41,22 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
         ]} />
       }
     >
-      {/* Horizontal layout: Pill left, RSI values right */}
-      <div className="flex items-center justify-between">
+      {/* Responsive layout: wrap when Extreme */}
+      <div className="flex flex-wrap items-center gap-3">
         {/* Signal Pill */}
         <span className={`inline-block px-5 py-2 rounded-lg text-base font-semibold whitespace-nowrap ${dailySignal.pillStyle}`}>
           {dailySignal.label}
         </span>
 
-        {/* Daily RSI Values - Stacked on right */}
-        <div className="space-y-1 text-[11px]">
-          <div className="flex items-center justify-end gap-1.5">
+        {/* Daily RSI Values - Horizontal */}
+        <div className="flex items-center gap-3 text-[11px] ml-auto">
+          <div className="flex items-center gap-1.5">
             <span className="text-gray-500">D-RSI7 Avg</span>
             <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi7)}`}>
               {avgRsi7 != null ? avgRsi7.toFixed(1) : '--'}
             </span>
           </div>
-          <div className="flex items-center justify-end gap-1.5">
+          <div className="flex items-center gap-1.5">
             <span className="text-gray-500">D-RSI14 Avg</span>
             <span className={`px-2 py-0.5 rounded-md font-semibold tabular-nums min-w-[42px] text-center ${getRsiPillStyle(avgRsi14)}`}>
               {avgRsi14 != null ? avgRsi14.toFixed(1) : '--'}
