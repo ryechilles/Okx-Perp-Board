@@ -280,10 +280,8 @@ export default function PerpBoard() {
       {/* ===================================================================
           SECTION 1: Header (Logo + Title + Version + Exchange Buttons)
           =================================================================== */}
-      <div className="px-4 sm:px-6 pt-4">
-        <div className="max-w-[1600px] mx-auto w-full bg-white rounded-xl shadow-sm">
-          <Header />
-        </div>
+      <div className="bg-white shadow-sm">
+        <Header />
       </div>
 
       {/* ===================================================================
