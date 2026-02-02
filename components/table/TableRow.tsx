@@ -125,14 +125,14 @@ export function TableRow({
     if (def.align === 'right') alignClass = 'text-right';
     if (def.align === 'center') alignClass = 'text-center';
 
-    const baseClass = `px-1 text-[13px] whitespace-nowrap align-middle ${alignClass} ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`;
+    const baseClass = `px-1 py-2.5 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`;
 
     switch (key) {
       case 'favorite':
         return (
           <td
             key={key}
-            className={`align-middle text-center ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`}
+            className={`py-2.5 text-center ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`}
             style={getCellStyle(key)}
           >
             <button
@@ -392,7 +392,7 @@ export function TableRow({
   };
 
   return (
-    <tr className="h-[40px] hover:bg-gray-50 border-b border-gray-50 group">
+    <tr className="hover:bg-gray-50 border-b border-gray-50 group">
       {visibleColumns.map(renderCell)}
     </tr>
   );
