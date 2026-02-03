@@ -40,12 +40,10 @@ export function BTCDominance() {
   }, []);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      <div
-        ref={containerRef}
-        className="tradingview-widget-container"
-        style={{ height: '180px' }}
-      />
-    </div>
+    <div
+      ref={containerRef}
+      className="tradingview-widget-container"
+      style={{ height: '180px' }}
+    />
   );
 }
