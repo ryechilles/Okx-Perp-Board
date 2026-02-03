@@ -26,7 +26,7 @@ export const DEFAULT_COLUMNS: ColumnVisibility = {
   rsi14: false,
   rsiW7: false,
   rsiW14: false,
-  listDate: true,
+  listDate: false,
   hasSpot: false
 };
 
