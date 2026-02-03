@@ -15,6 +15,7 @@ import { MarketMomentum } from '@/components/MarketMomentum';
 import { RsiOversold } from '@/components/RsiOversold';
 import { RsiOverbought } from '@/components/RsiOverbought';
 import { AHR999Indicator } from '@/components/AHR999Indicator';
+import { BTCDominance } from '@/components/BTCDominance';
 import { TableHeader, TableRow } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
 import { ColumnKey } from '@/lib/types';
@@ -42,7 +43,7 @@ const TABS = [
   { id: 'rsi', label: 'RSI' },
   { id: 'funding', label: 'Funding' },
   { id: 'altcoin', label: 'Altcoin' },
-  { id: 'ahr999', label: 'AHR999', icon: <BtcLogo /> },
+  { id: 'btc', label: 'BTC', icon: <BtcLogo /> },
 ];
 
 // Default widget order per tab (for tabs with multiple widgets)
@@ -50,6 +51,7 @@ const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
   rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
   funding: ['fundingMarket', 'fundingKiller'],
   altcoin: ['topGainers', 'vsBtc'],
+  btc: ['btcDominance', 'ahr999'],
 };
 
 export default function PerpBoard() {
@@ -68,6 +70,10 @@ export default function PerpBoard() {
   const [fundingWidgetOrder, setFundingWidgetOrder] = useWidgetOrder(
     'funding',
     DEFAULT_WIDGET_ORDER.funding
+  );
+  const [btcWidgetOrder, setBtcWidgetOrder] = useWidgetOrder(
+    'btc',
+    DEFAULT_WIDGET_ORDER.btc
   );
 
   // URL state sync
@@ -273,6 +279,12 @@ export default function PerpBoard() {
     ),
   }), [store.tickers, store.fundingRateData, store.marketCapData]);
 
+  // Widget mapping for BTC tab
+  const btcWidgets: Record<string, ReactNode> = useMemo(() => ({
+    btcDominance: <BTCDominance />,
+    ahr999: <AHR999Indicator />,
+  }), []);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-gray-100">
       {/* ===================================================================
@@ -370,9 +382,19 @@ export default function PerpBoard() {
                 </WidgetGrid>
               )}
 
-              {/* AHR999 Tab Widget */}
-              {activeTab === 'ahr999' && (
-                <AHR999Indicator />
+              {/* BTC Tab Widgets - Sortable */}
+              {activeTab === 'btc' && (
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={btcWidgetOrder}
+                  onOrderChange={setBtcWidgetOrder}
+                >
+                  {btcWidgetOrder.map((id) => (
+                    <div key={id}>{btcWidgets[id]}</div>
+                  ))}
+                </WidgetGrid>
               )}
             </div>
 
