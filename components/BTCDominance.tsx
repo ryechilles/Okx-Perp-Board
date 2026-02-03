@@ -43,7 +43,6 @@ export function BTCDominance() {
     <div
       ref={containerRef}
       className="tradingview-widget-container"
-      style={{ height: '180px' }}
     />
   );
 }
