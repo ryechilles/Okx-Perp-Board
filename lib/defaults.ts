@@ -5,8 +5,8 @@
 
 import { ColumnVisibility, ColumnKey } from './types';
 
-// Desktop default columns
-export const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
+// Default columns (unified for all devices)
+export const DEFAULT_COLUMNS: ColumnVisibility = {
   favorite: true,
   rank: true,
   logo: true,
@@ -30,34 +30,9 @@ export const DEFAULT_COLUMNS_DESKTOP: ColumnVisibility = {
   hasSpot: false
 };
 
-// Mobile default columns (minimal for small screens)
-export const DEFAULT_COLUMNS_MOBILE: ColumnVisibility = {
-  favorite: true,
-  rank: true,
-  logo: true,
-  symbol: true,
-  price: true,
-  fundingRate: false,
-  fundingApr: false,
-  fundingInterval: false,
-  change4h: false,
-  change: true,
-  change7d: false,
-  volume24h: false,
-  marketCap: false,
-  dRsiSignal: false,
-  wRsiSignal: false,
-  rsi7: false,
-  rsi14: false,
-  rsiW7: false,
-  rsiW14: false,
-  listDate: false,
-  hasSpot: false
-};
-
-// Get default columns based on device
-export function getDefaultColumns(isMobile: boolean): ColumnVisibility {
-  return isMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS_DESKTOP;
+// Get default columns (kept for backward compatibility, isMobile param ignored)
+export function getDefaultColumns(_isMobile?: boolean): ColumnVisibility {
+  return DEFAULT_COLUMNS;
 }
 
 // Default column order

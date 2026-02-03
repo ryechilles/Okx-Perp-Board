@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { ColumnVisibility, ColumnKey, Filters, RsiSignalType } from '@/lib/types';
-import { isMobile } from '@/lib/utils';
 import { getDefaultColumns } from '@/lib/defaults';
 import { RsiFilter } from './RsiFilter';
 import { PillButtonGroup, PillButtonOption } from '@/components/ui';
@@ -43,7 +42,7 @@ export function Controls({
   const [tempFilters, setTempFilters] = useState<Filters>(filters);
   const [customizeTab, setCustomizeTab] = useState<'columns' | 'filters'>('columns');
   const customizePanelRef = useRef<HTMLDivElement>(null);
-  const customizeButtonRef = useRef<HTMLDivElement>(null);
+  const customizeButtonRef = useRef<HTMLButtonElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
@@ -131,7 +130,7 @@ export function Controls({
   });
 
   // Check if columns differ from default
-  const defaultColumns = getDefaultColumns(isMobile());
+  const defaultColumns = getDefaultColumns();
   const hasNonDefaultColumns = Object.keys(columns).some(
     key => columns[key as keyof ColumnVisibility] !== defaultColumns[key as keyof ColumnVisibility]
   );
@@ -255,10 +254,7 @@ export function Controls({
     <>
       {/* Mobile Search Row - minimal style */}
       <div className="md:hidden mb-3 w-full">
-        <div
-          className="flex items-center gap-2 w-full border-b border-gray-300 pb-2 cursor-text"
-          onClick={() => mobileSearchInputRef.current?.focus()}
-        >
+        <label className="flex items-center gap-2 w-full border-b border-gray-300 pb-2 cursor-text">
           <svg
             className="w-4 h-4 text-gray-400 flex-shrink-0"
             viewBox="0 0 24 24"
@@ -267,6 +263,7 @@ export function Controls({
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
           >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
@@ -278,8 +275,9 @@ export function Controls({
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="bg-transparent border-none outline-none text-[14px] text-gray-700 placeholder-gray-400 flex-1"
+            aria-label="Search tokens"
           />
-        </div>
+        </label>
       </div>
 
       {/* Quick Filters + Controls Row - Flat structure for consistent gap */}
@@ -300,10 +298,13 @@ export function Controls({
         />
 
         {/* Settings icon */}
-        <div
+        <button
           ref={customizeButtonRef}
+          type="button"
           className="cursor-pointer p-1"
           onClick={() => setShowCustomizePanel(!showCustomizePanel)}
+          aria-label="Toggle settings panel"
+          aria-expanded={showCustomizePanel}
         >
           <svg
             className={`w-4 h-4 transition-colors ${hasFilters || hasNonDefaultColumns ? 'text-gray-900' : 'text-gray-400'}`}
@@ -313,17 +314,15 @@ export function Controls({
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
           >
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
-        </div>
+        </button>
 
         {/* Search */}
-        <div
-          className="hidden md:inline-flex items-center gap-1 cursor-text"
-          onClick={() => searchInputRef.current?.focus()}
-        >
+        <label className="hidden md:inline-flex items-center gap-1 cursor-text">
           <svg
             className="w-4 h-4 text-gray-400"
             viewBox="0 0 24 24"
@@ -332,6 +331,7 @@ export function Controls({
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
           >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
@@ -343,8 +343,9 @@ export function Controls({
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="bg-transparent border-none outline-none text-[13px] text-gray-700 w-[60px]"
+            aria-label="Search tokens"
           />
-        </div>
+        </label>
       </div>
 
       {/* Sidebar Overlay */}

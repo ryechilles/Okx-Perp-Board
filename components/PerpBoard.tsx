@@ -115,7 +115,7 @@ export default function PerpBoard() {
   }, []);
 
   const filteredData = store.getFilteredData();
-  const { avgRsi7, avgRsi14, avgRsiW7, avgRsiW14 } = store.getRsiAverages();
+  const { avgRsi7, avgRsi14 } = store.getRsiAverages();
   const quickFilterCounts = store.getQuickFilterCounts();
 
   // Show all data (no pagination)
@@ -211,8 +211,6 @@ export default function PerpBoard() {
       <MarketMomentum
         avgRsi7={avgRsi7}
         avgRsi14={avgRsi14}
-        avgRsiW7={avgRsiW7}
-        avgRsiW14={avgRsiW14}
       />
     ),
     rsiOversold: (
@@ -231,7 +229,7 @@ export default function PerpBoard() {
         onTokenClick={handleTokenClick}
       />
     ),
-  }), [avgRsi7, avgRsi14, avgRsiW7, avgRsiW14, store.tickers, store.rsiData, store.marketCapData]);
+  }), [avgRsi7, avgRsi14, store.tickers, store.rsiData, store.marketCapData]);
 
   // Widget mapping for altcoin tab
   const altcoinWidgets: Record<string, ReactNode> = useMemo(() => ({
@@ -336,7 +334,9 @@ export default function PerpBoard() {
                   itemIds={rsiWidgetOrder}
                   onOrderChange={setRsiWidgetOrder}
                 >
-                  {rsiWidgetOrder.map((id) => rsiWidgets[id])}
+                  {rsiWidgetOrder.map((id) => (
+                    <div key={id}>{rsiWidgets[id]}</div>
+                  ))}
                 </WidgetGrid>
               )}
 
@@ -349,7 +349,9 @@ export default function PerpBoard() {
                   itemIds={fundingWidgetOrder}
                   onOrderChange={setFundingWidgetOrder}
                 >
-                  {fundingWidgetOrder.map((id) => fundingWidgets[id])}
+                  {fundingWidgetOrder.map((id) => (
+                    <div key={id}>{fundingWidgets[id]}</div>
+                  ))}
                 </WidgetGrid>
               )}
 
@@ -362,7 +364,9 @@ export default function PerpBoard() {
                   itemIds={altcoinWidgetOrder}
                   onOrderChange={setAltcoinWidgetOrder}
                 >
-                  {altcoinWidgetOrder.map((id) => altcoinWidgets[id])}
+                  {altcoinWidgetOrder.map((id) => (
+                    <div key={id}>{altcoinWidgets[id]}</div>
+                  ))}
                 </WidgetGrid>
               )}
 

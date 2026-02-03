@@ -8,8 +8,6 @@ import { getRsiPillStyle, getRsiSignal } from '@/lib/utils';
 interface MarketMomentumProps {
   avgRsi7: number | null;
   avgRsi14: number | null;
-  avgRsiW7?: number | null;
-  avgRsiW14?: number | null;
 }
 
 

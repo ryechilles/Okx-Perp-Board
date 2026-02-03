@@ -1,4 +1,4 @@
-import { RSIData, MarketCapData, ProcessedTicker, OKXTicker, ColumnKey } from './types';
+import { RSIData, MarketCapData, ProcessedTicker, OKXTicker, ColumnKey, RsiSignalType } from './types';
 import {
   MEME_TOKENS as MEME_TOKENS_SET,
   RSI,
@@ -37,7 +37,7 @@ export function isMemeToken(symbol: string): boolean {
 }
 
 // Re-export from defaults for backward compatibility
-export { DEFAULT_COLUMN_ORDER, DEFAULT_COLUMNS_DESKTOP, DEFAULT_COLUMNS_MOBILE, getDefaultColumns } from './defaults';
+export { DEFAULT_COLUMN_ORDER, DEFAULT_COLUMNS, getDefaultColumns } from './defaults';
 
 // Column tooltip content
 export const COLUMN_TOOLTIPS: Partial<Record<ColumnKey, string[]>> = {
@@ -194,19 +194,11 @@ export function calculateRSI(closes: number[], period: number): number | null {
 }
 
 // RSI Signal types and helper functions (9-state system)
-export type RsiSignal =
-  | 'extreme-oversold'
-  | 'oversold'
-  | 'very-weak'
-  | 'weak'
-  | 'neutral'
-  | 'strong'
-  | 'very-strong'
-  | 'overbought'
-  | 'extreme-overbought';
+// Re-export RsiSignalType as RsiSignal for backward compatibility
+export type RsiSignal = RsiSignalType;
 
 export interface RsiSignalInfo {
-  signal: RsiSignal;
+  signal: RsiSignalType;
   label: string;
   pillStyle: string;
 }

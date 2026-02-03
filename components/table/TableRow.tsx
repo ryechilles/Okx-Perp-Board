@@ -136,12 +136,15 @@ export function TableRow({
             style={getCellStyle(key)}
           >
             <button
+              type="button"
               className={`bg-transparent border-none cursor-pointer text-sm transition-colors ${
                 isFavorite
                   ? 'text-yellow-400'
                   : 'text-gray-200 hover:text-yellow-400'
               }`}
               onClick={() => onToggleFavorite(ticker.instId)}
+              aria-label={isFavorite ? `Remove ${base} from favorites` : `Add ${base} to favorites`}
+              aria-pressed={isFavorite}
             >
               {isFavorite ? '★' : '☆'}
             </button>
