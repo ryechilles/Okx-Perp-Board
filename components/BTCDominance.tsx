@@ -11,22 +11,20 @@ export function BTCDominance() {
     // Clear any existing content
     containerRef.current.innerHTML = '';
 
-    // Create TradingView widget
+    // Create TradingView Mini Chart widget
     const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-chart.js';
     script.type = 'text/javascript';
     script.async = true;
     script.innerHTML = JSON.stringify({
       symbol: "CRYPTOCAP:BTC.D",
       width: "100%",
-      height: "100%",
+      height: 220,
       locale: "en",
       dateRange: "1D",
       colorTheme: "light",
       isTransparent: false,
-      autosize: true,
-      largeChartUrl: "",
-      noTimeScale: false,
+      autosize: false,
       chartOnly: false
     });
 
