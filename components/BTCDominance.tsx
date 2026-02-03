@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { SmallWidget } from '@/components/widgets/base';
-import { TooltipContent } from '@/components/ui';
 
 export function BTCDominance() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -25,7 +23,7 @@ export function BTCDominance() {
       locale: "en",
       dateRange: "1D",
       colorTheme: "light",
-      isTransparent: true,
+      isTransparent: false,
       autosize: true,
       largeChartUrl: "",
       noTimeScale: false,
@@ -41,34 +39,13 @@ export function BTCDominance() {
     };
   }, []);
 
-  // BTC icon
-  const btcIcon = (
-    <img
-      src="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
-      alt="BTC"
-      className="w-5 h-5 rounded-full"
-    />
-  );
-
   return (
-    <SmallWidget
-      title="BTC Dominance"
-      icon={btcIcon}
-      subtitle="TradingView BTC.D"
-      className="w-full"
-      padded={false}
-      tooltip={
-        <TooltipContent items={[
-          "BTC market cap / Total market cap",
-          "Data from TradingView",
-        ]} />
-      }
-    >
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       <div
         ref={containerRef}
         className="tradingview-widget-container"
         style={{ height: '180px' }}
       />
-    </SmallWidget>
+    </div>
   );
 }
