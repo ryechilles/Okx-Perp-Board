@@ -19,12 +19,12 @@ export function BTCDominance() {
     script.innerHTML = JSON.stringify({
       symbol: "CRYPTOCAP:BTC.D",
       width: "100%",
-      height: 220,
+      height: "100%",
       locale: "en",
       dateRange: "1D",
       colorTheme: "light",
       isTransparent: true,
-      autosize: false,
+      autosize: true,
       largeChartUrl: ""
     });
 
