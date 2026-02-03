@@ -11,9 +11,9 @@ export function BTCDominance() {
     // Clear any existing content
     containerRef.current.innerHTML = '';
 
-    // Create TradingView Mini Chart widget
+    // Create TradingView Mini Symbol Overview widget
     const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-chart.js';
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
     script.type = 'text/javascript';
     script.async = true;
     script.innerHTML = JSON.stringify({
@@ -23,9 +23,9 @@ export function BTCDominance() {
       locale: "en",
       dateRange: "1D",
       colorTheme: "light",
-      isTransparent: false,
+      isTransparent: true,
       autosize: false,
-      chartOnly: false
+      largeChartUrl: ""
     });
 
     containerRef.current.appendChild(script);
