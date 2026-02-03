@@ -232,12 +232,12 @@ export function Controls({
     {
       label: 'RSI Indicators',
       columns: [
-        { key: 'dRsiSignal', label: 'Daily RSI Signal' },
-        { key: 'wRsiSignal', label: 'Weekly RSI Signal' },
-        { key: 'rsi7', label: 'Daily RSI7' },
-        { key: 'rsi14', label: 'Daily RSI14' },
-        { key: 'rsiW7', label: 'Weekly RSI7' },
-        { key: 'rsiW14', label: 'Weekly RSI14' },
+        { key: 'dRsiSignal', label: 'D-RSI Avg Signal' },
+        { key: 'wRsiSignal', label: 'W-RSI Avg Signal' },
+        { key: 'rsi7', label: 'D-RSI7' },
+        { key: 'rsi14', label: 'D-RSI14' },
+        { key: 'rsiW7', label: 'W-RSI7' },
+        { key: 'rsiW14', label: 'W-RSI14' },
       ]
     },
     {
