@@ -119,7 +119,6 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
           "Compares altcoin avg change vs BTC",
           "Tiers: OKX perp top 10 / 20 / 50 by market cap",
           "Ratio shows relative strength",
-          "Click tier to filter those tokens",
         ]} />
       }
     >
