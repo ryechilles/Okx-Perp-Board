@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { ColumnVisibility, ColumnKey, Filters } from '@/lib/types';
+import { ColumnVisibility, ColumnKey, Filters, RsiSignalType } from '@/lib/types';
 import { isMobile } from '@/lib/utils';
 import { getDefaultColumns } from '@/lib/defaults';
 import { RsiFilter } from './RsiFilter';
@@ -124,8 +124,11 @@ export function Controls({
     .filter(([key]) => !excludedColumns.includes(key))
     .filter(([, v]) => v).length;
   const totalCount = Object.keys(columns).length - excludedColumns.length;
-  // Only count filters that have actual values (not undefined or empty string)
-  const hasFilters = Object.values(filters).some(v => v !== undefined && v !== '');
+  // Only count filters that have actual values (not undefined or empty string or empty array)
+  const hasFilters = Object.values(filters).some(v => {
+    if (Array.isArray(v)) return v.length > 0;
+    return v !== undefined && v !== '';
+  });
 
   // Check if columns differ from default
   const defaultColumns = getDefaultColumns(isMobile());
@@ -508,6 +511,49 @@ export function Controls({
                     <RsiFilter label="W-RSI14" value={filters.rsiW14} onChange={(v) => onFiltersChange({ ...filters, rsiW14: v })} />
                   </div>
                 </div>
+              </div>
+
+              {/* RSI Signal Filters */}
+              <div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">D-RSI Avg Signal</div>
+                <PillButtonGroup<RsiSignalType>
+                  options={[
+                    { value: 'extreme-oversold', label: 'Extreme Oversold' },
+                    { value: 'oversold', label: 'Oversold' },
+                    { value: 'very-weak', label: 'Very Weak' },
+                    { value: 'weak', label: 'Weak' },
+                    { value: 'neutral', label: 'Neutral' },
+                    { value: 'strong', label: 'Strong' },
+                    { value: 'very-strong', label: 'Very Strong' },
+                    { value: 'overbought', label: 'Overbought' },
+                    { value: 'extreme-overbought', label: 'Extreme Overbought' },
+                  ]}
+                  value={filters.dRsiSignal || []}
+                  onChange={(v) => onFiltersChange({ ...filters, dRsiSignal: v.length > 0 ? v : undefined })}
+                  multiSelect
+                  size="sm"
+                />
+              </div>
+
+              <div>
+                <div className="text-[11px] text-gray-500 font-medium mb-2">W-RSI Avg Signal</div>
+                <PillButtonGroup<RsiSignalType>
+                  options={[
+                    { value: 'extreme-oversold', label: 'Extreme Oversold' },
+                    { value: 'oversold', label: 'Oversold' },
+                    { value: 'very-weak', label: 'Very Weak' },
+                    { value: 'weak', label: 'Weak' },
+                    { value: 'neutral', label: 'Neutral' },
+                    { value: 'strong', label: 'Strong' },
+                    { value: 'very-strong', label: 'Very Strong' },
+                    { value: 'overbought', label: 'Overbought' },
+                    { value: 'extreme-overbought', label: 'Extreme Overbought' },
+                  ]}
+                  value={filters.wRsiSignal || []}
+                  onChange={(v) => onFiltersChange({ ...filters, wRsiSignal: v.length > 0 ? v : undefined })}
+                  multiSelect
+                  size="sm"
+                />
               </div>
 
               {/* Has Spot */}

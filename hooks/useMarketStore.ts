@@ -16,7 +16,7 @@ import {
   fetchFundingRates,
   fetchListingDates
 } from '@/lib/okx-api';
-import { isMemeToken } from '@/lib/utils';
+import { isMemeToken, getRsiSignal } from '@/lib/utils';
 import { TIMING } from '@/lib/constants';
 import {
   getRsiCache,
@@ -427,6 +427,26 @@ export function useMarketStore() {
       filtered = filtered.filter(t => {
         const isMeme = isMemeToken(t.baseSymbol);
         return filters.isMeme === 'yes' ? isMeme : !isMeme;
+      });
+    }
+
+    // D-RSI Avg Signal filter
+    if (filters.dRsiSignal && filters.dRsiSignal.length > 0) {
+      filtered = filtered.filter(t => {
+        const rsi = rsiData.get(t.instId);
+        if (!rsi) return false;
+        const signalInfo = getRsiSignal(rsi.rsi7, rsi.rsi14);
+        return filters.dRsiSignal!.includes(signalInfo.signal);
+      });
+    }
+
+    // W-RSI Avg Signal filter
+    if (filters.wRsiSignal && filters.wRsiSignal.length > 0) {
+      filtered = filtered.filter(t => {
+        const rsi = rsiData.get(t.instId);
+        if (!rsi) return false;
+        const signalInfo = getRsiSignal(rsi.rsiW7, rsi.rsiW14);
+        return filters.wRsiSignal!.includes(signalInfo.signal);
       });
     }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useRef } from 'react';
-import { Filters, ColumnVisibility, ColumnKey } from '@/lib/types';
+import { Filters, ColumnVisibility, ColumnKey, RsiSignalType } from '@/lib/types';
 import { DEFAULT_COLUMN_ORDER } from '@/lib/utils';
 import { FIXED_COLUMNS } from '@/lib/constants';
 
@@ -57,13 +57,21 @@ function stateToParams(state: Partial<UrlState>): URLSearchParams {
 
   // Filters - only include non-empty values
   if (state.filters) {
-    const filterKeys = ['rank', 'rsi7', 'rsi14', 'rsiW7', 'rsiW14', 'hasSpot', 'fundingRate', 'marketCapMin', 'listAge'] as const;
-    filterKeys.forEach(key => {
+    // String-type filters
+    const stringFilterKeys = ['rank', 'rsi7', 'rsi14', 'rsiW7', 'rsiW14', 'hasSpot', 'fundingRate', 'marketCapMin', 'listAge'] as const;
+    stringFilterKeys.forEach(key => {
       const value = state.filters?.[key];
       if (value) {
         params.set(`f_${key}`, value);
       }
     });
+    // Array-type filters (RSI signals)
+    if (state.filters.dRsiSignal && state.filters.dRsiSignal.length > 0) {
+      params.set('f_dRsiSignal', state.filters.dRsiSignal.join(','));
+    }
+    if (state.filters.wRsiSignal && state.filters.wRsiSignal.length > 0) {
+      params.set('f_wRsiSignal', state.filters.wRsiSignal.join(','));
+    }
   }
 
   // Columns - only include hidden columns (default is all visible)
@@ -108,13 +116,23 @@ function paramsToState(params: URLSearchParams): Partial<UrlState> {
 
   // Filters
   const filters: Filters = {};
-  const filterKeys = ['rank', 'rsi7', 'rsi14', 'rsiW7', 'rsiW14', 'hasSpot', 'fundingRate', 'marketCapMin', 'listAge'] as const;
-  filterKeys.forEach(key => {
+  // String-type filters
+  const stringFilterKeys = ['rank', 'rsi7', 'rsi14', 'rsiW7', 'rsiW14', 'hasSpot', 'fundingRate', 'marketCapMin', 'listAge'] as const;
+  stringFilterKeys.forEach(key => {
     const value = params.get(`f_${key}`);
     if (value) {
       (filters as Record<string, string>)[key] = value;
     }
   });
+  // Array-type filters (RSI signals)
+  const dRsiSignal = params.get('f_dRsiSignal');
+  if (dRsiSignal) {
+    filters.dRsiSignal = dRsiSignal.split(',').filter(Boolean) as RsiSignalType[];
+  }
+  const wRsiSignal = params.get('f_wRsiSignal');
+  if (wRsiSignal) {
+    filters.wRsiSignal = wRsiSignal.split(',').filter(Boolean) as RsiSignalType[];
+  }
   if (Object.keys(filters).length > 0) {
     state.filters = filters;
   }

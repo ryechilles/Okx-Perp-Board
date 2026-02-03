@@ -151,6 +151,18 @@ export interface ColumnConfig {
   sortable?: boolean;
 }
 
+// RSI Signal type (9 states)
+export type RsiSignalType =
+  | 'extreme-oversold'
+  | 'oversold'
+  | 'very-weak'
+  | 'weak'
+  | 'neutral'
+  | 'strong'
+  | 'very-strong'
+  | 'overbought'
+  | 'extreme-overbought';
+
 // Filter settings
 export interface Filters {
   rank?: string;
@@ -163,6 +175,8 @@ export interface Filters {
   fundingRate?: string;
   listAge?: string;  // Listing age filter (e.g., '>1y', '<30d')
   isMeme?: string;   // Meme token filter
+  dRsiSignal?: RsiSignalType[];  // D-RSI Avg Signal filter (multi-select)
+  wRsiSignal?: RsiSignalType[];  // W-RSI Avg Signal filter (multi-select)
 }
 
 // Sort configuration
