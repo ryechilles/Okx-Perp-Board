@@ -91,6 +91,7 @@ export function FundingMarket({
           "OKX perp top 100 by market cap",
           <><span className="text-green-500">Positive</span>: rate &gt; 0 (longs pay shorts)</>,
           <><span className="text-red-500">Negative</span>: rate &lt; 0 (shorts pay longs)</>,
+          "USDC/USDT pairs always have 0 funding rate",
         ]} />
       }
     >
