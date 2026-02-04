@@ -123,48 +123,48 @@ export function FundingKiller({
       tooltip={
         <TooltipContent items={[
           "All OKX perp tokens (excludes BTC)",
-          <><span className="text-red-500">Long Killer</span>: APR &gt; {aprThreshold}% (expensive to hold longs)</>,
-          <><span className="text-green-500">Short Killer</span>: APR &lt; -{aprThreshold}% (expensive to hold shorts)</>,
+          <><span className="text-green-500">Long Killer</span>: APR &gt; {aprThreshold}% (expensive to hold longs)</>,
+          <><span className="text-red-500">Short Killer</span>: APR &lt; -{aprThreshold}% (expensive to hold shorts)</>,
           "APR = Funding Rate × (365 × 24 / interval)",
         ]} />
       }
     >
       <div className="space-y-4">
-        {/* Short Killers Section */}
-        <div>
-          <KillerSectionHeader
-            title="Short Killer"
-            count={shortKillers.length}
-            color="green"
-            isLoading={isLoading}
-            onClick={() => onGroupClick?.(shortKillers.map(t => t.symbol))}
-          />
-          <div className="space-y-1">
-            {displayShortKillers.length > 0 ? (
-              displayShortKillers.map((t, i) => renderTokenRow(t, i, 'text-green-500', false))
-            ) : (
-              <div className="text-center py-4 text-[11px] text-gray-400">
-                No tokens with APR &lt; -{aprThreshold}%
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Long Killers Section */}
+        {/* Long Killers Section - Positive APR (green) */}
         <div>
           <KillerSectionHeader
             title="Long Killer"
             count={longKillers.length}
-            color="red"
+            color="green"
             isLoading={isLoading}
             onClick={() => onGroupClick?.(longKillers.map(t => t.symbol))}
           />
           <div className="space-y-1">
             {displayLongKillers.length > 0 ? (
-              displayLongKillers.map((t, i) => renderTokenRow(t, i, 'text-red-500', true))
+              displayLongKillers.map((t, i) => renderTokenRow(t, i, 'text-green-500', true))
             ) : (
               <div className="text-center py-4 text-[11px] text-gray-400">
                 No tokens with APR &gt; {aprThreshold}%
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Short Killers Section - Negative APR (red) */}
+        <div>
+          <KillerSectionHeader
+            title="Short Killer"
+            count={shortKillers.length}
+            color="red"
+            isLoading={isLoading}
+            onClick={() => onGroupClick?.(shortKillers.map(t => t.symbol))}
+          />
+          <div className="space-y-1">
+            {displayShortKillers.length > 0 ? (
+              displayShortKillers.map((t, i) => renderTokenRow(t, i, 'text-red-500', false))
+            ) : (
+              <div className="text-center py-4 text-[11px] text-gray-400">
+                No tokens with APR &lt; -{aprThreshold}%
               </div>
             )}
           </div>

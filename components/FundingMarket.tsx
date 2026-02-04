@@ -89,8 +89,8 @@ export function FundingMarket({
       tooltip={
         <TooltipContent items={[
           "OKX perp top 100 by market cap",
-          <><span className="text-red-500">Positive</span>: rate &gt; 0 (longs pay shorts)</>,
-          <><span className="text-green-500">Negative</span>: rate &lt; 0 (shorts pay longs)</>,
+          <><span className="text-green-500">Positive</span>: rate &gt; 0 (longs pay shorts)</>,
+          <><span className="text-red-500">Negative</span>: rate &lt; 0 (shorts pay longs)</>,
         ]} />
       }
     >
@@ -102,7 +102,7 @@ export function FundingMarket({
             className={`text-center ${onGroupClick && positiveCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
             onClick={() => positiveCount > 0 && onGroupClick?.(positiveSymbols)}
           >
-            <div className="text-[28px] font-bold text-red-500">
+            <div className="text-[28px] font-bold text-green-500">
               {isLoading ? '--' : positiveCount}
             </div>
             <div className="text-[11px] text-gray-400">Positive</div>
@@ -116,7 +116,7 @@ export function FundingMarket({
             className={`text-center ${onGroupClick && negativeCount > 0 ? 'cursor-pointer hover:opacity-70' : ''}`}
             onClick={() => negativeCount > 0 && onGroupClick?.(negativeSymbols)}
           >
-            <div className="text-[28px] font-bold text-green-500">
+            <div className="text-[28px] font-bold text-red-500">
               {isLoading ? '--' : negativeCount}
             </div>
             <div className="text-[11px] text-gray-400">Negative</div>
@@ -128,11 +128,11 @@ export function FundingMarket({
           {total > 0 && (
             <>
               <div
-                className="bg-red-500 transition-all duration-300"
+                className="bg-green-500 transition-all duration-300"
                 style={{ width: `${positivePercent}%` }}
               />
               <div
-                className="bg-green-500 transition-all duration-300"
+                className="bg-red-500 transition-all duration-300"
                 style={{ width: `${negativePercent}%` }}
               />
             </>
