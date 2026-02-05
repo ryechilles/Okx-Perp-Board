@@ -58,17 +58,17 @@ export function AHR999Indicator() {
       }
     >
       {/* Current Zone Display */}
-      <div className={`rounded-lg px-4 py-3 mb-4 ${zoneInfo.bgColor || 'bg-muted'}`}>
+      <div className={`rounded-lg px-4 py-3 mb-4 ${zoneInfo.bgColor || 'bg-gray-50'}`}>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-[11px] text-muted-foreground mb-0.5">Current Zone</div>
+            <div className="text-[11px] text-gray-500 mb-0.5">Current Zone</div>
             <div className={`text-lg font-bold ${zoneInfo.color}`}>
               {zoneInfo.label}
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[11px] text-muted-foreground mb-0.5">Value</div>
-            <div className="text-lg font-bold text-foreground tabular-nums">
+            <div className="text-[11px] text-gray-500 mb-0.5">Value</div>
+            <div className="text-lg font-bold text-gray-900 tabular-nums">
               {data?.value?.toFixed(2) ?? '--'}
             </div>
           </div>
@@ -86,7 +86,7 @@ export function AHR999Indicator() {
         {data && (
           <div className="relative h-2 -mt-0.5">
             <div
-              className="absolute w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent border-b-foreground"
+              className="absolute w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent border-b-gray-800"
               style={{
                 left: `${getPositionPercent(data.value)}%`,
                 transform: 'translateX(-50%)'
@@ -107,9 +107,9 @@ export function AHR999Indicator() {
           >
             <span className="flex items-center gap-1.5">
               <span className={zone.color}>{zone.dot}</span>
-              <span className="text-foreground">{zone.label}</span>
+              <span className="text-gray-700">{zone.label}</span>
             </span>
-            <span className="text-muted-foreground tabular-nums">{zone.range}</span>
+            <span className="text-gray-500 tabular-nums">{zone.range}</span>
           </div>
         ))}
       </div>

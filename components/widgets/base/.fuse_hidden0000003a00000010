@@ -68,7 +68,7 @@ export function LargeWidget({
         // Base styles - flat card matching PillButton style
         'bg-white rounded-xl',
         // Subtle border and shadow for definition
-        'border border shadow-sm',
+        'border border-gray-200 shadow-sm',
         // Size constraints
         'min-w-[400px] flex-1',
         // Flex layout
@@ -77,15 +77,15 @@ export function LargeWidget({
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
         <div className="flex items-center gap-3 min-w-0">
           {icon && (
-            <span className="text-muted-foreground flex-shrink-0">{icon}</span>
+            <span className="text-gray-600 flex-shrink-0">{icon}</span>
           )}
           <div className="min-w-0">
-            <h3 className="font-semibold text-foreground truncate">{title}</h3>
+            <h3 className="font-semibold text-gray-900 truncate">{title}</h3>
             {subtitle && (
-              <p className="text-sm text-muted-foreground truncate">{subtitle}</p>
+              <p className="text-sm text-gray-500 truncate">{subtitle}</p>
             )}
           </div>
         </div>
@@ -106,7 +106,7 @@ export function LargeWidget({
       >
         {loading ? (
           <div className="flex items-center justify-center h-full min-h-[120px]">
-            <div className="w-6 h-6 border-2 border border-t-muted-foreground rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
           </div>
         ) : (
           children
@@ -115,7 +115,7 @@ export function LargeWidget({
 
       {/* Footer */}
       {footer && (
-        <div className="px-5 py-3 border-t border text-sm text-muted-foreground">
+        <div className="px-5 py-3 border-t border-gray-100 text-sm text-gray-500">
           {footer}
         </div>
       )}

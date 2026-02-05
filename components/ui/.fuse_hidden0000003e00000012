@@ -32,7 +32,7 @@ export interface TokenRowItemProps {
  *   onClick={() => onTokenClick('ETH')}
  *   rightContent={
  *     <>
- *       <span className="text-[11px] text-muted-foreground">{formatPrice(price)}</span>
+ *       <span className="text-[11px] text-gray-500">{formatPrice(price)}</span>
  *       <span className="text-[12px] font-semibold text-green-500">+5.2%</span>
  *     </>
  *   }
@@ -51,17 +51,17 @@ export function TokenRowItem({
     <div
       className={cn(
         'flex items-center justify-between py-1.5 rounded -mx-2 px-2',
-        onClick && 'cursor-pointer hover:bg-muted/50',
+        onClick && 'cursor-pointer hover:bg-gray-50',
         className
       )}
       onClick={onClick}
     >
       <div className="flex items-center gap-2">
         {rank !== undefined && (
-          <span className="text-[11px] text-muted-foreground w-4">{rank}</span>
+          <span className="text-[11px] text-gray-400 w-4">{rank}</span>
         )}
         <TokenAvatar symbol={symbol} logo={logo} />
-        <span className="text-[12px] font-medium text-foreground">{symbol}</span>
+        <span className="text-[12px] font-medium text-gray-900">{symbol}</span>
       </div>
       <div className="flex items-center gap-3">
         {rightContent}
@@ -83,13 +83,13 @@ export function TokenRowSkeleton({
   return (
     <div className="flex items-center justify-between py-1.5">
       <div className="flex items-center gap-2">
-        {showRank && <span className="text-[11px] text-muted-foreground w-4">-</span>}
-        <div className="w-5 h-5 rounded-full bg-muted animate-pulse" />
-        <div className="w-10 h-3 bg-muted rounded animate-pulse" />
+        {showRank && <span className="text-[11px] text-gray-400 w-4">-</span>}
+        <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse" />
+        <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
       </div>
       <div className="flex items-center gap-3">
         {Array.from({ length: columns }).map((_, i) => (
-          <div key={i} className="w-12 h-3 bg-muted rounded animate-pulse" />
+          <div key={i} className="w-12 h-3 bg-gray-200 rounded animate-pulse" />
         ))}
       </div>
     </div>
@@ -101,7 +101,7 @@ export function TokenRowSkeleton({
  */
 export function TokenRowEmpty({ message }: { message: string }) {
   return (
-    <div className="text-center py-4 text-[11px] text-muted-foreground">
+    <div className="text-center py-4 text-[11px] text-gray-400">
       {message}
     </div>
   );

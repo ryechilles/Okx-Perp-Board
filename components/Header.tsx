@@ -74,8 +74,8 @@ export function Header() {
         <div className="flex items-center gap-3">
           <PerpLogo className="w-8 h-8 rounded-lg" />
           <div className="flex items-baseline gap-2">
-            <span className="text-lg font-semibold text-gray-900">{APP_CONFIG.name}</span>
-            <span className="text-xs text-gray-400 font-medium">{APP_CONFIG.versionDisplay}</span>
+            <span className="text-lg font-semibold text-foreground">{APP_CONFIG.name}</span>
+            <span className="text-xs text-muted-foreground font-medium">{APP_CONFIG.versionDisplay}</span>
           </div>
         </div>
 

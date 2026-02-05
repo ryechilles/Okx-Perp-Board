@@ -93,7 +93,7 @@ export function FundingKiller({
   const renderTokenRow = (token: TokenWithApr, index: number, colorClass: string, showSign: boolean) => (
     <div
       key={token.instId}
-      className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-muted/50 rounded -mx-2 px-2"
+      className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
       onClick={() => onTokenClick?.(token.symbol)}
     >
       <div className="flex items-center gap-2">

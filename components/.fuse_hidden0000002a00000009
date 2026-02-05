@@ -35,15 +35,15 @@ function KillerSectionHeader({
 
   return (
     <div
-      className={`flex items-center justify-between mb-3 pb-2 border-b border ${
+      className={`flex items-center justify-between mb-3 pb-2 border-b border-gray-100 ${
         canClick ? 'cursor-pointer hover:opacity-80' : ''
       }`}
       onClick={() => canClick && onClick()}
     >
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${dotColor}`} />
-        <span className="text-[12px] font-medium text-foreground">{title}</span>
-        <span className="text-[11px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+        <span className="text-[12px] font-medium text-gray-700">{title}</span>
+        <span className="text-[11px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
           {isLoading ? '--' : count}
         </span>
       </div>
@@ -93,16 +93,16 @@ export function FundingKiller({
   const renderTokenRow = (token: TokenWithApr, index: number, colorClass: string, showSign: boolean) => (
     <div
       key={token.instId}
-      className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-muted/50 rounded -mx-2 px-2"
+      className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
       onClick={() => onTokenClick?.(token.symbol)}
     >
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-muted-foreground w-4">{index + 1}</span>
+        <span className="text-[11px] text-gray-400 w-4">{index + 1}</span>
         <TokenAvatar symbol={token.symbol} logo={token.logo} />
-        <span className="text-[12px] font-medium text-foreground">{token.symbol}</span>
+        <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
       </div>
       <div className="flex items-center">
-        <span className="text-[11px] text-muted-foreground tabular-nums w-16 text-center">
+        <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">
           {formatPrice(token.price)}
         </span>
         <span className={`text-[12px] font-semibold tabular-nums w-16 text-center ${colorClass}`}>
@@ -143,7 +143,7 @@ export function FundingKiller({
             {displayLongKillers.length > 0 ? (
               displayLongKillers.map((t, i) => renderTokenRow(t, i, 'text-green-500', true))
             ) : (
-              <div className="text-center py-4 text-[11px] text-muted-foreground">
+              <div className="text-center py-4 text-[11px] text-gray-400">
                 No tokens with APR &gt; {aprThreshold}%
               </div>
             )}
@@ -163,7 +163,7 @@ export function FundingKiller({
             {displayShortKillers.length > 0 ? (
               displayShortKillers.map((t, i) => renderTokenRow(t, i, 'text-red-500', false))
             ) : (
-              <div className="text-center py-4 text-[11px] text-muted-foreground">
+              <div className="text-center py-4 text-[11px] text-gray-400">
                 No tokens with APR &lt; -{aprThreshold}%
               </div>
             )}

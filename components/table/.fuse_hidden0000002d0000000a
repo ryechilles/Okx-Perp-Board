@@ -125,14 +125,14 @@ export function TableRow({
     if (def.align === 'right') alignClass = 'text-right';
     if (def.align === 'center') alignClass = 'text-center';
 
-    const baseClass = `px-1 py-2.5 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-muted/50' : ''}`;
+    const baseClass = `px-1 py-2.5 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`;
 
     switch (key) {
       case 'favorite':
         return (
           <td
             key={key}
-            className={`py-2.5 text-center ${isFixed ? 'bg-white group-hover:bg-muted/50' : ''}`}
+            className={`py-2.5 text-center ${isFixed ? 'bg-white group-hover:bg-gray-50' : ''}`}
             style={getCellStyle(key)}
           >
             <button
@@ -140,7 +140,7 @@ export function TableRow({
               className={`bg-transparent border-none cursor-pointer text-sm transition-colors ${
                 isFavorite
                   ? 'text-yellow-400'
-                  : 'text-muted hover:text-yellow-400'
+                  : 'text-gray-200 hover:text-yellow-400'
               }`}
               onClick={() => onToggleFavorite(ticker.instId)}
               aria-label={isFavorite ? `Remove ${base} from favorites` : `Add ${base} to favorites`}
@@ -155,7 +155,7 @@ export function TableRow({
         return (
           <td
             key={key}
-            className={`${baseClass} text-[12px] text-muted-foreground`}
+            className={`${baseClass} text-[12px] text-gray-500`}
             style={getCellStyle(key)}
           >
             {displayRank}
@@ -167,17 +167,17 @@ export function TableRow({
           <td key={key} className={`${baseClass} font-semibold`} style={getCellStyle(key)}>
             <div className="flex flex-col leading-tight">
               <div className="truncate">
-                <span className="text-foreground">{base}</span>
-                <span className="text-muted-foreground font-normal">/{quote}</span>
+                <span className="text-gray-900">{base}</span>
+                <span className="text-gray-500 font-normal">/{quote}</span>
               </div>
               {!hasSpot && (
-                <span className="text-[11px] text-muted-foreground font-normal">
+                <span className="text-[11px] text-gray-500 font-normal">
                   No Spot on OKX
                 </span>
               )}
               {listingAgeInfo && (
                 <span
-                  className={`text-[11px] font-normal ${listingAgeInfo.isNew ? 'text-blue-500' : 'text-muted-foreground'}`}
+                  className={`text-[11px] font-normal ${listingAgeInfo.isNew ? 'text-blue-500' : 'text-gray-500'}`}
                 >
                   {listingAgeInfo.label}
                 </span>
@@ -194,7 +194,7 @@ export function TableRow({
               <img
                 src={logoUrl}
                 alt={base}
-                className="w-5 h-5 rounded-full bg-muted"
+                className="w-5 h-5 rounded-full bg-gray-100"
                 loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -203,7 +203,7 @@ export function TableRow({
                 }}
               />
             ) : (
-              <div className="w-5 h-5 rounded-full bg-muted flex items-center justify-center text-[10px] text-muted-foreground font-medium">
+              <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-[10px] text-gray-500 font-medium">
                 {base.charAt(0)}
               </div>
             )}
@@ -242,7 +242,7 @@ export function TableRow({
 
       case 'fundingInterval':
         return (
-          <td key={key} className={`${baseClass} text-[12px] text-muted-foreground`}>
+          <td key={key} className={`${baseClass} text-[12px] text-gray-500`}>
             {formatSettlementInterval(fundingRate?.settlementInterval)}
           </td>
         );
@@ -277,18 +277,18 @@ export function TableRow({
 
       case 'marketCap':
         return (
-          <td key={key} className={`${baseClass} text-muted-foreground tabular-nums`}>
+          <td key={key} className={`${baseClass} text-gray-600 tabular-nums`}>
             {marketCap?.marketCap ? (
               formatMarketCap(marketCap.marketCap)
             ) : (
-              <span className="text-muted-foreground">--</span>
+              <span className="text-gray-500">--</span>
             )}
           </td>
         );
 
       case 'volume24h':
         return (
-          <td key={key} className={`${baseClass} text-muted-foreground tabular-nums`}>
+          <td key={key} className={`${baseClass} text-gray-600 tabular-nums`}>
             {formatVolume(ticker.volCcy24h, ticker.priceNum)}
           </td>
         );
@@ -302,7 +302,7 @@ export function TableRow({
               <span className={`inline-block px-2 py-0.5 rounded-md text-[13px] font-semibold whitespace-nowrap ${dSignal.pillStyle}`}>
                 {dSignal.label}
               </span>
-              <span className={`text-[10px] text-muted-foreground tabular-nums leading-none mt-0.5 whitespace-nowrap h-0 overflow-hidden group-hover/dsignal:h-auto ${hasRsiData ? '' : 'invisible'}`}>
+              <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap h-0 overflow-hidden group-hover/dsignal:h-auto ${hasRsiData ? '' : 'invisible'}`}>
                 {rsi?.rsi7 != null ? rsi.rsi7.toFixed(1) : '--'}/{rsi?.rsi14 != null ? rsi.rsi14.toFixed(1) : '--'}
               </span>
             </div>
@@ -319,7 +319,7 @@ export function TableRow({
               <span className={`inline-block px-2 py-0.5 rounded-md text-[13px] font-semibold whitespace-nowrap ${wSignal.pillStyle}`}>
                 {wSignal.label}
               </span>
-              <span className={`text-[10px] text-muted-foreground tabular-nums leading-none mt-0.5 whitespace-nowrap h-0 overflow-hidden group-hover/wsignal:h-auto ${hasRsiData ? '' : 'invisible'}`}>
+              <span className={`text-[10px] text-gray-500 tabular-nums leading-none mt-0.5 whitespace-nowrap h-0 overflow-hidden group-hover/wsignal:h-auto ${hasRsiData ? '' : 'invisible'}`}>
                 {rsi?.rsiW7 != null ? rsi.rsiW7.toFixed(1) : '--'}/{rsi?.rsiW14 != null ? rsi.rsiW14.toFixed(1) : '--'}
               </span>
             </div>
@@ -365,7 +365,7 @@ export function TableRow({
 
       case 'listDate':
         return (
-          <td key={key} className={`${baseClass} text-[12px] text-muted-foreground`}>
+          <td key={key} className={`${baseClass} text-[12px] text-gray-500`}>
             {formatListDate(listingData?.listTime)}
           </td>
         );
@@ -377,7 +377,7 @@ export function TableRow({
               className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${
                 hasSpot
                   ? 'bg-green-100 text-green-600'
-                  : 'bg-muted text-muted-foreground'
+                  : 'bg-gray-100 text-gray-500'
               }`}
             >
               {hasSpot ? 'Yes' : 'No'}
@@ -395,7 +395,7 @@ export function TableRow({
   };
 
   return (
-    <tr className="hover:bg-muted/50 border-b border group">
+    <tr className="hover:bg-gray-50 border-b border-gray-50 group">
       {visibleColumns.map(renderCell)}
     </tr>
   );

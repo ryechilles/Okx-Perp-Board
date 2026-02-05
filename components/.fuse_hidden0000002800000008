@@ -106,11 +106,11 @@ export function FundingMarket({
             <div className="text-[28px] font-bold text-green-500">
               {isLoading ? '--' : positiveCount}
             </div>
-            <div className="text-[11px] text-muted-foreground">Positive</div>
+            <div className="text-[11px] text-gray-400">Positive</div>
           </div>
 
           {/* Divider */}
-          <div className="h-12 w-px bg-muted" />
+          <div className="h-12 w-px bg-gray-200" />
 
           {/* Negative */}
           <div
@@ -120,12 +120,12 @@ export function FundingMarket({
             <div className="text-[28px] font-bold text-red-500">
               {isLoading ? '--' : negativeCount}
             </div>
-            <div className="text-[11px] text-muted-foreground">Negative</div>
+            <div className="text-[11px] text-gray-400">Negative</div>
           </div>
         </div>
 
         {/* Visual Bar */}
-        <div className="h-2 rounded-full bg-muted overflow-hidden flex">
+        <div className="h-2 rounded-full bg-gray-100 overflow-hidden flex">
           {total > 0 && (
             <>
               <div

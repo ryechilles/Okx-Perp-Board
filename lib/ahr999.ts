@@ -36,8 +36,8 @@ export function getAHR999ZoneInfo(value: number | null): AHR999ZoneInfo {
       zone: 'dca',
       label: '--',
       labelCn: '--',
-      color: 'text-gray-400',
-      bgColor: 'bg-gray-50',
+      color: 'text-muted-foreground',
+      bgColor: 'bg-muted',
       description: 'Loading...',
       dot: '●',
       range: '--'

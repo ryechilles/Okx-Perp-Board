@@ -146,7 +146,7 @@ interface ChangeWithSparklineProps {
  */
 export function ChangeWithSparkline({ change, sparklineData, showSparkline = true }: ChangeWithSparklineProps) {
   if (change === null || change === undefined) {
-    return <span className="text-muted-foreground">-</span>;
+    return <span className="text-gray-400">-</span>;
   }
 
   const isPositive = change >= 0;

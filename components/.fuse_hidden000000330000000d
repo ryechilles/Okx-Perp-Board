@@ -288,7 +288,7 @@ export default function PerpBoard() {
   }), []);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-muted">
+    <div className="flex flex-col h-screen overflow-hidden bg-gray-100">
       {/* ===================================================================
           SECTION 1: Header (Logo + Title + Version + Exchange Buttons)
           =================================================================== */}
@@ -401,7 +401,7 @@ export default function PerpBoard() {
             </div>
 
             {/* Data Table - flex-1 to fill remaining space */}
-            <div className="bg-white rounded-xl border border flex flex-col flex-1 overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-200 flex flex-col flex-1 overflow-hidden">
               {/* Scrollable Table Container */}
               <div
                 ref={tableContainerRef}
@@ -440,10 +440,10 @@ export default function PerpBoard() {
                     {filteredData.length === 0 ? (
                       <tr>
                         <td colSpan={visibleColumns.length}>
-                          <div className="flex items-center justify-center py-16 text-muted-foreground">
+                          <div className="flex items-center justify-center py-16 text-gray-500">
                             {store.tickers.size === 0 ? (
                               <>
-                                <div className="w-5 h-5 border-2 border border-t-foreground rounded-full animate-spin mr-3" />
+                                <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin mr-3" />
                                 Loading market data...
                               </>
                             ) : (

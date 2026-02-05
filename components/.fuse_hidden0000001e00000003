@@ -81,13 +81,13 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
           [1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-muted-foreground w-4">{i}</span>
-                <div className="w-5 h-5 rounded-full bg-muted animate-pulse" />
-                <div className="w-10 h-3 bg-muted rounded animate-pulse" />
+                <span className="text-[11px] text-gray-400 w-4">{i}</span>
+                <div className="w-5 h-5 rounded-full bg-gray-200 animate-pulse" />
+                <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-3 bg-muted rounded animate-pulse" />
-                <div className="w-10 h-3 bg-muted rounded animate-pulse" />
+                <div className="w-12 h-3 bg-gray-200 rounded animate-pulse" />
+                <div className="w-10 h-3 bg-gray-200 rounded animate-pulse" />
               </div>
             </div>
           ))
@@ -97,16 +97,16 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
             return (
               <div
                 key={token.instId}
-                className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-muted/50 rounded -mx-2 px-2"
+                className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
                 onClick={() => onTokenClick?.(token.symbol)}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-muted-foreground w-4">{i + 1}</span>
+                  <span className="text-[11px] text-gray-400 w-4">{i + 1}</span>
                   <TokenAvatar symbol={token.symbol} logo={token.logo} />
-                  <span className="text-[12px] font-medium text-foreground">{token.symbol}</span>
+                  <span className="text-[12px] font-medium text-gray-900">{token.symbol}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-[11px] text-muted-foreground tabular-nums">{formatPrice(token.price ?? 0)}</span>
+                  <span className="text-[11px] text-gray-500 tabular-nums">{formatPrice(token.price ?? 0)}</span>
                   <span className={`text-[12px] font-semibold tabular-nums ${formatChange(change).color}`}>
                     {formatChange(change).text}
                   </span>

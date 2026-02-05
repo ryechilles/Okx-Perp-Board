@@ -40,10 +40,10 @@ export interface TokenWithChange {
 // Format percentage with color class
 export function formatChange(value: number | null | undefined): { text: string; color: string } {
   if (value === null || value === undefined) {
-    return { text: '--', color: 'text-gray-400' };
+    return { text: '--', color: 'text-muted-foreground' };
   }
   const sign = value > 0 ? '+' : '';
-  const color = value > 0 ? 'text-green-500' : value < 0 ? 'text-red-500' : 'text-gray-400';
+  const color = value > 0 ? 'text-green-500' : value < 0 ? 'text-red-500' : 'text-muted-foreground';
   return { text: `${sign}${value.toFixed(2)}%`, color };
 }
 

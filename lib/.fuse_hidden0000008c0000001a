@@ -104,10 +104,10 @@ export function formatFundingApr(rate: number | undefined | null, intervalHours:
 
 // Get funding APR color class
 export function getFundingAprClass(rate: number | undefined | null): string {
-  if (rate === undefined || rate === null) return 'text-muted-foreground';
+  if (rate === undefined || rate === null) return 'text-gray-300';
   if (rate > 0) return 'text-green-500';
   if (rate < 0) return 'text-red-500';
-  return 'text-muted-foreground';
+  return 'text-gray-500';
 }
 
 // Format funding rate as percentage
@@ -126,10 +126,10 @@ export function formatSettlementInterval(hours: number | undefined | null): stri
 
 // Get funding rate color class
 export function getFundingRateClass(rate: number | undefined | null): string {
-  if (rate === undefined || rate === null) return 'text-muted-foreground';
+  if (rate === undefined || rate === null) return 'text-gray-300';
   if (rate > FUNDING.POSITIVE_THRESHOLD) return 'text-green-500'; // Positive = longs pay shorts
   if (rate < FUNDING.NEGATIVE_THRESHOLD) return 'text-red-500';  // Negative = shorts pay longs
-  return 'text-muted-foreground';
+  return 'text-gray-500';
 }
 
 // Format listing date
@@ -206,7 +206,7 @@ export interface RsiSignalInfo {
 // Get RSI signal based on combined RSI7 and RSI14 values (9-state system)
 export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSignalInfo {
   if (rsi7 === null && rsi14 === null) {
-    return { signal: 'neutral', label: '--', pillStyle: 'bg-muted text-muted-foreground' };
+    return { signal: 'neutral', label: '--', pillStyle: 'bg-gray-100 text-gray-400' };
   }
 
   // Use average of both, or whichever is available
@@ -227,7 +227,7 @@ export function getRsiSignal(rsi7: number | null, rsi14: number | null): RsiSign
     return { signal: 'weak', label: 'Weak', pillStyle: 'bg-emerald-100 text-emerald-700' };
   }
   if (avg <= RSI.NEUTRAL_HIGH) {
-    return { signal: 'neutral', label: 'Neutral', pillStyle: 'bg-muted text-muted-foreground' };
+    return { signal: 'neutral', label: 'Neutral', pillStyle: 'bg-gray-100 text-gray-600' };
   }
   if (avg <= RSI.STRONG) {
     return { signal: 'strong', label: 'Strong', pillStyle: 'bg-orange-100 text-orange-700' };
@@ -292,7 +292,7 @@ export function formatVolume(volCcy: string | number, price: number): string {
 
 // Get RSI pill style for oversold widget (green tones)
 export function getRsiOversoldPillStyle(rsi: number | null | undefined): string {
-  if (rsi === null || rsi === undefined) return 'bg-muted text-muted-foreground';
+  if (rsi === null || rsi === undefined) return 'bg-gray-100 text-gray-400';
   if (rsi <= 20) return 'bg-green-500 text-white';
   if (rsi <= 25) return 'bg-green-400 text-white';
   return 'bg-green-300 text-green-800';
@@ -300,7 +300,7 @@ export function getRsiOversoldPillStyle(rsi: number | null | undefined): string 
 
 // Get RSI pill style for overbought widget (red tones)
 export function getRsiOverboughtPillStyle(rsi: number | null | undefined): string {
-  if (rsi === null || rsi === undefined) return 'bg-muted text-muted-foreground';
+  if (rsi === null || rsi === undefined) return 'bg-gray-100 text-gray-400';
   if (rsi >= 85) return 'bg-red-600 text-white';
   if (rsi >= 80) return 'bg-red-500 text-white';
   return 'bg-red-400 text-white';
@@ -308,7 +308,7 @@ export function getRsiOverboughtPillStyle(rsi: number | null | undefined): strin
 
 // Get RSI pill style for table columns (full range)
 export function getRsiPillStyle(rsi: number | null | undefined): string {
-  if (rsi === null || rsi === undefined) return 'bg-muted text-muted-foreground';
+  if (rsi === null || rsi === undefined) return 'bg-gray-100 text-gray-400';
 
   // Oversold zone (green)
   if (rsi <= 20) return 'bg-green-500 text-white';
@@ -319,7 +319,7 @@ export function getRsiPillStyle(rsi: number | null | undefined): string {
   if (rsi <= 40) return 'bg-emerald-100 text-emerald-700';
 
   // Neutral zone (gray)
-  if (rsi <= 60) return 'bg-muted text-muted-foreground';
+  if (rsi <= 60) return 'bg-gray-100 text-gray-600';
 
   // Strong zone (light red/orange)
   if (rsi <= 70) return 'bg-orange-100 text-orange-700';
