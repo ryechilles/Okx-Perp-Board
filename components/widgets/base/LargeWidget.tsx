@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { Spinner } from '@/components/ui';
 
 export interface LargeWidgetProps {
   /** Widget title displayed in header */
@@ -106,7 +107,7 @@ export function LargeWidget({
       >
         {loading ? (
           <div className="flex items-center justify-center h-full min-h-[120px]">
-            <div className="w-6 h-6 border-2 border border-t-muted-foreground rounded-full animate-spin" />
+            <Spinner size="lg" />
           </div>
         ) : (
           children

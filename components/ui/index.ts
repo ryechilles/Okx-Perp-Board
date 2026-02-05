@@ -4,6 +4,7 @@ export type { PillButtonGroupProps, PillButtonOption } from './PillButtonGroup';
 export { TokenAvatar } from './TokenAvatar';
 export { TimeFrameSelector } from './TimeFrameSelector';
 export { TooltipList } from './TooltipList';
+export { Spinner } from './spinner';
 
 // shadcn/ui components
 export { Button, buttonVariants } from './button';

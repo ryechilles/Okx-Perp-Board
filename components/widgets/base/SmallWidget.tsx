@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Card, CardHeader, CardContent } from '@/components/ui';
+import { Card, CardHeader, CardContent, Spinner } from '@/components/ui';
 
 export interface SmallWidgetProps {
   /** Widget title displayed in header */
@@ -135,7 +135,7 @@ export function SmallWidget({
       <CardContent className={cn('flex-1', padded ? 'p-4' : 'p-0')}>
         {loading ? (
           <div className="flex items-center justify-center h-full min-h-[80px]">
-            <div className="w-5 h-5 border-2 border-muted border-t-foreground rounded-full animate-spin" />
+            <Spinner size="md" />
           </div>
         ) : (
           <>

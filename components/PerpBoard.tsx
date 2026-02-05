@@ -19,6 +19,7 @@ import { BTCDominance } from '@/components/BTCDominance';
 import { EthBtcRatio } from '@/components/EthBtcRatio';
 import { TableHeader, TableRow } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
+import { Spinner } from '@/components/ui';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS } from '@/lib/utils';
 // Fixed column configuration
@@ -443,7 +444,7 @@ export default function PerpBoard() {
                           <div className="flex items-center justify-center py-16 text-muted-foreground">
                             {store.tickers.size === 0 ? (
                               <>
-                                <div className="w-5 h-5 border-2 border border-t-foreground rounded-full animate-spin mr-3" />
+                                <Spinner size="md" className="mr-3" />
                                 Loading market data...
                               </>
                             ) : (
