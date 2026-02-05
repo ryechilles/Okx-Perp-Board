@@ -3,10 +3,12 @@
  * Centralized configuration for all magic numbers and settings
  */
 
+import pkg from '../package.json';
+
 // ===========================================
-// App Version (increment this when deploying updates that require cache refresh)
+// App Version (auto-synced from package.json)
 // ===========================================
-export const APP_VERSION = '2.6.12';
+export const APP_VERSION = pkg.version;
 
 // ===========================================
 // API Endpoints
