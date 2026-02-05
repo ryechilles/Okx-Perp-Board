@@ -20,7 +20,7 @@ export function TimeFrameSelector({ value, onChange }: TimeFrameSelectorProps) {
       value={value}
       onValueChange={(v) => v && onChange(v as TimeFrame)}
       size="sm"
-      className="border rounded-lg p-0.5"
+      className="gap-0.5"
     >
       {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
         <ToggleGroupItem
