@@ -1,6 +1,7 @@
 'use client';
 
 import { debouncedSelect, debouncedRangeParse, handleNumberWheel } from '@/lib/inputUtils';
+import { cn } from '@/lib/utils';
 
 interface RsiFilterProps {
   label: string;
@@ -9,7 +10,7 @@ interface RsiFilterProps {
 }
 
 /**
- * Reusable RSI Filter component
+ * Reusable RSI Filter component - built on shadcn/ui design system
  * Supports: preset buttons (<25, 25~75, >75), custom inputs (<, ~, >)
  */
 export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
@@ -20,20 +21,22 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
   const rangeMin = isCustomRange && value ? value.split('~')[0] : '';
   const rangeMax = isCustomRange && value ? value.split('~')[1] : '';
 
-  const inputClass = "bg-transparent text-[12px] font-medium text-center outline-none cursor-pointer";
+  const inputClass = "bg-transparent text-xs font-medium text-center outline-none cursor-pointer";
   const focusHandler = (e: React.FocusEvent<HTMLInputElement>) => setTimeout(() => e.target.select(), 0);
   const clickHandler = (e: React.MouseEvent<HTMLInputElement>) => setTimeout(() => (e.target as HTMLInputElement).select(), 0);
+
+  const buttonBase = "px-2 py-1 rounded-md text-xs font-medium transition-all";
+  const buttonActive = "bg-background text-foreground shadow-sm";
+  const buttonInactive = "text-muted-foreground hover:text-foreground";
 
   return (
     <div className="inline-flex items-center gap-2">
       {/* Label + Presets */}
-      <div className="inline-flex bg-gray-200 rounded-lg p-0.5 gap-0.5 items-center">
+      <div className="inline-flex bg-muted rounded-lg p-0.5 gap-0.5 items-center">
         {/* Label */}
         <button
           onClick={() => onChange(undefined)}
-          className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all w-[66px] text-center whitespace-nowrap ${
-            !value ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-          }`}
+          className={cn(buttonBase, "w-[66px] text-center whitespace-nowrap", !value ? buttonActive : buttonInactive)}
         >
           {label}
         </button>
@@ -43,9 +46,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
           <button
             key={preset}
             onClick={() => onChange(preset)}
-            className={`px-2 py-1 rounded-md text-[12px] font-medium transition-all ${
-              value === preset ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className={cn(buttonBase, value === preset ? buttonActive : buttonInactive)}
           >
             {preset.replace('<', '<').replace('>', '>')}
           </button>
@@ -53,15 +54,18 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
       </div>
 
       {/* Custom < */}
-      <div className="inline-flex bg-gray-200 rounded-lg p-0.5 items-center">
+      <div className="inline-flex bg-muted rounded-lg p-0.5 items-center">
         <div
           onClick={(e) => {
             if (!isCustomLess) onChange(undefined);
             e.currentTarget.querySelector('input')?.focus();
           }}
-          className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-            isCustomLess ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700 focus-within:bg-white focus-within:shadow-sm focus-within:text-gray-700'
-          }`}
+          className={cn(
+            "flex items-center px-2 py-1 rounded-md text-xs font-medium transition-all cursor-pointer",
+            isCustomLess
+              ? buttonActive
+              : cn(buttonInactive, "focus-within:bg-background focus-within:shadow-sm focus-within:text-foreground")
+          )}
         >
           <span>&lt;</span>
           <input
@@ -84,15 +88,18 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
       </div>
 
       {/* Custom range ~ */}
-      <div className="inline-flex bg-gray-200 rounded-lg p-0.5 items-center">
+      <div className="inline-flex bg-muted rounded-lg p-0.5 items-center">
         <div
           onClick={(e) => {
             if (!isCustomRange) onChange(undefined);
             if (!(e.target instanceof HTMLInputElement)) e.currentTarget.querySelector('input')?.focus();
           }}
-          className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-            isCustomRange ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700 focus-within:bg-white focus-within:shadow-sm focus-within:text-gray-700'
-          }`}
+          className={cn(
+            "flex items-center px-2 py-1 rounded-md text-xs font-medium transition-all cursor-pointer",
+            isCustomRange
+              ? buttonActive
+              : cn(buttonInactive, "focus-within:bg-background focus-within:shadow-sm focus-within:text-foreground")
+          )}
         >
           <input
             type="number" min="1" max="100" step="1"
@@ -129,15 +136,18 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
       </div>
 
       {/* Custom > */}
-      <div className="inline-flex bg-gray-200 rounded-lg p-0.5 items-center">
+      <div className="inline-flex bg-muted rounded-lg p-0.5 items-center">
         <div
           onClick={(e) => {
             if (!isCustomGreater) onChange(undefined);
             e.currentTarget.querySelector('input')?.focus();
           }}
-          className={`flex items-center px-2 py-1 rounded-md text-[12px] font-medium transition-all cursor-pointer ${
-            isCustomGreater ? 'bg-white shadow-sm text-gray-700' : 'text-gray-500 hover:text-gray-700 focus-within:bg-white focus-within:shadow-sm focus-within:text-gray-700'
-          }`}
+          className={cn(
+            "flex items-center px-2 py-1 rounded-md text-xs font-medium transition-all cursor-pointer",
+            isCustomGreater
+              ? buttonActive
+              : cn(buttonInactive, "focus-within:bg-background focus-within:shadow-sm focus-within:text-foreground")
+          )}
         >
           <span>&gt;</span>
           <input

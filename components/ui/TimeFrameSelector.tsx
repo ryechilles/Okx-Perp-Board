@@ -1,6 +1,7 @@
 'use client';
 
 import { TimeFrame } from '@/lib/widget-utils';
+import { ToggleGroup, ToggleGroupItem } from './toggle-group';
 
 interface TimeFrameSelectorProps {
   value: TimeFrame;
@@ -10,26 +11,27 @@ interface TimeFrameSelectorProps {
 /**
  * TimeFrameSelector
  * Shared component for selecting 1h/4h/24h time frames
+ * Built on shadcn/ui ToggleGroup
  */
 export function TimeFrameSelector({ value, onChange }: TimeFrameSelectorProps) {
   return (
-    <div className="flex bg-gray-100 rounded-lg p-0.5">
+    <ToggleGroup
+      type="single"
+      value={value}
+      onValueChange={(v) => v && onChange(v as TimeFrame)}
+      size="sm"
+      className="bg-muted rounded-lg p-0.5"
+    >
       {(['1h', '4h', '24h'] as TimeFrame[]).map((tf) => (
-        <button
+        <ToggleGroupItem
           key={tf}
-          onClick={(e) => {
-            e.stopPropagation();
-            onChange(tf);
-          }}
-          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-            value === tf
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
+          value={tf}
+          onClick={(e) => e.stopPropagation()}
+          className="px-2.5 py-1 text-xs data-[state=on]:bg-background data-[state=on]:shadow-sm"
         >
           {tf}
-        </button>
+        </ToggleGroupItem>
       ))}
-    </div>
+    </ToggleGroup>
   );
 }
