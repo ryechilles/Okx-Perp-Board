@@ -112,9 +112,9 @@ html, body {
   animation: spin 0.8s linear infinite;
 }
 
-/* Custom checkbox accent */
+/* Custom checkbox accent - uses shadcn foreground color */
 input[type="checkbox"] {
-  accent-color: #1a1a1a;
+  accent-color: hsl(var(--foreground));
 }
 
 /* Hide number input spinners and cursor */
@@ -157,7 +157,7 @@ tr {
   right: 0;
   bottom: 0;
   width: 1px;
-  background: #e5e5e5;
+  background: hsl(var(--border));
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
 }
 

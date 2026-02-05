@@ -292,7 +292,7 @@ export default function PerpBoard() {
       {/* ===================================================================
           SECTION 1: Header (Logo + Title + Version + Exchange Buttons)
           =================================================================== */}
-      <div className="bg-white shadow-sm">
+      <div className="bg-card shadow-sm">
         <Header />
       </div>
 
@@ -401,7 +401,7 @@ export default function PerpBoard() {
             </div>
 
             {/* Data Table - flex-1 to fill remaining space */}
-            <div className="bg-white rounded-xl border border flex flex-col flex-1 overflow-hidden">
+            <div className="bg-card rounded-xl border flex flex-col flex-1 overflow-hidden">
               {/* Scrollable Table Container */}
               <div
                 ref={tableContainerRef}

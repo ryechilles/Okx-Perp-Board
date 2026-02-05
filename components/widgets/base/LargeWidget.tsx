@@ -66,7 +66,7 @@ export function LargeWidget({
     <div
       className={cn(
         // Base styles - flat card matching PillButton style
-        'bg-white rounded-xl',
+        'bg-card rounded-xl',
         // Subtle border and shadow for definition
         'border border shadow-sm',
         // Size constraints

@@ -93,7 +93,7 @@ export function TableRow({
       position: 'sticky',
       left: getStickyLeftOffset(key),
       zIndex: 10,
-      backgroundColor: '#ffffff',
+      backgroundColor: 'hsl(var(--card))',
       width: fixedWidth,
       minWidth: fixedWidth,
       maxWidth: fixedWidth,
@@ -125,14 +125,14 @@ export function TableRow({
     if (def.align === 'right') alignClass = 'text-right';
     if (def.align === 'center') alignClass = 'text-center';
 
-    const baseClass = `px-1 py-2.5 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-white group-hover:bg-muted/50' : ''}`;
+    const baseClass = `px-1 py-2.5 text-[13px] whitespace-nowrap ${alignClass} ${isFixed ? 'bg-card group-hover:bg-muted/50' : ''}`;
 
     switch (key) {
       case 'favorite':
         return (
           <td
             key={key}
-            className={`py-2.5 text-center ${isFixed ? 'bg-white group-hover:bg-muted/50' : ''}`}
+            className={`py-2.5 text-center ${isFixed ? 'bg-card group-hover:bg-muted/50' : ''}`}
             style={getCellStyle(key)}
           >
             <button

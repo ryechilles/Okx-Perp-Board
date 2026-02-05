@@ -60,7 +60,7 @@ export function TableHeader({
 
   return (
     <thead className="sticky top-0 z-20">
-      <tr className="bg-[#fafafa]">
+      <tr className="bg-secondary">
         {visibleColumns.map((key) => {
           const def = COLUMN_DEFINITIONS[key];
           const sortable = def.sortable !== false;
@@ -81,7 +81,7 @@ export function TableHeader({
                 position: 'sticky',
                 left: stickyLeft,
                 zIndex: 30,
-                backgroundColor: '#fafafa',
+                backgroundColor: 'hsl(var(--secondary))',
                 width: fixedWidth,
                 minWidth: fixedWidth,
                 maxWidth: fixedWidth,
@@ -107,7 +107,7 @@ export function TableHeader({
               onDragLeave={onDragLeave}
               onDrop={(e) => onDrop(e, key)}
               onDragEnd={onDragEnd}
-              className={`px-1 py-3 text-[11px] font-medium text-muted-foreground tracking-wide bg-[#fafafa] border-b border whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-muted' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
+              className={`px-1 py-3 text-[11px] font-medium text-muted-foreground tracking-wide bg-secondary border-b border whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-muted' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
               style={stickyStyle}
               onClick={() => sortable && onSort(key)}
             >
@@ -122,7 +122,7 @@ export function TableHeader({
                   <span className="relative group/tooltip ml-0.5" onClick={(e) => e.stopPropagation()}>
                     <Info className="w-3 h-3 text-muted-foreground hover:text-muted-foreground cursor-pointer" />
                     <div className={`absolute top-full mt-1.5 z-50 hidden group-hover/tooltip:block pointer-events-none ${isRightHalf ? 'right-0' : 'left-0'}`}>
-                      <div className="bg-white border border rounded-lg px-3 py-2.5 shadow-lg min-w-[200px] text-left pointer-events-auto">
+                      <div className="bg-popover border rounded-lg px-3 py-2.5 shadow-lg min-w-[200px] text-left pointer-events-auto">
                         <div className="text-[11px] text-muted-foreground font-medium mb-1.5">{tooltipItems[0]}</div>
                         <div className="text-[10px] text-muted-foreground space-y-0.5">
                           {tooltipItems.slice(1).map((item, i) => (
