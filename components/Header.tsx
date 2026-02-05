@@ -1,6 +1,7 @@
 'use client';
 
 import { APP_CONFIG } from '@/lib/config';
+import { Button } from '@/components/ui';
 
 // P Logo SVG Component - matches the new flat minimal logo design
 function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
@@ -75,24 +76,20 @@ export function Header() {
         </div>
 
         {/* Right: Exchange Buttons */}
-        <div className="flex items-center">
-          <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
+        <div className="flex items-center gap-1">
+          <Button variant="secondary" size="sm" asChild>
             <a
               href={APP_CONFIG.links.okx}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium bg-white text-gray-900 shadow-sm transition-all hover:bg-gray-50"
             >
               <OkxLogo className="w-4 h-4" />
-              <span>OKX</span>
+              OKX
             </a>
-            <button
-              disabled
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium text-gray-400 cursor-not-allowed transition-all"
-            >
-              <span>Coming Soon</span>
-            </button>
-          </div>
+          </Button>
+          <Button variant="ghost" size="sm" disabled>
+            Coming Soon
+          </Button>
         </div>
       </div>
     </header>

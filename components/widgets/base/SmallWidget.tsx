@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react';
 import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Card, CardHeader, CardContent } from '@/components/ui';
 
 export interface SmallWidgetProps {
   /** Widget title displayed in header */
@@ -32,27 +33,27 @@ export interface SmallWidgetProps {
  * Use for: Quick stats, mini charts, indicators
  *
  * Features:
- * - Flat card style matching PillButton aesthetic
+ * - Built on shadcn/ui Card component
  * - Subtle border and shadow for definition
  * - Consistent styling across all widgets
  * - Click info icon to show/hide explanation inline (smooth expand)
  *
  * Tooltip Guidelines:
- * - Use <TooltipContent> component from @/components/ui
+ * - Use <TooltipList> component from @/components/ui
  * - Pass array of strings or JSX elements
  * - Bullet points are added automatically
  * - Use colored spans for keywords
  *
  * @example
  * ```tsx
- * import { TooltipContent } from '@/components/ui';
+ * import { TooltipList } from '@/components/ui';
  *
  * <SmallWidget
  *   title="RSI Overview"
  *   icon={<Activity className="w-4 h-4" />}
  *   subtitle="Daily RSI distribution"
  *   tooltip={
- *     <TooltipContent items={[
+ *     <TooltipList items={[
  *       "Simple text explanation",
  *       "Another point here",
  *       <><span className="text-red-500">Keyword</span>: with explanation</>,
@@ -77,12 +78,8 @@ export function SmallWidget({
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <div
+    <Card
       className={cn(
-        // Base styles - flat card matching PillButton style
-        'bg-white rounded-xl',
-        // Subtle border and shadow for definition
-        'border border-gray-200 shadow-sm',
         // Size constraints
         'min-w-[280px] w-full',
         // Flex behavior in grid
@@ -91,14 +88,14 @@ export function SmallWidget({
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+      <CardHeader className="flex flex-row items-center justify-between px-4 py-3 border-b space-y-0">
         <div className="flex items-center gap-2 min-w-0">
           {icon && (
-            <span className="text-gray-500 flex-shrink-0">{icon}</span>
+            <span className="text-muted-foreground flex-shrink-0">{icon}</span>
           )}
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <h3 className="font-medium text-gray-900 text-sm truncate">
+              <h3 className="font-medium text-sm truncate">
                 {title}
               </h3>
               {tooltip && (
@@ -106,9 +103,9 @@ export function SmallWidget({
                   type="button"
                   onClick={() => setShowTooltip(!showTooltip)}
                   className={cn(
-                    'text-gray-400 hover:text-gray-600 transition-colors',
+                    'text-muted-foreground hover:text-foreground transition-colors',
                     'focus:outline-none rounded-full',
-                    showTooltip && 'text-blue-500 hover:text-blue-600'
+                    showTooltip && 'text-primary'
                   )}
                   aria-label="Toggle information"
                 >
@@ -117,7 +114,7 @@ export function SmallWidget({
               )}
             </div>
             {subtitle && (
-              <p className="text-xs text-gray-500 truncate">{subtitle}</p>
+              <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
             )}
           </div>
         </div>
@@ -126,13 +123,13 @@ export function SmallWidget({
             {headerActions}
           </div>
         )}
-      </div>
+      </CardHeader>
 
       {/* Content */}
-      <div className={cn('flex-1', padded && 'p-4')}>
+      <CardContent className={cn('flex-1', padded ? 'p-4' : 'p-0')}>
         {loading ? (
           <div className="flex items-center justify-center h-full min-h-[80px]">
-            <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-muted border-t-foreground rounded-full animate-spin" />
           </div>
         ) : (
           <>
@@ -140,16 +137,16 @@ export function SmallWidget({
 
             {/* Inline Tooltip - auto height */}
             {tooltip && showTooltip && (
-              <div className="mt-4 pt-3 border-t border-gray-100">
-                <div className="text-[11px] text-gray-500 space-y-1">
+              <div className="mt-4 pt-3 border-t">
+                <div className="text-[11px] text-muted-foreground space-y-1">
                   {tooltip}
                 </div>
               </div>
             )}
           </>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

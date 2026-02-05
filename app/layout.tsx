@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/react';
 import { APP_CONFIG } from '@/lib/config';
+import { TooltipProvider } from '@/components/ui';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -34,9 +35,11 @@ export default function RootLayout({
         <meta name="theme-color" content="#22B96A" />
       </head>
       <body>
+        <TooltipProvider>
           {children}
-          <Analytics />
-        </body>
+        </TooltipProvider>
+        <Analytics />
+      </body>
     </html>
   );
 }
