@@ -38,6 +38,12 @@ export interface SmallWidgetProps {
  * - Consistent styling across all widgets
  * - Click info icon to show/hide explanation inline (smooth expand)
  *
+ * Design Guidelines:
+ * - Avoid bg-muted for small elements (badges, counters) - looks boxy
+ * - Use border instead of bg-muted for toggle groups
+ * - Keep functional colors (green/red) for data, shadcn vars for UI
+ * - hover states: use hover:bg-muted/50 (subtle, not solid)
+ *
  * Tooltip Guidelines:
  * - Use <TooltipList> component from @/components/ui
  * - Pass array of strings or JSX elements
