@@ -35,7 +35,7 @@ function KillerSectionHeader({
 
   return (
     <div
-      className={`flex items-center justify-between mb-3 pb-2 border-b border ${
+      className={`flex items-center justify-between mb-3 pb-2 border-b ${
         canClick ? 'cursor-pointer hover:opacity-80' : ''
       }`}
       onClick={() => canClick && onClick()}
