@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { Search, Settings, RotateCcw } from 'lucide-react';
 import { ColumnVisibility, ColumnKey, Filters, RsiSignalType } from '@/lib/types';
 import { getDefaultColumns } from '@/lib/defaults';
 import { RsiFilter } from './RsiFilter';
-import { PillButtonGroup, PillButtonOption } from '@/components/ui';
+import { PillButtonGroup, PillButtonOption, Button, Tabs, TabsList, TabsTrigger } from '@/components/ui';
 
 // Quick filter types
 type QuickFilter = 'all' | 'top25' | 'meme' | 'noSpot' | 'newListed' | 'overbought' | 'oversold';
@@ -255,20 +256,8 @@ export function Controls({
     <>
       {/* Mobile Search Row - minimal style */}
       <div className="md:hidden mb-3 w-full">
-        <label className="flex items-center gap-2 w-full border-b border-gray-300 pb-2 cursor-text">
-          <svg
-            className="w-4 h-4 text-gray-400 flex-shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
+        <label className="flex items-center gap-2 w-full border-b border-border pb-2 cursor-text">
+          <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
           <input
             ref={mobileSearchInputRef}
             type="text"
@@ -299,44 +288,21 @@ export function Controls({
         />
 
         {/* Settings icon */}
-        <button
+        <Button
           ref={customizeButtonRef}
-          type="button"
-          className="cursor-pointer p-1"
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => setShowCustomizePanel(!showCustomizePanel)}
           aria-label="Toggle settings panel"
           aria-expanded={showCustomizePanel}
         >
-          <svg
-            className="w-4 h-4 text-gray-400"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
+          <Settings className="w-4 h-4 text-muted-foreground" />
+        </Button>
 
         {/* Search */}
         <label className="hidden md:inline-flex items-center gap-1 cursor-text">
-          <svg
-            className="w-4 h-4 text-gray-400"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
+          <Search className="w-4 h-4 text-muted-foreground" />
           <input
             ref={searchInputRef}
             type="text"
@@ -366,35 +332,28 @@ export function Controls({
       >
         <div className="h-full flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <div className="inline-flex bg-gray-200 rounded-lg p-1 gap-0.5">
-              <button
-                onClick={() => setCustomizeTab('columns')}
-                className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                  customizeTab === 'columns'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : hasNonDefaultColumns
-                    ? 'text-blue-500 hover:text-blue-600'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Columns {hasNonDefaultColumns && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 ml-1" />}
-              </button>
-              <button
-                onClick={() => setCustomizeTab('filters')}
-                className={`px-3 py-1.5 rounded-md text-[13px] font-medium transition-all ${
-                  customizeTab === 'filters'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : hasFilters
-                    ? 'text-blue-500 hover:text-blue-600'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Filters {hasFilters && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 ml-1" />}
-              </button>
-            </div>
+          <div className="flex items-center justify-between p-4 border-b">
+            <Tabs value={customizeTab} onValueChange={(v) => setCustomizeTab(v as 'columns' | 'filters')}>
+              <TabsList>
+                <TabsTrigger
+                  value="columns"
+                  className={hasNonDefaultColumns && customizeTab !== 'columns' ? 'text-primary' : ''}
+                >
+                  Columns {hasNonDefaultColumns && <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary ml-1" />}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="filters"
+                  className={hasFilters && customizeTab !== 'filters' ? 'text-primary' : ''}
+                >
+                  Filters {hasFilters && <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary ml-1" />}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
             {(hasFilters || hasNonDefaultColumns) && (
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
                 onClick={() => {
                   if (customizeTab === 'columns') {
                     onColumnsPreset('default');
@@ -402,14 +361,10 @@ export function Controls({
                     handleClearFilters();
                   }
                 }}
-              className="p-1.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200"
-              title={customizeTab === 'columns' ? 'Reset columns' : 'Reset filters'}
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                <path d="M3 3v5h5" />
-              </svg>
-            </button>
+                title={customizeTab === 'columns' ? 'Reset columns' : 'Reset filters'}
+              >
+                <RotateCcw className="w-4 h-4" />
+              </Button>
             )}
           </div>
 
