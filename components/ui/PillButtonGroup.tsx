@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Badge } from './badge';
 
 // Single button option
 export interface PillButtonOption<T extends string = string> {
@@ -63,51 +64,10 @@ export type PillButtonGroupProps<T extends string = string> =
   | PillButtonGroupMultiProps<T>;
 
 /**
- * PillButtonGroup - Segmented control / pill button group template
+ * PillButtonGroup - Segmented control built on shadcn/ui design system
  *
  * A group of toggle buttons with pill/rounded style.
  * Supports both single-select and multi-select modes.
- *
- * Features:
- * - Single-select (default): mutually exclusive selection
- * - Multi-select: toggle multiple options on/off
- * - Size variants: 'sm' (compact) or 'md' (default)
- * - Support for icons, badges, custom active colors
- * - Optional tooltips on hover
- * - Responsive (hiddenOnMobile option)
- *
- * @example Single-select (default)
- * ```tsx
- * <PillButtonGroup
- *   options={[
- *     { value: 'all', label: 'All' },
- *     { value: 'active', label: 'Active' },
- *   ]}
- *   value={filter}
- *   onChange={setFilter}
- * />
- * ```
- *
- * @example Single-select with deselect
- * ```tsx
- * <PillButtonGroup
- *   options={rankOptions}
- *   value={filters.rank}
- *   onChange={(v) => setFilters({ ...filters, rank: v })}
- *   allowDeselect
- * />
- * ```
- *
- * @example Multi-select (for column toggles)
- * ```tsx
- * <PillButtonGroup
- *   options={columnOptions}
- *   value={activeColumns}
- *   onChange={setActiveColumns}
- *   multiSelect
- *   size="sm"
- * />
- * ```
  */
 export function PillButtonGroup<T extends string = string>(props: PillButtonGroupProps<T>) {
   const {
@@ -123,10 +83,10 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
 
   const [hoveredValue, setHoveredValue] = useState<T | null>(null);
 
-  // Size-based styles
+  // Size-based styles using shadcn conventions
   const sizeStyles = {
-    sm: 'px-2.5 py-1 text-[12px]',
-    md: 'px-3 py-1.5 text-[13px]',
+    sm: 'h-7 px-2.5 text-xs',
+    md: 'h-8 px-3 text-sm',
   };
 
   // Check if a value is active
@@ -147,7 +107,6 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
       (onChange as (value: T[]) => void)(newValues);
     } else {
       if (allowDeselect && value === optionValue) {
-        // Deselect - pass undefined cast as T (caller should handle)
         (onChange as (value: T) => void)(undefined as unknown as T);
       } else {
         (onChange as (value: T) => void)(optionValue);
@@ -156,7 +115,12 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
   };
 
   return (
-    <div className={cn('inline-flex bg-gray-200 rounded-lg p-1 gap-0.5 flex-wrap', className)}>
+    <div
+      className={cn(
+        'inline-flex items-center rounded-lg bg-muted p-1 gap-0.5 flex-wrap',
+        className
+      )}
+    >
       {options.map((option) => {
         const active = isActive(option.value);
         const isHovered = hoveredValue === option.value;
@@ -172,33 +136,38 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
               onClick={() => !option.disabled && handleClick(option.value)}
               disabled={option.disabled}
               className={cn(
-                // Base styles
-                'rounded-md font-medium transition-all',
+                // Base styles - shadcn button-like
+                'inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md font-medium',
+                'ring-offset-background transition-all',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 sizeStyles[size],
-                // Flex for icon + label + badge
-                option.icon || option.badge !== undefined ? 'flex items-center gap-1' : '',
                 // Active state
                 active
-                  ? cn('bg-white shadow-sm', option.activeColor || 'text-gray-900')
-                  : 'text-gray-500 hover:text-gray-700',
+                  ? cn(
+                      'bg-background text-foreground shadow-sm',
+                      option.activeColor
+                    )
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50',
                 // Disabled state
-                option.disabled && 'opacity-50 cursor-not-allowed'
+                option.disabled && 'pointer-events-none opacity-50'
               )}
             >
               {option.icon}
               {option.label}
               {option.badge !== undefined && (
-                <span className="text-gray-500 font-normal">{option.badge}</span>
+                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">
+                  {option.badge}
+                </Badge>
               )}
             </button>
 
-            {/* Tooltip */}
+            {/* Tooltip - using shadcn card-like styling */}
             {option.tooltip && isHovered && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-[70] whitespace-nowrap">
+              <div className="absolute top-full left-0 mt-2 z-50 rounded-md border bg-popover p-3 text-popover-foreground shadow-md whitespace-nowrap animate-in fade-in-0 zoom-in-95">
                 {typeof option.tooltip === 'string' ? (
                   <>
-                    <div className="text-[11px] font-medium text-gray-500 mb-1">Filter Criteria</div>
-                    <div className="text-[12px] text-gray-900">{option.tooltip}</div>
+                    <div className="text-[11px] font-medium text-muted-foreground mb-1">Filter Criteria</div>
+                    <div className="text-xs">{option.tooltip}</div>
                   </>
                 ) : (
                   option.tooltip
