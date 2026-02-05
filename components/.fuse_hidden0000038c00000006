@@ -32,7 +32,7 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
       subtitle={`Avg RSI ≥ ${RSI.OVERBOUGHT} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
       loading={isLoading}
       tooltip={
-        <TooltipList items={[
+        <TooltipContent items={[
           `Filters OKX perp top ${WIDGET.TOP_TOKENS_COUNT} by market cap`,
           "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
           `Shows tokens with Avg RSI ≥ ${RSI.OVERBOUGHT}`,

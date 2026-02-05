@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { TrendingDown } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
-import { TooltipContent, TokenAvatar } from '@/components/ui';
+import { TooltipList, TokenAvatar } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
 import { formatPrice, getRsiOversoldPillStyle } from '@/lib/utils';
 import { getTokensByRsiThreshold } from '@/lib/widget-utils';
@@ -32,7 +32,7 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
       subtitle={`Avg RSI ≤ ${RSI.OVERSOLD} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
       loading={isLoading}
       tooltip={
-        <TooltipContent items={[
+        <TooltipList items={[
           `Filters OKX perp top ${WIDGET.TOP_TOKENS_COUNT} by market cap`,
           "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
           `Shows tokens with Avg RSI ≤ ${RSI.OVERSOLD}`,

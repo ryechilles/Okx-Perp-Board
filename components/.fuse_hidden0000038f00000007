@@ -69,7 +69,7 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
       headerActions={<TimeFrameSelector value={timeFrame} onChange={setTimeFrame} />}
       loading={isLoading}
       tooltip={
-        <TooltipList items={[
+        <TooltipContent items={[
           "Top 5 gainers from OKX perp top 100",
           "Excludes BTC",
           "Click token to filter in table",

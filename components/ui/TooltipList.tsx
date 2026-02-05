@@ -26,7 +26,7 @@ interface TooltipContentProps {
  * >
  * ```
  */
-export function TooltipContent({ items }: TooltipContentProps) {
+export function TooltipList({ items }: TooltipContentProps) {
   return (
     <div className="space-y-1">
       {items.map((item, i) => (

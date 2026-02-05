@@ -24,7 +24,7 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
       loading={isLoading}
       className="w-full"
       tooltip={
-        <TooltipList items={[
+        <TooltipContent items={[
           "OKX perp top 100 by market cap",
           "Avg = (D-RSI7 + D-RSI14) / 2",
           "≤20: Extreme Oversold",

@@ -1,25 +1,25 @@
 'use client';
 
 import { useMemo } from 'react';
-import { TrendingUp } from 'lucide-react';
+import { TrendingDown } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
 import { TooltipList, TokenAvatar } from '@/components/ui';
 import { ProcessedTicker, RSIData, MarketCapData } from '@/lib/types';
-import { formatPrice, getRsiOverboughtPillStyle } from '@/lib/utils';
+import { formatPrice, getRsiOversoldPillStyle } from '@/lib/utils';
 import { getTokensByRsiThreshold } from '@/lib/widget-utils';
 import { RSI, WIDGET } from '@/lib/constants';
 
-interface RsiOverboughtProps {
+interface RsiOversoldProps {
   tickers: Map<string, ProcessedTicker>;
   rsiData: Map<string, RSIData>;
   marketCapData: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
 }
 
-export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }: RsiOverboughtProps) {
-  // Get overbought tokens using shared utility
-  const overboughtTokens = useMemo(
-    () => getTokensByRsiThreshold(tickers, rsiData, marketCapData, 'overbought'),
+export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: RsiOversoldProps) {
+  // Get oversold tokens using shared utility
+  const oversoldTokens = useMemo(
+    () => getTokensByRsiThreshold(tickers, rsiData, marketCapData, 'oversold'),
     [tickers, rsiData, marketCapData]
   );
 
@@ -27,16 +27,16 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
 
   return (
     <SmallWidget
-      title="RSI Overbought"
-      icon={<TrendingUp className="w-4 h-4" />}
-      subtitle={`Avg RSI ≥ ${RSI.OVERBOUGHT} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
+      title="RSI Oversold"
+      icon={<TrendingDown className="w-4 h-4" />}
+      subtitle={`Avg RSI ≤ ${RSI.OVERSOLD} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
       loading={isLoading}
       tooltip={
-        <TooltipList items={[
+        <TooltipContent items={[
           `Filters OKX perp top ${WIDGET.TOP_TOKENS_COUNT} by market cap`,
           "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
-          `Shows tokens with Avg RSI ≥ ${RSI.OVERBOUGHT}`,
-          "Higher RSI = potentially overbought",
+          `Shows tokens with Avg RSI ≤ ${RSI.OVERSOLD}`,
+          "Lower RSI = potentially oversold",
         ]} />
       }
     >
@@ -55,8 +55,8 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
               </div>
             </div>
           ))
-        ) : overboughtTokens.length > 0 ? (
-          overboughtTokens.map((token, i) => (
+        ) : oversoldTokens.length > 0 ? (
+          oversoldTokens.map((token, i) => (
             <div
               key={token.instId}
               className="flex items-center justify-between py-1.5 cursor-pointer hover:bg-gray-50 rounded -mx-2 px-2"
@@ -69,7 +69,7 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
               </div>
               <div className="flex items-center">
                 <span className="text-[11px] text-gray-500 tabular-nums w-16 text-center">{formatPrice(token.price)}</span>
-                <span className={`text-[11px] font-semibold tabular-nums w-14 text-center py-0.5 rounded-md ${getRsiOverboughtPillStyle(token.avgRsi)}`}>
+                <span className={`text-[11px] font-semibold tabular-nums w-14 text-center py-0.5 rounded-md ${getRsiOversoldPillStyle(token.avgRsi)}`}>
                   {token.avgRsi.toFixed(1)}
                 </span>
               </div>
@@ -77,7 +77,7 @@ export function RsiOverbought({ tickers, rsiData, marketCapData, onTokenClick }:
           ))
         ) : (
           <div className="text-center py-4 text-[11px] text-gray-400">
-            No overbought tokens in Top {WIDGET.TOP_TOKENS_COUNT}
+            No oversold tokens in Top {WIDGET.TOP_TOKENS_COUNT}
           </div>
         )}
       </div>
