@@ -63,6 +63,10 @@ function OkxLogo({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 export function Header() {
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   return (
     <header className="px-4 sm:px-6 py-2 flex-shrink-0">
       <div className="max-w-[1600px] mx-auto w-full flex items-center justify-between">
@@ -75,20 +79,11 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right: Exchange Buttons */}
-        <div className="flex items-center gap-1">
-          <Button variant="secondary" size="sm" asChild>
-            <a
-              href={APP_CONFIG.links.okx}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <OkxLogo className="w-4 h-4" />
-              OKX
-            </a>
-          </Button>
-          <Button variant="ghost" size="sm" disabled>
-            Coming Soon
+        {/* Right: OKX Button (Refresh) */}
+        <div className="flex items-center">
+          <Button variant="secondary" size="sm" onClick={handleRefresh}>
+            <OkxLogo className="w-4 h-4" />
+            OKX
           </Button>
         </div>
       </div>
