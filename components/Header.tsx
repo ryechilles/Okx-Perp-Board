@@ -1,7 +1,7 @@
 'use client';
 
 import { APP_CONFIG } from '@/lib/config';
-import { Button } from '@/components/ui';
+import { Button, ThemeToggle } from '@/components/ui';
 
 // P Logo SVG Component - matches the new flat minimal logo design
 function PerpLogo({ className = "w-7 h-7" }: { className?: string }) {
@@ -79,8 +79,9 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right: OKX Button (Refresh) */}
-        <div className="flex items-center">
+        {/* Right: Theme Toggle + OKX Button (Refresh) */}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Button variant="secondary" size="sm" onClick={handleRefresh}>
             <OkxLogo className="w-4 h-4" />
             OKX

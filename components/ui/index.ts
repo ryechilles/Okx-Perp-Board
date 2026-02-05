@@ -5,6 +5,7 @@ export { TokenAvatar } from './TokenAvatar';
 export { TimeFrameSelector } from './TimeFrameSelector';
 export { TooltipList } from './TooltipList';
 export { Spinner } from './spinner';
+export { ThemeToggle } from './ThemeToggle';
 
 // shadcn/ui components
 export { Button, buttonVariants } from './button';
