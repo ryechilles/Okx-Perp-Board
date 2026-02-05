@@ -43,7 +43,7 @@ function KillerSectionHeader({
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${dotColor}`} />
         <span className="text-[12px] font-medium text-foreground">{title}</span>
-        <span className="text-[11px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+        <span className="text-[11px] text-muted-foreground tabular-nums">
           {isLoading ? '--' : count}
         </span>
       </div>
