@@ -55,6 +55,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -68,11 +71,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #f3f4f6;
+  /* 字体和背景色现在统一由 shadcn 变量控制 (见上方 @layer base) */
 }
 
 /* Hide all scrollbars globally */
