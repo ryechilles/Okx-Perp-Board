@@ -8,6 +8,7 @@ import {
   MarketCapData,
   ColumnKey,
 } from '@/lib/types';
+import { Button } from '@/components/ui';
 import {
   COLUMN_DEFINITIONS,
   formatPrice,
@@ -135,9 +136,10 @@ export function TableRow({
             className={`py-2.5 text-center ${isFixed ? 'bg-card group-hover:bg-muted/50' : ''}`}
             style={getCellStyle(key)}
           >
-            <button
-              type="button"
-              className={`bg-transparent border-none cursor-pointer text-sm transition-colors ${
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-6 w-6 text-sm ${
                 isFavorite
                   ? 'text-yellow-400'
                   : 'text-muted hover:text-yellow-400'
@@ -147,7 +149,7 @@ export function TableRow({
               aria-pressed={isFavorite}
             >
               {isFavorite ? '★' : '☆'}
-            </button>
+            </Button>
           </td>
         );
 
@@ -376,7 +378,7 @@ export function TableRow({
             <span
               className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${
                 hasSpot
-                  ? 'bg-green-100 text-green-600'
+                  ? 'bg-green-500/15 text-green-500'
                   : 'bg-muted text-muted-foreground'
               }`}
             >

@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Card, CardHeader, CardContent, Spinner } from '@/components/ui';
+import { Button, Card, CardHeader, CardContent, Spinner } from '@/components/ui';
 
 export interface SmallWidgetProps {
   /** Widget title displayed in header */
@@ -105,18 +105,18 @@ export function SmallWidget({
                 {title}
               </h3>
               {tooltip && (
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setShowTooltip(!showTooltip)}
                   className={cn(
-                    'text-muted-foreground hover:text-foreground transition-colors',
-                    'focus:outline-none rounded-full',
+                    'h-5 w-5 rounded-full text-muted-foreground hover:text-foreground',
                     showTooltip && 'text-primary'
                   )}
                   aria-label="Toggle information"
                 >
                   <Info className="w-3.5 h-3.5" />
-                </button>
+                </Button>
               )}
             </div>
             {subtitle && (

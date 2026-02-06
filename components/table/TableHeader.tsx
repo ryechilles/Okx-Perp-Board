@@ -107,7 +107,7 @@ export function TableHeader({
               onDragLeave={onDragLeave}
               onDrop={(e) => onDrop(e, key)}
               onDragEnd={onDragEnd}
-              className={`px-1 py-3 text-[11px] font-medium text-muted-foreground tracking-wide bg-secondary border-b border whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-muted' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''} select-none`}
+              className={`px-1 py-3 text-[11px] font-medium text-muted-foreground tracking-wide bg-secondary border-b border whitespace-nowrap ${alignClass} ${sortable ? 'cursor-pointer hover:bg-muted' : ''} ${!isFixed ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'bg-accent border-l-2 border-l-primary' : ''} select-none`}
               style={stickyStyle}
               onClick={() => sortable && onSort(key)}
             >

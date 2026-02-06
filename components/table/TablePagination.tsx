@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@/components/ui';
+
 interface TablePaginationProps {
   currentPage: number;
   totalPages: number;
@@ -44,20 +46,24 @@ export function TablePagination({
         />
       </div>
       <div className="flex items-center gap-1">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="px-2 py-1 text-xs text-muted-foreground hover:bg-muted rounded disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-2 py-1 h-auto text-xs text-muted-foreground"
         >
           ««
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-2 py-1 text-xs text-muted-foreground hover:bg-muted rounded disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-2 py-1 h-auto text-xs text-muted-foreground"
         >
           «
-        </button>
+        </Button>
 
         {/* Page numbers */}
         {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -72,34 +78,38 @@ export function TablePagination({
             pageNum = currentPage - 2 + i;
           }
           return (
-            <button
+            <Button
               key={pageNum}
+              variant={currentPage === pageNum ? 'default' : 'ghost'}
+              size="sm"
               onClick={() => onPageChange(pageNum)}
-              className={`px-2.5 py-1 text-xs rounded transition-colors ${
-                currentPage === pageNum
-                  ? 'bg-foreground text-background'
-                  : 'text-muted-foreground hover:bg-muted'
+              className={`px-2.5 py-1 h-auto text-xs ${
+                currentPage !== pageNum ? 'text-muted-foreground' : ''
               }`}
             >
               {pageNum}
-            </button>
+            </Button>
           );
         })}
 
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-2 py-1 text-xs text-muted-foreground hover:bg-muted rounded disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-2 py-1 h-auto text-xs text-muted-foreground"
         >
           »
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-2 py-1 text-xs text-muted-foreground hover:bg-muted rounded disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-2 py-1 h-auto text-xs text-muted-foreground"
         >
           »»
-        </button>
+        </Button>
       </div>
     </div>
   );
