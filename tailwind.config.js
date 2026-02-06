@@ -12,6 +12,9 @@ module.exports = {
     // AHR999 zone colors
     'bg-green-500', 'bg-emerald-400', 'bg-orange-400', 'bg-red-400', 'bg-red-600',
     'text-green-600', 'text-emerald-500', 'text-orange-500', 'text-red-500', 'text-red-600',
+    // AHR999 dark mode variants
+    'dark:text-green-400', 'dark:text-emerald-400', 'dark:text-orange-400', 'dark:text-red-400',
+    'dark:bg-green-950/40', 'dark:bg-emerald-950/40', 'dark:bg-orange-950/40', 'dark:bg-red-950/40',
     // RSI pill styles
     'bg-green-300', 'bg-green-400', 'text-green-800',
     'bg-red-500', 'text-white',
