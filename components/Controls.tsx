@@ -47,6 +47,11 @@ export function Controls({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
+  // Sync tempFilters when external filters change (e.g. URL state, other components)
+  useEffect(() => {
+    setTempFilters(filters);
+  }, [filters]);
+
   // Close panel when clicking outside
   useEffect(() => {
     if (!showCustomizePanel) return;

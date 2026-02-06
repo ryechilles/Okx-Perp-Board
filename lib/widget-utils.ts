@@ -7,6 +7,27 @@ import { ProcessedTicker, RSIData, MarketCapData, TokenWithRsi } from './types';
 import { RSI, FUNDING, WIDGET } from './constants';
 
 // ===========================================
+// TradingView Script Loader
+// ===========================================
+
+const TV_MINI_CHART_SRC = 'https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js';
+
+/**
+ * Load TradingView mini-chart web component script exactly once.
+ * Uses DOM query to detect if already loaded — safe across modules and Strict Mode.
+ */
+export function loadTradingViewMiniChart(): void {
+  if (typeof document === 'undefined') return;
+  if (document.querySelector(`script[src="${TV_MINI_CHART_SRC}"]`)) return;
+
+  const script = document.createElement('script');
+  script.type = 'module';
+  script.src = TV_MINI_CHART_SRC;
+  script.onerror = () => console.warn('Failed to load TradingView mini-chart script');
+  document.head.appendChild(script);
+}
+
+// ===========================================
 // Types
 // ===========================================
 
