@@ -48,7 +48,7 @@ export function RsiFilter({ label, value, onChange }: RsiFilterProps) {
             onClick={() => onChange(preset)}
             className={cn(buttonBase, value === preset ? buttonActive : buttonInactive)}
           >
-            {preset.replace('<', '<').replace('>', '>')}
+            {preset}
           </button>
         ))}
       </div>

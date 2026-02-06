@@ -156,8 +156,9 @@ export function getRsiCache(): Map<string, RSIData> | null {
   const entry = getCache<Record<string, RSIData>>(CACHE_KEYS.RSI_CACHE);
   if (!isCacheValid(entry, TIMING.CACHE_RSI)) return null;
 
+  if (!entry) return null;
   console.log(`[Cache] Loaded RSI cache (${getCacheAge(entry)}min old)`);
-  return new Map(Object.entries(entry!.data));
+  return new Map(Object.entries(entry.data));
 }
 
 /**
@@ -174,8 +175,9 @@ export function getMarketCapCache(): Map<string, MarketCapData> | null {
   const entry = getCache<Record<string, MarketCapData>>(CACHE_KEYS.MARKET_CAP_CACHE);
   if (!isCacheValid(entry, TIMING.CACHE_MARKET_CAP)) return null;
 
+  if (!entry) return null;
   console.log(`[Cache] Loaded market cap cache (${getCacheAge(entry)}min old)`);
-  return new Map(Object.entries(entry!.data)) as Map<string, MarketCapData>;
+  return new Map(Object.entries(entry.data)) as Map<string, MarketCapData>;
 }
 
 /**
@@ -190,8 +192,8 @@ export function setMarketCapCache(data: Map<string, MarketCapData>): boolean {
  */
 export function getLogoCache(): Record<string, string> {
   const entry = getCache<Record<string, string>>(CACHE_KEYS.LOGO_CACHE);
-  if (!isCacheValid(entry, TIMING.CACHE_LOGO)) return {};
-  return entry!.data;
+  if (!isCacheValid(entry, TIMING.CACHE_LOGO) || !entry) return {};
+  return entry.data;
 }
 
 /**

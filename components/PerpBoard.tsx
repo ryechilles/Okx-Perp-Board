@@ -105,8 +105,14 @@ export default function PerpBoard() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    store.initialize();
-    return () => store.cleanup();
+    let cancelled = false;
+    store.initialize().catch((err) => {
+      if (!cancelled) console.error('Failed to initialize:', err);
+    });
+    return () => {
+      cancelled = true;
+      store.cleanup();
+    };
   }, []);
 
   // Monitor horizontal scroll for sticky column shadow

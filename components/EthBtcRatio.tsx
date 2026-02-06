@@ -2,22 +2,22 @@
 
 import { useEffect, useRef } from 'react';
 
+// Track whether the TradingView mini-chart script has been loaded globally
+let tvMiniChartScriptLoaded = false;
+
 export function EthBtcRatio() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
+    if (tvMiniChartScriptLoaded) return;
 
-    // Load TradingView script
+    // Load TradingView script once globally (web component script, no need to remove)
     const script = document.createElement('script');
     script.type = 'module';
     script.src = 'https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js';
     document.head.appendChild(script);
-
-    return () => {
-      // Cleanup script on unmount
-      script.remove();
-    };
+    tvMiniChartScriptLoaded = true;
   }, []);
 
   return (

@@ -75,7 +75,7 @@ export function Controls({
     if (filters.listAge === '<180d' && !filters.rsi7 && !filters.rsi14) return 'newListed';
     if (filters.rsi7 === '>75' && filters.rsi14 === '>75') return 'overbought';
     if (filters.rsi7 === '<25' && filters.rsi14 === '<25') return 'oversold';
-    if (Object.keys(filters).length === 0) return 'all';
+    if (Object.values(filters).every(v => v === undefined || v === '' || (Array.isArray(v) && v.length === 0))) return 'all';
     return 'all';
   };
 

@@ -23,6 +23,10 @@ export async function fetchRSIForInstrument(instId: string): Promise<RSIData | n
     // Fetch daily candles for RSI and 7D change
     // Need more candles for RSI to converge properly (TradingView uses ~100+ bars)
     const response = await fetch(`${OKX_REST_BASE}/market/candles?instId=${instId}&bar=1D&limit=100`);
+    if (!response.ok) {
+      console.warn(`Daily candles HTTP error for ${instId}: ${response.status}`);
+      return null;
+    }
     const data = await response.json();
 
     let rsi7: number | null = null;

@@ -13,6 +13,10 @@ const OKX_REST_BASE = API.OKX_REST_BASE;
 export async function fetchTickersREST(): Promise<ProcessedTicker[]> {
   try {
     const response = await fetch(`${OKX_REST_BASE}/market/tickers?instType=SWAP`);
+    if (!response.ok) {
+      console.error(`Failed to fetch tickers: HTTP ${response.status}`);
+      return [];
+    }
     const data = await response.json();
 
     if (data.code === '0' && data.data) {
@@ -29,6 +33,10 @@ export async function fetchTickersREST(): Promise<ProcessedTicker[]> {
 export async function fetchSpotSymbols(): Promise<Set<string>> {
   try {
     const response = await fetch(`${OKX_REST_BASE}/market/tickers?instType=SPOT`);
+    if (!response.ok) {
+      console.error(`Failed to fetch spot symbols: HTTP ${response.status}`);
+      return new Set<string>();
+    }
     const data = await response.json();
 
     if (data.code === '0' && data.data) {
@@ -124,7 +132,8 @@ export async function fetchFundingRates(): Promise<Map<string, FundingRateData>>
             };
           }
           return null;
-        } catch {
+        } catch (err) {
+          console.warn(`Funding rate fetch failed for ${instId}:`, err);
           return null;
         }
       });

@@ -29,7 +29,10 @@ export function ThemeToggle() {
     }
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    // Render invisible placeholder to prevent layout shift
+    return <Button variant="secondary" size="sm" aria-label="Toggle dark mode" className="invisible"><Moon className="w-4 h-4" /></Button>;
+  }
 
   return (
     <Button variant="secondary" size="sm" onClick={toggle} aria-label="Toggle dark mode">

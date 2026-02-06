@@ -1,5 +1,7 @@
 'use client';
 
+import { useId } from 'react';
+
 interface SparklineProps {
   data?: number[];       // Real price data array
   change: number;        // Percentage change for color
@@ -15,7 +17,7 @@ interface SparklineProps {
 export function Sparkline({ data, change, width = 50, height = 20, className = '' }: SparklineProps) {
   const isPositive = change >= 0;
   const color = isPositive ? '#22c55e' : '#ef4444'; // green-500 / red-500
-  const gradientId = `sparkline-gradient-${Math.random().toString(36).substr(2, 9)}`;
+  const gradientId = `sparkline-gradient-${useId()}`;
 
   // Generate points from real data or simulated data
   const generatePoints = (): { line: string; area: string } => {

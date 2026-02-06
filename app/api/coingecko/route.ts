@@ -7,19 +7,36 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const page = searchParams.get('page') || '1';
+  const pageParam = searchParams.get('page') || '1';
+
+  // Validate page parameter to prevent cache pollution
+  const pageNum = parseInt(pageParam, 10);
+  if (isNaN(pageNum) || pageNum < 1 || pageNum > 10) {
+    return NextResponse.json(
+      { error: 'Invalid page parameter. Must be 1-10.' },
+      { status: 400 }
+    );
+  }
+  const page = String(pageNum);
 
   // Check cache first (per page)
   const cacheKey = `page_${page}`;
   const cached = cache[cacheKey];
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`[CoinGecko Proxy] Returning cached page ${page}`);
     return NextResponse.json(cached.data);
   }
 
   try {
+    // Build URL safely using URL API
+    const apiUrl = new URL('https://api.coingecko.com/api/v3/coins/markets');
+    apiUrl.searchParams.set('vs_currency', 'usd');
+    apiUrl.searchParams.set('order', 'market_cap_desc');
+    apiUrl.searchParams.set('per_page', '250');
+    apiUrl.searchParams.set('page', page);
+    apiUrl.searchParams.set('sparkline', 'true');
+
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=true`,
+      apiUrl.toString(),
       {
         headers: {
           'Accept': 'application/json',
@@ -41,7 +58,6 @@ export async function GET(request: Request) {
 
     // Update cache for this page
     cache[cacheKey] = { data, timestamp: Date.now() };
-    console.log(`[CoinGecko Proxy] Cached page ${page}, ${Array.isArray(data) ? data.length : 0} coins`);
 
     return NextResponse.json(data);
   } catch (error) {

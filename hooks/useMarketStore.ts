@@ -342,16 +342,20 @@ export function useMarketStore() {
     };
 
     if (filters.rsi7) {
-      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi7, filters.rsi7!));
+      const rsi7Filter = filters.rsi7;
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi7, rsi7Filter));
     }
     if (filters.rsi14) {
-      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi14, filters.rsi14!));
+      const rsi14Filter = filters.rsi14;
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi14, rsi14Filter));
     }
     if (filters.rsiW7) {
-      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW7, filters.rsiW7!));
+      const rsiW7Filter = filters.rsiW7;
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW7, rsiW7Filter));
     }
     if (filters.rsiW14) {
-      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW14, filters.rsiW14!));
+      const rsiW14Filter = filters.rsiW14;
+      filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW14, rsiW14Filter));
     }
 
     if (filters.hasSpot) {
@@ -432,21 +436,23 @@ export function useMarketStore() {
 
     // D-RSI Avg Signal filter
     if (filters.dRsiSignal && filters.dRsiSignal.length > 0) {
+      const dRsiSignalFilter = filters.dRsiSignal;
       filtered = filtered.filter(t => {
         const rsi = rsiData.get(t.instId);
         if (!rsi) return false;
         const signalInfo = getRsiSignal(rsi.rsi7, rsi.rsi14);
-        return filters.dRsiSignal!.includes(signalInfo.signal);
+        return dRsiSignalFilter.includes(signalInfo.signal);
       });
     }
 
     // W-RSI Avg Signal filter
     if (filters.wRsiSignal && filters.wRsiSignal.length > 0) {
+      const wRsiSignalFilter = filters.wRsiSignal;
       filtered = filtered.filter(t => {
         const rsi = rsiData.get(t.instId);
         if (!rsi) return false;
         const signalInfo = getRsiSignal(rsi.rsiW7, rsi.rsiW14);
-        return filters.wRsiSignal!.includes(signalInfo.signal);
+        return wRsiSignalFilter.includes(signalInfo.signal);
       });
     }
 

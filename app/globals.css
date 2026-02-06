@@ -52,6 +52,12 @@
 @layer base {
   * {
     @apply border-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html, body {
+    height: 100%;
   }
   body {
     @apply bg-background text-foreground;
@@ -59,19 +65,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  /* 字体和背景色现在统一由 shadcn 变量控制 (见上方 @layer base) */
 }
 
 /* Hide all scrollbars globally */

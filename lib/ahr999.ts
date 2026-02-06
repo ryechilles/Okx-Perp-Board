@@ -115,7 +115,7 @@ function calculate200DayCost(prices: number[]): number {
 // Based on: 10^(5.84 * log10(days since genesis) - 17.01)
 // Genesis block: January 3, 2009
 function calculateGrowthValuation(): number {
-  const genesisDate = new Date('2009-01-03');
+  const genesisDate = new Date('2009-01-03T00:00:00Z');
   const now = new Date();
   const daysSinceGenesis = Math.floor((now.getTime() - genesisDate.getTime()) / (1000 * 60 * 60 * 24));
 
@@ -130,6 +130,10 @@ async function fetchBTCHistoricalPrices(): Promise<number[]> {
     const response = await fetch(
       'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=200&interval=daily'
     );
+    if (!response.ok) {
+      console.error(`Failed to fetch BTC historical prices: HTTP ${response.status}`);
+      return [];
+    }
     const data = await response.json();
 
     if (data.prices && Array.isArray(data.prices)) {
@@ -149,6 +153,10 @@ async function fetchCurrentBTCPrice(): Promise<number | null> {
     const response = await fetch(
       'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'
     );
+    if (!response.ok) {
+      console.error(`Failed to fetch BTC price: HTTP ${response.status}`);
+      return null;
+    }
     const data = await response.json();
     return data.bitcoin?.usd || null;
   } catch (error) {
