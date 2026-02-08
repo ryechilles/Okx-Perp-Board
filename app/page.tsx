@@ -1,5 +1,5 @@
-import PerpBoard from '@/components/PerpBoard';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return <PerpBoard />;
+  redirect('/okx');
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { APP_CONFIG } from '@/lib/config';
 import { Button, ThemeToggle } from '@/components/ui';
 
@@ -62,10 +64,42 @@ function OkxLogo({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+// Hyperliquid Logo Component
+function HyperliquidLogo({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="16" fill="#00FF6F" />
+      <path
+        d="M10 10.5L16 7L22 10.5V21.5L16 25L10 21.5V10.5Z"
+        stroke="#000"
+        strokeWidth="1.5"
+        fill="none"
+      />
+      <path d="M16 7V25" stroke="#000" strokeWidth="1.5" />
+      <path d="M10 10.5L22 21.5" stroke="#000" strokeWidth="1.5" />
+      <path d="M22 10.5L10 21.5" stroke="#000" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+// Exchange navigation items
+const EXCHANGES = [
+  {
+    id: 'okx',
+    label: 'OKX',
+    href: '/okx',
+    logo: OkxLogo,
+  },
+  {
+    id: 'hyperliquid',
+    label: 'Hyperliquid',
+    href: '/hyperliquid',
+    logo: HyperliquidLogo,
+  },
+] as const;
+
 export function Header() {
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  const pathname = usePathname();
 
   return (
     <header className="px-4 sm:px-6 py-2 flex-shrink-0">
@@ -79,13 +113,26 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right: Theme Toggle + OKX Button (Refresh) */}
+        {/* Right: Theme Toggle + Exchange Buttons */}
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button variant="secondary" size="sm" onClick={handleRefresh}>
-            <OkxLogo className="w-4 h-4" />
-            OKX
-          </Button>
+          {EXCHANGES.map((exchange) => {
+            const isActive = pathname === exchange.href || pathname.startsWith(exchange.href + '/');
+            const Logo = exchange.logo;
+            return (
+              <Button
+                key={exchange.id}
+                variant={isActive ? 'default' : 'secondary'}
+                size="sm"
+                asChild
+              >
+                <Link href={exchange.href}>
+                  <Logo className="w-4 h-4" />
+                  {exchange.label}
+                </Link>
+              </Button>
+            );
+          })}
         </div>
       </div>
     </header>
