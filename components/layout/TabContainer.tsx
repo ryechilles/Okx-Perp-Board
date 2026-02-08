@@ -119,7 +119,7 @@ export function TabContainer({
             value={activeTab}
             onChange={handleTabChange}
             scrollable
-            className="w-fit max-w-full"
+            className=""
           />
 
           {/* Tab Panels (only render if children exist) */}

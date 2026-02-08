@@ -15,6 +15,7 @@ import { FundingMarket } from '@/components/FundingMarket';
 import { FundingKiller } from '@/components/FundingKiller';
 import { HLPVault } from '@/components/HLPVault';
 import { Total2MiniChart } from '@/components/Total2MiniChart';
+import { EthBtcRatio } from '@/components/EthBtcRatio';
 import { BTCDominance } from '@/components/BTCDominance';
 import { AHR999Indicator } from '@/components/AHR999Indicator';
 import { TableHeader, TableRow } from '@/components/table';
@@ -63,7 +64,7 @@ const TABS = [
 const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
   rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
   funding: ['fundingMarket', 'fundingKiller'],
-  altcoin: ['topGainers', 'vsBtc', 'total2'],
+  altcoin: ['topGainers', 'vsBtc', 'ethBtcRatio', 'total2'],
   btc: ['btcDominance', 'ahr999'],
   hlp: ['hlpVault'],
 };
@@ -289,6 +290,7 @@ export default function HyperliquidBoard() {
         exchangeLabel={EXCHANGE_LABEL}
       />
     ),
+    ethBtcRatio: <EthBtcRatio />,
     total2: <Total2MiniChart />,
   }), [store.tickers, store.rsiData, store.marketCapData]);
 

@@ -120,10 +120,10 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
   return (
     <div
       className={cn(
-        'inline-flex items-center rounded-lg bg-muted p-1 gap-0.5',
+        'items-center rounded-lg bg-muted p-1 gap-0.5',
         scrollable
-          ? 'flex-nowrap overflow-x-auto'
-          : 'flex-wrap',
+          ? 'flex flex-nowrap overflow-x-auto'
+          : 'inline-flex flex-wrap',
         className
       )}
     >
