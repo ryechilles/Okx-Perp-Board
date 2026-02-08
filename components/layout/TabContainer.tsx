@@ -1,6 +1,7 @@
 'use client';
 
-import { ReactNode, createContext, useContext, useState, useMemo } from 'react';
+import { ReactNode, createContext, useContext, useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PillButtonGroup, PillButtonOption } from '@/components/ui';
 
@@ -53,26 +54,6 @@ export interface TabContainerProps {
  * Supports two variants:
  * - 'horizontal': Traditional horizontal tab bar with underline indicator
  * - 'sidebar': Uses PillButtonGroup template for consistent styling
- *
- * @example
- * ```tsx
- * <TabContainer
- *   tabs={[
- *     { id: 'rsi', label: 'RSI', icon: <Activity /> },
- *     { id: 'funding', label: 'Funding', icon: <DollarSign /> },
- *   ]}
- *   variant="sidebar"
- *   defaultTab="rsi"
- *   onTabChange={(tab) => console.log('Switched to:', tab)}
- * >
- *   <TabPanel tabId="rsi">
- *     <RsiWidgets />
- *   </TabPanel>
- *   <TabPanel tabId="funding">
- *     <FundingWidgets />
- *   </TabPanel>
- * </TabContainer>
- * ```
  */
 export function TabContainer({
   tabs,
@@ -108,19 +89,75 @@ export function TabContainer({
     }));
   }, [tabs]);
 
+  // Overflow detection for sidebar variant
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkOverflow = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 1);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }, []);
+
+  useEffect(() => {
+    checkOverflow();
+    const el = scrollRef.current;
+    if (!el) return;
+
+    el.addEventListener('scroll', checkOverflow);
+    const ro = new ResizeObserver(checkOverflow);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', checkOverflow);
+      ro.disconnect();
+    };
+  }, [checkOverflow]);
+
+  const scrollBy = (dir: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === 'left' ? -100 : 100, behavior: 'smooth' });
+  };
+
   // Sidebar variant - uses PillButtonGroup template
   if (variant === 'sidebar') {
     return (
       <TabContext.Provider value={{ activeTab, setActiveTab: handleTabChange }}>
         <div className={cn('flex flex-col', className)}>
-          {/* Uses PillButtonGroup template for consistent styling */}
-          <PillButtonGroup
-            options={pillOptions}
-            value={activeTab}
-            onChange={handleTabChange}
-            scrollable
-            className=""
-          />
+          {/* Scrollable tab bar with arrow buttons */}
+          <div className="flex items-center gap-1">
+            {/* Left arrow - only show when overflowing */}
+            {canScrollLeft && (
+              <button
+                onClick={() => scrollBy('left')}
+                className="flex-shrink-0 w-6 h-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {/* Tab pills - scrollable container */}
+            <div ref={scrollRef} className="overflow-x-auto flex-1 min-w-0">
+              <PillButtonGroup
+                options={pillOptions}
+                value={activeTab}
+                onChange={handleTabChange}
+                scrollable
+              />
+            </div>
+
+            {/* Right arrow - only show when overflowing */}
+            {canScrollRight && (
+              <button
+                onClick={() => scrollBy('right')}
+                className="flex-shrink-0 w-6 h-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
 
           {/* Tab Panels (only render if children exist) */}
           {children && <div className="flex-1 mt-4">{children}</div>}
