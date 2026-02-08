@@ -36,6 +36,7 @@ interface TableRowProps {
   listingData: ListingData | undefined;
   marketCap: MarketCapData | undefined;
   hasSpot: boolean;
+  exchange?: 'okx' | 'hyperliquid';
   isFavorite: boolean;
   isScrolled: boolean;
   fixedColumns: ColumnKey[];
@@ -55,6 +56,7 @@ export function TableRow({
   listingData,
   marketCap,
   hasSpot,
+  exchange = 'okx',
   isFavorite,
   isScrolled,
   fixedColumns,
@@ -174,7 +176,7 @@ export function TableRow({
               </div>
               {!hasSpot && (
                 <span className="text-[11px] text-muted-foreground font-normal">
-                  No Spot on OKX
+                  No Spot on {exchange === 'hyperliquid' ? 'Hyperliquid' : 'OKX'}
                 </span>
               )}
               {listingAgeInfo && (

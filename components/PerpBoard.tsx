@@ -325,6 +325,7 @@ export default function PerpBoard() {
 
             {/* Controls - Aligns with table */}
             <Controls
+              exchange="okx"
               columns={store.columns}
               columnOrder={store.columnOrder}
               filters={store.filters}
@@ -473,6 +474,7 @@ export default function PerpBoard() {
                           listingData={store.listingData.get(ticker.instId)}
                           marketCap={store.marketCapData.get(ticker.baseSymbol)}
                           hasSpot={store.spotSymbols.has(`${ticker.baseSymbol}-USDT`)}
+                          exchange="okx"
                           isFavorite={store.favorites.includes(ticker.instId)}
                           isScrolled={isScrolled}
                           fixedColumns={FIXED_COLUMNS}

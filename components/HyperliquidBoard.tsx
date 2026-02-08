@@ -157,6 +157,7 @@ export default function HyperliquidBoard() {
               ----------------------------------------------------------------- */}
           <div className="mb-4">
             <Controls
+              exchange="hyperliquid"
               columns={store.columns}
               columnOrder={store.columnOrder}
               filters={store.filters}
@@ -239,7 +240,8 @@ export default function HyperliquidBoard() {
                         fundingRate={store.fundingRateData.get(ticker.instId)}
                         listingData={undefined}
                         marketCap={store.marketCapData.get(ticker.baseSymbol)}
-                        hasSpot={false}
+                        hasSpot={store.spotSymbols.has(ticker.baseSymbol)}
+                        exchange="hyperliquid"
                         isFavorite={store.favorites.includes(ticker.instId)}
                         isScrolled={isScrolled}
                         fixedColumns={FIXED_COLUMNS}

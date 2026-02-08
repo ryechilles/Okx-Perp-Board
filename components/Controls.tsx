@@ -17,6 +17,7 @@ interface ControlsProps {
   searchTerm: string;
   overboughtCount: number;
   oversoldCount: number;
+  exchange?: 'okx' | 'hyperliquid';
   onColumnChange: (col: keyof ColumnVisibility, visible: boolean) => void;
   onColumnsPreset: (preset: 'all' | 'none' | 'default') => void;
   onFiltersChange: (filters: Filters) => void;
@@ -32,6 +33,7 @@ export function Controls({
   searchTerm,
   overboughtCount,
   oversoldCount,
+  exchange = 'okx',
   onColumnChange,
   onColumnsPreset,
   onFiltersChange,
@@ -147,6 +149,8 @@ export function Controls({
     onFiltersChange({});
   };
 
+  const exchangeLabel = exchange === 'hyperliquid' ? 'Hyperliquid' : 'OKX';
+
   // Main filter options - using PillButtonGroup template
   const mainFilterOptions = useMemo((): PillButtonOption<QuickFilter>[] => [
     {
@@ -157,7 +161,7 @@ export function Controls({
     {
       value: 'top25',
       label: 'Top 25',
-      tooltip: 'OKX Perp Market Cap Rank 1-25'
+      tooltip: `${exchangeLabel} Perp Market Cap Rank 1-25`
     },
     {
       value: 'meme',
@@ -170,7 +174,7 @@ export function Controls({
       label: '🚫 No Spot',
       activeColor: 'text-purple-500',
       hiddenOnMobile: true,
-      tooltip: 'Tokens without Spot listing on OKX'
+      tooltip: `Tokens without Spot listing on ${exchangeLabel}`
     },
     {
       value: 'newListed',
@@ -179,7 +183,7 @@ export function Controls({
       hiddenOnMobile: true,
       tooltip: 'Listed <180d'
     },
-  ], []);
+  ], [exchangeLabel]);
 
   // RSI filter options - using PillButtonGroup template
   const rsiFilterOptions = useMemo((): PillButtonOption<QuickFilter>[] => [
@@ -520,7 +524,7 @@ export function Controls({
 
               {/* Has Spot */}
               <div>
-                <div className="text-[11px] text-muted-foreground font-medium mb-2">Has Spot on OKX</div>
+                <div className="text-[11px] text-muted-foreground font-medium mb-2">Has Spot on {exchangeLabel}</div>
                 <PillButtonGroup
                   options={[
                     { value: 'yes', label: 'Yes' },

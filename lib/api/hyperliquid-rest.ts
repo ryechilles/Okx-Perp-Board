@@ -13,6 +13,7 @@ import {
   HyperliquidAsset,
   HyperliquidAssetCtx,
   HyperliquidRawTicker,
+  HyperliquidSpotMeta,
   ProcessedTicker,
   FundingRateData,
   ListingData,
@@ -156,6 +157,26 @@ export async function fetchHyperliquidFundingRates(): Promise<Map<string, Fundin
 // We return an empty map for now; could be populated from chain history later
 export async function fetchHyperliquidListingDates(): Promise<Map<string, ListingData>> {
   return new Map<string, ListingData>();
+}
+
+// ===== Fetch spot symbols (which perp tokens have spot trading on Hyperliquid) =====
+export async function fetchHyperliquidSpotSymbols(): Promise<Set<string>> {
+  const result = await hlPost<HyperliquidSpotMeta>({ type: 'spotMeta' });
+
+  if (!result?.universe) {
+    console.error('[Hyperliquid] Invalid spotMeta response');
+    return new Set<string>();
+  }
+
+  const symbols = new Set<string>();
+  // universe entries have names like "PURR/USDC", extract the base coin
+  result.universe.forEach(pair => {
+    const base = pair.name.split('/')[0];
+    if (base) symbols.add(base);
+  });
+
+  console.log(`[Hyperliquid] Found ${symbols.size} spot symbols`);
+  return symbols;
 }
 
 // ===== Fetch all mid-prices (lightweight) =====

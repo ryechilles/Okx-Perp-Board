@@ -53,6 +53,28 @@ export interface HyperliquidRawTicker {
   maxLeverage: number;
 }
 
+// Hyperliquid spot metadata (from spotMeta endpoint)
+export interface HyperliquidSpotToken {
+  name: string;
+  szDecimals: number;
+  weiDecimals: number;
+  index: number;
+  tokenId: string;
+  isCanonical?: boolean;
+}
+
+export interface HyperliquidSpotPair {
+  name: string;           // e.g. "PURR/USDC"
+  tokens: number[];       // token indices
+  index: number;
+  isCanonical: boolean;
+}
+
+export interface HyperliquidSpotMeta {
+  tokens: HyperliquidSpotToken[];
+  universe: HyperliquidSpotPair[];
+}
+
 // Hyperliquid candle data
 export interface HyperliquidCandle {
   t: number;  // open time ms

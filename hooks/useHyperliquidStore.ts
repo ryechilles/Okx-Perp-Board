@@ -10,6 +10,7 @@ import {
 } from '@/lib/types';
 import { HyperliquidDataManager } from '@/lib/api/hyperliquid-data-manager';
 import { fetchHyperliquidRSIBatch } from '@/lib/api/hyperliquid-rsi';
+import { fetchHyperliquidSpotSymbols } from '@/lib/api/hyperliquid-rest';
 import { fetchMarketCapData } from '@/lib/api/coingecko';
 import { isMemeToken, getRsiSignal } from '@/lib/utils';
 import { TIMING } from '@/lib/constants';
@@ -38,6 +39,7 @@ export function useHyperliquidStore() {
   const [rsiData, setRsiData] = useState<Map<string, RSIData>>(new Map());
   const [fundingRateData, setFundingRateData] = useState<Map<string, FundingRateData>>(new Map());
   const [marketCapData, setMarketCapData] = useState<Map<string, MarketCapData>>(new Map());
+  const [spotSymbols, setSpotSymbols] = useState<Set<string>>(new Set());
 
   // UI State - Manage internally instead of using composed hooks
   const [columns, setColumns] = useState<ColumnVisibility>(getDefaultColumns(isMobile()));
@@ -218,6 +220,14 @@ export function useHyperliquidStore() {
       setMarketCapData(cachedMarketCap);
     }
 
+    // Fetch spot symbols (which perp tokens have spot trading on Hyperliquid)
+    fetchHyperliquidSpotSymbols().then((spotData: Set<string>) => {
+      console.log(`[Hyperliquid] Received ${spotData.size} spot symbols`);
+      setSpotSymbols(spotData);
+    }).catch((error: unknown) => {
+      console.error('[Hyperliquid] Failed to fetch spot symbols:', error);
+    });
+
     // Fetch CoinGecko data separately (slower, shouldn't block HL data)
     fetchMarketCapData().then((marketCap: Map<string, MarketCapData>) => {
       console.log(`[MarketCap] Received ${marketCap.size} coins from CoinGecko`);
@@ -392,6 +402,13 @@ export function useHyperliquidStore() {
       filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsiW14, rsiW14Filter));
     }
 
+    if (filters.hasSpot) {
+      filtered = filtered.filter(t => {
+        const hasSpot = spotSymbols.has(t.baseSymbol);
+        return filters.hasSpot === 'yes' ? hasSpot : !hasSpot;
+      });
+    }
+
     if (filters.fundingRate) {
       if (filters.fundingRate === 'positive') {
         filtered = filtered.filter(t => {
@@ -531,6 +548,10 @@ export function useHyperliquidStore() {
           aVal = fundingRateData.get(a.instId)?.settlementInterval ?? 1;
           bVal = fundingRateData.get(b.instId)?.settlementInterval ?? 1;
           break;
+        case 'hasSpot':
+          aVal = spotSymbols.has(a.baseSymbol) ? 1 : 0;
+          bVal = spotSymbols.has(b.baseSymbol) ? 1 : 0;
+          break;
         default:
           aVal = marketCapData.get(a.baseSymbol)?.rank ?? 9999;
           bVal = marketCapData.get(b.baseSymbol)?.rank ?? 9999;
@@ -543,7 +564,7 @@ export function useHyperliquidStore() {
     });
 
     return filtered;
-  }, [tickers, searchTerm, view, favorites, filters, sort, marketCapData, rsiData, fundingRateData]);
+  }, [tickers, searchTerm, view, favorites, filters, sort, marketCapData, rsiData, fundingRateData, spotSymbols]);
 
   // Calculate RSI averages for Hyperliquid Top 100 by market cap
   const getRsiAverages = useCallback(() => {
@@ -811,6 +832,7 @@ export function useHyperliquidStore() {
     rsiData,
     fundingRateData,
     marketCapData,
+    spotSymbols,
     favorites,
 
     // UI state
