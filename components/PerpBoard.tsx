@@ -17,6 +17,7 @@ import { RsiOverbought } from '@/components/RsiOverbought';
 import { AHR999Indicator } from '@/components/AHR999Indicator';
 import { BTCDominance } from '@/components/BTCDominance';
 import { EthBtcRatio } from '@/components/EthBtcRatio';
+import { Total2MiniChart } from '@/components/Total2MiniChart';
 import { TableHeader, TableRow } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
 import { Spinner } from '@/components/ui';
@@ -52,7 +53,7 @@ const TABS = [
 const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
   rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
   funding: ['fundingMarket', 'fundingKiller'],
-  altcoin: ['topGainers', 'vsBtc', 'ethBtcRatio'],
+  altcoin: ['topGainers', 'vsBtc', 'ethBtcRatio', 'total2'],
   btc: ['btcDominance', 'ahr999'],
 };
 
@@ -265,6 +266,7 @@ export default function PerpBoard() {
       />
     ),
     ethBtcRatio: <EthBtcRatio />,
+    total2: <Total2MiniChart />,
   }), [store.tickers, store.rsiData, store.marketCapData]);
 
   // Widget mapping for funding tab

@@ -14,6 +14,7 @@ import { AltcoinVsBTC } from '@/components/AltcoinVsBTC';
 import { FundingMarket } from '@/components/FundingMarket';
 import { FundingKiller } from '@/components/FundingKiller';
 import { HLPVault } from '@/components/HLPVault';
+import { Total2MiniChart } from '@/components/Total2MiniChart';
 import { TableHeader, TableRow } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
 import { Spinner } from '@/components/ui';
@@ -43,7 +44,7 @@ const TABS = [
 const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
   rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
   funding: ['fundingMarket', 'fundingKiller'],
-  altcoin: ['topGainers', 'vsBtc'],
+  altcoin: ['topGainers', 'vsBtc', 'total2'],
   hlp: ['hlpVault'],
 };
 
@@ -264,6 +265,7 @@ export default function HyperliquidBoard() {
         exchangeLabel={EXCHANGE_LABEL}
       />
     ),
+    total2: <Total2MiniChart />,
   }), [store.tickers, store.rsiData, store.marketCapData]);
 
   // Widget mapping for HLP tab
