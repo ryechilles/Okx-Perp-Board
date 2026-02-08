@@ -10,19 +10,21 @@ interface FundingMarketProps {
   fundingRateData: Map<string, FundingRateData>;
   marketCapData?: Map<string, MarketCapData>;
   onGroupClick?: (symbols: string[]) => void;
+  exchangeLabel?: string;
 }
 
 /**
  * FundingMarket - Shows funding rate market sentiment
  *
  * Displays count of positive vs negative funding rates
- * from top 100 OKX perp tokens by market cap
+ * from top 100 perp tokens by market cap
  */
 export function FundingMarket({
   tickers,
   fundingRateData,
   marketCapData,
   onGroupClick,
+  exchangeLabel = 'OKX',
 }: FundingMarketProps) {
   const { positiveSymbols, negativeSymbols, total } = useMemo(() => {
     // Get all OKX perp tickers with market cap and funding rate
@@ -83,12 +85,12 @@ export function FundingMarket({
     <SmallWidget
       title="Funding Market"
       icon={<span>📊</span>}
-      subtitle="OKX Perp Top 100 by Market Cap"
+      subtitle={`${exchangeLabel} Perp Top 100 by Market Cap`}
       loading={isLoading}
       className="group"
       tooltip={
         <TooltipList items={[
-          "OKX perp top 100 by market cap",
+          `${exchangeLabel} perp top 100 by market cap`,
           <><span className="text-green-500">Positive</span>: rate &gt; 0 (longs pay shorts)</>,
           <><span className="text-red-500">Negative</span>: rate &lt; 0 (shorts pay longs)</>,
           "USDC/USDT pairs always have 0 funding rate",

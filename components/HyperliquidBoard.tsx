@@ -11,6 +11,8 @@ import { RsiOversold } from '@/components/RsiOversold';
 import { RsiOverbought } from '@/components/RsiOverbought';
 import { AltcoinTopGainers } from '@/components/AltcoinTopGainers';
 import { AltcoinVsBTC } from '@/components/AltcoinVsBTC';
+import { FundingMarket } from '@/components/FundingMarket';
+import { FundingKiller } from '@/components/FundingKiller';
 import { HLPVault } from '@/components/HLPVault';
 import { TableHeader, TableRow } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
@@ -32,6 +34,7 @@ const EXCHANGE_LABEL = 'Hyperliquid';
 // Tab configuration
 const TABS = [
   { id: 'rsi', label: 'RSI' },
+  { id: 'funding', label: 'Funding' },
   { id: 'altcoin', label: 'Altcoin' },
   { id: 'hlp', label: 'HLP' },
 ];
@@ -39,6 +42,7 @@ const TABS = [
 // Default widget order per tab
 const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
   rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
+  funding: ['fundingMarket', 'fundingKiller'],
   altcoin: ['topGainers', 'vsBtc'],
   hlp: ['hlpVault'],
 };
@@ -51,6 +55,10 @@ export default function HyperliquidBoard() {
   const [rsiWidgetOrder, setRsiWidgetOrder] = useWidgetOrder(
     'hl-rsi',
     DEFAULT_WIDGET_ORDER.rsi
+  );
+  const [fundingWidgetOrder, setFundingWidgetOrder] = useWidgetOrder(
+    'hl-funding',
+    DEFAULT_WIDGET_ORDER.funding
   );
   const [altcoinWidgetOrder, setAltcoinWidgetOrder] = useWidgetOrder(
     'hl-altcoin',
@@ -212,6 +220,29 @@ export default function HyperliquidBoard() {
     ),
   }), [avgRsi7, avgRsi14, store.tickers, store.rsiData, store.marketCapData]);
 
+  // Widget mapping for funding tab
+  const fundingWidgets: Record<string, ReactNode> = useMemo(() => ({
+    fundingMarket: (
+      <FundingMarket
+        tickers={store.tickers}
+        fundingRateData={store.fundingRateData}
+        marketCapData={store.marketCapData}
+        onGroupClick={handleGroupClick}
+        exchangeLabel={EXCHANGE_LABEL}
+      />
+    ),
+    fundingKiller: (
+      <FundingKiller
+        tickers={store.tickers}
+        fundingRateData={store.fundingRateData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+        onGroupClick={handleGroupClick}
+        exchangeLabel={EXCHANGE_LABEL}
+      />
+    ),
+  }), [store.tickers, store.fundingRateData, store.marketCapData]);
+
   // Widget mapping for altcoin tab
   const altcoinWidgets: Record<string, ReactNode> = useMemo(() => ({
     topGainers: (
@@ -304,6 +335,21 @@ export default function HyperliquidBoard() {
                 >
                   {rsiWidgetOrder.map((id) => (
                     <div key={id}>{rsiWidgets[id]}</div>
+                  ))}
+                </WidgetGrid>
+              )}
+
+              {/* Funding Tab Widgets - Sortable */}
+              {activeTab === 'funding' && (
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={fundingWidgetOrder}
+                  onOrderChange={setFundingWidgetOrder}
+                >
+                  {fundingWidgetOrder.map((id) => (
+                    <div key={id}>{fundingWidgets[id]}</div>
                   ))}
                 </WidgetGrid>
               )}

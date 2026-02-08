@@ -14,6 +14,7 @@ interface FundingKillerProps {
   marketCapData?: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
   onGroupClick?: (symbols: string[]) => void;
+  exchangeLabel?: string;
 }
 
 // Section header component
@@ -57,6 +58,7 @@ export function FundingKiller({
   marketCapData,
   onTokenClick,
   onGroupClick,
+  exchangeLabel = 'OKX',
 }: FundingKillerProps) {
   const { longKillers, shortKillers } = useMemo(() => {
     const tokensWithApr: TokenWithApr[] = [];
@@ -122,7 +124,7 @@ export function FundingKiller({
       loading={isLoading}
       tooltip={
         <TooltipList items={[
-          "All OKX perp tokens (excludes BTC)",
+          `All ${exchangeLabel} perp tokens (excludes BTC)`,
           <><span className="text-green-500">Long Killer</span>: APR &gt; {aprThreshold}% (expensive to hold longs)</>,
           <><span className="text-red-500">Short Killer</span>: APR &lt; -{aprThreshold}% (expensive to hold shorts)</>,
           "APR = Funding Rate × (365 × 24 / interval)",
