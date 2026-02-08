@@ -15,6 +15,8 @@ import { FundingMarket } from '@/components/FundingMarket';
 import { FundingKiller } from '@/components/FundingKiller';
 import { HLPVault } from '@/components/HLPVault';
 import { Total2MiniChart } from '@/components/Total2MiniChart';
+import { BTCDominance } from '@/components/BTCDominance';
+import { AHR999Indicator } from '@/components/AHR999Indicator';
 import { TableHeader, TableRow } from '@/components/table';
 import { TabContainer, WidgetGrid } from '@/components/layout';
 import { Spinner } from '@/components/ui';
@@ -32,12 +34,29 @@ const FIXED_WIDTHS: Record<string, number> = {
 
 const EXCHANGE_LABEL = 'Hyperliquid';
 
+// Hyperliquid logo for HLP tab
+const HlpTabIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 144 144" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M144 71.6991C144 119.306 114.866 134.582 99.5156 120.98C86.8804 109.889 83.1211 86.4521 64.116 84.0456C39.9942 81.0113 37.9057 113.133 22.0334 113.133C3.5504 113.133 0 86.2428 0 72.4315C0 58.3063 3.96809 39.0542 19.736 39.0542C38.1146 39.0542 39.1588 66.5722 62.132 65.1073C85.0007 63.5379 85.4184 34.8689 100.247 22.6271C113.195 12.0593 144 23.4641 144 71.6991Z" />
+  </svg>
+);
+
+// Bitcoin logo for BTC tab
+const BtcLogo = () => (
+  <img
+    src="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
+    alt="BTC"
+    className="w-4 h-4 rounded-full"
+  />
+);
+
 // Tab configuration
 const TABS = [
   { id: 'rsi', label: 'RSI' },
   { id: 'funding', label: 'Funding' },
   { id: 'altcoin', label: 'Altcoin' },
-  { id: 'hlp', label: 'HLP' },
+  { id: 'btc', label: 'BTC', icon: <BtcLogo /> },
+  { id: 'hlp', label: 'HLP', icon: <HlpTabIcon /> },
 ];
 
 // Default widget order per tab
@@ -45,6 +64,7 @@ const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
   rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
   funding: ['fundingMarket', 'fundingKiller'],
   altcoin: ['topGainers', 'vsBtc', 'total2'],
+  btc: ['btcDominance', 'ahr999'],
   hlp: ['hlpVault'],
 };
 
@@ -64,6 +84,10 @@ export default function HyperliquidBoard() {
   const [altcoinWidgetOrder, setAltcoinWidgetOrder] = useWidgetOrder(
     'hl-altcoin',
     DEFAULT_WIDGET_ORDER.altcoin
+  );
+  const [btcWidgetOrder, setBtcWidgetOrder] = useWidgetOrder(
+    'hl-btc',
+    DEFAULT_WIDGET_ORDER.btc
   );
   const [hlpWidgetOrder, setHlpWidgetOrder] = useWidgetOrder(
     'hl-hlp',
@@ -268,6 +292,12 @@ export default function HyperliquidBoard() {
     total2: <Total2MiniChart />,
   }), [store.tickers, store.rsiData, store.marketCapData]);
 
+  // Widget mapping for BTC tab (shared components, no exchange-specific data)
+  const btcWidgets: Record<string, ReactNode> = useMemo(() => ({
+    btcDominance: <BTCDominance />,
+    ahr999: <AHR999Indicator />,
+  }), []);
+
   // Widget mapping for HLP tab
   const hlpWidgets: Record<string, ReactNode> = useMemo(() => ({
     hlpVault: <HLPVault />,
@@ -367,6 +397,21 @@ export default function HyperliquidBoard() {
                 >
                   {altcoinWidgetOrder.map((id) => (
                     <div key={id}>{altcoinWidgets[id]}</div>
+                  ))}
+                </WidgetGrid>
+              )}
+
+              {/* BTC Tab Widgets - Sortable */}
+              {activeTab === 'btc' && (
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={btcWidgetOrder}
+                  onOrderChange={setBtcWidgetOrder}
+                >
+                  {btcWidgetOrder.map((id) => (
+                    <div key={id}>{btcWidgets[id]}</div>
                   ))}
                 </WidgetGrid>
               )}
