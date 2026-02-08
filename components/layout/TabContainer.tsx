@@ -114,8 +114,18 @@ export function TabContainer({
     el.addEventListener('scroll', checkOverflow);
     const ro = new ResizeObserver(checkOverflow);
     ro.observe(el);
+
+    // Wheel → horizontal scroll
+    const handleWheel = (e: WheelEvent) => {
+      if (el.scrollWidth <= el.clientWidth) return; // no overflow, skip
+      e.preventDefault();
+      el.scrollLeft += e.deltaY || e.deltaX;
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+
     return () => {
       el.removeEventListener('scroll', checkOverflow);
+      el.removeEventListener('wheel', handleWheel);
       ro.disconnect();
     };
   }, [checkOverflow]);
