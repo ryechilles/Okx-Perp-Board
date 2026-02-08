@@ -14,3 +14,22 @@ export { fetchRSIForInstrument, fetchRSIBatch } from './okx-rsi';
 
 // CoinGecko
 export { fetchMarketCapData } from './coingecko';
+
+// Hyperliquid Data Manager
+export { HyperliquidDataManager } from './hyperliquid-data-manager';
+
+// Hyperliquid REST API
+export {
+  fetchHyperliquidTickers,
+  fetchHyperliquidMeta,
+  fetchHyperliquidFundingRates,
+  fetchHyperliquidListingDates,
+  fetchHyperliquidAllMids,
+  processHyperliquidTicker,
+} from './hyperliquid-rest';
+
+// Hyperliquid RSI
+export {
+  fetchHyperliquidRSIForInstrument,
+  fetchHyperliquidRSIBatch,
+} from './hyperliquid-rsi';

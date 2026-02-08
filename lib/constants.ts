@@ -17,6 +17,8 @@ export const API = {
   OKX_WS_PUBLIC: 'wss://ws.okx.com:8443/ws/v5/public',
   OKX_REST_BASE: 'https://www.okx.com/api/v5',
   COINGECKO_BASE: 'https://api.coingecko.com/api/v3',
+  HYPERLIQUID_REST: 'https://api.hyperliquid.xyz/info',
+  HYPERLIQUID_WS: 'wss://api.hyperliquid.xyz/ws',
 } as const;
 
 // ===========================================
@@ -204,6 +206,12 @@ export const CACHE_KEYS = {
   RSI_CACHE: 'okx-rsi-cache',
   MARKET_CAP_CACHE: 'okx-marketcap-cache',
   LOGO_CACHE: 'perp_board_logo_cache',
+  // Hyperliquid-specific cache keys
+  HL_FAVORITES: 'hl-favorites',
+  HL_COLUMN_ORDER: 'hl-column-order',
+  HL_FILTERS: 'hl-filters',
+  HL_COLUMNS: 'hl-columns',
+  HL_RSI_CACHE: 'hl-rsi-cache',
 } as const;
 
 // ===========================================

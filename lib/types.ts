@@ -11,6 +11,62 @@ export interface OKXTicker {
   ts: string;
 }
 
+// ===========================================
+// Hyperliquid Types
+// ===========================================
+
+// Hyperliquid asset from meta endpoint
+export interface HyperliquidAsset {
+  name: string;
+  szDecimals: number;
+  maxLeverage: number;
+  onlyIsolated?: boolean;
+}
+
+// Hyperliquid meta response
+export interface HyperliquidMeta {
+  universe: HyperliquidAsset[];
+}
+
+// Hyperliquid asset context (pricing, volume, funding)
+export interface HyperliquidAssetCtx {
+  funding: string;
+  openInterest: string;
+  prevDayPx: string;
+  dayNtlVlm: string;
+  premium?: string;
+  oraclePx: string;
+  markPx: string;
+  midPx?: string;
+  impactPxs?: string[];
+}
+
+// Hyperliquid raw ticker data (stored in ProcessedTicker.rawData)
+export interface HyperliquidRawTicker {
+  coin: string;
+  markPx: string;
+  oraclePx: string;
+  prevDayPx: string;
+  dayNtlVlm: string;
+  funding: string;
+  openInterest: string;
+  maxLeverage: number;
+}
+
+// Hyperliquid candle data
+export interface HyperliquidCandle {
+  t: number;  // open time ms
+  T: number;  // close time ms
+  s: string;  // coin
+  i: string;  // interval
+  o: string;  // open
+  c: string;  // close
+  h: string;  // high
+  l: string;  // low
+  v: string;  // volume (base)
+  n: number;  // number of trades
+}
+
 // OKX Instrument data
 export interface OKXInstrument {
   instId: string;
@@ -45,14 +101,14 @@ export interface OKXFundingRate {
   nextFundingTime: string;
 }
 
-// Processed ticker data
+// Processed ticker data (exchange-agnostic)
 export interface ProcessedTicker {
   instId: string;
   baseSymbol: string;
   priceNum: number;
   changeNum: number; // 24h change %
   volCcy24h: string; // 24h volume in currency
-  rawData: OKXTicker;
+  rawData: OKXTicker | HyperliquidRawTicker;
 }
 
 // RSI data for a single instrument
