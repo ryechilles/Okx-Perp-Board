@@ -165,6 +165,24 @@ export function TabContainer({
     if (isDragging.current) handleMouseUp();
   }, [handleMouseUp]);
 
+  // Auto-scroll active tab into view
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    // Find the active button inside the scroll container
+    const activeBtn = container.querySelector('[data-active="true"]') as HTMLElement | null;
+    if (!activeBtn) return;
+    // Scroll so the button is fully visible with a small margin
+    const margin = 8;
+    const btnLeft = activeBtn.offsetLeft - margin;
+    const btnRight = activeBtn.offsetLeft + activeBtn.offsetWidth + margin;
+    if (btnLeft < container.scrollLeft) {
+      container.scrollTo({ left: btnLeft, behavior: 'smooth' });
+    } else if (btnRight > container.scrollLeft + container.clientWidth) {
+      container.scrollTo({ left: btnRight - container.clientWidth, behavior: 'smooth' });
+    }
+  }, [activeTab]);
+
   // Sidebar variant - Apple-style scrollable tabs
   if (variant === 'sidebar') {
     return (

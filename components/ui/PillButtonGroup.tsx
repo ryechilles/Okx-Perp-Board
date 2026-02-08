@@ -134,6 +134,7 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
         return (
           <div
             key={option.value}
+            data-active={active || undefined}
             className={cn('relative', option.hiddenOnMobile && 'hidden md:block')}
             onMouseEnter={() => setHoveredValue(option.value)}
             onMouseLeave={() => setHoveredValue(null)}
