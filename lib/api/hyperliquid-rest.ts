@@ -160,13 +160,13 @@ export async function fetchHyperliquidListingDates(): Promise<Map<string, Listin
 }
 
 // ===== Fetch spot symbols (which perp tokens have spot trading on Hyperliquid) =====
+// Hyperliquid spot tokens use wrapped names (UBTC for BTC, UETH for ETH)
+// and universe entries use "@index" format instead of "BTC/USDC".
+// We need to map wrapped spot names back to perp asset names.
 export async function fetchHyperliquidSpotSymbols(): Promise<Set<string>> {
-  // Use spotMetaAndAssetCtxs which returns [SpotMeta, SpotAssetCtx[]] — more reliable
-  // Falls back to spotMeta if needed
   const symbols = new Set<string>();
 
   try {
-    // First try spotMetaAndAssetCtxs (returns array: [meta, ctxs])
     const rawResult = await hlPost<unknown>({ type: 'spotMetaAndAssetCtxs' });
 
     if (!rawResult) {
@@ -178,19 +178,17 @@ export async function fetchHyperliquidSpotSymbols(): Promise<Set<string>> {
     let meta: HyperliquidSpotMeta | null = null;
 
     if (Array.isArray(rawResult) && rawResult.length >= 1) {
-      // Array format: first element is the meta object
       meta = rawResult[0] as HyperliquidSpotMeta;
     } else if (rawResult && typeof rawResult === 'object' && 'universe' in (rawResult as Record<string, unknown>)) {
-      // Direct object format
       meta = rawResult as HyperliquidSpotMeta;
     }
 
     if (!meta?.universe || !Array.isArray(meta.universe)) {
-      console.error('[Hyperliquid] spotMeta: no universe array found. Raw type:', typeof rawResult, 'isArray:', Array.isArray(rawResult));
+      console.error('[Hyperliquid] spotMeta: no universe array found');
       return symbols;
     }
 
-    // Build token index → name lookup from tokens array
+    // Build token index → name lookup
     const tokenNames = new Map<number, string>();
     if (meta.tokens && Array.isArray(meta.tokens)) {
       meta.tokens.forEach(token => {
@@ -198,17 +196,56 @@ export async function fetchHyperliquidSpotSymbols(): Promise<Set<string>> {
       });
     }
 
+    // Also fetch perp meta to get the canonical perp asset names for matching
+    const perpResult = await hlPost<[HyperliquidMeta, unknown[]]>({ type: 'metaAndAssetCtxs' });
+    const perpNames = new Set<string>();
+    if (perpResult && Array.isArray(perpResult) && perpResult.length >= 1) {
+      const perpMeta = perpResult[0];
+      perpMeta.universe?.forEach((asset: HyperliquidAsset) => {
+        perpNames.add(asset.name);
+      });
+    }
+
+    // Helper: map a spot token name to its perp equivalent
+    // Hyperliquid wraps bridged tokens: UBTC→BTC, UETH→ETH, etc.
+    // Native tokens keep their name: HYPE→HYPE, PURR→PURR
+    const toPerpName = (spotName: string): string | null => {
+      // Direct match (native tokens: HYPE, PURR, PUMP, etc.)
+      if (perpNames.has(spotName)) return spotName;
+      // Wrapped token: strip "U" prefix (UBTC→BTC, UETH→ETH, USOL→SOL, etc.)
+      if (spotName.length > 1 && spotName.startsWith('U')) {
+        const stripped = spotName.slice(1);
+        if (perpNames.has(stripped)) return stripped;
+      }
+      // Wrapped token: strip "W" prefix (WETH→ETH, WBTC→BTC, etc.)
+      if (spotName.length > 1 && spotName.startsWith('W')) {
+        const stripped = spotName.slice(1);
+        if (perpNames.has(stripped)) return stripped;
+      }
+      return null;
+    };
+
     // Extract base symbols from universe pairs
     meta.universe.forEach(pair => {
+      let baseName: string | null = null;
+
       if (pair.name && pair.name.includes('/')) {
-        // Standard format: "BTC/USDC" → extract "BTC"
-        const base = pair.name.split('/')[0];
-        if (base) symbols.add(base);
+        // Human-readable format: "PURR/USDC" → "PURR"
+        baseName = pair.name.split('/')[0] || null;
       } else if (pair.tokens && pair.tokens.length >= 2) {
-        // Fallback: use token indices to look up names
-        const baseTokenIndex = pair.tokens[0];
-        const baseName = tokenNames.get(baseTokenIndex);
-        if (baseName) symbols.add(baseName);
+        // "@index" format: resolve via token lookup
+        baseName = tokenNames.get(pair.tokens[0]) || null;
+      }
+
+      if (!baseName) return;
+
+      // Map spot token name to perp name and add
+      const perpName = toPerpName(baseName);
+      if (perpName) {
+        symbols.add(perpName);
+      } else {
+        // No perp match — still add the raw name (might match in the future)
+        symbols.add(baseName);
       }
     });
 
