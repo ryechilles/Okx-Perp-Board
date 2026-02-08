@@ -32,6 +32,8 @@ interface PillButtonGroupBaseProps<T extends string = string> {
   className?: string;
   /** Size variant: 'sm' for compact, 'md' for default */
   size?: 'sm' | 'md';
+  /** Scroll horizontally instead of wrapping (ideal for tab bars) */
+  scrollable?: boolean;
 }
 
 // Single-select props (default)
@@ -77,6 +79,7 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
     className,
     size = 'md',
     multiSelect = false,
+    scrollable = false,
   } = props;
 
   const allowDeselect = !multiSelect && (props as PillButtonGroupSingleProps<T>).allowDeselect;
@@ -117,7 +120,10 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
   return (
     <div
       className={cn(
-        'inline-flex items-center rounded-lg bg-muted p-1 gap-0.5 flex-wrap',
+        'inline-flex items-center rounded-lg bg-muted p-1 gap-0.5',
+        scrollable
+          ? 'flex-nowrap overflow-x-auto'
+          : 'flex-wrap',
         className
       )}
     >

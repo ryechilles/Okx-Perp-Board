@@ -118,7 +118,8 @@ export function TabContainer({
             options={pillOptions}
             value={activeTab}
             onChange={handleTabChange}
-            className="w-fit"
+            scrollable
+            className="w-fit max-w-full"
           />
 
           {/* Tab Panels (only render if children exist) */}
