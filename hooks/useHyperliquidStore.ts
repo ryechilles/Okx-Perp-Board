@@ -13,6 +13,12 @@ import { fetchHyperliquidRSIBatch } from '@/lib/api/hyperliquid-rsi';
 import { fetchHyperliquidSpotSymbols } from '@/lib/api/hyperliquid-rest';
 import { fetchMarketCapData } from '@/lib/api/coingecko';
 import { isMemeToken, getRsiSignal } from '@/lib/utils';
+import {
+  applyRsiFilter,
+  calculateRsiAverages,
+  calculateTopMovers,
+  calculateQuickFilterCounts,
+} from '@/lib/store-utils';
 import { TIMING } from '@/lib/constants';
 import {
   getHlRsiCache,
@@ -367,24 +373,6 @@ export function useHyperliquidStore() {
       }
     }
 
-    // RSI filter helper function
-    const applyRsiFilter = (rsiValue: number | null | undefined, filterValue: string): boolean => {
-      if (rsiValue === null || rsiValue === undefined) return false;
-      if (filterValue.includes('~')) {
-        const [minStr, maxStr] = filterValue.split('~');
-        const min = minStr ? parseInt(minStr) : 0;
-        const max = maxStr ? parseInt(maxStr) : 100;
-        return rsiValue >= min && rsiValue <= max;
-      } else if (filterValue.startsWith('<')) {
-        const threshold = parseInt(filterValue.slice(1));
-        return rsiValue < threshold;
-      } else if (filterValue.startsWith('>')) {
-        const threshold = parseInt(filterValue.slice(1));
-        return rsiValue > threshold;
-      }
-      return true;
-    };
-
     if (filters.rsi7) {
       const rsi7Filter = filters.rsi7;
       filtered = filtered.filter(t => applyRsiFilter(rsiData.get(t.instId)?.rsi7, rsi7Filter));
@@ -568,76 +556,12 @@ export function useHyperliquidStore() {
 
   // Calculate RSI averages for Hyperliquid Top 100 by market cap
   const getRsiAverages = useCallback(() => {
-    let allTickers = Array.from(tickers.values());
-
-    // Sort by market cap (descending) and take top 100
-    const top100 = allTickers
-      .filter(t => marketCapData.get(t.baseSymbol)?.marketCap)
-      .sort((a, b) => {
-        const mcA = marketCapData.get(a.baseSymbol)?.marketCap ?? 0;
-        const mcB = marketCapData.get(b.baseSymbol)?.marketCap ?? 0;
-        return mcB - mcA;
-      })
-      .slice(0, 100);
-
-    let rsi7Sum = 0, rsi7Count = 0;
-    let rsi14Sum = 0, rsi14Count = 0;
-    let rsiW7Sum = 0, rsiW7Count = 0;
-    let rsiW14Sum = 0, rsiW14Count = 0;
-
-    top100.forEach(t => {
-      const rsi = rsiData.get(t.instId);
-      if (rsi?.rsi7 !== undefined && rsi.rsi7 !== null) {
-        rsi7Sum += rsi.rsi7;
-        rsi7Count++;
-      }
-      if (rsi?.rsi14 !== undefined && rsi.rsi14 !== null) {
-        rsi14Sum += rsi.rsi14;
-        rsi14Count++;
-      }
-      if (rsi?.rsiW7 !== undefined && rsi.rsiW7 !== null) {
-        rsiW7Sum += rsi.rsiW7;
-        rsiW7Count++;
-      }
-      if (rsi?.rsiW14 !== undefined && rsi.rsiW14 !== null) {
-        rsiW14Sum += rsi.rsiW14;
-        rsiW14Count++;
-      }
-    });
-
-    return {
-      avgRsi7: rsi7Count > 0 ? rsi7Sum / rsi7Count : null,
-      avgRsi14: rsi14Count > 0 ? rsi14Sum / rsi14Count : null,
-      avgRsiW7: rsiW7Count > 0 ? rsiW7Sum / rsiW7Count : null,
-      avgRsiW14: rsiW14Count > 0 ? rsiW14Sum / rsiW14Count : null
-    };
+    return calculateRsiAverages(tickers, marketCapData, rsiData);
   }, [tickers, marketCapData, rsiData]);
 
   // Get top gainers/losers for leaderboard
   const getTopMovers = useCallback((timeframe: '4h' | '24h' | '7d', limit: number = 5) => {
-    const allTickers = Array.from(tickers.values());
-
-    const tickersWithChange = allTickers.map(t => {
-      const rsi = rsiData.get(t.instId);
-      let change: number | null = null;
-
-      if (timeframe === '4h') {
-        change = rsi?.change4h ?? null;
-      } else if (timeframe === '24h') {
-        change = t.changeNum;
-      } else if (timeframe === '7d') {
-        change = rsi?.change7d ?? null;
-      }
-
-      return { ...t, change };
-    }).filter(t => t.change !== null);
-
-    const sorted = [...tickersWithChange].sort((a, b) => (b.change ?? 0) - (a.change ?? 0));
-
-    return {
-      gainers: sorted.slice(0, limit),
-      losers: sorted.slice(-limit).reverse()
-    };
+    return calculateTopMovers(tickers, rsiData, timeframe, limit);
   }, [tickers, rsiData]);
 
   // Get paginated data
@@ -656,22 +580,7 @@ export function useHyperliquidStore() {
 
   // Get quick filter counts
   const getQuickFilterCounts = useCallback(() => {
-    const allTickers = Array.from(tickers.values());
-
-    const overboughtCount = allTickers.filter(t => {
-      const rsi = rsiData.get(t.instId);
-      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 > 75 && rsi.rsi14 > 75;
-    }).length;
-
-    const oversoldCount = allTickers.filter(t => {
-      const rsi = rsiData.get(t.instId);
-      return rsi && rsi.rsi7 !== null && rsi.rsi14 !== null && rsi.rsi7 < 25 && rsi.rsi14 < 25;
-    }).length;
-
-    return {
-      overbought: overboughtCount,
-      oversold: oversoldCount
-    };
+    return calculateQuickFilterCounts(tickers, rsiData);
   }, [tickers, rsiData]);
 
   // Column management
