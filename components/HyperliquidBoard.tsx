@@ -474,7 +474,7 @@ export default function HyperliquidBoard() {
           =================================================================== */}
       <div className="px-6 flex-shrink-0">
         <div className="max-w-[1600px] mx-auto w-full">
-          <Footer />
+          <Footer exchange="hyperliquid" />
         </div>
       </div>
     </div>
