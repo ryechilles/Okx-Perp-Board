@@ -264,6 +264,49 @@ export function setColumnsCache<T>(columns: T): boolean {
 }
 
 // ===========================================
+// Hyperliquid-specific Cache Helpers
+// ===========================================
+
+export function getHlRsiCache(): Map<string, RSIData> | null {
+  const entry = getCache<Record<string, RSIData>>(CACHE_KEYS.HL_RSI_CACHE);
+  if (!isCacheValid(entry, TIMING.CACHE_RSI)) return null;
+  if (!entry) return null;
+  console.log(`[Cache] Loaded HL RSI cache (${getCacheAge(entry)}min old)`);
+  return new Map(Object.entries(entry.data));
+}
+
+export function setHlRsiCache(data: Map<string, RSIData>): boolean {
+  return setCache(CACHE_KEYS.HL_RSI_CACHE, Object.fromEntries(data));
+}
+
+export function getHlFavoritesCache(): string[] {
+  const entry = getCache<string[]>(CACHE_KEYS.HL_FAVORITES);
+  return entry?.data ?? [];
+}
+
+export function setHlFavoritesCache(favorites: string[]): boolean {
+  return setCache(CACHE_KEYS.HL_FAVORITES, favorites);
+}
+
+export function getHlColumnOrderCache(): string[] | null {
+  const entry = getCache<string[]>(CACHE_KEYS.HL_COLUMN_ORDER);
+  return entry?.data ?? null;
+}
+
+export function setHlColumnOrderCache(order: string[]): boolean {
+  return setCache(CACHE_KEYS.HL_COLUMN_ORDER, order);
+}
+
+export function getHlColumnsCache<T>(): T | null {
+  const entry = getCache<T>(CACHE_KEYS.HL_COLUMNS);
+  return entry?.data ?? null;
+}
+
+export function setHlColumnsCache<T>(columns: T): boolean {
+  return setCache(CACHE_KEYS.HL_COLUMNS, columns);
+}
+
+// ===========================================
 // Cache Management
 // ===========================================
 
