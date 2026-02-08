@@ -1,10 +1,18 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Vault } from 'lucide-react';
 import { SmallWidget } from '@/components/widgets/base';
 import { TooltipList } from '@/components/ui';
 import { fetchHLPVaultData, HLPVaultDetails } from '@/lib/api/hyperliquid-rest';
+
+// Hyperliquid Logo for HLP widget icon
+function HyperliquidIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 144 144" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M144 71.6991C144 119.306 114.866 134.582 99.5156 120.98C86.8804 109.889 83.1211 86.4521 64.116 84.0456C39.9942 81.0113 37.9057 113.133 22.0334 113.133C3.5504 113.133 0 86.2428 0 72.4315C0 58.3063 3.96809 39.0542 19.736 39.0542C38.1146 39.0542 39.1588 66.5722 62.132 65.1073C85.0007 63.5379 85.4184 34.8689 100.247 22.6271C113.195 12.0593 144 23.4641 144 71.6991Z" />
+    </svg>
+  );
+}
 
 function formatUsd(value: number): string {
   const abs = Math.abs(value);
@@ -44,7 +52,7 @@ export function HLPVault() {
   return (
     <SmallWidget
       title="HLP Vault"
-      icon={<Vault className="w-4 h-4" />}
+      icon={<HyperliquidIcon className="w-4 h-4" />}
       subtitle="Hyperliquidity Provider"
       loading={loading}
       tooltip={
@@ -79,8 +87,8 @@ export function HLPVault() {
             <div className="grid grid-cols-3 gap-2">
               <div>
                 <div className="text-[10px] text-muted-foreground">24h</div>
-                <div className={`text-[12px] font-medium tabular-nums ${data.pnl24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {formatPnl(data.pnl24h)}
+                <div className={`text-[12px] font-medium tabular-nums ${data.pnlDay >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {formatPnl(data.pnlDay)}
                 </div>
               </div>
               <div>

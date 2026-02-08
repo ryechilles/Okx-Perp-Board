@@ -266,54 +266,29 @@ export async function fetchHyperliquidAllMids(): Promise<Record<string, string> 
 export interface HLPVaultDetails {
   name: string;
   vaultAddress: string;
-  leader: string;
   tvl: number;
   apr: number;
-  apy: number;
-  pnl24h: number;
+  pnlDay: number;
   pnl7d: number;
   pnl30d: number;
   pnlAllTime: number;
-  accountValue: number;
 }
 
-interface VaultSummary {
-  name: string;
-  vaultAddress: string;
-  leader: string;
-  tvl: string;
-  isClosed: boolean;
-  relationship: { type: string } | null;
-  allowDeposits: boolean;
-  apr: number;
-  lockupPeriod: number;
-}
-
-interface VaultFollower {
-  user: string;
-  vaultEquity: string;
-  pnl: string;
-  allTimePnl: string;
-  daysFollowing: number;
-  vaultEntryTime: number;
-  lockupUntil: number;
-}
+// Portfolio entry: [timeframe, { accountValueHistory, pnlHistory, vlm }]
+// Each history is [[timestamp_ms, value_string], ...]
+type PortfolioEntry = [string, {
+  accountValueHistory?: [number, string][];
+  pnlHistory?: [number, string][];
+  vlm?: string;
+}];
 
 interface VaultDetailsRaw {
   name: string;
   vaultAddress: string;
   leader: string;
-  description: string;
-  portfolio: unknown[];
+  portfolio: PortfolioEntry[];
   apr: number;
-  followerState: VaultFollower[] | null;
-  isClosed: boolean;
-  maxDistributable: string;
-  maxWithdrawable: string;
-  relationship: { type: string } | null;
-  allowDeposits: boolean;
-  lockupPeriod: number;
-  pnlHistory: [number, string][];  // [timestamp_ms, cumulative_pnl]
+  [key: string]: unknown;
 }
 
 // HLP vault address (well-known)
@@ -321,70 +296,45 @@ const HLP_VAULT_ADDRESS = '0xdfc24b077bc1425ad1dea75bcb6f8158e10df303';
 
 export async function fetchHLPVaultData(): Promise<HLPVaultDetails | null> {
   try {
-    // Fetch vault details and summaries in parallel
-    const [details, summaries] = await Promise.all([
-      hlPost<VaultDetailsRaw>({
-        type: 'vaultDetails',
-        vaultAddress: HLP_VAULT_ADDRESS,
-      }),
-      hlPost<VaultSummary[]>({ type: 'vaultSummaries' }),
-    ]);
+    const details = await hlPost<VaultDetailsRaw>({
+      type: 'vaultDetails',
+      vaultAddress: HLP_VAULT_ADDRESS,
+    });
 
-    if (!details) {
+    if (!details?.portfolio) {
       console.error('[HLP] Failed to fetch vault details');
       return null;
     }
 
-    // Get TVL from summaries (more reliable)
-    let tvl = 0;
-    if (summaries) {
-      const hlpSummary = summaries.find(
-        (v) => v.vaultAddress.toLowerCase() === HLP_VAULT_ADDRESS.toLowerCase()
-      );
-      if (hlpSummary) {
-        tvl = parseFloat(hlpSummary.tvl) || 0;
-      }
-    }
-
-    // Calculate PnL from pnlHistory
-    const history = details.pnlHistory || [];
-    const now = Date.now();
-    const latestPnl = history.length > 0 ? parseFloat(history[history.length - 1][1]) : 0;
-
-    // Find PnL at different time intervals
-    const findPnlAt = (msAgo: number): number => {
-      const targetTime = now - msAgo;
-      let closest: [number, string] | null = null;
-      for (const entry of history) {
-        if (entry[0] <= targetTime) {
-          closest = entry;
-        } else {
-          break;
-        }
-      }
-      return closest ? parseFloat(closest[1]) : 0;
+    // Helper: get the latest value from a portfolio timeframe's history
+    const getLatest = (timeframe: string, field: 'pnlHistory' | 'accountValueHistory'): number => {
+      const entry = details.portfolio.find(p => p[0] === timeframe);
+      const history = entry?.[1]?.[field];
+      if (!history || history.length === 0) return 0;
+      return parseFloat(history[history.length - 1][1]) || 0;
     };
 
-    const pnl24hAgo = findPnlAt(24 * 60 * 60 * 1000);
-    const pnl7dAgo = findPnlAt(7 * 24 * 60 * 60 * 1000);
-    const pnl30dAgo = findPnlAt(30 * 24 * 60 * 60 * 1000);
+    // TVL = latest account value from day portfolio
+    const tvl = getLatest('day', 'accountValueHistory');
 
-    // APR from details, compute APY
-    const apr = details.apr || 0;
-    const apy = (Math.pow(1 + apr / 365, 365) - 1) * 100;
+    // PnL per timeframe (each timeframe's pnlHistory shows cumulative PnL for that period)
+    const pnlDay = getLatest('day', 'pnlHistory');
+    const pnl7d = getLatest('week', 'pnlHistory');
+    const pnl30d = getLatest('month', 'pnlHistory');
+    const pnlAllTime = getLatest('allTime', 'pnlHistory');
+
+    // APR from details (already a ratio, e.g. 1.01 = 101%)
+    const apr = (details.apr || 0) * 100;
 
     return {
       name: details.name || 'HLP',
       vaultAddress: HLP_VAULT_ADDRESS,
-      leader: details.leader,
       tvl,
-      apr: apr * 100,  // Convert decimal to percentage
-      apy,
-      pnl24h: latestPnl - pnl24hAgo,
-      pnl7d: latestPnl - pnl7dAgo,
-      pnl30d: latestPnl - pnl30dAgo,
-      pnlAllTime: latestPnl,
-      accountValue: tvl,
+      apr,
+      pnlDay,
+      pnl7d,
+      pnl30d,
+      pnlAllTime,
     };
   } catch (error) {
     console.error('[HLP] Failed to fetch vault data:', error);
