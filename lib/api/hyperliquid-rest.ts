@@ -161,21 +161,62 @@ export async function fetchHyperliquidListingDates(): Promise<Map<string, Listin
 
 // ===== Fetch spot symbols (which perp tokens have spot trading on Hyperliquid) =====
 export async function fetchHyperliquidSpotSymbols(): Promise<Set<string>> {
-  const result = await hlPost<HyperliquidSpotMeta>({ type: 'spotMeta' });
+  // Use spotMetaAndAssetCtxs which returns [SpotMeta, SpotAssetCtx[]] — more reliable
+  // Falls back to spotMeta if needed
+  const symbols = new Set<string>();
 
-  if (!result?.universe) {
-    console.error('[Hyperliquid] Invalid spotMeta response');
-    return new Set<string>();
+  try {
+    // First try spotMetaAndAssetCtxs (returns array: [meta, ctxs])
+    const rawResult = await hlPost<unknown>({ type: 'spotMetaAndAssetCtxs' });
+
+    if (!rawResult) {
+      console.error('[Hyperliquid] spotMetaAndAssetCtxs returned null');
+      return symbols;
+    }
+
+    // Response is [SpotMeta, SpotAssetCtx[]]
+    let meta: HyperliquidSpotMeta | null = null;
+
+    if (Array.isArray(rawResult) && rawResult.length >= 1) {
+      // Array format: first element is the meta object
+      meta = rawResult[0] as HyperliquidSpotMeta;
+    } else if (rawResult && typeof rawResult === 'object' && 'universe' in (rawResult as Record<string, unknown>)) {
+      // Direct object format
+      meta = rawResult as HyperliquidSpotMeta;
+    }
+
+    if (!meta?.universe || !Array.isArray(meta.universe)) {
+      console.error('[Hyperliquid] spotMeta: no universe array found. Raw type:', typeof rawResult, 'isArray:', Array.isArray(rawResult));
+      return symbols;
+    }
+
+    // Build token index → name lookup from tokens array
+    const tokenNames = new Map<number, string>();
+    if (meta.tokens && Array.isArray(meta.tokens)) {
+      meta.tokens.forEach(token => {
+        tokenNames.set(token.index, token.name);
+      });
+    }
+
+    // Extract base symbols from universe pairs
+    meta.universe.forEach(pair => {
+      if (pair.name && pair.name.includes('/')) {
+        // Standard format: "BTC/USDC" → extract "BTC"
+        const base = pair.name.split('/')[0];
+        if (base) symbols.add(base);
+      } else if (pair.tokens && pair.tokens.length >= 2) {
+        // Fallback: use token indices to look up names
+        const baseTokenIndex = pair.tokens[0];
+        const baseName = tokenNames.get(baseTokenIndex);
+        if (baseName) symbols.add(baseName);
+      }
+    });
+
+    console.log(`[Hyperliquid] Found ${symbols.size} spot symbols from ${meta.universe.length} pairs`);
+  } catch (error) {
+    console.error('[Hyperliquid] Failed to fetch spot symbols:', error);
   }
 
-  const symbols = new Set<string>();
-  // universe entries have names like "PURR/USDC", extract the base coin
-  result.universe.forEach(pair => {
-    const base = pair.name.split('/')[0];
-    if (base) symbols.add(base);
-  });
-
-  console.log(`[Hyperliquid] Found ${symbols.size} spot symbols`);
   return symbols;
 }
 
