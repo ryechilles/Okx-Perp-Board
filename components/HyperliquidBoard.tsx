@@ -1,11 +1,19 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo, ReactNode } from 'react';
 import { useHyperliquidStore } from '@/hooks/useHyperliquidStore';
+import { useWidgetOrder } from '@/hooks/useWidgetOrder';
 import { Header } from '@/components/Header';
 import { Controls } from '@/components/Controls';
 import { Footer } from '@/components/Footer';
+import { MarketMomentum } from '@/components/MarketMomentum';
+import { RsiOversold } from '@/components/RsiOversold';
+import { RsiOverbought } from '@/components/RsiOverbought';
+import { AltcoinTopGainers } from '@/components/AltcoinTopGainers';
+import { AltcoinVsBTC } from '@/components/AltcoinVsBTC';
+import { HLPVault } from '@/components/HLPVault';
 import { TableHeader, TableRow } from '@/components/table';
+import { TabContainer, WidgetGrid } from '@/components/layout';
 import { Spinner } from '@/components/ui';
 import { ColumnKey } from '@/lib/types';
 import { COLUMN_DEFINITIONS } from '@/lib/utils';
@@ -19,8 +27,39 @@ const FIXED_WIDTHS: Record<string, number> = {
   symbol: 95,
 };
 
+const EXCHANGE_LABEL = 'Hyperliquid';
+
+// Tab configuration
+const TABS = [
+  { id: 'rsi', label: 'RSI' },
+  { id: 'altcoin', label: 'Altcoin' },
+  { id: 'hlp', label: 'HLP' },
+];
+
+// Default widget order per tab
+const DEFAULT_WIDGET_ORDER: Record<string, string[]> = {
+  rsi: ['marketMomentum', 'rsiOversold', 'rsiOverbought'],
+  altcoin: ['topGainers', 'vsBtc'],
+  hlp: ['hlpVault'],
+};
+
 export default function HyperliquidBoard() {
   const store = useHyperliquidStore();
+  const [activeTab, setActiveTab] = useState('rsi');
+
+  // Widget order for tabs with multiple widgets
+  const [rsiWidgetOrder, setRsiWidgetOrder] = useWidgetOrder(
+    'hl-rsi',
+    DEFAULT_WIDGET_ORDER.rsi
+  );
+  const [altcoinWidgetOrder, setAltcoinWidgetOrder] = useWidgetOrder(
+    'hl-altcoin',
+    DEFAULT_WIDGET_ORDER.altcoin
+  );
+  const [hlpWidgetOrder, setHlpWidgetOrder] = useWidgetOrder(
+    'hl-hlp',
+    DEFAULT_WIDGET_ORDER.hlp
+  );
 
   // Drag state
   const [draggedColumn, setDraggedColumn] = useState<ColumnKey | null>(null);
@@ -55,6 +94,7 @@ export default function HyperliquidBoard() {
   }, []);
 
   const filteredData = store.getFilteredData();
+  const { avgRsi7, avgRsi14 } = store.getRsiAverages();
   const quickFilterCounts = store.getQuickFilterCounts();
 
   // Show all data (no pagination)
@@ -132,10 +172,73 @@ export default function HyperliquidBoard() {
     tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleGroupClick = (symbols: string[]) => {
+    store.setFilters({});
+    store.setSearchTerm(symbols.join('|'));
+    tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Scroll table to top
   const handleScrollToTop = () => {
     tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Widget mapping for RSI tab
+  const rsiWidgets: Record<string, ReactNode> = useMemo(() => ({
+    marketMomentum: (
+      <MarketMomentum
+        avgRsi7={avgRsi7}
+        avgRsi14={avgRsi14}
+        exchangeLabel={EXCHANGE_LABEL}
+      />
+    ),
+    rsiOversold: (
+      <RsiOversold
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+        exchangeLabel={EXCHANGE_LABEL}
+      />
+    ),
+    rsiOverbought: (
+      <RsiOverbought
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+        exchangeLabel={EXCHANGE_LABEL}
+      />
+    ),
+  }), [avgRsi7, avgRsi14, store.tickers, store.rsiData, store.marketCapData]);
+
+  // Widget mapping for altcoin tab
+  const altcoinWidgets: Record<string, ReactNode> = useMemo(() => ({
+    topGainers: (
+      <AltcoinTopGainers
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+        exchangeLabel={EXCHANGE_LABEL}
+      />
+    ),
+    vsBtc: (
+      <AltcoinVsBTC
+        tickers={store.tickers}
+        rsiData={store.rsiData}
+        marketCapData={store.marketCapData}
+        onTokenClick={handleTokenClick}
+        onTopNClick={handleGroupClick}
+        exchangeLabel={EXCHANGE_LABEL}
+      />
+    ),
+  }), [store.tickers, store.rsiData, store.marketCapData]);
+
+  // Widget mapping for HLP tab
+  const hlpWidgets: Record<string, ReactNode> = useMemo(() => ({
+    hlpVault: <HLPVault />,
+  }), []);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-muted">
@@ -153,9 +256,20 @@ export default function HyperliquidBoard() {
         <div className="max-w-[1600px] mx-auto w-full flex flex-col flex-1 overflow-hidden">
 
           {/* -----------------------------------------------------------------
-              ROW 1: Controls (full width since no tabs)
+              ROW 1: Tabs (left) + Controls (right) - Mobile stacked
               ----------------------------------------------------------------- */}
-          <div className="mb-4">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-4">
+            {/* Tabs - Same width as widget sidebar */}
+            <div className="lg:w-[320px] flex-shrink-0">
+              <TabContainer
+                tabs={TABS}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                variant="sidebar"
+              />
+            </div>
+
+            {/* Controls - Aligns with table */}
             <Controls
               exchange="hyperliquid"
               columns={store.columns}
@@ -174,85 +288,136 @@ export default function HyperliquidBoard() {
           </div>
 
           {/* -----------------------------------------------------------------
-              ROW 2: Data Table (full width since no widget sidebar)
+              ROW 2: Widgets (left) + Table (right) - TOP ALIGNED
               ----------------------------------------------------------------- */}
-          <div className="bg-card rounded-xl border flex flex-col flex-1 overflow-hidden">
-            {/* Scrollable Table Container */}
-            <div
-              ref={tableContainerRef}
-              className="flex-1 overflow-auto"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
-              <table
-                className="border-collapse"
-                style={{ width: 'max-content', minWidth: '100%' }}
-              >
-                <colgroup>
-                  {visibleColumns.map((key) => (
-                    <col key={key} style={getColStyle(key)} />
+          <div className="flex flex-col lg:flex-row flex-1 gap-4 overflow-hidden">
+            {/* Widgets - Desktop: fixed width sidebar, Mobile: above table */}
+            <div className="lg:w-[320px] flex-shrink-0 lg:overflow-y-auto lg:pr-2 space-y-4">
+              {/* RSI Tab Widgets - Sortable */}
+              {activeTab === 'rsi' && (
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={rsiWidgetOrder}
+                  onOrderChange={setRsiWidgetOrder}
+                >
+                  {rsiWidgetOrder.map((id) => (
+                    <div key={id}>{rsiWidgets[id]}</div>
                   ))}
-                </colgroup>
+                </WidgetGrid>
+              )}
 
-                <TableHeader
-                  visibleColumns={visibleColumns}
-                  sort={store.sort}
-                  isScrolled={isScrolled}
-                  totalCount={filteredData.length}
-                  draggedColumn={draggedColumn}
-                  dragOverColumn={dragOverColumn}
-                  fixedColumns={FIXED_COLUMNS}
-                  fixedWidths={FIXED_WIDTHS}
-                  columns={store.columns}
-                  onSort={store.updateSort}
-                  onDragStart={handleDragStart}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onDragEnd={handleDragEnd}
-                />
+              {/* Altcoin Tab Widgets - Sortable */}
+              {activeTab === 'altcoin' && (
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={altcoinWidgetOrder}
+                  onOrderChange={setAltcoinWidgetOrder}
+                >
+                  {altcoinWidgetOrder.map((id) => (
+                    <div key={id}>{altcoinWidgets[id]}</div>
+                  ))}
+                </WidgetGrid>
+              )}
 
-                <tbody>
-                  {filteredData.length === 0 ? (
-                    <tr>
-                      <td colSpan={visibleColumns.length}>
-                        <div className="flex items-center justify-center py-16 text-muted-foreground">
-                          {store.tickers.size === 0 ? (
-                            <>
-                              <Spinner size="md" className="mr-3" />
-                              Loading market data...
-                            </>
-                          ) : (
-                            'No data found'
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    displayData.map((ticker, index) => (
-                      <TableRow
-                        key={ticker.instId}
-                        ticker={ticker}
-                        index={index}
-                        currentPage={1}
-                        pageSize={displayData.length}
-                        visibleColumns={visibleColumns}
-                        rsi={store.rsiData.get(ticker.instId)}
-                        fundingRate={store.fundingRateData.get(ticker.instId)}
-                        listingData={undefined}
-                        marketCap={store.marketCapData.get(ticker.baseSymbol)}
-                        hasSpot={store.spotSymbols.has(ticker.baseSymbol)}
-                        exchange="hyperliquid"
-                        isFavorite={store.favorites.includes(ticker.instId)}
-                        isScrolled={isScrolled}
-                        fixedColumns={FIXED_COLUMNS}
-                        fixedWidths={FIXED_WIDTHS}
-                        columns={store.columns}
-                        onToggleFavorite={store.toggleFavorite}
-                      />
-                    ))
-                  )}
-                </tbody>
-              </table>
+              {/* HLP Tab Widgets - Sortable */}
+              {activeTab === 'hlp' && (
+                <WidgetGrid
+                  variant="vertical"
+                  gap="md"
+                  sortable
+                  itemIds={hlpWidgetOrder}
+                  onOrderChange={setHlpWidgetOrder}
+                >
+                  {hlpWidgetOrder.map((id) => (
+                    <div key={id}>{hlpWidgets[id]}</div>
+                  ))}
+                </WidgetGrid>
+              )}
+            </div>
+
+            {/* Data Table - flex-1 to fill remaining space */}
+            <div className="bg-card rounded-xl border flex flex-col flex-1 overflow-hidden">
+              {/* Scrollable Table Container */}
+              <div
+                ref={tableContainerRef}
+                className="flex-1 overflow-auto"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                <table
+                  className="border-collapse"
+                  style={{ width: 'max-content', minWidth: '100%' }}
+                >
+                  <colgroup>
+                    {visibleColumns.map((key) => (
+                      <col key={key} style={getColStyle(key)} />
+                    ))}
+                  </colgroup>
+
+                  <TableHeader
+                    visibleColumns={visibleColumns}
+                    sort={store.sort}
+                    isScrolled={isScrolled}
+                    totalCount={filteredData.length}
+                    draggedColumn={draggedColumn}
+                    dragOverColumn={dragOverColumn}
+                    fixedColumns={FIXED_COLUMNS}
+                    fixedWidths={FIXED_WIDTHS}
+                    columns={store.columns}
+                    onSort={store.updateSort}
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onDragEnd={handleDragEnd}
+                  />
+
+                  <tbody>
+                    {filteredData.length === 0 ? (
+                      <tr>
+                        <td colSpan={visibleColumns.length}>
+                          <div className="flex items-center justify-center py-16 text-muted-foreground">
+                            {store.tickers.size === 0 ? (
+                              <>
+                                <Spinner size="md" className="mr-3" />
+                                Loading market data...
+                              </>
+                            ) : (
+                              'No data found'
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      displayData.map((ticker, index) => (
+                        <TableRow
+                          key={ticker.instId}
+                          ticker={ticker}
+                          index={index}
+                          currentPage={1}
+                          pageSize={displayData.length}
+                          visibleColumns={visibleColumns}
+                          rsi={store.rsiData.get(ticker.instId)}
+                          fundingRate={store.fundingRateData.get(ticker.instId)}
+                          listingData={undefined}
+                          marketCap={store.marketCapData.get(ticker.baseSymbol)}
+                          hasSpot={store.spotSymbols.has(ticker.baseSymbol)}
+                          exchange="hyperliquid"
+                          isFavorite={store.favorites.includes(ticker.instId)}
+                          isScrolled={isScrolled}
+                          fixedColumns={FIXED_COLUMNS}
+                          fixedWidths={FIXED_WIDTHS}
+                          columns={store.columns}
+                          onToggleFavorite={store.toggleFavorite}
+                        />
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

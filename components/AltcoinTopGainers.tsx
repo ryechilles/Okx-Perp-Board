@@ -13,9 +13,10 @@ interface AltcoinTopGainersProps {
   rsiData: Map<string, RSIData>;
   marketCapData: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
+  exchangeLabel?: string;
 }
 
-export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClick }: AltcoinTopGainersProps) {
+export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClick, exchangeLabel = 'OKX' }: AltcoinTopGainersProps) {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('4h');
 
   // Get altcoins sorted by market cap (excluding BTC)
@@ -70,7 +71,7 @@ export function AltcoinTopGainers({ tickers, rsiData, marketCapData, onTokenClic
       loading={isLoading}
       tooltip={
         <TooltipList items={[
-          "Top 5 gainers from OKX perp top 100",
+          `Top 5 gainers from ${exchangeLabel} perp top 100`,
           "Excludes BTC",
           "Click token to filter in table",
         ]} />

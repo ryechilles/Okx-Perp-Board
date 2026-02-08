@@ -13,9 +13,10 @@ interface AltcoinVsBTCProps {
   marketCapData: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
   onTopNClick?: (symbols: string[]) => void;
+  exchangeLabel?: string;
 }
 
-export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, onTopNClick }: AltcoinVsBTCProps) {
+export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, onTopNClick, exchangeLabel = 'OKX' }: AltcoinVsBTCProps) {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('4h');
 
   // Get BTC data
@@ -117,7 +118,7 @@ export function AltcoinVsBTC({ tickers, rsiData, marketCapData, onTokenClick, on
       tooltip={
         <TooltipList items={[
           "Compares altcoin avg change vs BTC",
-          "Tiers: OKX perp top 10 / 20 / 50 by market cap",
+          `Tiers: ${exchangeLabel} perp top 10 / 20 / 50 by market cap`,
           "Ratio shows relative strength",
         ]} />
       }

@@ -14,9 +14,10 @@ interface RsiOversoldProps {
   rsiData: Map<string, RSIData>;
   marketCapData: Map<string, MarketCapData>;
   onTokenClick?: (symbol: string) => void;
+  exchangeLabel?: string;
 }
 
-export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: RsiOversoldProps) {
+export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick, exchangeLabel = 'OKX' }: RsiOversoldProps) {
   // Get oversold tokens using shared utility
   const oversoldTokens = useMemo(
     () => getTokensByRsiThreshold(tickers, rsiData, marketCapData, 'oversold'),
@@ -29,11 +30,11 @@ export function RsiOversold({ tickers, rsiData, marketCapData, onTokenClick }: R
     <SmallWidget
       title="RSI Oversold"
       icon={<TrendingDown className="w-4 h-4" />}
-      subtitle={`Avg RSI ≤ ${RSI.OVERSOLD} in OKX Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
+      subtitle={`Avg RSI ≤ ${RSI.OVERSOLD} in ${exchangeLabel} Perp Top ${WIDGET.TOP_TOKENS_COUNT}`}
       loading={isLoading}
       tooltip={
         <TooltipList items={[
-          `Filters OKX perp top ${WIDGET.TOP_TOKENS_COUNT} by market cap`,
+          `Filters ${exchangeLabel} perp top ${WIDGET.TOP_TOKENS_COUNT} by market cap`,
           "Avg RSI = (RSI7 + RSI14 + W-RSI7 + W-RSI14) / 4",
           `Shows tokens with Avg RSI ≤ ${RSI.OVERSOLD}`,
           "Lower RSI = potentially oversold",

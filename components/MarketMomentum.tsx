@@ -8,10 +8,11 @@ import { getRsiPillStyle, getRsiSignal } from '@/lib/utils';
 interface MarketMomentumProps {
   avgRsi7: number | null;
   avgRsi14: number | null;
+  exchangeLabel?: string;
 }
 
 
-export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
+export function MarketMomentum({ avgRsi7, avgRsi14, exchangeLabel = 'OKX' }: MarketMomentumProps) {
   const dailySignal = getRsiSignal(avgRsi7, avgRsi14);
 
   const isLoading = avgRsi7 === null && avgRsi14 === null;
@@ -20,12 +21,12 @@ export function MarketMomentum({ avgRsi7, avgRsi14 }: MarketMomentumProps) {
     <SmallWidget
       title="Today Market Avg RSI"
       icon={<Activity className="w-4 h-4" />}
-      subtitle="Top 100 OKX Perp Tokens"
+      subtitle={`Top 100 ${exchangeLabel} Perp Tokens`}
       loading={isLoading}
       className="w-full"
       tooltip={
         <TooltipList items={[
-          "OKX perp top 100 by market cap",
+          `${exchangeLabel} perp top 100 by market cap`,
           "Avg = (D-RSI7 + D-RSI14) / 2",
           "≤20: Extreme Oversold",
           "≤25: Oversold",
