@@ -169,21 +169,23 @@ export function Controls({
       activeColor: 'text-orange-500',
       tooltip: 'Meme Tokens Only'
     },
-    {
-      value: 'noSpot',
+    // Only show No Spot for exchanges that have spot data
+    ...(exchange !== 'hyperliquid' ? [{
+      value: 'noSpot' as QuickFilter,
       label: '🚫 No Spot',
       activeColor: 'text-purple-500',
       hiddenOnMobile: true,
       tooltip: `Tokens without Spot listing on ${exchangeLabel}`
-    },
-    {
-      value: 'newListed',
+    }] : []),
+    // Only show New Listed for exchanges that have listing date data
+    ...(exchange !== 'hyperliquid' ? [{
+      value: 'newListed' as QuickFilter,
       label: '🆕 New Listed',
       activeColor: 'text-blue-500',
       hiddenOnMobile: true,
       tooltip: 'Listed <180d'
-    },
-  ], [exchangeLabel]);
+    }] : []),
+  ], [exchangeLabel, exchange]);
 
   // RSI filter options - using PillButtonGroup template
   const rsiFilterOptions = useMemo((): PillButtonOption<QuickFilter>[] => [
@@ -253,12 +255,13 @@ export function Controls({
         { key: 'rsiW14', label: 'W-RSI14' },
       ]
     },
-    {
+    // Only show listing date column for exchanges that have the data
+    ...(exchange !== 'hyperliquid' ? [{
       label: 'Other',
       columns: [
-        { key: 'listDate', label: 'List Date' },
+        { key: 'listDate' as ColumnKey, label: 'List Date' },
       ]
-    }
+    }] : []),
   ];
 
   return (
@@ -522,37 +525,41 @@ export function Controls({
                 />
               </div>
 
-              {/* Has Spot */}
-              <div>
-                <div className="text-[11px] text-muted-foreground font-medium mb-2">Has Spot on {exchangeLabel}</div>
-                <PillButtonGroup
-                  options={[
-                    { value: 'yes', label: 'Yes' },
-                    { value: 'no', label: 'No' },
-                  ]}
-                  value={filters.hasSpot || ''}
-                  onChange={(v) => onFiltersChange({ ...filters, hasSpot: v || undefined })}
-                  allowDeselect
-                  size="sm"
-                />
-              </div>
+              {/* Has Spot - only for exchanges with spot data */}
+              {exchange !== 'hyperliquid' && (
+                <div>
+                  <div className="text-[11px] text-muted-foreground font-medium mb-2">Has Spot on {exchangeLabel}</div>
+                  <PillButtonGroup
+                    options={[
+                      { value: 'yes', label: 'Yes' },
+                      { value: 'no', label: 'No' },
+                    ]}
+                    value={filters.hasSpot || ''}
+                    onChange={(v) => onFiltersChange({ ...filters, hasSpot: v || undefined })}
+                    allowDeselect
+                    size="sm"
+                  />
+                </div>
+              )}
 
-              {/* Listing Age */}
-              <div>
-                <div className="text-[11px] text-muted-foreground font-medium mb-2">Listing Age</div>
-                <PillButtonGroup
-                  options={[
-                    { value: '<30d', label: '<30d' },
-                    { value: '<60d', label: '<60d' },
-                    { value: '<90d', label: '<90d' },
-                    { value: '<180d', label: '<180d' },
-                  ]}
-                  value={filters.listAge || ''}
-                  onChange={(v) => onFiltersChange({ ...filters, listAge: v || undefined })}
-                  allowDeselect
-                  size="sm"
-                />
-              </div>
+              {/* Listing Age - only for exchanges with listing date data */}
+              {exchange !== 'hyperliquid' && (
+                <div>
+                  <div className="text-[11px] text-muted-foreground font-medium mb-2">Listing Age</div>
+                  <PillButtonGroup
+                    options={[
+                      { value: '<30d', label: '<30d' },
+                      { value: '<60d', label: '<60d' },
+                      { value: '<90d', label: '<90d' },
+                      { value: '<180d', label: '<180d' },
+                    ]}
+                    value={filters.listAge || ''}
+                    onChange={(v) => onFiltersChange({ ...filters, listAge: v || undefined })}
+                    allowDeselect
+                    size="sm"
+                  />
+                </div>
+              )}
 
             </div>
           )}

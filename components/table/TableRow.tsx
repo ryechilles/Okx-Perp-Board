@@ -174,9 +174,9 @@ export function TableRow({
                 <span className="text-foreground">{base}</span>
                 <span className="text-muted-foreground font-normal">/{quote}</span>
               </div>
-              {!hasSpot && (
+              {!hasSpot && exchange !== 'hyperliquid' && (
                 <span className="text-[11px] text-muted-foreground font-normal">
-                  No Spot on {exchange === 'hyperliquid' ? 'Hyperliquid' : 'OKX'}
+                  No Spot on OKX
                 </span>
               )}
               {listingAgeInfo && (
