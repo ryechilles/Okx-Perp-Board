@@ -122,7 +122,7 @@ export function PillButtonGroup<T extends string = string>(props: PillButtonGrou
       className={cn(
         'items-center rounded-lg bg-muted p-1 gap-0.5',
         scrollable
-          ? 'flex flex-nowrap overflow-x-auto'
+          ? 'inline-flex flex-nowrap'
           : 'inline-flex flex-wrap',
         className
       )}
