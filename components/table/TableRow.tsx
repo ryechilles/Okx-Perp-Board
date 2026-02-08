@@ -67,7 +67,7 @@ export function TableRow({
   const displayRank = (currentPage - 1) * pageSize + index + 1;
   const parts = ticker.instId.split('-');
   const base = parts[0];
-  const quote = parts[1];
+  const quote = parts[1] || (exchange === 'hyperliquid' ? 'USDC' : 'USDT');
 
   const isFixedColumn = (key: ColumnKey) => fixedColumns.includes(key);
 
