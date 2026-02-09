@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
 import { APP_CONFIG } from '@/lib/config';
 import { TooltipProvider } from '@/components/ui';
 import './globals.css';
+
+const GA_MEASUREMENT_ID = 'G-VJB7B5NH29';
 
 export const metadata: Metadata = {
   title: APP_CONFIG.title,
@@ -21,6 +24,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
         {/* Force desktop view on mobile - min 1200px width */}
         <meta name="viewport" content="width=1200, initial-scale=0.35, maximum-scale=2, user-scalable=yes" />
         {/* Version meta tag */}
