@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, useMemo, ReactNode } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback, ReactNode } from 'react';
 import { useHyperliquidStore } from '@/hooks/useHyperliquidStore';
 import { useWidgetOrder } from '@/hooks/useWidgetOrder';
 import { Header } from '@/components/Header';
@@ -199,23 +199,21 @@ export default function HyperliquidBoard() {
   };
 
   // Token click handler
-  const handleTokenClick = (symbol: string) => {
+  const handleTokenClick = useCallback((symbol: string) => {
     store.setFilters({});
     store.setSearchTerm(symbol);
-    // Scroll table to top
     tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [store]);
 
-  const handleGroupClick = (symbols: string[]) => {
+  const handleGroupClick = useCallback((symbols: string[]) => {
     store.setFilters({});
     store.setSearchTerm(symbols.join('|'));
     tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [store]);
 
-  // Scroll table to top
-  const handleScrollToTop = () => {
+  const handleScrollToTop = useCallback(() => {
     tableContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
 
   // Widget mapping for RSI tab
   const rsiWidgets: Record<string, ReactNode> = useMemo(() => ({

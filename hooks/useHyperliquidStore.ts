@@ -63,7 +63,7 @@ export function useHyperliquidStore() {
   const [status, setStatus] = useState<'connecting' | 'live' | 'error'>('live');
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [rsiProgress, setRsiProgress] = useState('');
-  const [urlInitialized, setUrlInitialized] = useState(false);
+  // urlInitialized removed — not consumed by any component
 
   // Refs for WebSocket and intervals
   const dataManagerRef = useRef<HyperliquidDataManager | null>(null);
@@ -756,8 +756,6 @@ export function useHyperliquidStore() {
     rsiProgress,
     currentPage: paginationHook.currentPage,
     pageSize: paginationHook.pageSize,
-    urlInitialized,
-
     // Actions
     initialize,
     cleanup,
@@ -774,8 +772,6 @@ export function useHyperliquidStore() {
     updateColumnOrder,
     moveColumn,
     setCurrentPage: paginationHook.setCurrentPage,
-    setUrlInitialized,
-
     // Direct setters for URL state sync
     setFavoritesDirectly,
     setColumnsDirectly,

@@ -30,13 +30,21 @@ function formatPnl(value: number): string {
 export function HLPVault() {
   const [data, setData] = useState<HLPVaultDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
+      setError(null);
       const result = await fetchHLPVaultData();
-      if (result) setData(result);
+      if (result) {
+        setData(result);
+      } else {
+        setError('No data returned from HLP vault API');
+      }
     } catch (err) {
-      console.error('[HLP Widget] Fetch failed:', err);
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      console.error('[HLP Widget] Fetch failed:', msg);
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -116,7 +124,7 @@ export function HLPVault() {
         </div>
       ) : (
         <div className="text-center py-4 text-[11px] text-muted-foreground">
-          Failed to load HLP data
+          {error || 'Failed to load HLP data'}
         </div>
       )}
     </SmallWidget>

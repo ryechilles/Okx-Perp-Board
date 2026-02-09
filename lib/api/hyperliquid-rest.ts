@@ -167,7 +167,11 @@ export async function fetchHyperliquidSpotSymbols(): Promise<Set<string>> {
   const symbols = new Set<string>();
 
   try {
-    const rawResult = await hlPost<unknown>({ type: 'spotMetaAndAssetCtxs' });
+    // Fetch spot and perp meta in parallel
+    const [rawResult, perpResult] = await Promise.all([
+      hlPost<unknown>({ type: 'spotMetaAndAssetCtxs' }),
+      hlPost<[HyperliquidMeta, unknown[]]>({ type: 'metaAndAssetCtxs' }),
+    ]);
 
     if (!rawResult) {
       console.error('[Hyperliquid] spotMetaAndAssetCtxs returned null');
@@ -196,8 +200,7 @@ export async function fetchHyperliquidSpotSymbols(): Promise<Set<string>> {
       });
     }
 
-    // Also fetch perp meta to get the canonical perp asset names for matching
-    const perpResult = await hlPost<[HyperliquidMeta, unknown[]]>({ type: 'metaAndAssetCtxs' });
+    // Build perp name set for spot→perp mapping
     const perpNames = new Set<string>();
     if (perpResult && Array.isArray(perpResult) && perpResult.length >= 1) {
       const perpMeta = perpResult[0];
