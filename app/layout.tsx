@@ -5,7 +5,7 @@ import { APP_CONFIG } from '@/lib/config';
 import { TooltipProvider } from '@/components/ui';
 import './globals.css';
 
-const GA_MEASUREMENT_ID = 'G-RT0FEQ74L6';
+const GA_MEASUREMENT_ID = 'G-VJB7B5NH29';
 
 export const metadata: Metadata = {
   title: APP_CONFIG.title,
